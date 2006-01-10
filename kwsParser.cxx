@@ -23,6 +23,29 @@
 
 namespace kws {
 
+/** Constructor */
+Parser::Parser()
+{
+  m_HeaderFilename = "";
+
+  for(unsigned int i=0;i<NUMBER_ERRORS+1;i++)
+    {
+    m_TestsDone[i] = false;
+    }
+}
+
+/** Destructor */
+Parser::~Parser()
+{
+}
+
+/** Return if a test has been performed */
+bool Parser::HasBeenPerformed(unsigned int test) const
+{
+  return m_TestsDone[test];
+}
+
+
 /** Return the last errors as a string */
 std::string Parser::GetLastErrors()
 {
@@ -84,6 +107,8 @@ std::string Parser::GetInfo()
  *  match can contain <NameOfClass> and <Extension> */
 bool Parser::CheckIfNDefDefine(const char* match)
 {
+  m_TestsDone[NDEFINE] = true;
+
   bool hasError = false;
   bool notDefined = false;
 
@@ -107,10 +132,13 @@ bool Parser::CheckIfNDefDefine(const char* match)
       }
     }
 
+  long int definepos = pos;
+
   if(notDefined)
     {
     Error error;
     error.line = this->GetLineNumber(0,true);
+    error.line2 = error.line;
     error.number = NDEFINE;
     error.description = "#ifndef not defined";
     m_ErrorList.push_back(error);
@@ -142,6 +170,7 @@ bool Parser::CheckIfNDefDefine(const char* match)
     {
     Error error;
     error.line = this->GetLineNumber(end,true);
+    error.line2 = error.line;
     error.number = NDEFINE;
     error.description = "#define not defined";
     m_ErrorList.push_back(error);
@@ -168,6 +197,7 @@ bool Parser::CheckIfNDefDefine(const char* match)
     {
     Error error;
     error.line = this->GetLineNumber(end,true);
+    error.line2 = error.line;
     error.number = NDEFINE;
     error.description = "#define does not match #ifndef";
     m_ErrorList.push_back(error);
@@ -206,11 +236,12 @@ bool Parser::CheckIfNDefDefine(const char* match)
 
 
   if(ifndef != toMatch)
-    {
+    {   
     Error error;
-    error.line = this->GetLineNumber(end,true);
+    error.line = this->GetLineNumber(definepos,true);
+    error.line2 = this->GetLineNumber(end,true);
     error.number = NDEFINE;
-    error.description = "#define does not match";
+    error.description = "#ifndef/#define does not match expression";
     m_ErrorList.push_back(error);
     return false;
     }
@@ -222,8 +253,10 @@ bool Parser::CheckIfNDefDefine(const char* match)
  *  The template should have '<NA>\n' tag to avoid checking the rest of the line
  *  or <NA> to skip a word.
  *  The header should also be at the beginning of the file */
-bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL)
+bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL,bool useCVS)
 {
+  m_TestsDone[HEADER] = true;
+
   bool hasError = false;
   if(!filename)
     {
@@ -251,6 +284,8 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL)
   buffer.resize(fileSize);
   file.close();
   delete [] buf;
+
+  m_HeaderFilename = filename;
   
   // Check the file char by char
   std::string::const_iterator ith = buffer.begin();
@@ -262,6 +297,26 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL)
 
   while((ith != buffer.end()) && (it != m_Buffer.end()))
     {
+    // if we have cvs
+    if((*ith == '$') && useCVS)
+      {
+      ith++;
+      posh++;
+      it++;
+      pos++;
+      while(((*ith) != '$') && (ith != buffer.end()))
+        {
+        ith++;
+        posh++;
+        }
+      while(((*it) != '$') && (it != m_Buffer.end()))
+        {
+        pos++;
+        it++;
+        }
+      //continue;
+      }
+     
     if((*it) != (*ith))
       {
       // Check if we have a <NA> tag
@@ -419,6 +474,7 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL)
 
         Error error;
         error.line = line;
+        error.line2 = error.line;
         error.number = HEADER;
         error.description = "Header mismatch: ";
         error.description += word;
@@ -458,7 +514,8 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL)
   if(it == m_Buffer.end())
     {
     Error error;
-    error.line = 0;
+    error.line = 1;
+    error.line2 = error.line;
     error.number = HEADER;
     error.description = "The header is incomplete";
     m_ErrorList.push_back(error);
@@ -473,6 +530,8 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL)
  *  and the semicolon */
 bool Parser::CheckSemicolonSpace(unsigned long max)
 {
+  m_TestsDone[SEMICOLON_SPACE] = true;
+
   bool hasError = false;
   long int posSemicolon = m_BufferNoComment.find(";",0);
   while(posSemicolon != -1)
@@ -489,6 +548,7 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
           {
           Error error;
           error.line = this->GetLineNumber(posSemicolon,true);
+          error.line2 = error.line;
           error.number = SEMICOLON_SPACE;
           error.description = "Number of spaces before semicolon exceed: ";
           char* val = new char[10];
@@ -526,8 +586,9 @@ unsigned long Parser::GetNumberOfLines() const
  while(pos != -1)
    {
    lines++;
-   pos = m_Buffer.find("\n",pos+1);  
+   pos = m_Buffer.find("\n",pos+1);
    }
+ lines++; // the last line doesn't have any \n
  return lines;
 }
 
@@ -545,9 +606,14 @@ std::string Parser::GetLine(unsigned long i) const
      }
    lines++;
    prec = pos;
-   pos = m_Buffer.find("\n",pos+1);  
+   pos = m_Buffer.find("\n",pos+1);
    }
-
+  
+  if(lines == i)
+    {
+    return m_Buffer.substr(prec,m_Buffer.size()-prec);
+    }
+ 
  return "";
 }
 
@@ -555,6 +621,7 @@ std::string Parser::GetLine(unsigned long i) const
 /** Check the number of character per line */
 bool Parser::CheckLineLength(unsigned long max)
 {
+  m_TestsDone[LINE_LENGTH] = true;
   m_Positions.clear();
   unsigned long total = m_Buffer.size();
   unsigned long i = 0;
@@ -569,6 +636,7 @@ bool Parser::CheckLineLength(unsigned long max)
       {
       Error error;
       error.line = j;
+      error.line2 = error.line;
       error.number = LINE_LENGTH;
       error.description = "Line length exceed ";
       char* val = new char[10];
@@ -591,6 +659,219 @@ bool Parser::CheckLineLength(unsigned long max)
   m_Positions.push_back(total-1);
     
   return !hasError;
+}
+
+/** Find the previous word given a position */
+std::string Parser::FindPreviousWord(long int pos) const
+{
+  long i=pos;
+
+  while(m_BufferNoComment[i] != ' ' && i>0)
+    {
+    i--;
+    }
+
+  bool inWord = true;
+  bool first = false;
+  std::string ivar = "";
+  while(i>=0 && inWord)
+    {  
+    if(m_BufferNoComment[i] != ' ' && m_BufferNoComment[i] != '\n')
+      {
+      std::string store = ivar;
+      ivar = m_BufferNoComment[i];
+      ivar += store;
+      inWord = true;
+      first = true;
+      }
+    else // we have a space
+      {
+      if(first)
+        {
+        inWord = false;
+        }
+      }
+    i--;
+    }
+  return ivar;
+}
+
+/** Find the next word given a position */
+std::string Parser::FindNextWord(long int pos) const
+{
+  long i=pos;
+
+  // we go to the next space
+  while(m_BufferNoComment[i] != ' ' && i<(long)m_BufferNoComment.size())
+    {
+    i++;
+    }
+
+  bool inWord = true;
+  bool first = false;
+  std::string ivar = "";
+  while(i<(long)m_BufferNoComment.size() && inWord)
+    {
+    if(m_BufferNoComment[i] != ' ' && m_BufferNoComment[i] != '\r')
+      {
+      ivar += m_BufferNoComment[i];
+      inWord = true;
+      first = true;
+      }
+    else // we have a space
+      {
+      if(first)
+        {
+        inWord = false;
+        }
+      }
+    i++;
+    }
+  return ivar;
+}
+
+/** Return the position in the line given the position in the text */ 
+unsigned long Parser::GetPositionInLine(unsigned long pos)
+{
+  long begin = pos;
+  while(m_BufferNoComment[begin]!='\n')
+    {
+    begin--;
+    }
+  return pos-begin;
+}
+
+
+/** Check if the typedefs of the class are correct */
+bool Parser::CheckTypedefs(const char* regEx, bool alignment)
+{
+  // First we need to find the typedefs
+  // typedef type MyTypeDef;
+  bool hasError = false;
+
+  itksys::RegularExpression regex(regEx);
+
+  long int previousline = 0;
+  long int previouspos = 0;
+  long int pos = 0;
+  while(pos!= -1)
+    {
+    long int beg = 0;
+    std::string var = this->FindTypedef(pos+1,m_BufferNoComment.size(),pos,beg);
+    
+    if(var == "")
+      {
+      continue;
+      }
+    // Check the alignment if specified
+    if(alignment)
+      {
+      // Find the position in the line
+      unsigned long l = this->GetPositionInLine(beg);
+      unsigned long line = this->GetLineNumber(beg,false);
+      
+      // if the typedef is on a line close to the previous one we check
+      if(line-previousline<=2)
+        {
+         if(l!=previouspos)
+           {
+           Error error;
+           error.line = this->GetLineNumber(beg,true);
+           error.line2 = error.line;
+           error.number = TYPEDEF_ALIGN;
+           error.description = "Type definition (" + var + ") is not aligned with the previous one";
+           m_ErrorList.push_back(error);
+           hasError = true;
+           }
+        }
+      else
+        {
+        previouspos = l;
+        }
+      previousline = line;
+      }
+
+    if(!regex.find(var))
+      {
+      Error error;
+      error.line = this->GetLineNumber(pos,true);
+      error.line2 = error.line;
+      error.number = TYPEDEF_REGEX;
+      error.description = "Type definition (" + var + ") doesn't match regular expression";
+      m_ErrorList.push_back(error);
+      hasError = true;
+      }
+    }
+  return !hasError;
+}
+
+/** Find a typedef  in the source code */
+std::string Parser::FindTypedef(long int start, long int end,long int & pos,long int & beg)
+{
+  long int posSemicolon = m_BufferNoComment.find(";",start);
+  if(posSemicolon != -1 && posSemicolon<end)
+    {
+    // We try to find the word before that
+    unsigned long i=posSemicolon-1;
+    bool inWord = true;
+    bool first = false;
+    std::string ivar = "";
+    while(i>=0 && inWord)
+      {
+      if(m_BufferNoComment[i] != ' ')
+        {
+        if((m_BufferNoComment[i] == '}')
+          || (m_BufferNoComment[i] == ')')
+          || (m_BufferNoComment[i] == ']')
+          || (m_BufferNoComment[i] == '\n')
+          )
+          {
+          inWord = false;
+          }
+        else
+          {
+          std::string store = ivar;
+          ivar = m_BufferNoComment[i];
+          ivar += store;
+          beg = i;
+          inWord = true;
+          first = true;
+          }
+        }
+      else // we have a space
+        {
+        if(first)
+          {
+          inWord = false;
+          }
+        }
+      i--;
+      }
+    pos = posSemicolon;
+
+    // We find the words until we find a semicolon
+    long int p = pos;
+
+    std::string pword = this->FindPreviousWord(p);
+    bool isTypedef = false;
+    while((pword.find(";") == -1) && (p>0))
+      {
+      if(pword.find("typedef") != -1)
+        {
+        isTypedef = true;
+        break;
+        }
+      p -= pword.size();
+      pword = this->FindPreviousWord(p);
+      }
+    if(isTypedef)
+      {
+      return ivar;
+      }
+    }
+
+  pos = -1;
+  return "";
 }
 
 /** Find an ivar in the source code */
@@ -635,38 +916,64 @@ std::string Parser::FindInternalVariable(long int start, long int end,long int &
       i--;
       }
     pos = posSemicolon;
-    return ivar;
+
+    // We find the words until we find a semicolon
+    long int p = pos;
+
+    std::string pword = this->FindPreviousWord(p);
+    bool isTypedef = false;
+    while((pword.find(";") == -1) && (p>0))
+      {
+      if(pword.find("typedef") != -1)
+        {
+        isTypedef = true;
+        break;
+        }
+      p -= pword.size();
+      pword = this->FindPreviousWord(p);
+      }
+    if(!isTypedef)
+      {
+      return ivar;
+      }
     }
 
   pos = -1;
   return "";
 }
 
+/** Given the position without comments return the position with the comments */
+long int Parser::GetPositionWithComments(long int pos)
+{
+  std::vector<PairType>::const_iterator it = m_CommentPositions.begin();
+  while(it != m_CommentPositions.end())
+    {
+    if((pos>=(*it).first))
+      {
+      pos += ((*it).second-(*it).first)+2;
+      }
+    else
+      {
+      break;
+      }
+    it++;
+    }
+
+  return pos;
+}
+
 /** Return the line number in the source code given the character position */
 long int Parser::GetLineNumber(long int pos,bool withoutComments)
 {
-  std::vector<long int>::const_iterator it = m_Positions.begin();
   
   // if we have comments we add them to the list
   if(withoutComments)
     {
-    unsigned int i=0;
-    std::vector<PairType>::const_iterator it2 = m_CommentPositions.begin();
-    while(it2 != m_CommentPositions.end())
-      {
-      if((pos>=(*it2).first))
-        {
-        pos += ((*it2).second-(*it2).first)+1;
-        }
-      else
-        {
-        break;
-        }
-      it2++;
-      }
+    pos = this->GetPositionWithComments(pos);
     }
 
   unsigned int i=0;
+  std::vector<long int>::const_iterator it = m_Positions.begin();
   while(it != m_Positions.end())
     {
     if(pos<=(*it))
@@ -694,6 +1001,7 @@ bool Parser::CheckTabs()
       line = this->GetLineNumber(pos,false);
       Error error;
       error.line = line; 
+      error.line2 = error.line;
       error.number = TABS;
       error.description = "Tabs identified";
       m_ErrorList.push_back(error);
@@ -706,7 +1014,7 @@ bool Parser::CheckTabs()
 }
 
 /** Check the indent size */
-bool Parser::CheckIndent(IndentType itype,unsigned long size)
+bool Parser::CheckIndent(IndentType itype,unsigned long size,bool doNotCheckHeader)
 {
   bool hasError = false;
   unsigned long pos = 0;
@@ -718,6 +1026,10 @@ bool Parser::CheckIndent(IndentType itype,unsigned long size)
   unsigned long line = 0;
 
   // We construct a vector of position pair brackets
+  // The first one is the position of the char to avoid
+  // The second one can take different values
+  // 0: means we totally ignore the bracket
+  // 1: means that the bracket is respecting the previous ident but the rest is respecting the correct ones
   typedef std::pair<long int,int> PairType;
   std::vector<PairType> ignoreBrackets;
 
@@ -741,26 +1053,86 @@ bool Parser::CheckIndent(IndentType itype,unsigned long size)
     }
 
   // class
-  long int posClass = m_Buffer.find("class",0);
+  long int posClass = m_BufferNoComment.find("class",0);
   while(posClass!=-1)
     {
-    long int posClass1 = m_Buffer.find("{",posClass);
-    if(posClass1 != -1)
+    if(!IsBetweenChars('<','>',posClass))
       {
-      long int posClass2 = m_Buffer.find(";",posClass);
-      if(posClass2 > posClass1)
+      bool valid = true;
+      // We should get a { before a ;
+      long int i = posClass+4;
+      while((m_BufferNoComment[i] != '{')
+         && (i<(long)m_BufferNoComment.size())
+         )
         {
-        PairType pair(posClass1,1); 
+        if(m_BufferNoComment[i] == ';')
+          {
+          valid = false;
+          break;
+          }
+        i++;
+        }
+
+      if(valid && m_BufferNoComment[i] == '{')
+        {
+        // translate the position in the buffer position;
+        long int posClassComments = this->GetPositionWithComments(i);
+        PairType pair(posClassComments,1); 
         ignoreBrackets.push_back(pair);
-        PairType pair2(this->FindClosingChar('{','}',posClass1),1); 
+        PairType pair2(this->FindClosingChar('{','}',posClassComments),1); 
         ignoreBrackets.push_back(pair2);
         }
       }
-    posClass = m_Buffer.find("class",posClass+1);
+    posClass = m_BufferNoComment.find("class",posClass+1);
+    }
+  
+  // Some words should be indented  as the previous indent
+  std::vector<unsigned long> previousIndentVector;  
+  long int posPrev = m_Buffer.find("public:",0);
+  while(posPrev!=-1)
+    {
+    previousIndentVector.push_back(posPrev);
+    posPrev = m_Buffer.find("public:",posPrev+1);
+    }
+  posPrev = m_Buffer.find("private:",0);
+  while(posPrev!=-1)
+    {
+    previousIndentVector.push_back(posPrev);
+    posPrev = m_Buffer.find("private:",posPrev+1);
+    }
+  posPrev = m_Buffer.find("protected:",0);
+  while(posPrev!=-1)
+    {
+    previousIndentVector.push_back(posPrev);
+    posPrev = m_Buffer.find("protected:",posPrev+1);
     }
 
   char type = ' ';
   if(itype == TABS) {type = '\t';}
+
+  // If we do not want to check the header
+  if((m_HeaderFilename.size() > 0) && doNotCheckHeader)
+    {
+    std::ifstream file;
+    file.open(m_HeaderFilename.c_str(), std::ios::binary | std::ios::in);
+    if(!file.is_open())
+      {
+      std::cout << "Cannot open file: " << m_HeaderFilename << std::endl;
+      return false;
+      }
+
+    file.seekg(0,std::ios::end);
+    unsigned long fileSize = file.tellg();
+    file.close();
+    for(unsigned int i=0;i<fileSize;i++)
+      {
+      if(it != m_Buffer.end())
+        {
+        pos++;
+        it++;
+        }
+      }
+    }
 
   while(it != m_Buffer.end())
     {
@@ -777,8 +1149,7 @@ bool Parser::CheckIndent(IndentType itype,unsigned long size)
       it1++;
       }
 
-
-    if(checkSpaces && ((*it) != '\n') && ((*it) != '{'))
+    if(checkSpaces && ((*it) != '\n') && ((*it) != '{') && ((*it) != '}'))
       {
       if((*it) == type)
         {
@@ -786,17 +1157,97 @@ bool Parser::CheckIndent(IndentType itype,unsigned long size)
         }
       else
         {
-        if(count != currentPosition)
+        // We check if the current word should be at the previous indent
+        bool previousIndent = false;
+        std::vector<unsigned long>::const_iterator itPrev = previousIndentVector.begin();
+        while(itPrev != previousIndentVector.end())
           {
+          if(*itPrev == pos)
+            {
+            previousIndent = true;
+            break;
+            }
+          itPrev++;
+          }
+
+        if(previousIndent)
+          {
+          if(count != currentPosition-size)
+            {
+            unsigned long l =  this->GetLineNumber(pos,false);
+            if(l != line)
+              {
+              Error error;
+              error.line = l;
+              error.line2 = error.line;
+              error.number = INDENT;
+              error.description = "Indent is wrong ";
+              char* val = new char[10];
+              sprintf(val,"%d",count); 
+              error.description += val;
+              error.description += " (should be ";
+              delete [] val;
+              val = new char[10];
+              sprintf(val,"%d",currentPosition);
+              error.description += val;
+              error.description += ")";
+              delete [] val;
+              m_ErrorList.push_back(error);      
+              line = l;
+              hasError = true;
+              }
+            count = 0;
+            checkSpaces = false;
+            }
+          }
+        // if the line is empty we do not care
+        else if(((count != currentPosition) && (*it!=13)))
+          {
+          bool commentError = false;
           unsigned long l =  this->GetLineNumber(pos,false);
-          if(l != line)
+          
+          if(this->IsInComments(pos))
+            {
+            commentError = true;
+
+            // We check how much space we have in the middle section
+            unsigned int nSpaceMiddle = 0;
+            while(m_CommentMiddle[nSpaceMiddle] == type)
+              {
+              nSpaceMiddle++;
+              }
+
+             if(((*it) == m_CommentMiddle[nSpaceMiddle])
+              && (count != currentPosition+nSpaceMiddle)
+              )
+              {
+              commentError = false;
+              }
+
+            // We check how much space we have in the end section
+            unsigned int nSpaceEnd = 0;
+            while(m_CommentEnd[nSpaceEnd] == type)
+              {
+              nSpaceEnd++;
+              }
+
+             if(((*it) == m_CommentEnd[nSpaceEnd])
+              && (count != currentPosition+nSpaceEnd)
+              )
+              {
+              commentError = false;
+              }
+            }
+
+          if(l != line && !commentError)
             {
             Error error;
             error.line = l;
+            error.line2 = error.line;
             error.number = INDENT;
             error.description = "Indent is wrong ";
             char* val = new char[10];
-            sprintf(val,"%d",count);
+            sprintf(val,"%d",count); 
             error.description += val;
             error.description += " (should be ";
             delete [] val;
@@ -830,7 +1281,7 @@ bool Parser::CheckIndent(IndentType itype,unsigned long size)
         }
 
       unsigned long l =  this->GetLineNumber(pos,false);
-      
+      register
       long int position = currentPosition;
       if(ignoreBracket == 2){position -= size;}
 
@@ -838,6 +1289,7 @@ bool Parser::CheckIndent(IndentType itype,unsigned long size)
         {
         Error error;
         error.line = l;
+        error.line2 = error.line;
         error.number = INDENT;
         error.description = "Indent is wrong ";
         char* val = new char[10];
@@ -857,9 +1309,59 @@ bool Parser::CheckIndent(IndentType itype,unsigned long size)
         m_ErrorList.push_back(error);
         }
       }
-    else if ((*it) == '}'  && (ignoreBracket != 1))
+    else if ((*it) == '}')
       {
-      currentPosition -= size;
+
+      if(ignoreBracket != 1)
+        {
+        currentPosition -= size;
+        }
+      
+      // We check if the bracket is ok
+      if(ignoreBracket == 2)
+        {
+        if(count != currentPosition)
+          {
+          unsigned long l =  this->GetLineNumber(pos,false);
+          if(l != line)
+            {
+            Error error;
+            error.line = l;
+            error.line2 = error.line;
+            error.number = INDENT;
+            error.description = "Indent2 is wrong ";
+            char* val = new char[10];
+            sprintf(val,"%d",count); 
+            error.description += val;
+            error.description += " (should be ";
+            delete [] val;
+            val = new char[10];
+            sprintf(val,"%d",currentPosition);
+            error.description += val;
+            error.description += ")";
+            delete [] val;
+            m_ErrorList.push_back(error);      
+            line = l;
+            hasError = true;
+            }
+          count = 0;
+          checkSpaces = false;
+          }
+        }
+     
+      // if ignore bracket is 1 or 2 we ignore the rest of the line
+      // we look at the next space or \n or eof
+      if(ignoreBracket != 0)
+        {
+        do
+          {
+          it++;
+          pos++;
+          }
+        while( ((*it) != ' ') && ((*it) != '}') && ((*it) != '\n'));
+        checkSpaces = true;
+        count = 0;
+        }
       }
     else if ((*it) == '\n')
       {
@@ -884,6 +1386,7 @@ bool Parser::CheckEndOfFileNewLine()
     {
     Error error;
     error.line = this->GetLineNumber(m_Buffer.size()-1,false);
+    error.line2 = error.line;
     error.number = EOF_NEW_LINE;
     error.description = "No new line at the end of file";
     m_ErrorList.push_back(error);
@@ -895,7 +1398,7 @@ bool Parser::CheckEndOfFileNewLine()
     {
     long i = m_Buffer.size()-1;
     unsigned long numberOfEmptyLines = 0;
-    while( ((m_Buffer[i] == '\n') ||  (m_Buffer[i] == ' ')) && (i>0))
+    while( ((m_Buffer[i] == '\n') ||  (m_Buffer[i] == ' ') || (m_Buffer[i] == '\r')) && (i>0))
       {
       if(m_Buffer[i] == '\n')
         {
@@ -906,20 +1409,20 @@ bool Parser::CheckEndOfFileNewLine()
     
     if(numberOfEmptyLines>1)
       {
-      Info info;
-      info.line2 = this->GetLineNumber(m_Buffer.size()-1,false);
-      info.line = info.line2-numberOfEmptyLines;   
+      // Maybe should be info and not error
+      Error info;
+      info.line2 = this->GetLineNumber(m_Buffer.size()-1,false)+1;
+      info.line = info.line2-numberOfEmptyLines+2;      
       info.number = EOF_NEW_LINE;
       info.description = "Number of empty lines at the end of files: ";
       char* val = new char[10];
       sprintf(val,"%d",numberOfEmptyLines);
       info.description += val;
       delete [] val;
-      m_InfoList.push_back(info);
+      m_ErrorList.push_back(info);
       }
     }
 
-  
   return !hasError;
 }
 
@@ -1077,10 +1580,16 @@ bool Parser::CheckInternalVariables(const char* regEx)
     {
     std::string var = this->FindInternalVariable(pos+1,publicLast,pos);
 
+    if(var == "")
+      {
+      continue;
+      }
+
     if(var.length() > 0)
       {
       Error error;
       error.line = this->GetLineNumber(pos,true);
+      error.line2 = error.line;
       error.number = IVAR_PUBLIC;
       error.description = "Encapsulcation not preserved";
       m_ErrorList.push_back(error);
@@ -1090,6 +1599,7 @@ bool Parser::CheckInternalVariables(const char* regEx)
         {
         Error error;
         error.line = this->GetLineNumber(pos,true);
+        error.line2 = error.line;
         error.number = IVAR_REGEX;
         error.description = "Internal variable (" + var + ") doesn't match regular expression";
         m_ErrorList.push_back(error);
@@ -1106,6 +1616,11 @@ bool Parser::CheckInternalVariables(const char* regEx)
   while(pos!= -1)
     {
     std::string var = this->FindInternalVariable(pos+1,protectedLast,pos);
+    
+    if(var == "")
+      {
+      continue;
+      }
 
     if(var.length() > 0)
       {
@@ -1113,6 +1628,7 @@ bool Parser::CheckInternalVariables(const char* regEx)
         {
         Error error;
         error.line = this->GetLineNumber(pos,true);
+        error.line2 = error.line;
         error.number = IVAR_REGEX;
         error.description = "Internal variable doesn't match regular expression";
         m_ErrorList.push_back(error);
@@ -1131,12 +1647,18 @@ bool Parser::CheckInternalVariables(const char* regEx)
     {
     std::string var = this->FindInternalVariable(pos+1,privateLast,pos);
 
+    if(var == "")
+      {
+      continue;
+      }
+
     if(var.length() > 0)
       {
       if(!regex.find(var))
         {
         Error error;
         error.line = this->GetLineNumber(pos,true);
+        error.line2 = error.line;
         error.number = IVAR_REGEX;
         error.description = "Internal variable doesn't match regular expression";
         m_ErrorList.push_back(error);
@@ -1144,10 +1666,6 @@ bool Parser::CheckInternalVariables(const char* regEx)
         }
       }
     }
-
-
-
-
   return !hasError;
 }
 
@@ -1655,18 +2173,41 @@ void Parser::FindPrivateArea(long &before, long &after, size_t startPos) const
 }
 */
 
-//----------------------------------------------------------------------------------
-// return true if the position pos is between <>
-//----------------------------------------------------------------------------------
-bool Parser::IsBetweenBrackets(std::string & buf,long int pos) const
+
+/**  return true if the position pos is inside a comment */
+bool Parser::IsInComments(long int pos) const
+{
+  if((pos == -1) || (m_CommentBegin.size()==0) || (m_CommentEnd.size() == 0))
+    {
+    return false;
+    }
+
+  long int b0 = m_Buffer.find(m_CommentBegin,0);
+  long int b1 = m_Buffer.find(m_CommentEnd,b0);
+
+  while(b0 != -1 && b1 != -1 && b1>b0)
+    {
+    if(pos>=b0 && pos<=(b1+(long int)m_CommentEnd.size()))
+      {
+      return true;
+      }
+    b0 = m_Buffer.find(m_CommentBegin,b0+1);
+    b1 = m_Buffer.find(m_CommentEnd,b0);
+    }
+
+  return false;
+}
+
+/**  return true if the position pos is between 'begin' and 'end' */
+bool Parser::IsBetweenChars(const char begin, const char end ,long int pos) const
 {
   if(pos == -1)
     {
     return false;
     }
 
-  long int b0 = buf.find("<",0);
-  long int b1 = buf.find(">",b0);
+  long int b0 = m_BufferNoComment.find(begin,0);
+  long int b1 = m_BufferNoComment.find(end,b0);
 
   while(b0 != -1 && b1 != -1 && b1>b0)
     {
@@ -1674,16 +2215,14 @@ bool Parser::IsBetweenBrackets(std::string & buf,long int pos) const
       {
       return true;
       }
-    b0 = buf.find("<",b0+1);
-    b1 = buf.find(">",b0);
+    b0 = m_BufferNoComment.find(begin,b0+1);
+    b1 = m_BufferNoComment.find(end,b0);
     }
 
   return false;
 }
 
-//----------------------------------------------------------------------------------
 /** Return true if the class has a template */
-//----------------------------------------------------------------------------------
 long int Parser::IsTemplated(const std::string & buffer, long int classnamepos) const
 {
   long int templatepos = buffer.find("template",0);
@@ -2137,9 +2676,8 @@ void Parser::RemoveComments()
   m_BufferNoComment.resize(size-count);
 }
 
-//----------------------------------------------------------------------------------
+
 /** Find the constructor in the file */
-//----------------------------------------------------------------------------------
 long Parser::FindConstructor(const std::string & buffer, const std::string & className, bool headerfile, size_t startPos) const
 {
   std::string constructor = "";
@@ -2677,59 +3215,146 @@ long int Parser::FindClosingChar(char openChar, char closeChar, long int pos) co
   return -1; // closing bracket not found
 }
 
+/** Check if the name of the class 
+ *  The class name is the one that is not between anything and does not have ;
+ *  before the } */
+bool Parser::CheckNameOfClass(const char* name,const char* prefix)
+{
+  bool gotMatch = false;
+  long int pos = m_BufferNoComment.find("class",0);
+  long int errorpos = 0;
+  std::string nameOfClass = "";
+  while(pos!=-1)
+    {
+    if(!IsBetweenChars('<','>',pos))
+      {
+      bool valid = true;
+      // We should get a { before a ;
+      long int i = pos+4;
+      while((m_BufferNoComment[i] != '{')
+         && (i<(long)m_BufferNoComment.size())
+         )
+        {
+        if(m_BufferNoComment[i] == ';')
+          {
+          valid = false;
+          break;
+          }
+        else if(m_BufferNoComment[i] == ':')
+          {
+          break;
+          }
+        i++;
+        }
+
+      if(valid)
+        {
+        errorpos = i;
+        nameOfClass = this->FindPreviousWord(i);
+
+        if(m_Filename == "")
+          {
+          std::cout << "CheckIfNDefDefine() : m_Filename shoud be set" << std::endl;
+          return false;
+          }
+
+        long int point = m_Filename.find_last_of(".");
+        long int slash = m_Filename.find_last_of("/");
+
+        if(slash == -1)
+          {
+          slash = 0;
+          }
+
+        std::string nameofclass = m_Filename.substr(slash+1,point-slash-1);
+        std::string extension = m_Filename.substr(point+1,m_Filename.size()-point-1);
+
+        // construct the string
+        std::string toMatch = name;
+        long int p = toMatch.find("<NameOfClass>");
+        if(p != -1)
+          {
+          toMatch.replace(p,13,nameofclass);
+          }
+        p = toMatch.find("<Extension>");
+        if(p != -1)
+          {
+          toMatch.replace(p,11,extension);
+          }
+
+        nameOfClass = prefix+nameOfClass;
+
+        if(nameOfClass == toMatch)
+          {
+          gotMatch = true;
+          break;
+          }
+        }
+      }
+    pos = m_BufferNoComment.find("class",pos+1);
+    }
+
+  if(!gotMatch)
+    {
+    Error error;
+    error.line = this->GetLineNumber(errorpos,true);
+    error.line2 = error.line;
+    error.number = NAMEOFCLASS;
+    error.description = "classname is not defined correctly";
+    m_ErrorList.push_back(error);
+    return false;
+    }
+
+  return true;
+}
 
 /** Find the name space 
  *  using namespace is prohibited for this parser 
  *  We look if the closing bracket is at the end of the file, if yes we accept otherwise we reject*/
-/*void Parser::FindAndAddNameSpace(const std::string & buffer, XMLDescription &desc) const*
-  {
+bool Parser::CheckNamespace(const char* name)
+{
   std::string nameSpace = "";
 
-  long int pos = buffer.find("namespace",0);
+  long int pos = m_BufferNoComment.find("namespace",0);
 
   if(pos == -1)
     {
-    return;
+    Error error;
+    error.line = this->GetLineNumber(0,true);
+    error.line2 = error.line;
+    error.number = NAMESPACE;
+    error.description = "namespace not defined";
+    m_ErrorList.push_back(error);
+    return false;
     }
 
+  
   // check that the word is not using namespace
-  long int use = buffer.find("using",pos-20);
-
   bool ok = true;
-
-  if((use!=-1 && (pos-use<20) && (pos-use >0)) || (pos == -1))
+  if(this->FindPreviousWord(pos) == "using")
     {
     ok = false;
     }
 
-  int nNameSpace = 0;
-
   if(ok)
     {
+    std::string names = name;
     // extract the namespace
-    long int bracket = buffer.find("{",pos);
-    if(bracket == -1)
+    std::string nspace = this->FindNextWord(pos);
+    if(nspace != names)
       {
-      return;
-      }
-
-    long int closing = FindClosingBracket(buffer,bracket);
-
-    // if this is the last bracket then we are ok :)
-    if(buffer.find("}",closing+1) == -1)
-      {
-      if(bracket != -1 && bracket-pos-10<10)
-        {
-        std::string name = buffer.substr(pos+10,bracket-pos-10);
-        RemoveCtrlN(name);
-        RemoveChar(name,' ');
-        RemoveCtrlN(name);
-        nameSpace += name;
-        nNameSpace++;
-        }
+      std::cout << "-" << nspace.c_str() << "--" << names.c_str() << "-" << std::endl;
+      Error error;
+      error.line = this->GetLineNumber(pos,true);
+      error.line2 = error.line;
+      error.number = NAMESPACE;
+      error.description = "namespace is wrong";
+      m_ErrorList.push_back(error);
+      return false;
       }
     }
 
+  /*
   // Now search if we have other namespaces
   while(pos!= -1 && ok)
     {
@@ -2772,10 +3397,10 @@ long int Parser::FindClosingChar(char openChar, char closeChar, long int pos) co
         }
       }
     }
+    */
 
-  desc.nameSpace = nameSpace;
+  return true;
 }
-*/
 
 /** Remove string area from start to end (incl) from buffer if filename contains className. */
 std::string Parser::RemoveArea(const std::string fileName,
@@ -2799,184 +3424,19 @@ std::string Parser::RemoveArea(const std::string fileName,
   return buffer;
 }
 
-
-/** Extract the current Informations */
-/*void Parser::ExtractInformation(const std::string &filename, XMLDescription &desc)
+/** Check the comments
+ * The comment definition should be set before CheckIndent() to get the correct indentation
+ * for the comments. */
+bool Parser::CheckComments(const char* begin,const char* middle,const char* end)
 {
-  FILE* fic = fopen(filename.c_str(),"rb");
-  if(!fic)
-    {
-    std::cout << "Cannot open file : " << filename.c_str() << std::endl;
-    }
+  bool hasError = false;
+  // Set the ivars for the indent checking
+  m_CommentBegin = begin;
+  m_CommentMiddle = middle;
+  m_CommentEnd = end;
 
-  // An instance providing the needed methods.
-  Parser extractor;
-
-  fseek(fic,0,SEEK_END);
-  long size = ftell(fic);
-  fseek(fic,0,SEEK_SET);
-  char* buf = new char[size+1];
-  long read = fread(buf,sizeof(char),size,fic);
-
-  buf[read] = '\0';
-  std::string buffer = buf;
-  delete []buf;
-   
-  while(read != size)
-    {
-    char* buf2 = new char[size-read]; 
-    long read2 = fread(buf2,sizeof(char),size-read,fic); 
-    buf2[read2] = '\0';
-    read += read2;
-    buffer += buf2;
-    delete []buf2;
-    }
-
-  fclose(fic);
-
-  buffer[size-1] = '\0';
-
-  //if (filename.find("itkCurvatureAnisotropicDiffusionImageFilter") != std::string::npos){
-    //size_t a = filename.size()*2;
-  //}
-
-  // Find the comments
-  //FindComments(buffer);
-
-  extractor.ReduceMultipleSpaces(buffer);
-
-  // Remove the comments from the file
-  extractor.RemoveComment(buffer);
-
-  // Check for and remove problematic areas from some special classes codes.
-  buffer = extractor.RemoveArea(filename, buffer, "itkFastMarchingImageFilter", "class AxisNodeType :", "};");
-  buffer = extractor.RemoveArea(filename, buffer, "itkFastMarchingAugmentedWithEuclideanDistanceImageFilter", "class AxisNodeType :", "};");
-
-  size_t classPos = extractor.FindAndAddName(buffer, desc, filename);
-  extractor.FindAndAddNameSpace(buffer, desc);
-  extractor.FindAndAddParameters(buffer, desc, classPos);
-
-  // Extract parameters which are not set with itkSetMacros.
-  extractor.FindAndAddNonMacroSetFunctions(buffer, desc, classPos);
-
-  // Append include file name derived from class name.
-  if (desc.name.size() != 0){
-    desc.includes.push_back((std::string)"itk" + desc.name + ".h");
-  }
-
-  // Determine minimum number of inputs.
-  int minInputNum = extractor.FindSetInputNum(buffer);
-  if (minInputNum > desc.minInputs){ desc.minInputs = minInputNum; }
-
-  extractor.FindAndAddTypeDefinitions(buffer, desc, classPos); 
-
-  // Sometimes the constructor is in the .h file so we look for the constructor
-  // constructor always look like nameoftheclass(){};
-  // First we look if the constructor is not empty
-  long constructor = extractor.FindConstructor(buffer, desc.name, true, classPos);
-  if(constructor>0) // if the constructor exists we find it
-    {
-    extractor.FindAndAddDefaultValues(buffer, constructor, desc);
-    }
-
-  // Now open the corresponding file (.txx or .cxx) to find the default values
-  std::string file = filename;
-  long pos = file.find(".h",0);
-  if(pos == -1)
-    {
-    std::cout << "The given filename (" << file.c_str() << ") is not a .h file!" << std::endl;
-    return;
-    }
-  file.erase(pos,2);
-    
-  if(desc.templateArgs.size() >0)
-    {
-    file += ".txx";
-    }
-  else
-    {
-    file += ".cxx";
-    }
-
-  FILE* fic2 = fopen(file.c_str(),"rb");
-  if(!fic2)
-    {
-    std::cout << "Cannot open file : " << file.c_str() << " (maybe only the .h file is needed)" << std::endl;
-    return;
-    }
-  
-  fseek(fic2,0,SEEK_END);
-  size = ftell(fic2);
-  fseek(fic2,0,SEEK_SET);
-  char* buf_2 = new char[size+1];
-  read = fread(buf_2,sizeof(char),size,fic2);
-  buf_2[read] = '\0';
-  std::string buffer2 = buf_2;
-  delete []buf_2;
-   
-  while(read != size)
-    {
-    char* buf2 = new char[size-read]; 
-    long read2 = fread(buf2,sizeof(char),size-read,fic2); 
-    buf2[read2] = '\0';
-    read += read2;
-    buffer2 += buf2;
-    delete []buf2;
-    }
-
-  buffer2[size-1] = '\0';
-
-  extractor.ReduceMultipleSpaces(buffer2);
-
-  // Remove the comments from the file
-  extractor.RemoveComment(buffer2);
-  
-  constructor = extractor.FindConstructor(buffer2, desc.name,false, classPos);
-  if(constructor>0) // if the constructor exists we find it
-    {
-    extractor.FindAndAddDefaultValues(buffer2, constructor, desc);
-    }
-
-  fclose(fic2);
+  return !hasError;
 }
-*/
 
-/** Find the comments in the source file 
- *  Each class is supposed to start with /class otherwise the comment is set to "" */
-/*bool Parser::FindAndAddComments(const std::string & buffer, XMLDescription &desc) const
-{
-  long int pos = buffer.find("\\class",0);
-
-  // if the \class keyword is not found
-  if(pos == -1)
-    {
-    desc.comment = "";
-    return false;
-    }
-
-  long int endpos = buffer.find("//",pos);
-  
-  desc.comment = buffer.substr(pos,endpos-pos);
-
-  // We remove the first line
-  long int ctrln = desc.comment.find('\n',0);
-
-  if(ctrln != -1)
-    {
-    desc.comment = desc.comment.erase(pos,ctrln-pos);
-    }
-
-  // We remove any * at the beginning of the line
-  long int star = desc.comment.find(" *",0);
-
-  while((star != -1))
-    {
-    desc.comment = desc.comment.erase(star,2);
-    star = desc.comment.find(" *",star+1);
-    }
-
-  return true;
-}
-*/
 
 } // end namespace kws

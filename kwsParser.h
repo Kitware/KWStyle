@@ -23,7 +23,7 @@
 namespace kws
 {
 
-#define NUMBER_ERRORS 10
+#define NUMBER_ERRORS 14
 
 typedef enum
   {
@@ -42,7 +42,11 @@ typedef enum
   TABS = 7,
   INDENT = 8,
   HEADER = 9,
-  NDEFINE = 10
+  NDEFINE = 10,
+  TYPEDEF_REGEX = 11,
+  TYPEDEF_ALIGN = 12,
+  NAMESPACE = 13,
+  NAMEOFCLASS = 14
   } ErrorType;
 
 const char ErrorTag[NUMBER_ERRORS][4] = {
@@ -55,7 +59,11 @@ const char ErrorTag[NUMBER_ERRORS][4] = {
    {'T','A','B','\0'},
    {'I','N','D','\0'},
    {'H','R','D','\0'},
-   {'D','E','F','\0'}
+   {'D','E','F','\0'},
+   {'T','D','R','\0'},
+   {'T','D','A','\0'},
+   {'N','M','S','\0'},
+   {'N','M','C','\0'}
   };
 
 
@@ -78,6 +86,12 @@ typedef struct
 class Parser
 {
 public:
+
+  /** Constructor */
+  Parser();
+
+  /** Destructor */
+  ~Parser();
   
   typedef std::vector<Error> ErrorVectorType;
 
@@ -88,7 +102,7 @@ public:
     this->RemoveComments();
     }
  
-   /** Return the error tag as string given the error number */
+  /** Return the error tag as string given the error number */
   std::string GetErrorTag(unsigned long number) const;
 
   /** Return the erro vector */
@@ -103,15 +117,25 @@ public:
   /** Check if the file contains tabs */
   bool CheckTabs();
 
+  /** Check the comments
+   * The comment definition should be set before CheckIndent() to get the correct indentation
+   * for the comments. */
+  bool CheckComments(const char* begin,const char* middle,const char* end);
+
   /** Check the indent size 
-   *  Not in the header file if there is one */
-  bool CheckIndent(IndentType,unsigned long size);
+   *  Not in the header file if there is one 
+   *  If CheckHeader has been done before CheckIndent and doNotCheckHeader is set to true
+   *  then the header is not checked for indent*/
+  bool CheckIndent(IndentType,unsigned long size,bool doNotCheckHeader=false);
 
   /** Check the number of character per line */
   bool CheckLineLength(unsigned long max);
 
   /** Check if the internal parameters of the class are correct */
   bool CheckInternalVariables(const char* regEx);
+
+  /** Check if the typedefs of the class are correct */
+  bool CheckTypedefs(const char* regEx, bool alignment = true);
 
   /** Check the order of the declaration */
   bool CheckDeclarationOrder(unsigned int posPublic, unsigned int posProtected, unsigned int posPrivate);
@@ -123,11 +147,18 @@ public:
   /** Check if the end of the file has a new line */
   bool CheckEndOfFileNewLine();
 
-  /** Check header */
-  bool CheckHeader(const char* filename,bool considerSpaceEOL = true);
+  /** Check header 
+   *  Because most of the time the header is checked in cvs we should ignore the $ $*/
+  bool CheckHeader(const char* filename,bool considerSpaceEOL = true,bool useCVS=true);
 
   /** Check if the #ifndef/#define is defined correctly for the class */
   bool CheckIfNDefDefine(const char* match);
+
+  /** Check the first namespace in the file */
+  bool CheckNamespace(const char* name);
+
+  /** Check if the name of the class is correct */
+  bool CheckNameOfClass(const char* name, const char* prefix);
 
   /** Remove the comments. */
   void RemoveComments();
@@ -148,10 +179,19 @@ public:
   /** Return the line */
   std::string GetLine(unsigned long i) const;
 
+  /** Return if a test has been performed */
+  bool HasBeenPerformed(unsigned int test) const;
+
 protected:
+
+  /** Return the position in the line given the position in the text */ 
+  unsigned long GetPositionInLine(unsigned long pos);
 
   /** Find an ivar in the source code */
   std::string Parser::FindInternalVariable(long int start, long int end,long int& pos);
+
+  /** Find a typedef in the source code */
+  std::string Parser::FindTypedef(long int start, long int end,long int& pos,long int & beg);
 
   /** Reduces multiple spaces in buffer to one. */
   void ReduceMultipleSpaces(std::string & buffer);
@@ -172,8 +212,11 @@ protected:
       within the file where class definition starts. */
   //size_t FindAndAddName(const std::string & buffer, XMLDescription &desc, std::string fileName) const;
 
-  /** Find name spaces. */
-  //void FindAndAddNameSpace(const std::string & buffer, XMLDescription &desc) const;
+  /** Find the previous word given a position */
+  std::string FindPreviousWord(long int pos) const;
+
+  /** Find the next word given a position */
+  std::string FindNextWord(long int pos) const;
 
   /** Find the closing bracket given the position of the opening bracket. */
   long int FindClosingChar(char openChar, char closeChar, long int pos) const;
@@ -202,7 +245,7 @@ protected:
   //void FindAndAddDefaultValues(std::string buffer, long start, XMLDescription &desc) const;
 
   /** Return true if the position pos is between <>. */
-  bool IsBetweenBrackets(std::string & buf, long int pos) const;
+  bool IsBetweenChars(const char begin, const char end, long int pos) const;
 
   /** Removes ass CtrlN characters from the buffer. */
   void RemoveCtrlN(std::string & buffer) const;
@@ -232,17 +275,29 @@ protected:
                          const std::string className,
                          const std::string &start, const std::string &end);
 
+  /**  return true if the position pos is inside a comment */
+  bool Parser::IsInComments(long int pos) const;
+
+  /** Given the position without comments return the position with the comments */
+  long int GetPositionWithComments(long int pos);
+
 
 private:
 
   ErrorVectorType m_ErrorList;
   std::vector<Info> m_InfoList;
+  bool m_TestsDone[NUMBER_ERRORS+1];
   std::string m_Buffer;
   std::string m_BufferNoComment;
   std::vector<long int> m_Positions;
   typedef std::pair<long int, long int> PairType;
   std::vector<PairType> m_CommentPositions;
   std::string m_Filename;
+  std::string m_HeaderFilename;
+  std::string m_CommentBegin;
+  std::string m_CommentMiddle;
+  std::string m_CommentEnd;
+
 };
 
 } // end namespace kws

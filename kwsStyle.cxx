@@ -18,13 +18,14 @@
 #include <iostream>
 #include <fstream>
 #include <itksys/Directory.hxx>
+#include <cmath>
 
 #if defined(WIN32) && !defined(__CYGWIN__)
   #include <direct.h> // mkdir needs it
 #endif
 
 int main(int argc, char **argv)
-{ 
+{
   MetaCommand command;
 
   command.SetOption("directory","d",false,"Specify a directory");
@@ -86,7 +87,7 @@ int main(int argc, char **argv)
 
   while(it != filenames.end())
     {
-    //std::cout << "Input File = " << (*it).c_str() << std::endl;
+    std::cout << "Input File = " << (*it).c_str() << std::endl;
 
     // We open the file
     std::ifstream file;
@@ -114,27 +115,22 @@ int main(int argc, char **argv)
     parser.SetFilename((*it).c_str());
     parser.SetBuffer(buffer);
     parser.CheckLineLength(77); // this is required
-    //parser.ClearErrors();
     parser.CheckDeclarationOrder(0,2,1);
+    parser.CheckTypedefs("[A-Z]");
     parser.CheckInternalVariables("m_[A-Z]");
-    parser.CheckSemicolonSpace(2);
+    parser.CheckSemicolonSpace(0);
     parser.CheckEndOfFileNewLine();
     parser.CheckTabs();
-    parser.CheckIndent(kws::SPACE,2);
-    parser.CheckHeader("c:/Julien/Workspace/KWStyle/kwsHeader.h",false);
-    //  {
-    //  std::cout << (*it).c_str() << " Header error" << std::endl;
-    //  errors++;
-    //  }
-/*
-    if(!parser.CheckIfNDefDefine("_<NameOfClass>_<Extension>"))
-      {
-      std::cout << (*it).c_str() << std::endl; 
-      std::cout << parser.GetLastErrors().c_str() << std::endl;
-      errors++;
-      }
-    //std::cout << parser.GetInfo() << std::endl;
-*/
+    parser.ClearErrors();
+    parser.CheckComments("/**"," *"," */");
+    parser.CheckHeader("c:/Julien/Workspace/KWStyle/kwsHeader.h",false,true); // should be before CheckIndent
+    parser.CheckIndent(kws::SPACE,2,true);
+    parser.CheckNamespace("itk");
+    parser.CheckNameOfClass("<NameOfClass>","itk");
+    parser.CheckIfNDefDefine("_<NameOfClass>_<Extension>");
+
+    std::cout << parser.GetLastErrors().c_str() << std::endl;
+     
 
     m_Parsers.push_back(parser);
     it++;

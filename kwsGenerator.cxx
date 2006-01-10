@@ -46,7 +46,7 @@ bool Generator::GenerateMatrix(const char* dir)
 
 
   // Contruct the table
-  file << "<table width=\"100%\" border=\"0\">" << std::endl;
+  file << "<table width=\"100%\" border=\"0\" height=\"1\">" << std::endl;
   file << "<tr>" << std::endl;
   file << "  <td width=\"30%\"> " << std::endl;
   file << "    <div align=\"center\">Filename</div>" << std::endl;
@@ -104,7 +104,14 @@ bool Generator::GenerateMatrix(const char* dir)
       file << "  <td width=\"" << width << "%\"";
       if(nerror == 0)
         {
-        file << "bgcolor=\"#00aa00\"";
+        if(!(*it).HasBeenPerformed(i+1))
+          {
+          file << "bgcolor=\"#cccccc\"";
+          }
+        else
+          {
+          file << "bgcolor=\"#00aa00\"";
+          }
         }
       else
         {
@@ -132,10 +139,10 @@ bool Generator::GenerateMatrix(const char* dir)
 /** Generate the HTML files */
 bool Generator::GenerateHTML(const char* dir)
 {
-  std::cout << "Generating HTML...";
-
   // Generate the matrix representation
   this->GenerateMatrix(dir);
+
+  std::cout << "Generating HTML...";
 
   // For each file we generate an html page
   ParserVectorType::const_iterator it = m_Parsers->begin();
@@ -173,7 +180,7 @@ bool Generator::GenerateHTML(const char* dir)
 
     this->CreateHeader(&file,filename.c_str());
 
-    file << "<table width=\"100%\" border=\"0\">" << std::endl;
+    file << "<table width=\"100%\" border=\"0\" height=\"1\">" << std::endl;
   
     bool comment = false;
     for(unsigned int i=0;i<(*it).GetNumberOfLines();i++)
@@ -187,8 +194,7 @@ bool Generator::GenerateHTML(const char* dir)
       Parser::ErrorVectorType::const_iterator itError = errors.begin();
       while(itError != errors.end())
         {
-        if( ((*itError).line == i+1)
-          //|| ((i>(*itError).line) && (i<(*itError).line2))
+        if( ((i+1>=(*itError).line) && (i+1<=(*itError).line2))
           )
           {
           if(errorTag.size() == 0)
@@ -215,13 +221,48 @@ bool Generator::GenerateHTML(const char* dir)
         }
       
       // First column is the line number
-      file << "<td>" << i+1 << "</td>" << std::endl;
+      file << "<td height=\"1\">" << i+1 << "</td>" << std::endl;
       
       // Second column is the error tag
-      file << "<td>" << errorTag.c_str() << "</td>" << std::endl;
-      
+      file << "<td height=\"1\">" << errorTag.c_str() << "</td>" << std::endl;
       
       std::string l = (*it).GetLine(i);
+
+      // If the error is of type INDENT we show the problem as _
+      if(errorTag.find("IND") != -1)
+        {
+        unsigned int k = 0;
+        while((l[k] == ' ') || (l[k] == '\n'))
+          {
+          if(l[k] == ' ')
+            {
+            l[k]='*'; 
+            }
+          k++;
+          }
+        }
+
+      // Remove the first \n
+      long int p = l.find('\n');
+      if(p != -1)
+        {
+        l.replace(p,1,"");
+        }
+      
+      // Replace < and >
+      long int inf = l.find("<",0);
+      while(inf != -1)
+        {
+        l.replace(inf,1,"&lt;");
+        inf = l.find("<",0);
+        }
+
+      long int sup = l.find(">",0);
+      while(sup != -1)
+        {
+        l.replace(sup,1,"&gt;");
+        sup = l.find(">",0);
+        }
 
       // Replace the space by &nbsp;
       long int space = l.find(' ',0);
@@ -266,12 +307,12 @@ bool Generator::GenerateHTML(const char* dir)
         l += "<font>";
         }
 
-      file << "<td>" << l.c_str() << "</td>" << std::endl;
+      file << "<td height=\"1\"><font face=\"Courier New, Courier, mono\" size=\"2\">" << l.c_str() << "</font></td>" << std::endl;
       file << "</tr>" << std::endl;
       }
 
     file << "</table>" << std::endl;
-    
+
     this->CreateFooter(&file);
     
     file.close();
@@ -294,6 +335,44 @@ bool Generator::CreateHeader(std::ofstream * file,const char* title)
   *file << "<META name=\"robots\" content=\"all\">" << std::endl;
   *file << "<title>KWStyle - " << title << "</title>" << std::endl;
   *file << "</HEAD>" << std::endl;
+
+  // Now create the top frame
+ *file << "<table width=\"100%\" border=\"0\">" << std::endl;
+ *file << " <tr>" << std::endl;
+ *file << "   <td width=\"15%\" height=\"2\"><img src=\"Logo.gif\" width=\"100\" height=\"64\"></td>" << std::endl;
+ *file << "   <td width=\"85%\" height=\"2\" bgcolor=\"#0099CC\"> " << std::endl;
+
+ // remove the last extension
+ std::string tit = title;
+ long int pos = tit.find_last_of(".");
+ if(pos!=-1)
+   {
+   tit = tit.substr(0,pos);
+   }
+ pos = tit.find_last_of("/");
+ if(pos!=-1)
+   {
+   tit = tit.substr(pos+1,tit.size()-pos-1);
+   }
+ 
+ *file << "     <div align=\"left\"><b><font color=\"#FFFFFF\" size=\"5\">KWStyle - " << tit.c_str() << "</font></b></div>" << std::endl;
+ *file << "   </td>" << std::endl;
+ *file << " </tr>" << std::endl;
+ *file << "</table>" << std::endl;
+ *file << "<table width=\"100%\" border=\"0\">" << std::endl;
+ *file << " <tr> " << std::endl;
+ *file << "   <td width=\"15%\" height=\"30\" >&nbsp;</td>" << std::endl;
+ *file << "   <td height=\"30\" width=\"12%\" bgcolor=\"#0099CC\"> " << std::endl;
+ *file << "     <div align=\"center\"><a href=\"KWSMatrix.html\">Matrix View</a></div>" << std::endl;
+ *file << "   </td>" << std::endl;
+ *file << "   <td width=\"10%\" height=\"30\">&nbsp;</td>" << std::endl;
+ *file << "   <td width=\"63%\" height=\"30\"> " << std::endl;
+ *file << "     <div align=\"left\"><b></b></div>" << std::endl;
+ *file << "     <div align=\"right\"></div>" << std::endl;
+ *file << "   </td>" << std::endl;
+ *file << " </tr>" << std::endl;
+ *file << "</table>" << std::endl;
+ *file << "<hr size=\"1\">";
   return true;
 }
 
@@ -303,7 +382,7 @@ bool Generator::CreateFooter(std::ofstream * file)
   *file << "<hr size=\"1\">";
   *file << "<table width=\"100%\" border=\"0\">";
   *file << "<tr>";
-  *file << "<td>Generated by <a href=\"http://www.kitware.com\">KWStyle</a> 1.0b on <i>" << itksys::SystemTools::GetCurrentDateTime("%A %B,%d at %I:%M:%S%p") << "</i></td>";
+  *file << "<td>Generated by <a href=\"http://public.kitware.com/KWStyle\">KWStyle</a> 1.0b on <i>" << itksys::SystemTools::GetCurrentDateTime("%A %B,%d at %I:%M:%S%p") << "</i></td>";
   *file << "<td>";
   *file << "<div align=\"center\"><img src=\"logosmall.jpg\" width=\"160\" height=\"49\"></div>" << std::endl;
   *file << "</td>";
