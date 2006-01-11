@@ -30,19 +30,69 @@ Generator::~Generator()
 {
 }
 
-/** Generate the Matrix representation */
-bool Generator::GenerateMatrix(const char* dir)
+/** Generate the description of the test.
+ *  For the moment we assume that all the test have the same description */
+bool Generator::GenerateDescription(const char* dir)
 {
-  std::cout << "Generating Matrix...";
+  std::cout << "Generating Description...";
+
+  std::string filename = dir;
+  if((dir[strlen(dir)-1] != '/') && dir[strlen(dir)-1] != '\\')
+    {
+    filename += "/";
+    }
+  filename += "KWSDescription.html";
+
   std::ofstream file;
-  file.open("KWSMatrix.html", std::ios::binary | std::ios::out);
+  file.open(filename.c_str(), std::ios::binary | std::ios::out);
   if(!file.is_open())
     {
     std::cout << "Cannot open file for writing: " <<  std::endl;
     return false;
     }
     
-  this->CreateHeader(&file,"KWSMatrix.html");
+  this->CreateHeader(&file,filename.c_str());
+  
+  file << "<br>" << std::endl;
+
+  ParserVectorType::const_iterator it = m_Parsers->begin();
+  for(unsigned int i=0;i<NUMBER_ERRORS;i++)
+    {
+    file << "<font color=\"" << ErrorColor[i] << "\">" << std::endl;
+    file << ErrorTag[i]  << std::endl;
+    file << "</font> : " << std::endl;
+    file << (*it).GetTestDescription(i).c_str() << std::endl;
+    file << "<br>" << std::endl;
+    }
+
+  this->CreateFooter(&file);    
+  file.close();
+
+  std::cout << "done" << std::endl;
+  return true;
+}
+
+/** Generate the Matrix representation */
+bool Generator::GenerateMatrix(const char* dir)
+{
+  std::cout << "Generating Matrix...";
+
+  std::string filename = dir;
+  if((dir[strlen(dir)-1] != '/') && dir[strlen(dir)-1] != '\\')
+    {
+    filename += "/";
+    }
+  filename += "KWSMatrix.html";
+
+  std::ofstream file;
+  file.open(filename.c_str(), std::ios::binary | std::ios::out);
+  if(!file.is_open())
+    {
+    std::cout << "Cannot open file for writing: " <<  std::endl;
+    return false;
+    }
+    
+  this->CreateHeader(&file,filename.c_str());
 
 
   // Contruct the table
@@ -93,7 +143,7 @@ bool Generator::GenerateMatrix(const char* dir)
       Parser::ErrorVectorType::const_iterator itError = errors.begin();
       while(itError != errors.end())
         {
-        if((*itError).number == i+1)
+        if((*itError).number == i)
           {
           nerror++;
           }
@@ -104,7 +154,7 @@ bool Generator::GenerateMatrix(const char* dir)
       file << "  <td width=\"" << width << "%\"";
       if(nerror == 0)
         {
-        if(!(*it).HasBeenPerformed(i+1))
+        if(!(*it).HasBeenPerformed(i))
           {
           file << "bgcolor=\"#cccccc\"";
           }
@@ -141,6 +191,7 @@ bool Generator::GenerateHTML(const char* dir)
 {
   // Generate the matrix representation
   this->GenerateMatrix(dir);
+  this->GenerateDescription(dir);
 
   std::cout << "Generating HTML...";
 
@@ -164,12 +215,9 @@ bool Generator::GenerateHTML(const char* dir)
       {
       slash = 0;
       }
-    std::string nameofclass = (*it).GetFilename().substr(slash+1,((*it).GetFilename().size())-slash-1);
-  
+    std::string nameofclass = (*it).GetFilename().substr(slash+1,((*it).GetFilename().size())-slash-1);  
     filename += nameofclass;
     filename += ".html";
-
-    //std::cout << " " << filename.c_str() << " ";
 
     file.open(filename.c_str(), std::ios::binary | std::ios::out);
     if(!file.is_open())
@@ -185,9 +233,8 @@ bool Generator::GenerateHTML(const char* dir)
     bool comment = false;
     for(unsigned int i=0;i<(*it).GetNumberOfLines();i++)
       {
-      
       // Look in the errors if there is a match for this line
-      int error = 0;
+      int error = -1;
       std::string errorTag = "";
 
       const Parser::ErrorVectorType errors = (*it).GetErrors();
@@ -211,9 +258,9 @@ bool Generator::GenerateHTML(const char* dir)
         itError++;
         }
 
-      if(error)
+      if(error>=0)
         {
-        file << "<tr bgcolor=\"" << ErrorColor[error-1]  << "\">" << std::endl; 
+        file << "<tr bgcolor=\"" << ErrorColor[error]  << "\">" << std::endl; 
         }
       else
         {
@@ -365,7 +412,9 @@ bool Generator::CreateHeader(std::ofstream * file,const char* title)
  *file << "   <td height=\"30\" width=\"12%\" bgcolor=\"#0099CC\"> " << std::endl;
  *file << "     <div align=\"center\"><a href=\"KWSMatrix.html\">Matrix View</a></div>" << std::endl;
  *file << "   </td>" << std::endl;
- *file << "   <td width=\"10%\" height=\"30\">&nbsp;</td>" << std::endl;
+ *file << "   <td width=\"10%\" height=\"30\" bgcolor=\"#0099CC\" >"<< std::endl;
+ *file << " <div align=\"center\"><a href=\"KWSDescription.html\">Description</a></div>" << std::endl;
+ *file << "  </td>" << std::endl;
  *file << "   <td width=\"63%\" height=\"30\"> " << std::endl;
  *file << "     <div align=\"left\"><b></b></div>" << std::endl;
  *file << "     <div align=\"right\"></div>" << std::endl;

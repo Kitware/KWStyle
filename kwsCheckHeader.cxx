@@ -1,0 +1,302 @@
+/*=========================================================================
+
+  Program:   ITKXML
+  Module:    kwsCheckHeader.cxx
+  Language:  C++
+  Date:      $Date$
+  Version:   $Revision$
+  Author:    Julien Jomier
+
+  Copyright (c) 2002 CADDLab @ UNC. All rights reserved.
+  See itkUNCCopyright.txt for details.
+
+     This software is distributed WITHOUT ANY WARRANTY; without even 
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+     PURPOSE.  See the above copyright notices for more information.
+
+=========================================================================*/
+#include "kwsParser.h"
+
+namespace kws {
+
+/** Check header given a template filename 
+ *  The template should have '<NA>\n' tag to avoid checking the rest of the line
+ *  or <NA> to skip a word.
+ *  The header should also be at the beginning of the file */
+bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL,bool useCVS)
+{
+  m_TestsDone[HEADER] = true;
+  char* val = new char[255];
+  sprintf(val,"The header should respect the template");
+  m_TestsDescription[HEADER] = val;
+  delete [] val;
+
+  bool hasError = false;
+  if(!filename)
+    {
+    std::cout << "CheckHeader(): Please specify an header file" << std::endl;
+    return false;
+    }
+  
+  // Read the file
+  std::ifstream file;
+  file.open(filename, std::ios::binary | std::ios::in);
+  if(!file.is_open())
+    {
+    std::cout << "Cannot open file: " << filename << std::endl;
+    return false;
+    }
+
+  file.seekg(0,std::ios::end);
+  unsigned long fileSize = file.tellg();
+  file.seekg(0,std::ios::beg);
+
+  char* buf = new char[fileSize+1];
+  file.read(buf,fileSize);
+  buf[fileSize] = 0;
+  std::string buffer(buf);
+  buffer.resize(fileSize);
+  file.close();
+  delete [] buf;
+
+  m_HeaderFilename = filename;
+  
+  // Check the file char by char
+  std::string::const_iterator ith = buffer.begin();
+  std::string::const_iterator it = m_Buffer.begin();
+
+  unsigned int pos = 0;
+  unsigned int posh = 0;
+  int line = -1;
+
+  while((ith != buffer.end()) && (it != m_Buffer.end()))
+    {
+    // if we have cvs
+    if((*ith == '$') && useCVS)
+      {
+      ith++;
+      posh++;
+      it++;
+      pos++;
+      while(((*ith) != '$') && (ith != buffer.end()))
+        {
+        ith++;
+        posh++;
+        }
+      while(((*it) != '$') && (it != m_Buffer.end()))
+        {
+        pos++;
+        it++;
+        }
+      //continue;
+      }
+     
+    if((*it) != (*ith))
+      {
+      // Check if we have a <NA> tag
+      if((*ith) == '<')
+        {
+        long int pos2 = buffer.find("<NA>",posh);
+        long int pos3 = buffer.find("<NA>\n",posh);
+
+        // We skip the line
+        if(pos3 == posh)
+          {
+          while(((*ith) != '\n') && (ith != buffer.end()))
+            {
+            ith++;
+            posh++;
+            }
+          while(((*it) != '\n') && (it != m_Buffer.end()))
+            {
+            pos++;
+            it++;
+            }
+          continue;
+          }
+        // if we have the tag we skip the word
+        else if(pos2 == posh)
+          {
+          while(((*ith) != ' ') && (ith != buffer.end()))
+            {
+            ith++;
+            posh++;
+            }
+          while(((*it) != ' ') && (it != m_Buffer.end()))
+            {
+            pos++;
+            it++;
+            }
+          continue;
+          }
+        }
+      // if we should not check the spaces at the end of line
+      else if( (!considerSpaceEOL)
+        && ((*ith == ' ') || (*it == ' '))
+        )
+        {
+        // search if we are effectively at the end of the line
+        bool isAtEnd = true;
+        if(*it == ' ')
+          {
+          std::string::const_iterator ittemp = it;
+          while((ittemp != m_Buffer.end()) && ((*ittemp) != '\n'))
+            {
+            if(*ittemp != ' ')
+              {
+              isAtEnd = false;
+              break;
+              }
+            ittemp++;
+            }
+          }
+        else if(*ith == ' ')
+          {
+          std::string::const_iterator ittemp = ith;
+          while((ittemp != buffer.end()) && ((*ittemp) != '\n'))
+            {
+            if(*ittemp != ' ')
+              {
+              isAtEnd = false;
+              break;
+              }
+            ittemp++;
+            }
+          }
+
+        // If we are at the end we skip the line
+        if(!isAtEnd)
+          {
+          while((ith != buffer.end()) && ((*ith) != '\n'))
+            {
+            ith++;
+            posh++;
+            }
+          while((it != m_Buffer.end()) && ((*it) != '\n'))
+            {
+            pos++;
+            it++;
+            }
+          continue;
+          }
+        }
+
+      // Report the error
+      hasError = true;
+
+      // We report the wrong word and the line
+      int l = this->GetLineNumber(pos);
+      if(l != line)
+        {
+        line = l;
+        // Find the word
+        long int poshw = buffer.find(' ',posh);
+        long int poshw2 = buffer.find('\n',posh);
+        std::string wordh = "";
+        if(poshw < poshw2)
+          {
+          wordh = buffer.substr(posh,poshw-posh);
+          }
+        else if (poshw2 != -1)
+          {
+          wordh = buffer.substr(posh,poshw2-posh);
+          }
+
+        // Find the word
+        long int posw = m_Buffer.find(' ',pos);
+        long int posw2 = m_Buffer.find('\n',pos);
+        std::string word = "";
+        if(posw < posw2)
+          {
+          word = m_Buffer.substr(pos,posw-pos);
+          }
+        else if (poshw2 != -1)
+          {
+          word = m_Buffer.substr(pos,posw2-pos);
+          }
+
+        if(word == wordh)
+          {
+          wordh = "wrond ident";
+          }
+       
+        if(word == " ")
+          {
+          word = "[space]";
+          }
+        if(wordh == " ")
+          {
+          wordh = "[space]";
+          }
+       if(word == "\r")
+          {
+          word = "[end of line]";
+          }
+        if(wordh == "\r")
+          {
+          wordh = "[end of line]";
+          }
+        
+        if(word[0] == 0)
+          {
+          word = "[no char]";
+          }
+        if(wordh[0] == 0)
+          {
+          wordh = "[no char]";
+          }
+
+        Error error;
+        error.line = line;
+        error.line2 = error.line;
+        error.number = HEADER;
+        error.description = "Header mismatch: ";
+        error.description += word;
+        error.description += " (";
+        error.description += wordh;
+        error.description += ")";
+        m_ErrorList.push_back(error);
+        hasError = true;
+
+        // We skip that line   
+        while((ith != buffer.end()) && ((*ith) != '\n'))
+          {
+          ith++;
+          posh++;
+          }
+        while((it != m_Buffer.end()) && ((*it) != '\n'))
+          {
+          pos++;
+          it++;
+          }
+        }
+      }
+
+    if(ith != buffer.end())
+      {
+      posh++;
+      ith++;
+      }
+
+    if(it != m_Buffer.end())
+      {
+      pos++;
+      it++;
+      }
+    }
+
+  if(it == m_Buffer.end())
+    {
+    Error error;
+    error.line = 1;
+    error.line2 = error.line;
+    error.number = HEADER;
+    error.description = "The header is incomplete";
+    m_ErrorList.push_back(error);
+    hasError = true;
+    }
+
+  return !hasError;
+}
+
+} // end namespace kws

@@ -114,22 +114,21 @@ int main(int argc, char **argv)
     kws::Parser parser;
     parser.SetFilename((*it).c_str());
     parser.SetBuffer(buffer);
-    parser.CheckLineLength(77); // this is required
-    parser.CheckDeclarationOrder(0,2,1);
+    parser.CheckLineLength(81); // this is required
+    parser.CheckDeclarationOrder(0,1,2);
     parser.CheckTypedefs("[A-Z]");
-    parser.CheckInternalVariables("m_[A-Z]");
+    //parser.CheckInternalVariables("m_[A-Z]");
     parser.CheckSemicolonSpace(0);
     parser.CheckEndOfFileNewLine();
     parser.CheckTabs();
-    parser.ClearErrors();
     parser.CheckComments("/**"," *"," */");
     parser.CheckHeader("c:/Julien/Workspace/KWStyle/kwsHeader.h",false,true); // should be before CheckIndent
-    parser.CheckIndent(kws::SPACE,2,true);
+    //parser.CheckIndent(kws::SPACE,2,true);
     parser.CheckNamespace("itk");
-    parser.CheckNameOfClass("<NameOfClass>","itk");
-    parser.CheckIfNDefDefine("_<NameOfClass>_<Extension>");
+    //parser.CheckNameOfClass("<NameOfClass>","itk");
+    parser.CheckIfNDefDefine("__<NameOfClass>_<Extension>");
 
-    std::cout << parser.GetLastErrors().c_str() << std::endl;
+    //std::cout << parser.GetLastErrors().c_str() << std::endl;
      
 
     m_Parsers.push_back(parser);

@@ -16,6 +16,19 @@ kwsParser.cxx
 kwsParser.h
 kwsGenerator.cxx
 kwsGenerator.h
+kwsCheckLineLength.cxx
+kwsCheckHeader.cxx
+kwsCheckSemicolonSpace.cxx
+kwsCheckIfNDefDefine.cxx
+kwsCheckTypedefs.cxx
+kwsCheckIndent.cxx
+kwsCheckEndOfFileNewLine.cxx
+kwsCheckDeclarationOrder.cxx
+kwsCheckInternalVariables.cxx
+kwsCheckNamespace.cxx
+kwsCheckComments.cxx
+kwsCheckTabs.cxx
+kwsCheckNameOfClass.cxx
 )
 
 LINK_LIBRARIES(

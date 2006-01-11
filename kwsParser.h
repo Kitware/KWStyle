@@ -19,6 +19,10 @@
 #include <fstream>
 #include <stdio.h>
 #include <vector>
+#include <itksys/SystemTools.hxx>
+#include <itksys/Directory.hxx>
+#include <itksys/RegularExpression.hxx>
+#include <algorithm>
 
 namespace kws
 {
@@ -33,20 +37,20 @@ typedef enum
 
 typedef enum
   {
-  LINE_LENGTH = 1,
-  IVAR_PUBLIC = 2,
-  IVAR_REGEX = 3,
-  SEMICOLON_SPACE = 4,
-  DECL_ORDER = 5,
-  EOF_NEW_LINE = 6,
-  TABS = 7,
-  INDENT = 8,
-  HEADER = 9,
-  NDEFINE = 10,
-  TYPEDEF_REGEX = 11,
-  TYPEDEF_ALIGN = 12,
-  NAMESPACE = 13,
-  NAMEOFCLASS = 14
+  LINE_LENGTH = 0,
+  IVAR_PUBLIC = 1,
+  IVAR_REGEX = 2,
+  SEMICOLON_SPACE = 3,
+  DECL_ORDER = 4,
+  EOF_NEW_LINE = 5,
+  TABS = 6,
+  INDENT = 7,
+  HEADER = 8,
+  NDEFINE = 9,
+  TYPEDEF_REGEX = 10,
+  TYPEDEF_ALIGN = 11,
+  NAMESPACE = 12,
+  NAMEOFCLASS = 13
   } ErrorType;
 
 const char ErrorTag[NUMBER_ERRORS][4] = {
@@ -181,6 +185,9 @@ public:
 
   /** Return if a test has been performed */
   bool HasBeenPerformed(unsigned int test) const;
+ 
+  /** Return the test description given the erro number) */
+  std::string GetTestDescription(unsigned int test) const;
 
 protected:
 
@@ -270,23 +277,26 @@ protected:
   //bool FindAndAddComments(const std::string & buffer, XMLDescription &desc) const;
 
   /** Remove string area from start to end (incl) from buffer if filename contains className. */
-  std::string RemoveArea(const std::string fileName,
+  /*std::string RemoveArea(const std::string fileName,
                          std::string buffer, 
                          const std::string className,
                          const std::string &start, const std::string &end);
-
+*/
   /**  return true if the position pos is inside a comment */
   bool Parser::IsInComments(long int pos) const;
 
   /** Given the position without comments return the position with the comments */
   long int GetPositionWithComments(long int pos);
 
+ 
 
 private:
 
   ErrorVectorType m_ErrorList;
   std::vector<Info> m_InfoList;
-  bool m_TestsDone[NUMBER_ERRORS+1];
+  bool m_TestsDone[NUMBER_ERRORS];
+  std::string m_TestsDescription[NUMBER_ERRORS];
+
   std::string m_Buffer;
   std::string m_BufferNoComment;
   std::vector<long int> m_Positions;

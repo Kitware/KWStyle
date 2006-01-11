@@ -36,9 +36,9 @@ const char ErrorColor[NUMBER_ERRORS][8] = {
   {'#','F','F','9','9','C','C','\0'},
   {'#','F','F','9','9','C','C','\0'},
   {'#','F','F','3','3','0','0','\0'},
-  {'#','F','F','3','3','0','0','\0'},
-  {'#','F','F','3','3','0','0','\0'},
-  {'#','F','F','3','3','0','0','\0'}
+  {'#','0','0','a','a','0','0','\0'},
+  {'#','6','6','0','0','3','3','\0'},
+  {'#','9','9','C','C','F','F','\0'}
   };
 
 class Generator
@@ -67,6 +67,7 @@ private:
   bool CreateHeader(std::ofstream * file,const char* title);
   bool CreateFooter(std::ofstream * file);
   bool GenerateMatrix(const char* dir);
+  bool GenerateDescription(const char* dir);
 
   ParserVectorType* m_Parsers;
 
