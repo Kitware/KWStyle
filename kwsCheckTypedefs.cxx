@@ -50,7 +50,8 @@ bool Parser::CheckTypedefs(const char* regEx, bool alignment)
   while(pos!= -1)
     {
     long int beg = 0;
-    std::string var = this->FindTypedef(pos+1,m_BufferNoComment.size(),pos,beg);
+    long int typedefpos = 0;
+    std::string var = this->FindTypedef(pos+1,m_BufferNoComment.size(),pos,beg,typedefpos);
     
     if(var == "")
       {
@@ -61,10 +62,11 @@ bool Parser::CheckTypedefs(const char* regEx, bool alignment)
       {
       // Find the position in the line
       unsigned long l = this->GetPositionInLine(beg);
-      unsigned long line = this->GetLineNumber(beg,false);
-      
+      unsigned long line = this->GetLineNumber(beg,true);
+      unsigned long typdefline = this->GetLineNumber(typedefpos,true);
+
       // if the typedef is on a line close to the previous one we check
-      if(line-previousline<=5)
+      if(typdefline-previousline<2)
         {
          if(l!=previouspos)
            {
@@ -100,7 +102,7 @@ bool Parser::CheckTypedefs(const char* regEx, bool alignment)
 
 
 /** Find a typedef in the source code */
-std::string Parser::FindTypedef(long int start, long int end,long int & pos,long int & beg)
+std::string Parser::FindTypedef(long int start, long int end,long int & pos,long int & beg,long int & typdefpos)
 {
   long int posTypedef  = m_BufferNoComment.find("typedef",start);
   if(posTypedef == -1)
@@ -108,6 +110,8 @@ std::string Parser::FindTypedef(long int start, long int end,long int & pos,long
     pos = -1;
     return "";
     }
+
+  typdefpos = posTypedef;
 
   long int posSemicolon = m_BufferNoComment.find(";",posTypedef);
 

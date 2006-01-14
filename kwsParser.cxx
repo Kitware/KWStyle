@@ -149,7 +149,12 @@ std::string Parser::FindPreviousWord(long int pos) const
 {
   long i=pos;
 
-  while(m_BufferNoComment[i] != ' ' && i>0)
+  while(m_BufferNoComment[i] != ' ' && m_BufferNoComment[i] != '\r' && i>0)
+    {
+    i--;
+    }
+
+  if(m_BufferNoComment[i] == '\r' && i>1)
     {
     i--;
     }
@@ -158,8 +163,8 @@ std::string Parser::FindPreviousWord(long int pos) const
   bool first = false;
   std::string ivar = "";
   while(i>=0 && inWord)
-    {  
-    if(m_BufferNoComment[i] != ' ' && m_BufferNoComment[i] != '\n')
+    {
+    if(m_BufferNoComment[i] != ' ' && m_BufferNoComment[i] != '\n' && m_BufferNoComment[i] != '\r')
       {
       std::string store = ivar;
       ivar = m_BufferNoComment[i];
@@ -169,7 +174,11 @@ std::string Parser::FindPreviousWord(long int pos) const
       }
     else // we have a space
       {
-      if(first)
+      if(m_BufferNoComment[i] == '\r')
+        {
+        // do nothing
+        }
+      else if(first)
         {
         inWord = false;
         }
@@ -300,7 +309,7 @@ long int Parser::GetPositionWithComments(long int pos)
     {
     if((pos>=(*it).first))
       {
-      pos += ((*it).second-(*it).first)+2;
+      pos += ((*it).second-(*it).first);
       }
     else
       {
@@ -308,7 +317,6 @@ long int Parser::GetPositionWithComments(long int pos)
       }
     it++;
     }
-
   return pos;
 }
 
@@ -1200,11 +1208,13 @@ void Parser::RemoveComments()
   unsigned long size = m_BufferNoComment.size();
   unsigned long count = 0;
   // first we find the /* */
-  long first = m_BufferNoComment.find("/*",0);
-  long last = m_BufferNoComment.find("*/",first);
+  long firstNC = m_BufferNoComment.find("/*",0);
+  long lastNC = m_BufferNoComment.find("*/",firstNC);
+  long first = m_Buffer.find("/*",0);
+  long last = m_Buffer.find("*/",first);
  
   // We find if there are spaces between */ and the end of the line
-  bool extraSpaces = true;
+  /*bool extraSpaces = true;
   long eol = m_BufferNoComment.find("\n",last);
   
   if(eol != -1)
@@ -1222,20 +1232,23 @@ void Parser::RemoveComments()
     {
     last += (eol-last)-1;
     }
+  */
+  //long int offset = 0;
 
-  long int offset = 0;
-
-  while((last>first) && (first!= -1) && (last !=-1))
+  while((lastNC>firstNC) && (firstNC!= -1) && (lastNC !=-1))
     {
-    PairType pair(first+offset,last+offset);
+    PairType pair(first,last+2);
     m_CommentPositions.push_back(pair);
-    offset += last+2-first;
-    m_BufferNoComment = m_BufferNoComment.erase(first,last+2-first);
+    //offset += last+2-first;
+    m_BufferNoComment = m_BufferNoComment.erase(firstNC,lastNC+2-firstNC);
     count += last+2-first;
-    first = m_BufferNoComment.find("/*",0);
-    last = m_BufferNoComment.find("*/",first);
+    firstNC = m_BufferNoComment.find("/*",0);
+    lastNC = m_BufferNoComment.find("*/",firstNC);
+    first = m_Buffer.find("/*",last+1);
+    last = m_Buffer.find("*/",first);
+    
     // We find if there are spaces between */ and the end of the line
-    bool extraSpaces = true;
+    /*bool extraSpaces = true;
     long eol = m_BufferNoComment.find("\n",last);
     if(eol != -1)
       {
@@ -1250,21 +1263,24 @@ void Parser::RemoveComments()
     if(extraSpaces && (last>first) && (last!=-1))
       {
       last += (eol-last)-1;
-      }
+      }*/
     };
 
   // Then the // comments
-  first = m_BufferNoComment.find("//",0);
-  last = m_BufferNoComment.find("\n",first);
+  firstNC = m_BufferNoComment.find("//",0);
+  lastNC = m_BufferNoComment.find("\n",first);
+  first = m_Buffer.find("//",0);
+  last = m_Buffer.find("\n",first);
   
-  while((last>first) && (first!= -1) && (last !=-1))
+  while((lastNC>firstNC) && (firstNC!= -1) && (lastNC !=-1))
     {
-    PairType pair(first+offset,last+offset);
+    PairType pair(first,last+1);
     m_CommentPositions.push_back(pair);
-    m_BufferNoComment = m_BufferNoComment.erase(first,last+3-first);
-    offset += last+3-first; 
-    count += last+3-first;
-    first = m_BufferNoComment.find("//",0);
+    m_BufferNoComment = m_BufferNoComment.erase(firstNC,lastNC+1-firstNC);
+    count += last+1-first;
+    firstNC = m_BufferNoComment.find("//",0);
+    lastNC = m_BufferNoComment.find("\n",firstNC);
+    first = m_BufferNoComment.find("//",last+1);
     last = m_BufferNoComment.find("\n",first);
     };
 

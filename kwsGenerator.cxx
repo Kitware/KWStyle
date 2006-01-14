@@ -115,15 +115,16 @@ bool Generator::GenerateMatrix(const char* dir)
   while(it != m_Parsers->end())
     {
     // Extract the filename
-    std::string filename = dir;
-    filename += "/";
+    //std::string filename = dir;
+    //filename += "/";
+
     long int slash = (*it).GetFilename().find_last_of("/");
     if(slash == -1)
       {
       slash = 0;
       }
     std::string nameofclass = (*it).GetFilename().substr(slash+1,((*it).GetFilename().size())-slash-1);
-    filename += nameofclass;
+    std::string filename = nameofclass;
     std::string filenamecorrect = nameofclass;
     filename += ".html";
 

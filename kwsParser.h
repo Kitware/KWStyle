@@ -27,7 +27,7 @@
 namespace kws
 {
 
-#define NUMBER_ERRORS 14
+#define NUMBER_ERRORS 15
 
 typedef enum
   {
@@ -50,7 +50,8 @@ typedef enum
   TYPEDEF_REGEX = 10,
   TYPEDEF_ALIGN = 11,
   NAMESPACE = 12,
-  NAMEOFCLASS = 13
+  NAMEOFCLASS = 13,
+  WRONGCOMMENT = 14
   } ErrorType;
 
 const char ErrorTag[NUMBER_ERRORS][4] = {
@@ -67,7 +68,8 @@ const char ErrorTag[NUMBER_ERRORS][4] = {
    {'T','D','R','\0'},
    {'T','D','A','\0'},
    {'N','M','S','\0'},
-   {'N','M','C','\0'}
+   {'N','M','C','\0'},
+   {'W','C','M','\0'}
   };
 
 
@@ -191,6 +193,10 @@ public:
 
 protected:
 
+  /** Get the class position within the file. This function checks that this is the 
+   *  classname */
+  long int GetClassPosition(long int position);
+
   /** Return the position in the line given the position in the text */ 
   unsigned long GetPositionInLine(unsigned long pos);
 
@@ -198,7 +204,7 @@ protected:
   std::string Parser::FindInternalVariable(long int start, long int end,long int& pos);
 
   /** Find a typedef in the source code */
-  std::string Parser::FindTypedef(long int start, long int end,long int& pos,long int & beg);
+  std::string Parser::FindTypedef(long int start, long int end,long int& pos,long int & beg,long int & typedefpos);
 
   /** Reduces multiple spaces in buffer to one. */
   void ReduceMultipleSpaces(std::string & buffer);

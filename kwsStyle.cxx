@@ -117,6 +117,8 @@ int main(int argc, char **argv)
     parser.CheckLineLength(81); // this is required
     parser.CheckDeclarationOrder(0,1,2);
     parser.CheckTypedefs("[A-Z]");
+    //std::cout << parser.GetLastErrors().c_str() << std::endl;
+    
     //parser.CheckInternalVariables("m_[A-Z]");
     parser.CheckSemicolonSpace(0);
     parser.CheckEndOfFileNewLine();
@@ -125,7 +127,8 @@ int main(int argc, char **argv)
     parser.CheckHeader("c:/Julien/Workspace/KWStyle/kwsHeader.h",false,true); // should be before CheckIndent
     //parser.CheckIndent(kws::SPACE,2,true);
     parser.CheckNamespace("itk");
-    //parser.CheckNameOfClass("<NameOfClass>","itk");
+    //parser.ClearErrors(); 
+    parser.CheckNameOfClass("<NameOfClass>","itk");
     parser.CheckIfNDefDefine("__<NameOfClass>_<Extension>");
 
     //std::cout << parser.GetLastErrors().c_str() << std::endl;
