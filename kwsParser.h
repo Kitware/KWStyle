@@ -27,7 +27,7 @@
 namespace kws
 {
 
-#define NUMBER_ERRORS 15
+#define NUMBER_ERRORS 16
 
 typedef enum
   {
@@ -51,7 +51,8 @@ typedef enum
   TYPEDEF_ALIGN = 11,
   NAMESPACE = 12,
   NAMEOFCLASS = 13,
-  WRONGCOMMENT = 14
+  WRONGCOMMENT = 14,
+  MISSINGCOMMENT = 15
   } ErrorType;
 
 const char ErrorTag[NUMBER_ERRORS][4] = {
@@ -69,7 +70,8 @@ const char ErrorTag[NUMBER_ERRORS][4] = {
    {'T','D','A','\0'},
    {'N','M','S','\0'},
    {'N','M','C','\0'},
-   {'W','C','M','\0'}
+   {'W','C','M','\0'},
+   {'M','C','M','\0'},
   };
 
 
@@ -126,7 +128,7 @@ public:
   /** Check the comments
    * The comment definition should be set before CheckIndent() to get the correct indentation
    * for the comments. */
-  bool CheckComments(const char* begin,const char* middle,const char* end);
+  bool CheckComments(const char* begin,const char* middle,const char* end,bool allowEmptyLineBeforeClass=false);
 
   /** Check the indent size 
    *  Not in the header file if there is one 
@@ -195,7 +197,7 @@ protected:
 
   /** Get the class position within the file. This function checks that this is the 
    *  classname */
-  long int GetClassPosition(long int position);
+  long int GetClassPosition(long int position) const;
 
   /** Return the position in the line given the position in the text */ 
   unsigned long GetPositionInLine(unsigned long pos);
@@ -213,7 +215,7 @@ protected:
   void RemoveChar(std::string & buffer, char val) const;
 
   /** Find the line number in the commented text given the character description */
-  long int GetLineNumber(long int pos,bool withoutComments=false);
+  long int GetLineNumber(long int pos,bool withoutComments=false) const;
 
   /** Find the parameters. */
   //void FindAndAddParameters(std::string buffer, XMLDescription &desc, size_t startPos=0) const;
@@ -232,7 +234,7 @@ protected:
   std::string FindNextWord(long int pos) const;
 
   /** Find the closing bracket given the position of the opening bracket. */
-  long int FindClosingChar(char openChar, char closeChar, long int pos) const;
+  long int FindClosingChar(char openChar, char closeChar, long int pos,bool noComment=false) const;
 
  
   /** Find the constructor in the file. */
@@ -292,7 +294,7 @@ protected:
   bool Parser::IsInComments(long int pos) const;
 
   /** Given the position without comments return the position with the comments */
-  long int GetPositionWithComments(long int pos);
+  long int GetPositionWithComments(long int pos) const;
 
  
 

@@ -106,7 +106,7 @@ bool Parser::CheckNameOfClass(const char* name,const char* prefix)
  *  The return position is a position right after the name of the class (meaning before a : or a { 
  *  Returns -1 if not found
  */
-long int Parser::GetClassPosition(long int position)
+long int Parser::GetClassPosition(long int position) const
 {
   long int pos = m_BufferNoComment.find("class",position);
 

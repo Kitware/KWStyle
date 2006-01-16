@@ -32,11 +32,8 @@ bool Parser::CheckTypedefs(const char* regEx, bool alignment)
     }
 
   m_TestsDone[TYPEDEF_REGEX] = true;
-
-  char* val = new char[255];
-  sprintf(val,"Typedefs should match regular expression: %s",regEx);
-  m_TestsDescription[TYPEDEF_REGEX] = val;
-  delete [] val;
+  m_TestsDescription[TYPEDEF_REGEX] = "Typedefs should match regular expression: ";
+  m_TestsDescription[TYPEDEF_REGEX] += regEx;
 
   // First we need to find the typedefs
   // typedef type MyTypeDef;

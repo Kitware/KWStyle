@@ -19,6 +19,7 @@
 #include <fstream>
 #include <itksys/Directory.hxx>
 #include <cmath>
+#include <sstream>
 
 #if defined(WIN32) && !defined(__CYGWIN__)
   #include <direct.h> // mkdir needs it
@@ -26,6 +27,16 @@
 
 int main(int argc, char **argv)
 {
+/*
+// this is a test
+  ostringstream s;
+  s.format("salut = %d",3);
+
+  std::cout << s.c_str() << std::endl;
+
+  return 1;
+*/
+
   MetaCommand command;
 
   command.SetOption("directory","d",false,"Specify a directory");
@@ -119,20 +130,23 @@ int main(int argc, char **argv)
     parser.CheckTypedefs("[A-Z]");
     //std::cout << parser.GetLastErrors().c_str() << std::endl;
     
-    //parser.CheckInternalVariables("m_[A-Z]");
+    parser.CheckInternalVariables("m_[A-Z]");
     parser.CheckSemicolonSpace(0);
     parser.CheckEndOfFileNewLine();
     parser.CheckTabs();
-    parser.CheckComments("/**"," *"," */");
+            
+    //parser.ClearErrors(); 
+    parser.CheckComments("/**"," *"," */",true);
+    //std::cout << parser.GetLastErrors().c_str() << std::endl;
+     
     parser.CheckHeader("c:/Julien/Workspace/KWStyle/kwsHeader.h",false,true); // should be before CheckIndent
     //parser.CheckIndent(kws::SPACE,2,true);
     parser.CheckNamespace("itk");
-    //parser.ClearErrors(); 
+
     parser.CheckNameOfClass("<NameOfClass>","itk");
     parser.CheckIfNDefDefine("__<NameOfClass>_<Extension>");
 
-    //std::cout << parser.GetLastErrors().c_str() << std::endl;
-     
+    
 
     m_Parsers.push_back(parser);
     it++;

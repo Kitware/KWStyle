@@ -276,12 +276,39 @@ std::string Parser::FindInternalVariable(long int start, long int end,long int &
       }
     pos = posSemicolon;
 
-    // We find the words until we find a semicolon
-    long int p = pos;
+    // We extract the complete definition.
+    // This means that we look for a '{' or '}' or '{' 
+    while(i>=0)
+      {
+      if((m_BufferNoComment[i] == '{')
+        || (m_BufferNoComment[i] == '}')
+        || (m_BufferNoComment[i] == '{')
+        )
+        {
+        break;
+        }
+      i--;
+      }
 
+    std::string subphrase = "";
+    if(i>=0)
+      {
+      subphrase = m_BufferNoComment.substr(i+1,posSemicolon-i-1);
+      }
+
+    if( (subphrase.find("=") == -1)
+      && (subphrase.find("(") == -1)
+      && (subphrase.find("typedef") == -1)
+      )
+      {
+      return ivar;
+      }
+
+    // We find the words until we find a semicolon
+    /*long int p = pos;
     std::string pword = this->FindPreviousWord(p);
     bool isTypedef = false;
-    while((pword.find(";") == -1) && (p>0))
+    while((pword.size()>0) && (pword.find(";") == -1) && (p>0))
       {
       if(pword.find("typedef") != -1)
         {
@@ -291,10 +318,11 @@ std::string Parser::FindInternalVariable(long int start, long int end,long int &
       p -= pword.size();
       pword = this->FindPreviousWord(p);
       }
+
     if(!isTypedef)
       {
       return ivar;
-      }
+      }*/
     }
 
   pos = -1;
@@ -302,7 +330,7 @@ std::string Parser::FindInternalVariable(long int start, long int end,long int &
 }
 
 /** Given the position without comments return the position with the comments */
-long int Parser::GetPositionWithComments(long int pos)
+long int Parser::GetPositionWithComments(long int pos) const
 {
   std::vector<PairType>::const_iterator it = m_CommentPositions.begin();
   while(it != m_CommentPositions.end())
@@ -321,7 +349,7 @@ long int Parser::GetPositionWithComments(long int pos)
 }
 
 /** Return the line number in the source code given the character position */
-long int Parser::GetLineNumber(long int pos,bool withoutComments)
+long int Parser::GetLineNumber(long int pos,bool withoutComments) const
 {
   
   // if we have comments we add them to the list
@@ -347,6 +375,7 @@ long int Parser::GetLineNumber(long int pos,bool withoutComments)
 /** Find public area in source code. */
 void Parser::FindPublicArea(long &before, long &after, size_t startPos) const
 {
+  const long maxchar = 99999999;
   before = 0;
   after = 0;
 
@@ -357,12 +386,12 @@ void Parser::FindPublicArea(long &before, long &after, size_t startPos) const
 
   if(priv == -1)
     {
-    priv = 999999999;
+    priv = maxchar;
     }
 
   if(protect == -1)
     {
-    protect = 99999999;
+    protect = maxchar;
     }
 
   if(pub>priv || pub>protect)
@@ -396,6 +425,24 @@ void Parser::FindPublicArea(long &before, long &after, size_t startPos) const
       after = protect;
       }
     }
+
+  // If there is nothing after we point to the end of the class
+  if(after == maxchar)
+    {
+    long int classpos = this->GetClassPosition(startPos);
+    if(classpos != -1)
+      {
+      long int posBrace = m_BufferNoComment.find("{",classpos);          
+      if(posBrace != -1)
+        {
+        long int end = this->FindClosingChar('{','}',posBrace,true);
+        if(end != -1)
+          {
+          after = end;
+          }
+        }
+      }
+    }
 }
 
 
@@ -404,6 +451,7 @@ void Parser::FindProtectedArea(long &before, long &after, size_t startPos) const
 {
   before = 0;
   after = 0;
+  const long maxchar = 99999999;
 
   // First look if public is before protected and private
   long pub = m_BufferNoComment.find("public", startPos);
@@ -412,12 +460,12 @@ void Parser::FindProtectedArea(long &before, long &after, size_t startPos) const
 
   if(priv == -1)
     {
-    priv = 999999999;
+    priv = maxchar;
     }
 
   if(pub == -1)
     {
-    pub = 99999999;
+    pub = maxchar;
     }
 
   if(protect>priv || protect>pub)
@@ -429,7 +477,7 @@ void Parser::FindProtectedArea(long &before, long &after, size_t startPos) const
        }
      else if(protect<=priv && protect>=pub)
        {
-       before = pub;
+       before = protect;
        after = priv;
        }
      else
@@ -450,6 +498,25 @@ void Parser::FindProtectedArea(long &before, long &after, size_t startPos) const
       after = pub;
       }
     }
+
+
+  // If there is nothing after we point to the end of the class
+  if(after == maxchar)
+    {
+    long int classpos = this->GetClassPosition(startPos);
+    if(classpos != -1)
+      {
+      long int posBrace = m_BufferNoComment.find("{",classpos);          
+      if(posBrace != -1)
+        {
+        long int end = this->FindClosingChar('{','}',posBrace,true);
+        if(end != -1)
+          {
+          after = end;
+          }
+        }
+      }
+    }
 }
 
 /** Find private area in source code. */
@@ -457,6 +524,7 @@ void Parser::FindPrivateArea(long &before, long &after, size_t startPos) const
 {
   before = 0;
   after = 0;
+  const long maxchar = 99999999;
 
   // First look if public is before protected and private
   long pub = m_BufferNoComment.find("public", startPos);
@@ -465,12 +533,12 @@ void Parser::FindPrivateArea(long &before, long &after, size_t startPos) const
 
   if(pub == -1)
     {
-    pub = 999999999;
+    pub = maxchar;
     }
 
   if(protect == -1)
     {
-    protect = 99999999;
+    protect = maxchar;
     }
 
   if(priv>pub || priv>protect)
@@ -482,7 +550,7 @@ void Parser::FindPrivateArea(long &before, long &after, size_t startPos) const
        }
      else if(priv<=pub && priv>=protect)
        {
-       before = protect;
+       before = priv;
        after = pub;
        }
      else
@@ -501,6 +569,24 @@ void Parser::FindPrivateArea(long &before, long &after, size_t startPos) const
     else
       {
       after = protect;
+      }
+    }
+
+  // If there is nothing after we point to the end of the class
+  if(after == maxchar)
+    {
+    long int classpos = this->GetClassPosition(startPos);
+    if(classpos != -1)
+      {
+      long int posBrace = m_BufferNoComment.find("{",classpos);          
+      if(posBrace != -1)
+        {
+        long int end = this->FindClosingChar('{','}',posBrace,true);
+        if(end != -1)
+          {
+          after = end;
+          }
+        }
       }
     }
 }
@@ -1241,7 +1327,7 @@ void Parser::RemoveComments()
     m_CommentPositions.push_back(pair);
     //offset += last+2-first;
     m_BufferNoComment = m_BufferNoComment.erase(firstNC,lastNC+2-firstNC);
-    count += last+2-first;
+    count += lastNC+2-firstNC;
     firstNC = m_BufferNoComment.find("/*",0);
     lastNC = m_BufferNoComment.find("*/",firstNC);
     first = m_Buffer.find("/*",last+1);
@@ -1268,7 +1354,7 @@ void Parser::RemoveComments()
 
   // Then the // comments
   firstNC = m_BufferNoComment.find("//",0);
-  lastNC = m_BufferNoComment.find("\n",first);
+  lastNC = m_BufferNoComment.find("\n",firstNC);
   first = m_Buffer.find("//",0);
   last = m_Buffer.find("\n",first);
   
@@ -1277,11 +1363,11 @@ void Parser::RemoveComments()
     PairType pair(first,last+1);
     m_CommentPositions.push_back(pair);
     m_BufferNoComment = m_BufferNoComment.erase(firstNC,lastNC+1-firstNC);
-    count += last+1-first;
+    count += lastNC+1-firstNC;
     firstNC = m_BufferNoComment.find("//",0);
     lastNC = m_BufferNoComment.find("\n",firstNC);
-    first = m_BufferNoComment.find("//",last+1);
-    last = m_BufferNoComment.find("\n",first);
+    first = m_Buffer.find("//",last+1);
+    last = m_Buffer.find("\n",first);
     };
 
   // put a 0 char at the end of the buffer so we are sure to have the correct length. 
@@ -1808,16 +1894,22 @@ long Parser::FindConstructor(const std::string & buffer, const std::string & cla
 */
 
 /** Find the closing char given the position of the opening char */
-long int Parser::FindClosingChar(char openChar, char closeChar, long int pos) const
+long int Parser::FindClosingChar(char openChar, char closeChar, long int pos,bool noComment) const
 {
+  const char* stream = m_Buffer.c_str();
+  if(noComment)
+    {
+    stream = m_BufferNoComment.c_str();
+    }
+
   long int open = 1;
   for(size_t i=pos+1;i<m_Buffer.length();i++)
     { 
-    if(m_Buffer.c_str()[i] == openChar)
+    if(stream[i] == openChar)
       {
       open++;
       }
-    else if(m_Buffer.c_str()[i] == closeChar)
+    else if(stream[i] == closeChar)
       {
       open--;
       }

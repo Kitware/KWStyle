@@ -24,9 +24,12 @@ namespace kws {
 /** Check if the internal variables of the class are correct */
 bool Parser::CheckInternalVariables(const char* regEx)
 {
-
   m_TestsDone[IVAR_PUBLIC] = true;
+  m_TestsDescription[IVAR_PUBLIC] = "ivars should be in the protected or private section";
+
   m_TestsDone[IVAR_REGEX] = true;
+  m_TestsDescription[IVAR_REGEX] = "ivars should match regular expression: ";
+  m_TestsDescription[IVAR_REGEX] += regEx;
 
   // First we need to find the parameters
   // float myParam;
@@ -38,11 +41,11 @@ bool Parser::CheckInternalVariables(const char* regEx)
   long int publicFirst;
   long int publicLast;
   this->FindPublicArea(publicFirst,publicLast);
+
   long int pos = publicFirst;
   while(pos!= -1)
     {
     std::string var = this->FindInternalVariable(pos+1,publicLast,pos);
-
     if(var == "")
       {
       continue;
@@ -79,7 +82,7 @@ bool Parser::CheckInternalVariables(const char* regEx)
   while(pos!= -1)
     {
     std::string var = this->FindInternalVariable(pos+1,protectedLast,pos);
-    
+
     if(var == "")
       {
       continue;
@@ -129,6 +132,7 @@ bool Parser::CheckInternalVariables(const char* regEx)
         }
       }
     }
+
   return !hasError;
 }
 
