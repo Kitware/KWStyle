@@ -1,17 +1,14 @@
 /*=========================================================================
 
-  Program:   ITKXML
+  Program:   KWStyle - Kitware Style Checker
   Module:    kwsParser.cxx
-  Language:  C++
-  Date:      $Date$
-  Version:   $Revision$
   Author:    Julien Jomier
 
-  Copyright (c) 2002 CADDLab @ UNC. All rights reserved.
-  See itkUNCCopyright.txt for details.
+  Copyright (c) Kitware, Inc., Insight Consortium.  All rights reserved.
+  See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even 
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
@@ -892,15 +889,21 @@ bool Parser::IsInComments(long int pos) const
 }
 
 /**  return true if the position pos is between 'begin' and 'end' */
-bool Parser::IsBetweenChars(const char begin, const char end ,long int pos) const
+bool Parser::IsBetweenChars(const char begin, const char end ,long int pos,bool withComments) const
 {
+  std::string stream = m_BufferNoComment;
+  if(withComments)
+    {
+    stream = m_Buffer;
+    }
+
   if(pos == -1)
     {
     return false;
     }
 
-  long int b0 = m_BufferNoComment.find(begin,0);
-  long int b1 = m_BufferNoComment.find(end,b0);
+  long int b0 = stream.find(begin,0);
+  long int b1 = stream.find(end,b0);
 
   while(b0 != -1 && b1 != -1 && b1>b0)
     {
@@ -908,8 +911,8 @@ bool Parser::IsBetweenChars(const char begin, const char end ,long int pos) cons
       {
       return true;
       }
-    b0 = m_BufferNoComment.find(begin,b0+1);
-    b1 = m_BufferNoComment.find(end,b0);
+    b0 = stream.find(begin,b0+1);
+    b1 = stream.find(end,b0);
     }
 
   return false;
@@ -1293,33 +1296,12 @@ void Parser::RemoveComments()
   m_CommentPositions.clear();
   unsigned long size = m_BufferNoComment.size();
   unsigned long count = 0;
+  
   // first we find the /* */
   long firstNC = m_BufferNoComment.find("/*",0);
   long lastNC = m_BufferNoComment.find("*/",firstNC);
   long first = m_Buffer.find("/*",0);
   long last = m_Buffer.find("*/",first);
- 
-  // We find if there are spaces between */ and the end of the line
-  /*bool extraSpaces = true;
-  long eol = m_BufferNoComment.find("\n",last);
-  
-  if(eol != -1)
-    {
-    for(int i=last+2;i<eol;i++)
-      {
-      if(m_BufferNoComment[i] != ' ' && m_BufferNoComment[i] != '\r')
-        {
-        extraSpaces = false;
-        }
-      }
-    }
-
-  if(extraSpaces && (last>first) && (last!=-1))
-    {
-    last += (eol-last)-1;
-    }
-  */
-  //long int offset = 0;
 
   while((lastNC>firstNC) && (firstNC!= -1) && (lastNC !=-1))
     {
@@ -1332,42 +1314,39 @@ void Parser::RemoveComments()
     lastNC = m_BufferNoComment.find("*/",firstNC);
     first = m_Buffer.find("/*",last+1);
     last = m_Buffer.find("*/",first);
-    
-    // We find if there are spaces between */ and the end of the line
-    /*bool extraSpaces = true;
-    long eol = m_BufferNoComment.find("\n",last);
-    if(eol != -1)
-      {
-      for(int i=last+2;i<eol;i++)
-        {
-        if(m_BufferNoComment[i] != ' ')
-          {
-          extraSpaces = false;
-          }
-        }
-      }
-    if(extraSpaces && (last>first) && (last!=-1))
-      {
-      last += (eol-last)-1;
-      }*/
     };
 
   // Then the // comments
   firstNC = m_BufferNoComment.find("//",0);
   lastNC = m_BufferNoComment.find("\n",firstNC);
-  first = m_Buffer.find("//",0);
-  last = m_Buffer.find("\n",first);
-  
+ 
   while((lastNC>firstNC) && (firstNC!= -1) && (lastNC !=-1))
     {
+    first = this->GetPositionWithComments(firstNC);
+    last = this->GetPositionWithComments(lastNC);
+
     PairType pair(first,last+1);
-    m_CommentPositions.push_back(pair);
+    
+    // we insert at the right place
+    std::vector<PairType>::iterator it = m_CommentPositions.begin();
+    while(it != m_CommentPositions.end())
+      {
+      if((*it).first>first)
+        {
+        m_CommentPositions.insert(it,pair);
+        break;
+        }
+      it++;
+      }
+    if(it == m_CommentPositions.end())
+      {
+      m_CommentPositions.push_back(pair);
+      }
+
     m_BufferNoComment = m_BufferNoComment.erase(firstNC,lastNC+1-firstNC);
     count += lastNC+1-firstNC;
     firstNC = m_BufferNoComment.find("//",0);
     lastNC = m_BufferNoComment.find("\n",firstNC);
-    first = m_Buffer.find("//",last+1);
-    last = m_Buffer.find("\n",first);
     };
 
   // put a 0 char at the end of the buffer so we are sure to have the correct length. 
@@ -1375,7 +1354,6 @@ void Parser::RemoveComments()
   m_BufferNoComment[size-count] = '\0';
   m_BufferNoComment.resize(size-count);
 }
-
 
 /** Find the constructor in the file */
 long Parser::FindConstructor(const std::string & buffer, const std::string & className, bool headerfile, size_t startPos) const

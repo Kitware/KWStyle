@@ -27,7 +27,7 @@
 namespace kws
 {
 
-#define NUMBER_ERRORS 16
+#define NUMBER_ERRORS 17
 
 typedef enum
   {
@@ -52,7 +52,8 @@ typedef enum
   NAMESPACE = 12,
   NAMEOFCLASS = 13,
   WRONGCOMMENT = 14,
-  MISSINGCOMMENT = 15
+  MISSINGCOMMENT = 15,
+  EMPTYLINES = 16
   } ErrorType;
 
 const char ErrorTag[NUMBER_ERRORS][4] = {
@@ -72,6 +73,7 @@ const char ErrorTag[NUMBER_ERRORS][4] = {
    {'N','M','C','\0'},
    {'W','C','M','\0'},
    {'M','C','M','\0'},
+   {'E','M','L','\0'}
   };
 
 
@@ -90,6 +92,18 @@ typedef struct
   unsigned long number;
   std::string description; 
   } Info;
+
+typedef struct
+  {
+  // Position in the file
+  unsigned long position;
+  // What should be the position in the line of
+  // the word w.r.t the previous position 
+  int current;
+  // What should be the position in the line of
+  // the words after w.r.t the previous position 
+  int after;
+  } IndentPosition;
 
 class Parser
 {
@@ -125,6 +139,9 @@ public:
   /** Check if the file contains tabs */
   bool CheckTabs();
 
+  /** Check the number of succesive empty lines */
+  bool CheckEmptyLines(unsigned long max);
+
   /** Check the comments
    * The comment definition should be set before CheckIndent() to get the correct indentation
    * for the comments. */
@@ -134,7 +151,10 @@ public:
    *  Not in the header file if there is one 
    *  If CheckHeader has been done before CheckIndent and doNotCheckHeader is set to true
    *  then the header is not checked for indent*/
-  bool CheckIndent(IndentType,unsigned long size,bool doNotCheckHeader=false);
+  bool CheckIndent(IndentType,
+                   unsigned long size,
+                   bool doNotCheckHeader=false,
+                   bool allowBlockLine = false);
 
   /** Check the number of character per line */
   bool CheckLineLength(unsigned long max);
@@ -260,7 +280,7 @@ protected:
   //void FindAndAddDefaultValues(std::string buffer, long start, XMLDescription &desc) const;
 
   /** Return true if the position pos is between <>. */
-  bool IsBetweenChars(const char begin, const char end, long int pos) const;
+  bool IsBetweenChars(const char begin, const char end, long int pos,bool withComments=false) const;
 
   /** Removes ass CtrlN characters from the buffer. */
   void RemoveCtrlN(std::string & buffer) const;
@@ -296,7 +316,14 @@ protected:
   /** Given the position without comments return the position with the comments */
   long int GetPositionWithComments(long int pos) const;
 
- 
+  /** Init the indentation step for CheckIndent() */
+  bool Parser::InitIndentation();
+
+  /** Extract the current line from pos to  \n */
+  std::string ExtractLine(long pos);
+
+  /** Return the current ident */
+  long int GetCurrentIdent(std::string line,char type);
 
 private:
 
@@ -315,6 +342,8 @@ private:
   std::string m_CommentBegin;
   std::string m_CommentMiddle;
   std::string m_CommentEnd;
+
+  std::vector<IndentPosition> m_IdentPositionVector;
 
 };
 

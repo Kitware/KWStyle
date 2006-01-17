@@ -64,11 +64,12 @@ int main(int argc, char **argv)
       inputFilename += '/';
       }
     }
+ 
   
-  //std::string inputFilename = "C:/Julien/Workspace/Insight/Code/Common/itkLog10ImageAdaptor.h";
-  
-  std::vector<std::string> filenames;
+  //std::string inputFilename = "C:/Julien/Workspace/Insight/Code/Common/itkPolyLineParametricPath.h";
+  //bool parseDirectory = false;
 
+  std::vector<std::string> filenames;
   std::vector<kws::Parser> m_Parsers;
 
   if(parseDirectory)
@@ -134,19 +135,19 @@ int main(int argc, char **argv)
     parser.CheckSemicolonSpace(0);
     parser.CheckEndOfFileNewLine();
     parser.CheckTabs();
-            
-    //parser.ClearErrors(); 
     parser.CheckComments("/**"," *"," */",true);
-    //std::cout << parser.GetLastErrors().c_str() << std::endl;
-     
+
     parser.CheckHeader("c:/Julien/Workspace/KWStyle/kwsHeader.h",false,true); // should be before CheckIndent
-    //parser.CheckIndent(kws::SPACE,2,true);
+    
+    //parser.ClearErrors();
+    parser.CheckIndent(kws::SPACE,2,true,true);
+    //std::cout << parser.GetLastErrors().c_str() << std::endl;  
+    
     parser.CheckNamespace("itk");
 
     parser.CheckNameOfClass("<NameOfClass>","itk");
     parser.CheckIfNDefDefine("__<NameOfClass>_<Extension>");
-
-    
+    parser.CheckEmptyLines(2);
 
     m_Parsers.push_back(parser);
     it++;
