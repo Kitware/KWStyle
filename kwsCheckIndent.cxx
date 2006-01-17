@@ -16,6 +16,8 @@
 
 namespace kws {
 
+#define ALIGN_LEFT -99999
+
 /** Extract the current line from pos to  \n */
 std::string Parser::ExtractLine(long pos)
 {
@@ -126,8 +128,15 @@ bool Parser::CheckIndent(IndentType itype,
 
     // We check if we have the right indent
     if(sindent)
-      {        
-      if(currentIndent != wantedIndent+size*sindent->current)
+      {
+      long int wanted = wantedIndent+size*sindent->current;
+      //std::cout << "Got l=" << this->GetLineNumber(sindent->position) << " : " << wantedIndent << " : " << sindent->current << " : " << sindent->after << std::endl;
+      if(sindent->current == ALIGN_LEFT)
+        {
+        wanted = 0;
+        }
+
+      else if(currentIndent != wanted)
         {
         Error error;
         error.line = this->GetLineNumber(pos);
@@ -140,7 +149,7 @@ bool Parser::CheckIndent(IndentType itype,
         error.description += " (should be ";
         delete [] val;
         val = new char[10];
-        sprintf(val,"%d",wantedIndent+size*sindent->current);
+        sprintf(val,"%d",wanted);
         error.description += val;
         error.description += ")";
         delete [] val;
@@ -153,10 +162,6 @@ bool Parser::CheckIndent(IndentType itype,
     else if((it != m_Buffer.end()) && ((*it) == '{')) // openning bracket
       {
       wantedIndent += size;
-      }
-    else if((it != m_Buffer.end()) && ((*it) == '}')) // closing bracket
-      {
-      wantedIndent -= size;
       }
     
     if(firstChar) // general case
@@ -217,6 +222,11 @@ bool Parser::CheckIndent(IndentType itype,
         }
       }
 
+    if((it != m_Buffer.end()) && ((*it) == '}') && !sindent) // closing bracket
+      {
+      wantedIndent -= size;
+      }
+    
     firstChar = false;
     if(it != m_Buffer.end())
       {
@@ -234,6 +244,8 @@ bool Parser::InitIndentation()
   m_IdentPositionVector.clear();
 
   // namespace
+  std::vector<long int> namespacevec;
+
   long int posNamespace = m_BufferNoComment.find("namespace",0);
   while(posNamespace!=-1)
     {
@@ -241,15 +253,18 @@ bool Parser::InitIndentation()
     if(posNamespace1 != -1)
       {
       long int posNamespace2 = m_BufferNoComment.find(";",posNamespace);
-      if(posNamespace2 > posNamespace1)
+      if((posNamespace2 == -1) || (posNamespace2 > posNamespace1))
         {
         long int posNamespaceComments = this->GetPositionWithComments(posNamespace1);      
         IndentPosition ind;
         ind.position = posNamespaceComments;
         ind.current = 0;
         ind.after = 0;
+        namespacevec.push_back(posNamespaceComments);
+        //std::cout << "Found Namespace at: " << this->GetLineNumber(posNamespaceComments) << std::endl;
         m_IdentPositionVector.push_back(ind);
         ind.position = this->FindClosingChar('{','}',posNamespaceComments);
+        namespacevec.push_back(ind.position);
         m_IdentPositionVector.push_back(ind);
         }
       }
@@ -302,15 +317,15 @@ bool Parser::InitIndentation()
         {
         bool defined = false;
         // Check if this is not the namespace previously defined
-        std::vector<IndentPosition>::iterator itIdentPos = m_IdentPositionVector.begin();
-        while(itIdentPos != m_IdentPositionVector.end())
+        std::vector<long int>::iterator itname = namespacevec.begin();
+        while(itname != namespacevec.end())
           {
-          if((*itIdentPos).position == this->GetPositionWithComments(i))
+          if((*itname) == this->GetPositionWithComments(i))
             {
             defined = true;
             break;
             }
-          itIdentPos++;
+          itname++;
           }
 
         if(!defined)
@@ -361,40 +376,35 @@ bool Parser::InitIndentation()
     }
   */
 
-  // Some words should be indented  as the previous indent
-  long int posPrev = m_Buffer.find("public:",0);
-  while(posPrev!=-1)
-    {
-    IndentPosition ind;
-    ind.position = posPrev;
-    ind.current = -1;
-    ind.after = 0;
-    m_IdentPositionVector.push_back(ind);
-    posPrev = m_Buffer.find("public:",posPrev+1);
-    }
-  posPrev = m_Buffer.find("private:",0);
-  while(posPrev!=-1)
-    {
-    IndentPosition ind;
-    ind.position = posPrev;
-    ind.current = -1;
-    ind.after = 0;
-    m_IdentPositionVector.push_back(ind);
-    posPrev = m_Buffer.find("private:",posPrev+1);
-    }
-  posPrev = m_Buffer.find("protected:",0);
-  while(posPrev!=-1)
-    {
-    IndentPosition ind;
-    ind.position = posPrev;
-    ind.current = -1;
-    ind.after = 0;
-    m_IdentPositionVector.push_back(ind);
-    posPrev = m_Buffer.find("protected:",posPrev+1);
-    }
+  // Some words should be indented as the previous indent
+  this->AddIndent("public:",-1,0);
+  this->AddIndent("private:",-1,0);
+  this->AddIndent("protected:",-1,0);
+
+  // some words should be always align left
+  this->AddIndent("#include",ALIGN_LEFT,0);
+  this->AddIndent("#if",ALIGN_LEFT,0);
+  this->AddIndent("#elif",ALIGN_LEFT,0);
+  this->AddIndent("#endif",ALIGN_LEFT,0);
+  this->AddIndent("#ifndef",ALIGN_LEFT,0);
+  this->AddIndent("#define",ALIGN_LEFT,0);
 
   return true;
 }
 
+void Parser::AddIndent(const char* name,long int current,long int after)
+{
+  long int posPrev = m_Buffer.find(name,0);
+  while(posPrev!=-1)
+    {
+    IndentPosition ind;
+    ind.position = posPrev;
+    ind.current = current;
+    ind.after = after;
+    m_IdentPositionVector.push_back(ind);
+    posPrev = m_Buffer.find(name,posPrev+1);
+    }
+
+}
 
 } // end namespace kws

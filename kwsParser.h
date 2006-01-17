@@ -325,6 +325,9 @@ protected:
   /** Return the current ident */
   long int GetCurrentIdent(std::string line,char type);
 
+  /** Helper function to add words to the special indent vector */
+  void AddIndent(const char* name,long int current,long int after);
+
 private:
 
   ErrorVectorType m_ErrorList;
