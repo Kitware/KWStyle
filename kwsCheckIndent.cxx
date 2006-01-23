@@ -49,6 +49,38 @@ bool Parser::CheckIndent(IndentType itype,
                          bool allowBlockLine)
 {
   m_TestsDone[INDENT] = true;
+  m_TestsDescription[INDENT] = "The Indent should respect: ";
+  char* val = new char[10];
+  sprintf(val,"%d ",size);
+  m_TestsDescription[INDENT] += val;
+  if(itype == TABS)
+    {
+    m_TestsDescription[INDENT] += "tabs";
+    }
+  else
+    {
+    m_TestsDescription[INDENT] += "spaces"; 
+    }
+  delete [] val;
+
+  if(doNotCheckHeader)
+    {
+    m_TestsDescription[INDENT] += " (not checking header, "; 
+    }
+  else
+    {
+    m_TestsDescription[INDENT] += " (checking header, ";
+    }
+
+  if(allowBlockLine)
+    {
+    m_TestsDescription[INDENT] += "blockline allowed)"; 
+    }
+  else
+    {
+    m_TestsDescription[INDENT] += "blockline not allowed)";
+    }
+  
   bool hasError = false;
   unsigned long pos = 0;
   unsigned int currentPosition = 0;

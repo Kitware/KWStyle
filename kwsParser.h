@@ -27,7 +27,7 @@
 namespace kws
 {
 
-#define NUMBER_ERRORS 17
+#define NUMBER_ERRORS 19
 
 typedef enum
   {
@@ -53,7 +53,9 @@ typedef enum
   NAMEOFCLASS = 13,
   WRONGCOMMENT = 14,
   MISSINGCOMMENT = 15,
-  EMPTYLINES = 16
+  EMPTYLINES = 16,
+  TEMPLATE = 17,
+  OPERATOR = 18
   } ErrorType;
 
 const char ErrorTag[NUMBER_ERRORS][4] = {
@@ -73,7 +75,9 @@ const char ErrorTag[NUMBER_ERRORS][4] = {
    {'N','M','C','\0'},
    {'W','C','M','\0'},
    {'M','C','M','\0'},
-   {'E','M','L','\0'}
+   {'E','M','L','\0'},
+   {'T','P','L','\0'},
+   {'O','P','S','\0'}
   };
 
 
@@ -156,6 +160,9 @@ public:
                    bool doNotCheckHeader=false,
                    bool allowBlockLine = false);
 
+  /** Check Operator spaces foo=bar or foo = bar, etc... */
+  bool CheckOperator(unsigned int foo, unsigned int bar);
+
   /** Check the number of character per line */
   bool CheckLineLength(unsigned long max);
 
@@ -184,6 +191,9 @@ public:
 
   /** Check the first namespace in the file */
   bool CheckNamespace(const char* name);
+
+  /** Check the templates */
+  bool CheckTemplate(const char* regex);
 
   /** Check if the name of the class is correct */
   bool CheckNameOfClass(const char* name, const char* prefix);
@@ -214,6 +224,10 @@ public:
   std::string GetTestDescription(unsigned int test) const;
 
 protected:
+
+  /** Check the operator.
+   *  \warning This function add an error in the Error list */
+  bool FindOperator(const char* op,unsigned int before, unsigned int after);
 
   /** Get the class position within the file. This function checks that this is the 
    *  classname */

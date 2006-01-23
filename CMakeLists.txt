@@ -35,6 +35,8 @@ kwsCheckComments.cxx
 kwsCheckTabs.cxx
 kwsCheckNameOfClass.cxx
 kwsCheckEmptyLines.cxx
+kwsCheckTemplate.cxx
+kwsCheckOperator.cxx
 )
 
 LINK_LIBRARIES(

@@ -35,6 +35,9 @@ int main(int argc, char **argv)
   std::cout << s.c_str() << std::endl;
 
   return 1;
+  float* test = NULL;
+  test[3] = 10;
+  return 1;
 */
 
   MetaCommand command;
@@ -148,6 +151,8 @@ int main(int argc, char **argv)
     parser.CheckNameOfClass("<NameOfClass>","itk");
     parser.CheckIfNDefDefine("__<NameOfClass>_<Extension>");
     parser.CheckEmptyLines(2);
+    parser.CheckTemplate("T");
+    parser.CheckOperator(1,1);
 
     m_Parsers.push_back(parser);
     it++;
