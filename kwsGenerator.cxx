@@ -369,7 +369,7 @@ bool Generator::GenerateHTML(const char* dir)
 }
 
 /** Create Header */
-bool Generator::CreateHeader(std::ofstream * file,const char* title)
+bool Generator::CreateHeader(std::ostream * file,const char* title)
 {
   *file << "<html>" << std::endl;
   *file << "<HEAD>" << std::endl;
@@ -424,7 +424,7 @@ bool Generator::CreateHeader(std::ofstream * file,const char* title)
 }
 
 /** Create Footer */
-bool Generator::CreateFooter(std::ofstream * file)
+bool Generator::CreateFooter(std::ostream * file)
 {
   *file << "<hr size=\"1\">";
   *file << "<table width=\"100%\" border=\"0\">";
@@ -442,6 +442,169 @@ bool Generator::CreateFooter(std::ofstream * file)
   *file << "</html>" << std::endl;
 
   return true;
+}
+
+/** Export the HTML report */
+void Generator::ExportHTML(std::ostream & output)
+{
+  // For each file we generate an html page
+  ParserVectorType::const_iterator it = m_Parsers->begin();
+  while(it != m_Parsers->end())
+    {
+    if((*it).GetFilename().size() == 0)
+      {
+      it++;
+      continue;
+      }
+
+    // Extract the filename
+    std::string filename = "";
+    long int slash = (*it).GetFilename().find_last_of("/");
+    if(slash == -1)
+      {
+      slash = 0;
+      }
+    std::string nameofclass = (*it).GetFilename().substr(slash+1,((*it).GetFilename().size())-slash-1);  
+    filename += nameofclass;
+    filename += ".html";
+
+    this->CreateHeader(&output,filename.c_str());
+
+    output << "<table width=\"100%\" border=\"0\" height=\"1\">" << std::endl;
+  
+    bool comment = false;
+    for(unsigned int i=0;i<(*it).GetNumberOfLines();i++)
+      {
+      // Look in the errors if there is a match for this line
+      int error = -1;
+      std::string errorTag = "";
+
+      const Parser::ErrorVectorType errors = (*it).GetErrors();
+      Parser::ErrorVectorType::const_iterator itError = errors.begin();
+      while(itError != errors.end())
+        {
+        if( ((i+1>=(*itError).line) && (i+1<=(*itError).line2))
+          )
+          {
+          if(errorTag.size() == 0)
+            {
+            errorTag += (*it).GetErrorTag((*itError).number);
+            }
+          else
+            {
+            errorTag += ",";
+            errorTag += (*it).GetErrorTag((*itError).number);
+            }
+          error = (*itError).number;
+          }
+        itError++;
+        }
+
+      if(error>=0)
+        {
+        output << "<tr bgcolor=\"" << ErrorColor[error]  << "\">" << std::endl; 
+        }
+      else
+        {
+        output << "<tr>" << std::endl;
+        }
+      
+      // First column is the line number
+      output << "<td height=\"1\">" << i+1 << "</td>" << std::endl;
+      
+      // Second column is the error tag
+      output << "<td height=\"1\">" << errorTag.c_str() << "</td>" << std::endl;
+      
+      std::string l = (*it).GetLine(i);
+
+      // If the error is of type INDENT we show the problem as _
+      if(errorTag.find("IND") != -1)
+        {
+        unsigned int k = 0;
+        while((l[k] == ' ') || (l[k] == '\n'))
+          {
+          if(l[k] == ' ')
+            {
+            l[k]='*'; 
+            }
+          k++;
+          }
+        }
+
+      // Remove the first \n
+      long int p = l.find('\n');
+      if(p != -1)
+        {
+        l.replace(p,1,"");
+        }
+      
+      // Replace < and >
+      long int inf = l.find("<",0);
+      while(inf != -1)
+        {
+        l.replace(inf,1,"&lt;");
+        inf = l.find("<",0);
+        }
+
+      long int sup = l.find(">",0);
+      while(sup != -1)
+        {
+        l.replace(sup,1,"&gt;");
+        sup = l.find(">",0);
+        }
+
+      // Replace the space by &nbsp;
+      long int space = l.find(' ',0);
+      while(space != -1)  
+        {
+        l.replace(space,1,"&nbsp;");
+        space = l.find(' ',space+1);
+        }
+
+      // Show the comments in green
+      if(comment)
+        {
+        l.insert(0,"<font color=\"#009933\">");
+        }
+
+      space = l.find("/*",0);
+      while(space != -1)  
+        {
+        comment = true;
+        l.insert(space,"<font color=\"#009933\">");
+        space = l.find("/*",space+23);
+        }
+
+      if(comment)
+        {
+        l.insert(l.size(),"</font>");
+        }
+
+      space = l.find("*/",0);
+      while(space != -1)
+        {
+        comment = false;
+        l.insert(space+2,"</font>");
+        space = l.find("*/",space+8);
+        }
+
+      // Show the comments in green
+      space = l.find("//",0);
+      if(space != -1)  
+        {
+        l.insert(space,"<font color=\"#009933\">");
+        l += "<font>";
+        }
+
+      output << "<td height=\"1\"><font face=\"Courier New, Courier, mono\" size=\"2\">" << l.c_str() << "</font></td>" << std::endl;
+      output << "</tr>" << std::endl;
+      }
+
+    output << "</table>" << std::endl;
+
+    this->CreateFooter(&output);
+    it++;
+    }
 }
 
 } // end namespace kws

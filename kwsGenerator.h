@@ -67,10 +67,13 @@ public:
   /** Generate the HTML files */
   bool GenerateHTML(const char* dir);
 
+  /** Export the HTML report */
+  void ExportHTML(std::ostream & output);
+
 private:
 
-  bool CreateHeader(std::ofstream * file,const char* title);
-  bool CreateFooter(std::ofstream * file);
+  bool CreateHeader(std::ostream * file,const char* title);
+  bool CreateFooter(std::ostream * file);
   bool GenerateMatrix(const char* dir);
   bool GenerateDescription(const char* dir);
 

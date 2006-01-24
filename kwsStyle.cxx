@@ -35,6 +35,7 @@ int main(int argc, char **argv)
   std::cout << s.c_str() << std::endl;
 
   return 1;
+ 
   float* test = NULL;
   test[3] = 10;
   return 1;
@@ -45,6 +46,7 @@ int main(int argc, char **argv)
   command.SetOption("directory","d",false,"Specify a directory");
   command.SetOption("html","html",false,"Generate the HTML report");
   command.AddOptionField("html","filename",MetaCommand::STRING,false);
+  command.SetOption("exporthtml","exporthtml",false,"Export the HTML report online");
 
   //command.AddOptionField("directory","filename",MetaCommand::STRING,true);
   //command.SetOptionComplete("directory",true);
@@ -168,6 +170,15 @@ int main(int argc, char **argv)
     generator.SetParser(&m_Parsers);
     generator.GenerateHTML(html.c_str());
     }
+
+  // If we should export the html report
+  if(command.GetOptionWasSet("exporthtml"))
+    {
+    kws::Generator generator;
+    generator.SetParser(&m_Parsers);
+    generator.ExportHTML(std::cout);
+    }
+
 
   return 1;
 }
