@@ -104,7 +104,10 @@ int main(int argc, char **argv)
 
   while(it != filenames.end())
     {
-    std::cout << "Input File = " << (*it).c_str() << std::endl;
+    if(!command.GetOptionWasSet("exporthtml"))
+      {
+      std::cout << "Input File = " << (*it).c_str() << std::endl;
+      }
 
     // We open the file
     std::ifstream file;
