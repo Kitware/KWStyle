@@ -84,7 +84,8 @@ int main(int argc, char **argv)
   command.SetOption("exporthtml","exporthtml",false,"Export the HTML report online");
   command.SetOption("xml","xml",false,"Read a XML configure file");
   command.AddOptionField("xml","filename",MetaCommand::STRING,false);
-  
+  command.SetOption("dirfile","D",false,"Specify a file listing all the directories");
+
   command.AddField("infile","input filename",MetaCommand::STRING,true);
 
   // Parsing
@@ -147,14 +148,15 @@ int main(int argc, char **argv)
       inputFilename += '/';
       }
     }
- 
-  
+   
   //std::string inputFilename = "C:/Julien/Workspace/Insight/Code/Common/itkPolyLineParametricPath.h";
   //bool parseDirectory = false;
 
   std::vector<std::string> filenames;
   std::vector<kws::Parser> m_Parsers;
 
+
+  // if the -d command is used
   if(parseDirectory)
     {
     itksys::Directory directory;
@@ -171,6 +173,84 @@ int main(int argc, char **argv)
         filenames.push_back(inputFilename+file);
         }
       }
+    }
+  else
+    {
+    filenames.push_back(inputFilename);
+    }
+
+
+  // if the -D command is used
+  if(command.GetOptionWasSet("dirfile"))
+    {
+    // Read the file
+    std::ifstream file;
+    file.open(inputFilename.c_str(), std::ios::binary | std::ios::in);
+    if(!file.is_open())
+      {
+      std::cout << "Cannot open file: " << inputFilename.c_str() << std::endl;
+      return 0;
+      }
+    file.seekg(0,std::ios::end);
+    unsigned long fileSize = file.tellg();
+    file.seekg(0,std::ios::beg);
+
+    char* buf = new char[fileSize+1];
+    file.read(buf,fileSize);
+    buf[fileSize] = 0; 
+    std::string buffer(buf);
+    buffer.resize(fileSize);
+    delete [] buf;
+   
+    long int start = 0;
+    long int pos = buffer.find("\n",start);
+    do    
+      {
+      std::string dirname = "";
+
+      if(pos == -1)
+        {
+        dirname = buffer.substr(start,buffer.length()-start);
+        pos = fileSize; // we stop
+        }
+      else
+        {
+        dirname = buffer.substr(start,pos-start-1);
+        start = pos+1;
+        }
+
+      // Add a / if necessary
+      if((dirname[dirname.length()-1] != '/') && (dirname[dirname.length()-1] != '\\'))
+        {
+        dirname += "/";
+        }
+
+      std::cout << "DIR = " << dirname.c_str() << std::endl;
+
+      itksys::Directory directory;
+      directory.Load(dirname.c_str());
+      for(unsigned int i=0;i<directory.GetNumberOfFiles();i++)
+        {
+        std::string file = directory.GetFile(i);
+        if((file.find(".h") != -1)
+           || (file.find(".hxx") != -1)
+           || (file.find(".cxx") != -1)
+           || (file.find(".txx") != -1)
+           )
+          {
+          filenames.push_back(dirname+file);
+          }
+        }
+
+      if(pos != fileSize)
+        {
+        pos = buffer.find("\n",start);
+        }
+      } while(pos<(long int)fileSize);
+    
+
+    file.close();
+
     }
   else
     {
@@ -223,35 +303,6 @@ int main(int argc, char **argv)
         }
       itf++;
       }
-
-   // parser.CheckLineLength(81); // this is required
-/*
-    parser.CheckDeclarationOrder(0,1,2);
-    parser.CheckTypedefs("[A-Z]");
-    //std::cout << parser.GetLastErrors().c_str() << std::endl;
-    
-    parser.CheckInternalVariables("m_[A-Z]");
-    parser.CheckSemicolonSpace(0);
-    parser.CheckEndOfFileNewLine();
-    parser.CheckTabs();
-*/
-//    parser.CheckComments("/**"," *"," */",true);
-/*
-    parser.CheckHeader("c:/Julien/Workspace/KWStyle/kwsHeader.h",false,true); // should be before CheckIndent
-    
-    //parser.ClearErrors();
-    parser.CheckIndent(kws::SPACE,2,true,true);
-    //std::cout << parser.GetLastErrors().c_str() << std::endl;  
-    
-    parser.CheckNamespace("itk");
-
-    parser.CheckNameOfClass("<NameOfClass>","itk");
-    parser.CheckIfNDefDefine("__<NameOfClass>_<Extension>");
-    parser.CheckEmptyLines(2);
-    parser.CheckTemplate("T");
-    parser.CheckOperator(1,1);
-*/
-
     m_Parsers.push_back(parser);
     it++;
     } // end filenames  
