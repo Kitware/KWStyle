@@ -47,7 +47,7 @@ ${ITK_LIBRARIES}
 
 ADD_EXECUTABLE( KWStyle ${KWStyle_SRCS})
 
-CONFIGURE_FILE(${KWStyle_SOURCE_DIR}/kwstyle.xml
-               ${KWStyle_BINARY_DIR}/kwstyle.xml COPYONLY)
+#CONFIGURE_FILE(${KWStyle_SOURCE_DIR}/kwstyle.xml
+#               ${KWStyle_BINARY_DIR}/kwstyle.xml COPYONLY)
 
 
