@@ -33,6 +33,207 @@ Parser::~Parser()
 {
 }
 
+
+/** Given the name of the check to perform and the default value perform the check */
+bool Parser::Check(const char* name, const char* value)
+{
+  if(!strcmp(name,"LineLength"))
+    {
+    this->CheckLineLength(atoi(value));
+    return true;
+    }
+  else if(!strcmp(name,"DeclarationOrder"))
+    {
+    this->CheckDeclarationOrder(atoi(&value[0]),atoi(&value[2]),atoi(&value[4]));
+    return true;
+    }
+  else if(!strcmp(name,"Typedefs"))
+    {
+    this->CheckTypedefs(value);
+    return true;
+    }
+  else if(!strcmp(name,"InternalVariables"))
+    {
+    this->CheckInternalVariables(value);
+    return true;
+    }
+  else if(!strcmp(name,"SemicolonSpace"))
+    {
+    this->CheckSemicolonSpace(atoi(value));
+    return true;
+    }
+  else if(!strcmp(name,"EndOfFileNewLine"))
+    {
+    this->CheckEndOfFileNewLine();
+    return true;
+    }
+  else if(!strcmp(name,"Tabs"))
+    {
+    this->CheckTabs();
+    return true;
+    }
+  else if(!strcmp(name,"Comments"))
+    {
+    std::string val = value;
+    long pos = val.find(",",0);
+    if(pos == -1)
+      {
+      std::cout << "Comments not defined correctly" << std::endl;
+      return false;
+      }
+    std::string v1 = val.substr(0,pos);
+    long int pos1 = val.find(",",pos+1);
+    if(pos1 == -1)
+      {
+      std::cout << "Comments not defined correctly" << std::endl;
+      return false;
+      }
+    std::string v2 = val.substr(pos+1,pos1-pos-1);
+    pos = val.find(",",pos1+1);
+    if(pos == -1)
+      {
+      std::cout << "Comments not defined correctly" << std::endl;
+      return false;
+      }
+    std::string v3 = val.substr(pos1+1,pos-pos1-1);
+    std::string v4 = val.substr(pos+1,val.length()-pos-1);
+
+    if(!strcmp(v4.c_str(),"true"))
+      {
+      this->CheckComments(v1.c_str(),v2.c_str(),v3.c_str(),true);
+      }
+    else
+      {
+      this->CheckComments(v1.c_str(),v2.c_str(),v3.c_str(),false);
+      }
+    return true;
+    }
+  // should be before CheckIndent
+  else if(!strcmp(name,"Header"))
+    {
+    std::string val = value;
+    long pos = val.find(",",0);
+    if(pos == -1)
+      {
+      std::cout << "Header not defined correctly" << std::endl;
+      return false;
+      }
+    std::string v1 = val.substr(0,pos);
+    long int pos1 = val.find(",",pos+1);
+    if(pos1 == -1)
+      {
+      std::cout << "Header not defined correctly" << std::endl;
+      return false;
+      }
+    std::string v2 = val.substr(pos+1,pos1-pos-1);
+    std::string v3 = val.substr(pos1+1,val.length()-pos1-1);
+
+    bool spaceEndOfLine = false;
+    bool useCVS = false;
+ 
+    if(!strcmp(v2.c_str(),"true"))
+      {
+      spaceEndOfLine = true;
+      }
+    if(!strcmp(v3.c_str(),"true"))
+      {
+      useCVS = true;
+      }
+
+    this->CheckHeader(v1.c_str(),spaceEndOfLine,useCVS); 
+    }
+
+   else if(!strcmp(name,"Indent"))
+    {
+    std::string val = value;
+    long pos = val.find(",",0);
+    if(pos == -1)
+      {
+      std::cout << "Indent not defined correctly" << std::endl;
+      return false;
+      }
+    std::string v1 = val.substr(0,pos);
+    long int pos1 = val.find(",",pos+1);
+    if(pos1 == -1)
+      {
+      std::cout << "Indent not defined correctly" << std::endl;
+      return false;
+      }
+    std::string v2 = val.substr(pos+1,pos1-pos-1);
+    pos = val.find(",",pos1+1);
+    if(pos == -1)
+      {
+      std::cout << "Indent not defined correctly" << std::endl;
+      return false;
+      }
+    std::string v3 = val.substr(pos1+1,pos-pos1-1);
+    std::string v4 = val.substr(pos+1,val.length()-pos-1);
+    bool header = false;
+    if(!strcmp(v3.c_str(),"true"))
+      {
+      header = true;
+      }
+    bool blockline = false;
+    if(!strcmp(v4.c_str(),"true"))
+      {
+      blockline = true;
+      }
+
+    IndentType itype = kws::SPACE;
+
+    if(!strcmp(v1.c_str(),"TAB"))
+      {
+      itype = kws::TAB;
+      }
+    this->CheckIndent(itype,atoi(v2.c_str()),header,blockline);
+    }
+
+  else if(!strcmp(name,"Namespace"))
+    {
+    this->CheckNamespace(value);
+    }
+  else if(!strcmp(name,"NameOfClass"))
+    {
+    std::string val = value;
+    long pos = val.find(",",0);
+    if(pos == -1)
+      {
+      std::cout << "NameOfClass not defined correctly" << std::endl;
+      return false;
+      }
+    std::string v1 = val.substr(0,pos);
+    std::string v2 = val.substr(pos+1,val.length()-pos-1);
+    this->CheckNameOfClass(v1.c_str(),v2.c_str());
+    }
+  else if(!strcmp(name,"IfNDefDefine"))
+    {
+    this->CheckIfNDefDefine(value);
+    }
+  else if(!strcmp(name,"EmptyLines"))
+    {
+    this->CheckEmptyLines(atoi(value));
+    }
+  else if(!strcmp(name,"Template"))
+    {
+    this->CheckTemplate(value);
+    }
+  else if(!strcmp(name,"Operator"))
+    {
+    std::string val = value;
+    long pos = val.find(",",0);
+    if(pos == -1)
+      {
+      std::cout << "Operator not defined correctly" << std::endl;
+      return false;
+      }
+    std::string v1 = val.substr(0,pos);
+    std::string v2 = val.substr(pos+1,val.length()-pos-1);
+    this->CheckOperator(atoi(v1.c_str()),atoi(v2.c_str()));
+    }
+  return false;
+}
+
+
 /** Return if a test has been performed */
 bool Parser::HasBeenPerformed(unsigned int test) const
 {

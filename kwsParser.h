@@ -223,6 +223,10 @@ public:
   /** Return the test description given the erro number) */
   std::string GetTestDescription(unsigned int test) const;
 
+  /** Given the name of the check to perform and the default value perform the check */
+  bool Check(const char* name, const char* value);
+
+
 protected:
 
   /** Check the operator.

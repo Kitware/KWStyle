@@ -37,6 +37,8 @@ kwsCheckNameOfClass.cxx
 kwsCheckEmptyLines.cxx
 kwsCheckTemplate.cxx
 kwsCheckOperator.cxx
+kwsXMLReader.h
+kwsXMLReader.cxx
 )
 
 LINK_LIBRARIES(

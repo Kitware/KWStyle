@@ -58,12 +58,12 @@ bool Parser::CheckNameOfClass(const char* name,const char* prefix)
 
     // construct the string
     std::string toMatch = name;
-    long int p = toMatch.find("<NameOfClass>");
+    long int p = toMatch.find("[NameOfClass]");
     if(p != -1)
       {
       toMatch.replace(p,13,nameofclass);
       }
-    p = toMatch.find("<Extension>");
+    p = toMatch.find("[Extension]");
     if(p != -1)
       {
       toMatch.replace(p,11,extension);

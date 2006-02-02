@@ -20,36 +20,71 @@
 #include <itksys/Directory.hxx>
 #include <cmath>
 #include <sstream>
+#include "kwsXMLReader.h"
+#include <vector>
 
 #if defined(WIN32) && !defined(__CYGWIN__)
   #include <direct.h> // mkdir needs it
 #endif
 
+struct kwsFeature{
+  std::string name;
+  std::string value;
+  bool enable;
+  };
+
+// List of features to check
+std::vector<kwsFeature> features;
+
+void AddFeature(const char* name,const char* value,bool enable)
+{
+  kwsFeature f;
+  f.name = name;
+  f.value = value;
+  f.enable = enable;
+  features.push_back(f);
+}
+
+void ChangeFeature(const char* name,const char* value)
+{
+  std::vector<kwsFeature>::iterator it = features.begin();
+  while(it != features.end())
+    {
+    if(!strcmp((*it).name.c_str(),name))
+      {
+      (*it).value = value;
+      return;
+      }
+    it++;
+    }
+}
+
+void DisableFeature(const char* name)
+{
+  std::vector<kwsFeature>::iterator it = features.begin();
+  while(it != features.end())
+    {
+    if(!strcmp((*it).name.c_str(),name))
+      {
+      (*it).enable = false;
+      return;
+      }
+    it++;
+    }
+
+}
+
 int main(int argc, char **argv)
 {
-/*
-// this is a test
-  ostringstream s;
-  s.format("salut = %d",3);
-
-  std::cout << s.c_str() << std::endl;
-
-  return 1;
- 
-  float* test = NULL;
-  test[3] = 10;
-  return 1;
-*/
-
   MetaCommand command;
 
   command.SetOption("directory","d",false,"Specify a directory");
   command.SetOption("html","html",false,"Generate the HTML report");
   command.AddOptionField("html","filename",MetaCommand::STRING,false);
   command.SetOption("exporthtml","exporthtml",false,"Export the HTML report online");
-
-  //command.AddOptionField("directory","filename",MetaCommand::STRING,true);
-  //command.SetOptionComplete("directory",true);
+  command.SetOption("xml","xml",false,"Read a XML configure file");
+  command.AddOptionField("xml","filename",MetaCommand::STRING,false);
+  
   command.AddField("infile","input filename",MetaCommand::STRING,true);
 
   // Parsing
@@ -57,6 +92,49 @@ int main(int argc, char **argv)
     {
     return 1;
     }
+
+  // Add the features
+  AddFeature("LineLength","80",true);
+  AddFeature("DeclarationOrder","0,1,2",true);
+  AddFeature("Typedefs","[A-Z]",true);
+  AddFeature("InternalVariables","m_[A-Z]",true);
+  AddFeature("SemicolonSpace","0",true);
+  AddFeature("EndOfFileNewLine","",true);
+  AddFeature("Tabs","",true);
+  AddFeature("Comments","/**, *, */,true",true);
+  AddFeature("Header","c:/Julien/Workspace/KWStyle/kwsHeader.h,false,true",true);
+  AddFeature("Indent","kws::SPACE,2,true,true",true);
+  AddFeature("Namespace","itk",true);
+  AddFeature("NameOfClass","[NameOfClass],itk",true);
+  AddFeature("IfNDefDefine","__[NameOfClass]_[Extension]",true);
+  AddFeature("EmptyLines","2",true); 
+  AddFeature("Template","T",true); 
+  AddFeature("Operator","1,1",true); 
+
+  // If we should generate the HTML file
+  if(command.GetOptionWasSet("xml"))
+    {
+    std::string xml = command.GetValueAsString("xml","filename");
+    kws::XMLReader reader;
+    reader.Open(xml.c_str());
+    
+    std::vector<kwsFeature>::iterator it = features.begin();
+    while(it != features.end())
+      {
+      std::string val = reader.GetValue((*it).name.c_str());
+      if(val.length() > 0 )
+        {
+        ChangeFeature((*it).name.c_str(),val.c_str()); 
+        }
+      else
+        {
+        DisableFeature((*it).name.c_str());
+        }
+      it++;
+      }
+    reader.Close();
+    }
+
 
   std::string inputFilename = command.GetValueAsString("infile");
 
@@ -85,6 +163,7 @@ int main(int argc, char **argv)
       {
       std::string file = directory.GetFile(i);
       if((file.find(".h") != -1)
+         || (file.find(".hxx") != -1)
          || (file.find(".cxx") != -1)
          || (file.find(".txx") != -1)
          )
@@ -134,7 +213,19 @@ int main(int argc, char **argv)
     kws::Parser parser;
     parser.SetFilename((*it).c_str());
     parser.SetBuffer(buffer);
-    parser.CheckLineLength(81); // this is required
+
+    std::vector<kwsFeature>::iterator itf = features.begin();
+    while(itf != features.end())
+      {
+      if((*itf).enable)
+        {
+        parser.Check((*itf).name.c_str(),(*itf).value.c_str());
+        }
+      itf++;
+      }
+
+   // parser.CheckLineLength(81); // this is required
+/*
     parser.CheckDeclarationOrder(0,1,2);
     parser.CheckTypedefs("[A-Z]");
     //std::cout << parser.GetLastErrors().c_str() << std::endl;
@@ -143,8 +234,9 @@ int main(int argc, char **argv)
     parser.CheckSemicolonSpace(0);
     parser.CheckEndOfFileNewLine();
     parser.CheckTabs();
-    parser.CheckComments("/**"," *"," */",true);
-
+*/
+//    parser.CheckComments("/**"," *"," */",true);
+/*
     parser.CheckHeader("c:/Julien/Workspace/KWStyle/kwsHeader.h",false,true); // should be before CheckIndent
     
     //parser.ClearErrors();
@@ -158,6 +250,7 @@ int main(int argc, char **argv)
     parser.CheckEmptyLines(2);
     parser.CheckTemplate("T");
     parser.CheckOperator(1,1);
+*/
 
     m_Parsers.push_back(parser);
     it++;

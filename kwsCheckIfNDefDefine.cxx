@@ -18,7 +18,7 @@ namespace kws {
 
 
 /** Check if the #ifndef/#define is defined correctly for the class 
- *  match can contain <NameOfClass> and <Extension> */
+ *  match can contain [NameOfClass] and [Extension] */
 bool Parser::CheckIfNDefDefine(const char* match)
 {
   m_TestsDone[NDEFINE] = true;
@@ -157,12 +157,12 @@ bool Parser::CheckIfNDefDefine(const char* match)
 
   // construct the string
   std::string toMatch = match;
-  pos = toMatch.find("<NameOfClass>");
+  pos = toMatch.find("[NameOfClass]");
   if(pos != -1)
     {
     toMatch.replace(pos,13,nameofclass);
     }
-  pos = toMatch.find("<Extension>");
+  pos = toMatch.find("[Extension]");
   if(pos != -1)
     {
     toMatch.replace(pos,11,extension);
