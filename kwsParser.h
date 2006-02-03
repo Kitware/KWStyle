@@ -27,7 +27,7 @@
 namespace kws
 {
 
-#define NUMBER_ERRORS 19
+#define NUMBER_ERRORS 20
 
 typedef enum
   {
@@ -55,7 +55,8 @@ typedef enum
   MISSINGCOMMENT = 15,
   EMPTYLINES = 16,
   TEMPLATE = 17,
-  OPERATOR = 18
+  OPERATOR = 18,
+  BLACKLIST = 19
   } ErrorType;
 
 const char ErrorTag[NUMBER_ERRORS][4] = {
@@ -77,7 +78,8 @@ const char ErrorTag[NUMBER_ERRORS][4] = {
    {'M','C','M','\0'},
    {'E','M','L','\0'},
    {'T','P','L','\0'},
-   {'O','P','S','\0'}
+   {'O','P','S','\0'},
+   {'B','L','K','\0'}
   };
 
 
@@ -197,6 +199,9 @@ public:
 
   /** Check if the name of the class is correct */
   bool CheckNameOfClass(const char* name, const char* prefix);
+
+  /** Check that there is no word in the class that matches a word in the black list */
+  bool CheckBlackList(const char* filename);
 
   /** Remove the comments. */
   void RemoveComments();
@@ -366,6 +371,8 @@ private:
 
   std::vector<IndentPosition> m_IdentPositionVector;
 
+  std::string m_BlackList;
+  std::string m_BlackListBuffer;
 };
 
 } // end namespace kws

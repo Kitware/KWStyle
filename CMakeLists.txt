@@ -19,6 +19,8 @@ SET(KWStyle_SRCS
 kwsStyle.cxx
 kwsParser.cxx
 kwsParser.h
+kwsXMLReader.h
+kwsXMLReader.cxx
 kwsGenerator.cxx
 kwsGenerator.h
 kwsCheckLineLength.cxx
@@ -37,8 +39,7 @@ kwsCheckNameOfClass.cxx
 kwsCheckEmptyLines.cxx
 kwsCheckTemplate.cxx
 kwsCheckOperator.cxx
-kwsXMLReader.h
-kwsXMLReader.cxx
+kwsCheckBlackList.cxx
 )
 
 LINK_LIBRARIES(

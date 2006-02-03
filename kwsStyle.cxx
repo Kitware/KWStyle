@@ -85,6 +85,8 @@ int main(int argc, char **argv)
   command.SetOption("xml","xml",false,"Read a XML configure file");
   command.AddOptionField("xml","filename",MetaCommand::STRING,false);
   command.SetOption("dirfile","D",false,"Specify a file listing all the directories");
+  command.SetOption("blacklist","b",false,"Specify a black list of words");
+  command.AddOptionField("blacklist","filename",MetaCommand::STRING,false);
 
   command.AddField("infile","input filename",MetaCommand::STRING,true);
 
@@ -110,7 +112,13 @@ int main(int argc, char **argv)
   AddFeature("IfNDefDefine","__[NameOfClass]_[Extension]",true);
   AddFeature("EmptyLines","2",true); 
   AddFeature("Template","T",true); 
-  AddFeature("Operator","1,1",true); 
+  AddFeature("Operator","1,1",true);
+
+  if(command.GetOptionWasSet("blacklist"))
+    {
+    std::string blacklist = command.GetValueAsString("blacklist","filename");
+    AddFeature("BlackList",blacklist.c_str(),true);
+    }
 
   // If we should generate the HTML file
   if(command.GetOptionWasSet("xml"))
@@ -174,14 +182,8 @@ int main(int argc, char **argv)
         }
       }
     }
-  else
-    {
-    filenames.push_back(inputFilename);
-    }
-
-
   // if the -D command is used
-  if(command.GetOptionWasSet("dirfile"))
+  else if(command.GetOptionWasSet("dirfile"))
     {
     // Read the file
     std::ifstream file;
@@ -225,8 +227,6 @@ int main(int argc, char **argv)
         dirname += "/";
         }
 
-      std::cout << "DIR = " << dirname.c_str() << std::endl;
-
       itksys::Directory directory;
       directory.Load(dirname.c_str());
       for(unsigned int i=0;i<directory.GetNumberOfFiles();i++)
@@ -247,15 +247,14 @@ int main(int argc, char **argv)
         pos = buffer.find("\n",start);
         }
       } while(pos<(long int)fileSize);
-    
-
+ 
     file.close();
-
     }
-  else
+   else
     {
     filenames.push_back(inputFilename);
     }
+
 
   std::vector<std::string>::const_iterator it = filenames.begin();
 
