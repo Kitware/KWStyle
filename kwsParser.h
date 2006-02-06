@@ -234,6 +234,16 @@ public:
 
 protected:
 
+  /** Return true if the file has \r\n otherwise returns false */ 
+  bool IsWindowsFile(std::string buffer)
+    {
+    if(buffer.find("\r\n") != -1)
+      {
+      return true;
+      }
+    return false;
+    }
+  
   /** Check the operator.
    *  \warning This function add an error in the Error list */
   bool FindOperator(const char* op,unsigned int before, unsigned int after);
