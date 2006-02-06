@@ -1,0 +1,109 @@
+BODY {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; COLOR: black; PADDING-TOP: 0px; bgcolor: "#ffffff"
+}
+TD {
+	FONT-SIZE: 70%; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+SELECT {
+	FONT-SIZE: 8pt; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+INPUT {
+	FONT-SIZE: 8pt; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+TEXTAREA {
+	FONT-SIZE: 8pt; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+TEXTAREA {
+	BORDER-RIGHT: #7f9db9 1px solid; BORDER-TOP: #7f9db9 1px solid; BORDER-LEFT: #7f9db9 1px solid; WIDTH: 100%; BORDER-BOTTOM: #7f9db9 1px solid; BACKGROUND-COLOR: #f5f5f5
+}
+PRE {
+	PADDING-RIGHT: 7pt; PADDING-LEFT: 7pt; PADDING-BOTTOM: 7pt; OVERFLOW: auto; WIDTH: 100%; PADDING-TOP: 7pt; FONT-FAMILY: Courier New, Courier, mono; BACKGROUND-COLOR: #fbedbb
+}
+CODE {
+	COLOR: #990000; FONT-FAMILY: Courier New, Courier, mono
+}
+H1 {
+	FONT-WEIGHT: bold; FONT-SIZE: 120%; COLOR: #990000; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+HR {
+	COLOR: #313199; HEIGHT: 1px
+}
+HR.res {
+	COLOR: #cccccc
+}
+H2 {
+	FONT-WEIGHT: bold; FONT-SIZE: 100%; COLOR: #000000; FONT-FAMILY: Tahoma, Arial
+}
+H3 {
+	FONT-WEIGHT: bold; FONT-SIZE: 100%; COLOR: #000000; FONT-FAMILY: Tahoma, Arial
+}
+H4 {
+	FONT-WEIGHT: bold; FONT-SIZE: 100%; COLOR: #000000; FONT-FAMILY: Tahoma, Arial
+}
+INPUT.textbox {
+	BORDER-RIGHT: #7f9db9 1px solid; BORDER-TOP: #7f9db9 1px solid; BORDER-LEFT: #7f9db9 1px solid; BORDER-BOTTOM: #7f9db9 1px solid; BACKGROUND-COLOR: #f5f5f5
+}
+INPUT.checkbox {
+	BORDER-RIGHT: #7f9db9 1px solid; BORDER-TOP: #7f9db9 1px solid; BORDER-LEFT: #7f9db9 1px solid; BORDER-BOTTOM: #7f9db9 1px solid; BACKGROUND-COLOR: #f5f5f5
+}
+SPAN.table {
+	FONT-SIZE: 70%; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+TD.verysmall {
+	FONT-SIZE: 60%; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+TD.hdr {
+	FONT-WEIGHT: bold; FONT-SIZE: 84%; COLOR: #990000; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+TD.nav-hdr {
+	FONT-WEIGHT: bold; FONT-SIZE: 70%; COLOR: #ffffff; FONT-FAMILY: Tahoma, Arial, Sans-Serif
+}
+SPAN.verysmall {
+	FONT-SIZE: 80%
+}
+CODE.pre {
+	PADDING-RIGHT: 7pt; PADDING-LEFT: 7pt; PADDING-BOTTOM: 7pt; OVERFLOW: auto; WIDTH: 100%; COLOR: #000000; PADDING-TOP: 7pt; BACKGROUND-COLOR: #fbedbb
+}
+P.pre {
+	PADDING-RIGHT: 7pt; PADDING-LEFT: 7pt; PADDING-BOTTOM: 7pt; OVERFLOW: auto; WIDTH: 100%; COLOR: #000000; PADDING-TOP: 7pt; BACKGROUND-COLOR: #fbedbb
+}
+SPAN.hdr {
+	FONT-WEIGHT: bold; FONT-SIZE: 120%; COLOR: #990000; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+FONT.hdr {
+	FONT-WEIGHT: bold; FONT-SIZE: 120%; COLOR: #990000; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+A {
+	COLOR: #31319c; TEXT-DECORATION: none
+}
+A.left {
+	COLOR: #FFFF33 ; TEXT-DECORATION: none
+}
+
+A.contrast {
+	COLOR: #000055; TEXT-DECORATION: none
+}
+A:hover {
+	COLOR: #000000
+}
+A.promolink {
+	COLOR: #8a0023; TEXT-DECORATION: none
+}
+A.promolink:hover {
+	TEXT-DECORATION: underline
+}
+A.link-alt {
+	COLOR: #376fa6; TEXT-DECORATION: none
+}
+A.link-alt:hover {
+	TEXT-DECORATION: underline
+}
+A.link-nav {
+	COLOR: #000000; TEXT-DECORATION: none
+}
+A.link-nav:hover {
+font-weight: bold
+}
+.hdr-small-bold-tbl {
+	FONT-WEIGHT: bold; FONT-SIZE: 70%; COLOR: #990000
+}

@@ -37,7 +37,66 @@ function test(value)
 $currentfile = "";
 ?>
 
-<!-- The data encoding type, enctype, MUST be specified as below -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><style type="text/css">
+</style><title>KWStyle - The Source Code Checker</title>
+<meta name="keywords" content="Style, Checker, Source, Code, Kitware, Julien, Jomier">
+<meta name="description" content="The Source Code Checker">
+<meta name="rating" content="General">
+<meta name="ROBOTS" content="ALL">
+<link rel="stylesheet" href="default.css" type="text/css">
+<style type="text/css">
+<!--
+.style7 {font-size: 12px}
+-->
+</style>
+</head>
+<link rel="icon" href="/KWStyle/favicon.ico" type="image/ico">
+<link rel="SHORTCUT ICON" href="/KWStyle/favicon.ico">
+
+<body topmargin="0" leftmargin="0" alink="#000000" bgcolor="#ffffff" link="#0000ff" marginheight="0" marginwidth="0" text="black" vlink="#000000">
+<img src="images/TitleBar.jpg" width="650" height="170"> 
+<table width="100%" border="0">
+  <tr>
+    <td width="13%" valign="top"> 
+      <table style="background-image: 
+     url('images/CurvedSideBar.jpg'); background-repeat:no-repeat; 
+       border: 0 ridge #800000" border="0" cellpadding="4" cellspacing="0" width="143">
+        <tbody> 
+        <tr> 
+          <td width="135" height="369" valign="top"> <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <a class="left" href="index.htm"><b>&nbsp;Home</b></a><br>
+            <br>
+            <a class="left" href="features.htm"><b>&nbsp;Features</b></a><br>
+			<br>
+			<a class="left" href="http://192.168.113.30/KWStyle"><b>&nbsp;Check my file</b></a><br>
+            <br>
+            <a class="left" href="download.htm"><b>&nbsp;Download</b></a><br>
+            <br>
+            <a class="left" href="example/KWSMatrix.html"><b>&nbsp;Example</b></a><br>
+            <br>
+            <a class="left" href="testing.htm"><b>&nbsp;Testing</b></a><br>
+            <br>
+            <a class="left" href="sponsors.htm"><b>&nbsp;Sponsors</b></a><br>
+            <br>
+            <a class="left" href="documentation.htm"><b>&nbsp;Documentation</b></a><br>
+            <br>
+            <a class="left" href="copyright.htm"><b>&nbsp;Copyright</b></a><br>
+            <br>
+            <a class="left" href="http://public.kitware.com/Bug/"><b>&nbsp;Bug 
+            Tracker</b></a><br>
+            <br>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </td>
+    <td width="87%" valign="top"> 
+      <!-- The data encoding type, enctype, MUST be specified as below -->
 <form enctype="multipart/form-data" action=<?php echo $_SERVER['PHP_SELF'];?> method="POST">
     <!-- MAX_FILE_SIZE must precede the file input field -->
     <p>
@@ -148,3 +207,8 @@ for($i=1;$i<count($a);$i++)
       <input type="submit" value=">> Check Style" />
   </p>
 </form>
+</td>
+  </tr>
+</table>
+</body></html>
+
