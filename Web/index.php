@@ -1,9 +1,10 @@
 <?php
 // Put here the path to KWStyle
-$kwstyle = "/www/CADDLab/kwstyle/KWStyle";
-//$kwstyle = "/projects/KWStyle/KWStyle-Linux/KWStyle";
-$kwstyle2 = "/www/CADDLab/kwstyle/";
-//$kwstyle2 = "/projects/KWStyle/KWStyle/Web/";
+//$kwstyle = "/www/CADDLab/kwstyle/KWStyle";
+$kwstyle = "/projects/KWStyle/KWStyle-Linux/KWStyle";
+
+//$kwstyle2 = "/www/CADDLab/kwstyle/";
+$kwstyle2 = "/projects/KWStyle/KWStyle/Web/";
 
 Header_POST["Header"];
 $xmlfile = $_POST["xmlfile"];
