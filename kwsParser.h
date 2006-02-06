@@ -127,6 +127,7 @@ public:
   void SetBuffer(std::string buffer) 
     {
     m_Buffer = buffer;
+    this->ConvertBufferToWindowsFileType(m_Buffer);
     this->RemoveComments();
     }
  
