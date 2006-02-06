@@ -59,16 +59,7 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL,bool useCVS
   file.close();
   delete [] buf;
 
-  bool windowsfile = this->IsWindowsFile(buffer);
-
-  if(windowsfile)
-    {
-    std::cout << "WINDOWS FILE" << std::endl;
-    }
-  else
-    {
-    std::cout << "LINUX FILE" << std::endl;
-    }
+  this->ConvertBufferToWindowsFileType(buffer);
 
   m_HeaderFilename = filename;
   

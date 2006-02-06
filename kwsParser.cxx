@@ -133,12 +133,10 @@ bool Parser::Check(const char* name, const char* value)
  
     if(!strcmp(v2.c_str(),"true"))
       {
-      std::cout << "Checking end of new line!" << std::endl;
       spaceEndOfLine = true;
       }
     if(!strcmp(v3.c_str(),"true"))
       {
-      std::cout << "Checking CVS!" << std::endl;
       useCVS = true;
       }
 
@@ -307,6 +305,18 @@ std::string Parser::GetInfo()
     it++;
     }
   return output;
+}
+
+void Parser::ConvertBufferToWindowsFileType(std::string & buffer)
+{
+  long int pos = buffer.find("\r\n");
+  long int pos2 = buffer.find("\n",pos); 
+  while(pos2 != -1 && (pos2-pos)!=1)
+    {
+    buffer.insert(pos2,"\r");
+    pos = buffer.find("\r\n",pos2);
+    pos2 = buffer.find("\n",pos);   
+    }
 }
 
 /** Return the number of lines */

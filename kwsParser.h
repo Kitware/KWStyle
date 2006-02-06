@@ -234,15 +234,8 @@ public:
 
 protected:
 
-  /** Return true if the file has \r\n otherwise returns false */ 
-  bool IsWindowsFile(std::string buffer)
-    {
-    if(buffer.find("\r\n") != -1)
-      {
-      return true;
-      }
-    return false;
-    }
+  /** Convert the file with \r\n instead of \n */ 
+  void ConvertBufferToWindowsFileType(std::string & buffer);
   
   /** Check the operator.
    *  \warning This function add an error in the Error list */
