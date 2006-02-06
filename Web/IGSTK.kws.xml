@@ -8,10 +8,10 @@
 <EndOfFileNewLine>1</EndOfFileNewLine>
 <Tabs>1</Tabs>
 <Comments>/**, *, */,true</Comments>
-<Header>headers/ITKHeader.h,false,true</Header>
+<Header>headers/IGSTKHeader.h,false,true</Header>
 <Indent>SPACE,2,true,true</Indent>
-<Namespace>itk</Namespace>
-<NameOfClass>[NameOfClass],itk</NameOfClass>
+<Namespace>igstk</Namespace>
+<NameOfClass>[NameOfClass],igstk</NameOfClass>
 <IfNDefDefine>__[NameOfClass]_[Extension]</IfNDefDefine>
 <EmptyLines>2</EmptyLines>
 <Template>T</Template>
