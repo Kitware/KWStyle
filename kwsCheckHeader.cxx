@@ -217,7 +217,7 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL,bool useCVS
 
         if(word == wordh)
           {
-          wordh = "wrond ident";
+          wordh = "wrong ident";
           }
        
         if(word == " ")

@@ -133,10 +133,12 @@ bool Parser::Check(const char* name, const char* value)
  
     if(!strcmp(v2.c_str(),"true"))
       {
+      std::cout << "Checking end of new line!" << std::endl;
       spaceEndOfLine = true;
       }
     if(!strcmp(v3.c_str(),"true"))
       {
+      std::cout << "Checking CVS!" << std::endl;
       useCVS = true;
       }
 
