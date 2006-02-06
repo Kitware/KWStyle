@@ -69,23 +69,23 @@ $currentfile = "";
             <br>
             <br>
             <br>
-            <a class="left" href="index.htm"><b>&nbsp;Home</b></a><br>
+            <a class="left" href="http://public.kitware.com/KWStyle/index.htm"><b>&nbsp;Home</b></a><br>
             <br>
-            <a class="left" href="features.htm"><b>&nbsp;Features</b></a><br>
+            <a class="left" href="http://public.kitware.com/KWStyle/features.htm"><b>&nbsp;Features</b></a><br>
 			<br>
 			<a class="left" href="http://192.168.113.30/KWStyle"><b>&nbsp;Check my file</b></a><br>
             <br>
-            <a class="left" href="download.htm"><b>&nbsp;Download</b></a><br>
+            <a class="left" href="http://public.kitware.com/KWStyle/download.htm"><b>&nbsp;Download</b></a><br>
             <br>
-            <a class="left" href="example/KWSMatrix.html"><b>&nbsp;Example</b></a><br>
+            <a class="left" href="http://public.kitware.com/KWStyle/example/KWSMatrix.html"><b>&nbsp;Example</b></a><br>
             <br>
-            <a class="left" href="testing.htm"><b>&nbsp;Testing</b></a><br>
+            <a class="left" href="http://public.kitware.com/KWStyle/testing.htm"><b>&nbsp;Testing</b></a><br>
             <br>
-            <a class="left" href="sponsors.htm"><b>&nbsp;Sponsors</b></a><br>
+            <a class="left" href="http://public.kitware.com/KWStyle/sponsors.htm"><b>&nbsp;Sponsors</b></a><br>
             <br>
-            <a class="left" href="documentation.htm"><b>&nbsp;Documentation</b></a><br>
+            <a class="left" href="http://public.kitware.com/KWStyle/documentation.htm"><b>&nbsp;Documentation</b></a><br>
             <br>
-            <a class="left" href="copyright.htm"><b>&nbsp;Copyright</b></a><br>
+            <a class="left" href="http://public.kitware.com/KWStyle/copyright.htm"><b>&nbsp;Copyright</b></a><br>
             <br>
             <a class="left" href="http://public.kitware.com/Bug/"><b>&nbsp;Bug 
             Tracker</b></a><br>
