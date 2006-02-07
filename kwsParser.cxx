@@ -316,7 +316,7 @@ void Parser::ConvertBufferToWindowsFileType(std::string & buffer)
     pos2 = buffer.find("\r\n",pos-1); 
     }
   
-  while(pos != -1 && (pos2-pos)!=1)
+  while(pos != -1 && (pos-pos2)!=1)
     {
     buffer.insert(pos,"\r");
     pos = buffer.find("\n",pos+2);
@@ -325,6 +325,7 @@ void Parser::ConvertBufferToWindowsFileType(std::string & buffer)
       pos2 = buffer.find("\r\n",pos-1);   
       }
     }
+  
 }
 
 /** Return the number of lines */
