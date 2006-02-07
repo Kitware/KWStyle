@@ -77,7 +77,7 @@ $currentfile = "";
             <br>
             <a class="left" href="http://public.kitware.com/KWStyle/download.htm"><b>&nbsp;Download</b></a><br>
             <br>
-            <a class="left" href="http://public.kitware.com/KWStyle/example/KWSMatrix.html"><b>&nbsp;Example</b></a><br>
+            <a class="left" href="http://public.kitware.com/KWStyle/example.htm"><b>&nbsp;Example</b></a><br>
             <br>
             <a class="left" href="http://public.kitware.com/KWStyle/testing.htm"><b>&nbsp;Testing</b></a><br>
             <br>
