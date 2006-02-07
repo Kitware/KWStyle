@@ -309,13 +309,21 @@ std::string Parser::GetInfo()
 
 void Parser::ConvertBufferToWindowsFileType(std::string & buffer)
 {
-  long int pos = buffer.find("\r\n");
-  long int pos2 = buffer.find("\n",pos); 
-  while(pos2 != -1 && (pos2-pos)!=1)
+  long int pos = buffer.find("\n");
+  long int pos2 = -1;
+  if(pos>1)
     {
-    buffer.insert(pos2,"\r");
-    pos = buffer.find("\r\n",pos2);
-    pos2 = buffer.find("\n",pos);   
+    pos2 = buffer.find("\r\n",pos-1); 
+    }
+  
+  while(pos != -1 && (pos2-pos)!=1)
+    {
+    buffer.insert(pos,"\r");
+    pos = buffer.find("\n",pos+2);
+    if(pos>1)
+      {
+      pos2 = buffer.find("\r\n",pos-1);   
+      }
     }
 }
 
