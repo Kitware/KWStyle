@@ -53,7 +53,7 @@ bool Parser::CheckIndent(IndentType itype,
   char* val = new char[10];
   sprintf(val,"%d ",size);
   m_TestsDescription[INDENT] += val;
-  if(itype == TABS)
+  if(itype == (IndentType)TABS)
     {
     m_TestsDescription[INDENT] += "tabs";
     }
@@ -115,7 +115,7 @@ bool Parser::CheckIndent(IndentType itype,
 
 
   char type = ' ';
-  if(itype == TABS) {type = '\t';}
+  if(itype == (IndentType)TABS) {type = '\t';}
 
   int wantedIndent = 0;
   
