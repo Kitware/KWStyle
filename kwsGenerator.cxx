@@ -607,4 +607,102 @@ void Generator::ExportHTML(std::ostream & output)
     }
 }
 
+/** Generate dart files */
+bool Generator::GenerateDart(const char* dir)
+{
+  std::cout << "Generating Dart...";
+  
+  // We should have a Configure.xml file in the directory
+
+  std::string dirname = dir;
+  if(dir[strlen(dir)-1] != '/' && dir[strlen(dir)-1] != '\\')
+    {
+     dirname += "/";
+    }
+
+  std::string configname = dirname+"Configure.xml";
+
+  std::ifstream configfile;
+
+  configfile.open(configname.c_str(), std::ios::binary | std::ios::in);
+  if(!configfile.is_open())
+    {
+    std::cout << "Cannot open file for reading: " << configname.c_str() << std::endl;
+    return false;
+    }
+  
+  // Create the Build.xml file
+  std::ofstream file;
+  std::string filename = dirname+"Build.xml";
+
+  file.open(filename.c_str(), std::ios::binary | std::ios::out);
+  if(!file.is_open())
+    {
+    std::cout << "Cannot open file for writing: " <<  std::endl;
+    return false;
+    }
+
+  // Generate the header
+  //file << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl;
+  //file << "<Site BuildName=\"Linux-gcc-3.3\" BuildStamp=\"20060207-0100-Nightly\" Name=\"voltaire.caddlab.unc\" Generator=\"ctest2.3-20050829\">" << std::endl;
+  char* buffer = new char[255];
+  configfile.getline(buffer,255);
+  file << buffer << std::endl;
+  configfile.getline(buffer,255);
+  file << buffer << std::endl;
+
+  delete [] buffer;
+
+  file << "<Build>" << std::endl;
+  file << "      <StartDateTime>";
+  file << itksys::SystemTools::GetCurrentDateTime("%b %d %I:%M:%S %z");
+  file << "</StartDateTime>" << std::endl;
+  file << "<BuildCommand>KWStyle</BuildCommand>" << std::endl;
+
+  ParserVectorType::const_iterator it = m_Parsers->begin();
+  while(it != m_Parsers->end())
+    {
+    const Parser::ErrorVectorType errors = (*it).GetErrors();
+    Parser::ErrorVectorType::const_iterator itError = errors.begin();
+    while(itError != errors.end())
+      {
+      file << "<Error>" << std::endl;
+      file << "          <BuildLogLine>1</BuildLogLine>" << std::endl;
+      file << "          <Text>" << std::endl;
+      file << (*it).GetErrorTag((*itError).number);
+      file << " : ";
+      file << (*it).GetTestDescription((*itError).number);
+      file << "</Text>" << std::endl;
+      file << "          <SourceFile>";
+      file << (*it).GetFilename();
+      file << "</SourceFile>" << std::endl;
+      file << "          <SourceLineNumber>";
+      file << (*itError).line;
+      file << "</SourceLineNumber>" << std::endl;
+      file << "          <PreContext>";
+      
+      file << "</PreContext>" << std::endl;
+      file << "<PostContext>" << std::endl;
+      file << "</PostContext>" << std::endl;
+      file << "<RepeatCount>0</RepeatCount>" << std::endl;
+      file << "</Error>" << std::endl;
+      itError++;
+      }
+    it++;
+    }
+ 
+  // Write the footer
+  file << " <Log Encoding=\"base64\" Compression=\"/bin/gzip\">" << std::endl;
+  file << "      </Log>" << std::endl;
+  file << "      <EndDateTime>";
+  file << itksys::SystemTools::GetCurrentDateTime("%b %d %I:%M:%S %z");
+  file << "</EndDateTime>" << std::endl;
+  file << "  <ElapsedMinutes>13.9</ElapsedMinutes></Build>" << std::endl;
+  file << "</Site>" << std::endl;
+
+  configfile.close();
+  file.close(); 
+  return true;
+ }
+
 } // end namespace kws

@@ -87,6 +87,8 @@ int main(int argc, char **argv)
   command.SetOption("dirfile","D",false,"Specify a file listing all the directories");
   command.SetOption("blacklist","b",false,"Specify a black list of words");
   command.AddOptionField("blacklist","filename",MetaCommand::STRING,false);
+  command.SetOption("dart","dart",false,"Write out files to be send to the dart server");
+  command.AddOptionField("dart","filename",MetaCommand::STRING,false);
 
   command.AddField("infile","input filename",MetaCommand::STRING,true);
 
@@ -325,6 +327,14 @@ int main(int argc, char **argv)
     generator.ExportHTML(std::cout);
     }
 
+  // If we should generate dart files
+  if(command.GetOptionWasSet("dart"))
+    {
+    std::string dart = command.GetValueAsString("dart","filename");
+    kws::Generator generator;
+    generator.SetParser(&m_Parsers);
+    generator.GenerateDart(dart.c_str());
+    }
 
   return 1;
 }

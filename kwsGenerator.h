@@ -71,6 +71,9 @@ public:
   /** Export the HTML report */
   void ExportHTML(std::ostream & output);
 
+  /** Generate dart files */
+  bool GenerateDart(const char* dir);
+
 private:
 
   bool CreateHeader(std::ostream * file,const char* title);
