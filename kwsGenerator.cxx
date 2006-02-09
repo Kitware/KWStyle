@@ -608,7 +608,7 @@ void Generator::ExportHTML(std::ostream & output)
 }
 
 /** Generate dart files */
-bool Generator::GenerateDart(const char* dir)
+bool Generator::GenerateDart(const char* dir,int maxError)
 {
   std::cout << "Generating Dart...";
   
@@ -685,6 +685,7 @@ bool Generator::GenerateDart(const char* dir)
   file << "</StartDateTime>" << std::endl;
   file << "<BuildCommand>KWStyle</BuildCommand>" << std::endl;
 
+  int nErrors = 0;
   ParserVectorType::const_iterator it = m_Parsers->begin();
   while(it != m_Parsers->end())
     {
@@ -729,6 +730,15 @@ bool Generator::GenerateDart(const char* dir)
       file << "<RepeatCount>0</RepeatCount>" << std::endl;
       file << "</Error>" << std::endl;
       itError++;
+      nErrors++;
+      if(nErrors >= maxError)
+        {
+        break;
+        }
+      }
+    if(nErrors >= maxError)
+      {
+      break;
       }
     it++;
     }

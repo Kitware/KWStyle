@@ -117,7 +117,8 @@ int main(int argc, char **argv)
   command.SetOption("blacklist","b",false,"Specify a black list of words");
   command.AddOptionField("blacklist","filename",MetaCommand::STRING,false);
   command.SetOption("dart","dart",false,"Write out files to be send to the dart server");
-  command.AddOptionField("dart","filename",MetaCommand::STRING,false);
+  command.AddOptionField("dart","filename",MetaCommand::STRING,true);
+  command.AddOptionField("dart","maxerror",MetaCommand::INT,false,"-1");
 
   command.AddField("infile","input filename",MetaCommand::STRING,true);
 
@@ -353,9 +354,10 @@ int main(int argc, char **argv)
   if(command.GetOptionWasSet("dart"))
     {
     std::string dart = command.GetValueAsString("dart","filename");
+    int maxerror = command.GetValueAsInt("dart","maxerror");
     kws::Generator generator;
     generator.SetParser(&m_Parsers);
-    generator.GenerateDart(dart.c_str());
+    generator.GenerateDart(dart.c_str(),maxerror);
     }
 
   return 1;
