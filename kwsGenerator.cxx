@@ -635,7 +635,10 @@ bool Generator::GenerateDart(const char* dir)
   char* bufferTag = new char[255];
   tagfile.getline(bufferTag,255);
 
-  bufferTag[strlen(bufferTag)-1] = '\0';
+  if(bufferTag[strlen(bufferTag)-1] == '\r')
+    {
+    bufferTag[strlen(bufferTag)-1] = '\0';
+    }
 
   dirname += bufferTag;
   dirname += "/";
