@@ -119,6 +119,7 @@ int main(int argc, char **argv)
   command.SetOption("dart","dart",false,"Write out files to be send to the dart server");
   command.AddOptionField("dart","filename",MetaCommand::STRING,true);
   command.AddOptionField("dart","maxerror",MetaCommand::INT,false,"-1");
+  command.AddOptionField("dart","group",MetaCommand::INT,false,"0");
 
   command.AddField("infile","input filename",MetaCommand::STRING,true);
 
@@ -355,9 +356,10 @@ int main(int argc, char **argv)
     {
     std::string dart = command.GetValueAsString("dart","filename");
     int maxerror = command.GetValueAsInt("dart","maxerror");
+    bool grouperrors = command.GetValueAsBool("dart","group");
     kws::Generator generator;
     generator.SetParser(&m_Parsers);
-    generator.GenerateDart(dart.c_str(),maxerror);
+    generator.GenerateDart(dart.c_str(),maxerror,grouperrors);
     }
 
   return 1;

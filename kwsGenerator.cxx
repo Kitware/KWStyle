@@ -608,7 +608,7 @@ void Generator::ExportHTML(std::ostream & output)
 }
 
 /** Generate dart files */
-bool Generator::GenerateDart(const char* dir,int maxError)
+bool Generator::GenerateDart(const char* dir,int maxError,bool group)
 {
   std::cout << "Generating Dart...";
   
@@ -689,13 +689,25 @@ bool Generator::GenerateDart(const char* dir,int maxError)
   ParserVectorType::const_iterator it = m_Parsers->begin();
   while(it != m_Parsers->end())
     {
+    bool first = true;
     const Parser::ErrorVectorType errors = (*it).GetErrors();
     Parser::ErrorVectorType::const_iterator itError = errors.begin();
     while(itError != errors.end())
       {
-      file << "<Error>" << std::endl;
-      file << "          <BuildLogLine>1</BuildLogLine>" << std::endl;
-      file << "          <Text>";
+      if((!group) || (first && group))
+        {
+        file << "<Error>" << std::endl;
+        file << "          <BuildLogLine>1</BuildLogLine>" << std::endl;
+        file << "          <SourceFile>";
+        file << (*it).GetFilename();
+        file << "</SourceFile>" << std::endl;
+        file << "          <SourceLineNumber>";
+        file << (*itError).line;
+        file << "</SourceLineNumber>" << std::endl;
+        file << "          <Text>";
+        first = false;
+        }
+      
       file << (*it).GetErrorTag((*itError).number);
       file << " : ";
       std::string desc = (*itError).description;
@@ -712,31 +724,44 @@ bool Generator::GenerateDart(const char* dir,int maxError)
         pos = desc.find(">");
         }
 
-      file << desc;
-      file << "</Text>" << std::endl;
-      file << "          <SourceFile>";
-      file << (*it).GetFilename();
-      file << "</SourceFile>" << std::endl;
-      file << "          <SourceLineNumber>";
-      file << (*itError).line;
-      file << "</SourceLineNumber>" << std::endl;
+      desc += " ["+(*it).GetTestDescription((*itError).number)+"]\n";
       
+      file << desc;
+      
+      if(!group)
+        {
+        file << "</Text>" << std::endl;
+        // Show the actual error in the precontext
+        file << "          <PreContext>";
+        //file << (*it).GetTestDescription((*itError).number) << std::endl;
+        file << "</PreContext>" << std::endl;
+        file << "<PostContext>";
+        file << "</PostContext>" << std::endl;
+        file << "<RepeatCount>0</RepeatCount>" << std::endl;
+        file << "</Error>" << std::endl;
+        }
+      itError++;
+      nErrors++;
+      if((maxError != -1) && (nErrors >= maxError))
+        {
+        break;
+        }
+      }
+  
+    if(group)
+      {
+      file << "</Text>" << std::endl;
       // Show the actual error in the precontext
       file << "          <PreContext>";
-      file << (*it).GetTestDescription((*itError).number) << std::endl;
+      //file << (*it).GetTestDescription((*itError).number) << std::endl;
       file << "</PreContext>" << std::endl;
       file << "<PostContext>";
       file << "</PostContext>" << std::endl;
       file << "<RepeatCount>0</RepeatCount>" << std::endl;
       file << "</Error>" << std::endl;
-      itError++;
-      nErrors++;
-      if(nErrors >= maxError)
-        {
-        break;
-        }
       }
-    if(nErrors >= maxError)
+   
+    if((maxError != -1) && (nErrors >= maxError))
       {
       break;
       }

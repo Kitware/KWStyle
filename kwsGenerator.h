@@ -72,7 +72,7 @@ public:
   void ExportHTML(std::ostream & output);
 
   /** Generate dart files */
-  bool GenerateDart(const char* dir,int maxerror = -1);
+  bool GenerateDart(const char* dir,int maxerror = -1,bool group = false);
 
 private:
 
