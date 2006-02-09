@@ -694,10 +694,24 @@ bool Generator::GenerateDart(const char* dir)
       {
       file << "<Error>" << std::endl;
       file << "          <BuildLogLine>1</BuildLogLine>" << std::endl;
-      file << "          <Text>" << std::endl;
+      file << "          <Text>";
       file << (*it).GetErrorTag((*itError).number);
       file << " : ";
-      file << (*itError).description;
+      std::string desc = (*itError).description;
+      long int pos = desc.find("<");
+      while(pos != -1)
+        {
+        desc.replace(pos,1,"&#60");
+        pos = desc.find("<");
+        }
+      pos = desc.find(">");
+      while(pos != -1)
+        {
+        desc.replace(pos,1,"&#62");
+        pos = desc.find(">");
+        }
+
+      //file << desc;
       file << "</Text>" << std::endl;
       file << "          <SourceFile>";
       file << (*it).GetFilename();
