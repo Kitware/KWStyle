@@ -724,7 +724,12 @@ bool Generator::GenerateDart(const char* dir,int maxError,bool group)
         pos = desc.find(">");
         }
 
-      desc += " ["+(*it).GetTestDescription((*itError).number)+"]\n";
+      desc += " ["+(*it).GetTestDescription((*itError).number)+"] (";
+      char* val = new char[255];
+      sprintf(val,"%d",(*itError).line);
+      desc += val;
+      desc += ")\n";
+      delete [] val; 
       
       file << desc;
       
