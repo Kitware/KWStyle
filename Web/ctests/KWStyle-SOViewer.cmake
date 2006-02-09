@@ -7,7 +7,7 @@ SET (CTEST_COMMAND
 "/projects/KWStyle/CMake/bin/ctest -D ExperimentalStart"
 "/projects/KWStyle/CMake/bin/ctest -D ExperimentalUpdate"
 "/projects/KWStyle/CMake/bin/ctest -D ExperimentalConfigure"
-"/projects/KWStyle/KWStyle-Linux/KWStyle -xml /projects/KWStyle/KWStyle/Web/ITK.kws.xml -dart ${CTEST_BINARY_DIRECTORY} -R -d ${CTEST_SOURCE_DIRECTORY}"
+"/projects/KWStyle/KWStyle-Linux/KWStyle -xml /projects/KWStyle/KWStyle/Web/ITK.kws.xml -dart ${CTEST_BINARY_DIRECTORY} -1 1 -R -d ${CTEST_SOURCE_DIRECTORY}"
 "/projects/KWStyle/CMake/bin/ctest -D ExperimentalSubmit"
 )
 
