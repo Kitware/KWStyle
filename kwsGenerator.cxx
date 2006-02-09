@@ -728,7 +728,7 @@ bool Generator::GenerateDart(const char* dir,int maxError,bool group)
       
       file << desc;
       
-      if(!group && !first)
+      if(!group)
         {
         file << "</Text>" << std::endl;
         // Show the actual error in the precontext
@@ -748,7 +748,7 @@ bool Generator::GenerateDart(const char* dir,int maxError,bool group)
         }
       }
   
-    if(group)
+    if(group && !first)
       {
       file << "</Text>" << std::endl;
       // Show the actual error in the precontext
