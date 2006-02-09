@@ -612,14 +612,35 @@ bool Generator::GenerateDart(const char* dir)
 {
   std::cout << "Generating Dart...";
   
-  // We should have a Configure.xml file in the directory
-
+  // We try to find the TAG file 
   std::string dirname = dir;
   if(dir[strlen(dir)-1] != '/' && dir[strlen(dir)-1] != '\\')
     {
      dirname += "/";
     }
+  dirname += "Testing/";
 
+  std::string tag = dirname+"TAG";
+  
+  std::ifstream tagfile;
+  tagfile.open(tag.c_str(), std::ios::binary | std::ios::in);
+  if(!tagfile.is_open())
+    {
+    std::cout << "Cannot open file for reading: " << tag.c_str() << std::endl;
+    return false;
+    }
+
+  // We read the first line of the file which gives the path to the actual
+  // directory
+  char* bufferTag = new char[255];
+  tagfile.getline(bufferTag,255);
+
+  dirname += bufferTag;
+  dirname += "/";
+
+  delete [] bufferTag; 
+
+  // We should have a Configure.xml file in the directory
   std::string configname = dirname+"Configure.xml";
 
   std::ifstream configfile;
@@ -701,7 +722,8 @@ bool Generator::GenerateDart(const char* dir)
   file << "</Site>" << std::endl;
 
   configfile.close();
-  file.close(); 
+  file.close();
+  std::cout << "Done." << std::endl;
   return true;
  }
 
