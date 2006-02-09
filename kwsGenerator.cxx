@@ -701,17 +701,17 @@ bool Generator::GenerateDart(const char* dir)
       long int pos = desc.find("<");
       while(pos != -1)
         {
-        desc.replace(pos,1,"&#60");
+        desc.replace(pos,1,"&#x03C;");
         pos = desc.find("<");
         }
       pos = desc.find(">");
       while(pos != -1)
         {
-        desc.replace(pos,1,"&#62");
+        desc.replace(pos,1,"&#x03E;");
         pos = desc.find(">");
         }
 
-      //file << desc;
+      file << desc;
       file << "</Text>" << std::endl;
       file << "          <SourceFile>";
       file << (*it).GetFilename();
@@ -722,9 +722,9 @@ bool Generator::GenerateDart(const char* dir)
       
       // Show the actual error in the precontext
       file << "          <PreContext>";
-      file << (*it).GetTestDescription((*itError).number);
+      file << (*it).GetTestDescription((*itError).number) << std::endl;
       file << "</PreContext>" << std::endl;
-      file << "<PostContext>" << std::endl;
+      file << "<PostContext>";
       file << "</PostContext>" << std::endl;
       file << "<RepeatCount>0</RepeatCount>" << std::endl;
       file << "</Error>" << std::endl;
