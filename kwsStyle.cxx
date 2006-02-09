@@ -74,11 +74,40 @@ void DisableFeature(const char* name)
 
 }
 
+/** Push the filenames in the vector */
+void AddDirectory(const char* dirname,std::vector<std::string> & filenames,bool recurse = false)
+{
+  std::cout << "parsing " << dirname << std::endl;
+  itksys::Directory directory;
+  directory.Load(dirname);
+  itksys::Directory dir2;
+
+  for(unsigned int i=0;i<directory.GetNumberOfFiles();i++)
+    {
+    std::string file = directory.GetFile(i);
+    std::string fullpathdir = dirname+file+"/";
+    if(recurse && file!=".." && file!="." && dir2.Load(fullpathdir.c_str()))
+      {
+      AddDirectory(fullpathdir.c_str(),filenames,true);
+      }
+    else if((file.find(".h") != -1)
+       || (file.find(".hxx") != -1)
+       || (file.find(".cxx") != -1)
+       || (file.find(".txx") != -1)
+       )
+      {
+      filenames.push_back(dirname+file);
+      }
+    }
+}
+
 int main(int argc, char **argv)
 {
   MetaCommand command;
 
   command.SetOption("directory","d",false,"Specify a directory");
+  command.SetOption("recursive","R",false,"Associated with -d recurse through directories");
+
   command.SetOption("html","html",false,"Generate the HTML report");
   command.AddOptionField("html","filename",MetaCommand::STRING,false);
   command.SetOption("exporthtml","exporthtml",false,"Export the HTML report online");
@@ -169,21 +198,14 @@ int main(int argc, char **argv)
   // if the -d command is used
   if(parseDirectory)
     {
-    itksys::Directory directory;
-    directory.Load(inputFilename.c_str());
-    for(unsigned int i=0;i<directory.GetNumberOfFiles();i++)
+    bool recursive = false;
+    if(command.GetOptionWasSet("recursive"))
       {
-      std::string file = directory.GetFile(i);
-      if((file.find(".h") != -1)
-         || (file.find(".hxx") != -1)
-         || (file.find(".cxx") != -1)
-         || (file.find(".txx") != -1)
-         )
-        {
-        filenames.push_back(inputFilename+file);
-        }
+      recursive = true;
       }
+    AddDirectory(inputFilename.c_str(),filenames,recursive);
     }
+
   // if the -D command is used
   else if(command.GetOptionWasSet("dirfile"))
     {
