@@ -635,6 +635,8 @@ bool Generator::GenerateDart(const char* dir)
   char* bufferTag = new char[255];
   tagfile.getline(bufferTag,255);
 
+  bufferTag[strlen(bufferTag)-1] = '\0';
+
   dirname += bufferTag;
   dirname += "/";
 
@@ -692,7 +694,7 @@ bool Generator::GenerateDart(const char* dir)
       file << "          <Text>" << std::endl;
       file << (*it).GetErrorTag((*itError).number);
       file << " : ";
-      file << (*it).GetTestDescription((*itError).number);
+      file << (*itError).description;
       file << "</Text>" << std::endl;
       file << "          <SourceFile>";
       file << (*it).GetFilename();
@@ -700,8 +702,10 @@ bool Generator::GenerateDart(const char* dir)
       file << "          <SourceLineNumber>";
       file << (*itError).line;
       file << "</SourceLineNumber>" << std::endl;
-      file << "          <PreContext>";
       
+      // Show the actual error in the precontext
+      file << "          <PreContext>";
+      file << (*it).GetTestDescription((*itError).number);
       file << "</PreContext>" << std::endl;
       file << "<PostContext>" << std::endl;
       file << "</PostContext>" << std::endl;
