@@ -608,7 +608,7 @@ void Generator::ExportHTML(std::ostream & output)
 }
 
 /** Generate dart files */
-bool Generator::GenerateDart(const char* dir,int maxError,bool group)
+bool Generator::GenerateDart(const char* dir,int maxError,bool group,std::string url)
 {
   std::cout << "Generating Dart...";
   
@@ -705,6 +705,34 @@ bool Generator::GenerateDart(const char* dir,int maxError,bool group)
         file << (*itError).line;
         file << "</SourceLineNumber>" << std::endl;
         file << "          <Text>";
+
+        if(url != "")
+          {
+          // We had a link to the dashboard
+          file << "&#x03C;a href=\"" << url << "/KWSMatrix.html\"&#x03E; Matrix View &#x03C;/a&#x03E;" << std::endl;
+
+          long int posslash = (*it).GetFilename().find_last_of("/");
+          long int posbackslash = (*it).GetFilename().find_last_of("\\");
+          
+          long int pos = 0;
+          if(posslash != -1 && posslash>posbackslash)
+            {
+            pos = posslash;  
+            }
+          
+          if(posbackslash != -1 && posbackslash>posslash)
+            {
+            pos = posbackslash;  
+            }
+
+          if(pos == 0) 
+            {
+            pos++;
+            }
+          std::string htmlfile = (*it).GetFilename().substr(pos+1,(*it).GetFilename().size()-pos-1);
+          htmlfile += ".html";
+          file << "&#x03C;a href=\"" << url << "/" << htmlfile.c_str() <<"\"&#x03E; File View &#x03C;/a&#x03E;" << std::endl;
+          }
         first = false;
         }
       

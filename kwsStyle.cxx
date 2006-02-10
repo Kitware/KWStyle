@@ -121,6 +121,9 @@ int main(int argc, char **argv)
   command.AddOptionField("dart","maxerror",MetaCommand::INT,false,"-1");
   command.AddOptionField("dart","group",MetaCommand::INT,false,"0");
 
+  command.SetOption("kwsurl","kwsurl",false,"Specify the base url of the KWStyle HTML report");
+  command.AddOptionField("kwsurl","url",MetaCommand::STRING,true);
+
   command.AddField("infile","input filename",MetaCommand::STRING,true);
 
   // Parsing
@@ -359,7 +362,14 @@ int main(int argc, char **argv)
     bool grouperrors = command.GetValueAsBool("dart","group");
     kws::Generator generator;
     generator.SetParser(&m_Parsers);
-    generator.GenerateDart(dart.c_str(),maxerror,grouperrors);
+
+    std::string url = "";
+    if(command.GetOptionWasSet("kwsurl"))
+      {
+      url = command.GetValueAsString("kwsurl","url");
+      }
+
+    generator.GenerateDart(dart.c_str(),maxerror,grouperrors,url);
     }
 
   return 1;
