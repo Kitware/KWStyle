@@ -103,6 +103,8 @@ void AddDirectory(const char* dirname,std::vector<std::string> & filenames,bool 
 
 int main(int argc, char **argv)
 {
+  double time0 = itksys::SystemTools::GetTime();
+
   MetaCommand command;
 
   command.SetOption("directory","d",false,"Specify a directory");
@@ -369,7 +371,7 @@ int main(int argc, char **argv)
       url = command.GetValueAsString("kwsurl","url");
       }
 
-    generator.GenerateDart(dart.c_str(),maxerror,grouperrors,url);
+    generator.GenerateDart(dart.c_str(),maxerror,grouperrors,url,time0);
     }
 
   return 1;

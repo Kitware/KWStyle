@@ -608,10 +608,10 @@ void Generator::ExportHTML(std::ostream & output)
 }
 
 /** Generate dart files */
-bool Generator::GenerateDart(const char* dir,int maxError,bool group,std::string url)
+bool Generator::GenerateDart(const char* dir,int maxError,bool group,std::string url,double time)
 {
   std::cout << "Generating Dart...";
-  
+ 
   // We try to find the TAG file 
   std::string dirname = dir;
   if(dir[strlen(dir)-1] != '/' && dir[strlen(dir)-1] != '\\')
@@ -809,9 +809,16 @@ bool Generator::GenerateDart(const char* dir,int maxError,bool group,std::string
   file << "      <EndDateTime>";
   file << itksys::SystemTools::GetCurrentDateTime("%b %d %I:%M:%S %z");
   file << "</EndDateTime>" << std::endl;
-  file << "  <ElapsedMinutes>13.9</ElapsedMinutes></Build>" << std::endl;
+
+  double time1 = itksys::SystemTools::GetTime();
+
+  char* timestr = new char[10];
+  sprintf(timestr,"%.1f",(time1-time)/60.0);
+
+  file << "  <ElapsedMinutes>" << timestr << "</ElapsedMinutes></Build>" << std::endl;
   file << "</Site>" << std::endl;
 
+  delete [] timestr;
   configfile.close();
   file.close();
   std::cout << "Done." << std::endl;
