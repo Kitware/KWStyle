@@ -35,7 +35,7 @@ bool Parser::CheckTemplate(const char* regEx)
   long int templatePos = m_BufferNoComment.find("template",0);
   while(templatePos != -1 ) 
     {
-    // Definition is template <whatever name,whatever name2, ...>
+    // Definition is template <whatever name,whatever name2 = test, ...>
     long int inf = m_BufferNoComment.find("<",templatePos);
     long int sup = m_BufferNoComment.find(">",inf);
 
@@ -47,6 +47,7 @@ bool Parser::CheckTemplate(const char* regEx)
    
     long int i = inf+1;
     bool inWord = false;
+    bool afterEqual = false;
     std::string currentWord = "";
     while(i<=sup)
       {
@@ -56,11 +57,11 @@ bool Parser::CheckTemplate(const char* regEx)
         // do nothing
         inWord = false;
         }
-      else if(m_BufferNoComment[i] == ',' || m_BufferNoComment[i] == '>')
+      else if(m_BufferNoComment[i] == ',' || m_BufferNoComment[i] == '>' || m_BufferNoComment[i] == '=')
         {
         inWord = false;
 
-        if(!regex.find(currentWord))
+        if(!afterEqual && !regex.find(currentWord))
           {
           Error error;
           error.line = this->GetLineNumber(i,true);
@@ -69,7 +70,16 @@ bool Parser::CheckTemplate(const char* regEx)
           error.description = "Template definition (" + currentWord + ") doesn't match regular expression";
           m_ErrorList.push_back(error);
           hasErrors = true;
-          }    
+          }
+
+        if(m_BufferNoComment[i] == '=')
+          {
+          afterEqual = true;
+          }
+        else
+          {
+          afterEqual = false;
+          }
         }
       else
         {

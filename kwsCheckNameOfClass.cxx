@@ -83,13 +83,13 @@ bool Parser::CheckNameOfClass(const char* name,const char* prefix)
     classpos = this->GetClassPosition(classpos+1);
     }
 
-  if(!gotMatch && gotAtLeastOne)
+  if(!gotMatch && gotAtLeastOne && (classpos!=-1))
     {
     Error error;
     error.line = this->GetLineNumber(classpos,true);
     error.line2 = error.line;
     error.number = NAMEOFCLASS;
-    error.description = "classname is not defined correctly: ";
+    error.description = "classname is not defined correctly";
     m_ErrorList.push_back(error);
     return false;
     }

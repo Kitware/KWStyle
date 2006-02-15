@@ -46,7 +46,12 @@ bool Parser::CheckIfNDefDefine(const char* match)
   bool hasError = false;
   bool notDefined = false;
 
-  // Find the first word in the file
+
+  // We should have a #ifndef/#define on the same line and we go
+  // through the file until we find a correct match.
+  bool doesMatch = true;
+
+  // Find the #ifndef word in the file
   long int pos = m_BufferNoComment.find("#ifndef",0);
   if(pos == -1)
     {
@@ -79,106 +84,141 @@ bool Parser::CheckIfNDefDefine(const char* match)
     return false;
     }
 
-  // Find the word after #ifndef
-  pos += 8;
- 
-  while(m_BufferNoComment[pos] == ' ')
+  while(!notDefined)
     {
-    pos++;
-    }
-  long int begin = pos;
-  while((m_BufferNoComment[pos] != ' ') 
-    &&(m_BufferNoComment[pos] != '\r')
-    &&(m_BufferNoComment[pos] != '\n')
-    )
-    {
-    pos++;
-    }
-  long int end = pos;
-  std::string ifndef = m_BufferNoComment.substr(begin,end-begin);
+    doesMatch = true;
 
-  // Find the word after #define
-  pos = m_BufferNoComment.find("#define",end);
-  
-  if(pos == -1)
-    {
-    Error error;
-    error.line = this->GetLineNumber(end,true);
-    error.line2 = error.line;
-    error.number = NDEFINE;
-    error.description = "#define not defined";
-    m_ErrorList.push_back(error);
-    return false;
-    }
-  
-  pos += 7; 
-  while(m_BufferNoComment[pos] == ' ')
-    {
-    pos++;
-    }
-  begin = pos;
-  while((m_BufferNoComment[pos] != ' ') 
-    &&(m_BufferNoComment[pos] != '\r')
-    &&(m_BufferNoComment[pos] != '\n')
-    )
-    {
-    pos++;
-    }
-  end = pos;
-  std::string define = m_BufferNoComment.substr(begin,end-begin);
+    // Find the word after #ifndef
+    pos += 8;
+   
+    while(m_BufferNoComment[pos] == ' ')
+      {
+      pos++;
+      }
+    long int begin = pos;
+    while((m_BufferNoComment[pos] != ' ') 
+      &&(m_BufferNoComment[pos] != '\r')
+      &&(m_BufferNoComment[pos] != '\n')
+      )
+      {
+      pos++;
+      }
+    long int end = pos;
+    std::string ifndef = m_BufferNoComment.substr(begin,end-begin);
 
-  if(ifndef != define)
-    {
-    Error error;
-    error.line = this->GetLineNumber(end,true);
-    error.line2 = error.line;
-    error.number = NDEFINE;
-    error.description = "#define does not match #ifndef";
-    m_ErrorList.push_back(error);
-    return false;
-    }
+    // Find the word after #define
+    long int posDef = m_BufferNoComment.find("#define",end);
 
-  if(m_Filename == "")
-    {
-    std::cout << "CheckIfNDefDefine() : m_Filename shoud be set" << std::endl;
-    return false;
-    }
+    if(posDef == -1)
+      {
+      Error error;
+      error.line = this->GetLineNumber(end,true);
+      error.line2 = error.line;
+      error.number = NDEFINE;
+      error.description = "#define not defined";
+      m_ErrorList.push_back(error);
+      return false;
+      }
+    
+    posDef += 7; 
+    while(m_BufferNoComment[posDef] == ' ')
+      {
+      posDef++;
+      }
+    begin = posDef;
+    while((m_BufferNoComment[posDef] != ' ') 
+      &&(m_BufferNoComment[posDef] != '\r')
+      &&(m_BufferNoComment[posDef] != '\n')
+      )
+      {
+      posDef++;
+      }
+    end = posDef;
+    std::string define = m_BufferNoComment.substr(begin,end-begin);
 
-  long int point = m_Filename.find_last_of(".");
-  long int slash = m_Filename.find_last_of("/");
+    if(ifndef != define)
+      {
+      doesMatch = false;
+      }
 
-  if(slash == -1)
-    {
-    slash = 0;
-    }
+    if(doesMatch)
+      {
+      if(m_Filename == "")
+        {
+        std::cout << "CheckIfNDefDefine() : m_Filename shoud be set" << std::endl;
+        return false;
+        }
 
-  std::string nameofclass = m_Filename.substr(slash+1,point-slash-1);
-  std::string extension = m_Filename.substr(point+1,m_Filename.size()-point-1);
+      long int point = m_Filename.find_last_of(".");
+      long int slash = m_Filename.find_last_of("/");
 
-  // construct the string
-  std::string toMatch = match;
-  pos = toMatch.find("[NameOfClass]");
-  if(pos != -1)
-    {
-    toMatch.replace(pos,13,nameofclass);
-    }
-  pos = toMatch.find("[Extension]");
-  if(pos != -1)
-    {
-    toMatch.replace(pos,11,extension);
-    }
+      if(slash == -1)
+        {
+        slash = 0;
+        }
+
+      std::string nameofclass = m_Filename.substr(slash+1,point-slash-1);
+      std::string extension = m_Filename.substr(point+1,m_Filename.size()-point-1);
+
+      // construct the string
+      std::string toMatch = match;
+      long int posnofc = toMatch.find("[NameOfClass]");
+      if(posnofc != -1)
+        {
+        toMatch.replace(posnofc,13,nameofclass);
+        }
+      posnofc = toMatch.find("[Extension]");
+      if(posnofc != -1)
+        {
+        toMatch.replace(posnofc,11,extension);
+        }
+
+      if(ifndef != toMatch)
+        {   
+        Error error;
+        error.line = this->GetLineNumber(definepos,true);
+        error.line2 = this->GetLineNumber(end,true);
+        error.number = NDEFINE;
+        error.description = "#ifndef/#define does not match expression";
+        m_ErrorList.push_back(error);
+        return false;
+        }
+      else
+        {
+        return true;
+        }
+      }
+
+    pos = m_BufferNoComment.find("#ifndef",pos+1);
+
+    if(pos == -1)
+      {
+      notDefined = true;
+      }
+    /*else
+      {
+      for(int i=0;i<pos;i++)
+        {
+        if((m_BufferNoComment[i] != ' ')
+          && (m_BufferNoComment[i] != '\r')
+          && (m_BufferNoComment[i] != '\n')
+          )
+          {
+          std::cout << "Not defined!" << std::endl;
+          notDefined = true;
+          }
+        }
+      }*/
+
+    } // end looking for entire file
 
 
-  if(ifndef != toMatch)
-    {   
     Error error;
     error.line = this->GetLineNumber(definepos,true);
-    error.line2 = this->GetLineNumber(end,true);
+    error.line2 = error.line;
     error.number = NDEFINE;
-    error.description = "#ifndef/#define does not match expression";
+    error.description = "#ifndef/#define does not match";
     m_ErrorList.push_back(error);
-    return false;
-    }
 
   return !hasError;
 }

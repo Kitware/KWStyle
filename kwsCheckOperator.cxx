@@ -116,7 +116,7 @@ bool Parser::CheckOperator(unsigned int before, unsigned int after)
     || (tmpoperatorPos == m_BufferNoComment.find("-=",operatorPos+1)+1)
     || (tmpoperatorPos == m_BufferNoComment.find("+=",operatorPos+1)+1)
     || (tmpoperatorPos == m_BufferNoComment.find("==",operatorPos+1)+1)
-    || (tmpoperatorPos == m_BufferNoComment.find("operator",operatorPos+1)+9)
+    || (tmpoperatorPos == m_BufferNoComment.find("operator",operatorPos+1)+8)
     )
       {
       doNotCheck = true;
@@ -159,7 +159,7 @@ bool Parser::FindOperator(const char* op,unsigned int before, unsigned int after
     if(bef != before || aft != after)
       {
       // we make sure that the keyword operator is not defined right before
-      if(operatorPos != m_BufferNoComment.find("operator",pos)+9)
+      if(operatorPos != m_BufferNoComment.find("operator",operatorPos-11)+8)
         {
         Error error;
         error.line = this->GetLineNumber(operatorPos,true);

@@ -109,6 +109,7 @@ int main(int argc, char **argv)
 
   command.SetOption("directory","d",false,"Specify a directory");
   command.SetOption("recursive","R",false,"Associated with -d recurse through directories");
+  command.SetOption("verbose","v",false,"Display errors");
 
   command.SetOption("html","html",false,"Generate the HTML report");
   command.AddOptionField("html","filename",MetaCommand::STRING,false);
@@ -295,7 +296,7 @@ int main(int argc, char **argv)
     {
     if(!command.GetOptionWasSet("exporthtml"))
       {
-      std::cout << "Input File = " << (*it).c_str() << std::endl;
+      std::cout << "Processing " << (*it).c_str() << std::endl;
       }
 
     // We open the file
@@ -333,9 +334,16 @@ int main(int argc, char **argv)
         }
       itf++;
       }
+
+    // If we should display the error
+    if(command.GetOptionWasSet("verbose"))
+      {
+      std::cout << parser.GetLastErrors().c_str() << std::endl;
+      }
+        
     m_Parsers.push_back(parser);
     it++;
-    } // end filenames  
+    } // end filenames
 
   //std::cout << "Errors = " << errors << std::endl;
 
