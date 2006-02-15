@@ -1,5 +1,5 @@
-SET (CTEST_SOURCE_DIRECTORY "/projects/KWStyle/SOViewer")
-SET (CTEST_BINARY_DIRECTORY "/projects/KWStyle/SOViewer-Linux")
+SET (CTEST_SOURCE_DIRECTORY "/projects/KWStyle/itkUNC")
+SET (CTEST_BINARY_DIRECTORY "/projects/KWStyle/itkUNC-Linux")
 
 # which ctest command to use for running the dashboard
 SET (CTEST_COMMAND  
@@ -7,7 +7,7 @@ SET (CTEST_COMMAND
 "/projects/KWStyle/CMake/bin/ctest -D ExperimentalStart"
 "/projects/KWStyle/CMake/bin/ctest -D ExperimentalUpdate"
 "/projects/KWStyle/CMake/bin/ctest -D ExperimentalConfigure"
-"/projects/KWStyle/KWStyle-Linux/KWStyle -xml /projects/KWStyle/KWStyle/Web/ITK.kws.xml -dart ${CTEST_BINARY_DIRECTORY} -1 1 -R -d ${CTEST_SOURCE_DIRECTORY}"
+"/projects/KWStyle/KWStyle-Linux/KWStyle -xml /projects/KWStyle/KWStyle/Web/ITK.kws.xml -dart ${CTEST_BINARY_DIRECTORY} -1 1 -kwsurl http://66.194.253.24/KWStyleExamples/itkUNC -R -d ${CTEST_SOURCE_DIRECTORY}"
 "/projects/KWStyle/CMake/bin/ctest -D ExperimentalSubmit"
 )
 
@@ -27,4 +27,6 @@ SITE:STRING=insight.journal.kitware
 BUILDNAME:STRING=KWStyle
 CVSCOMMAND:FILEPATH=/usr/bin/cvs
 ITK_DIR:PATH=/projects/KWStyle/Insight-Linux
+USE_SOV:BOOL=OFF
+DROP_LOCATION:PATH=/DartClient
 ")
