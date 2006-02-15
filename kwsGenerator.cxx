@@ -704,13 +704,11 @@ bool Generator::GenerateDart(const char* dir,int maxError,bool group,std::string
         file << "          <SourceLineNumber>";
         file << (*itError).line;
         file << "</SourceLineNumber>" << std::endl;
-        file << "          <Text>";
 
         if(url != "")
           {
           // We had a link to the dashboard
-          file << "&#x03C;/pre&#x03E;";
-          file << "&#x03C;a href=\"" << url << "/KWSMatrix.html\"&#x03E; Matrix View &#x03C;/a&#x03E;" << std::endl;
+          //file << "&#x03C;a href=\"" << url << "/KWSMatrix.html\"&#x03E; Matrix View &#x03C;/a&#x03E;" << std::endl;
 
           long int posslash = (*it).GetFilename().find_last_of("/");
           long int posbackslash = (*it).GetFilename().find_last_of("\\");
@@ -732,10 +730,10 @@ bool Generator::GenerateDart(const char* dir,int maxError,bool group,std::string
             }
           std::string htmlfile = (*it).GetFilename().substr(pos+1,(*it).GetFilename().size()-pos-1);
           htmlfile += ".html";
-          file << "&#x03C;a href=\"" << url << "/" << htmlfile.c_str() <<"\"&#x03E; File View &#x03C;/a&#x03E;" << std::endl;
-          file << "&#x03C;pre&#x03E;";
+          file << "<Url>"<< url.c_str() << "/" << htmlfile.c_str() << "</Url>" << std::endl;
           }
         first = false;
+        file << "          <Text>";
         }
       
       file << (*it).GetErrorTag((*itError).number);
