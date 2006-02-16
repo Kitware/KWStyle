@@ -708,8 +708,6 @@ bool Generator::GenerateDart(const char* dir,int maxError,bool group,std::string
         if(url != "")
           {
           // We had a link to the dashboard
-          //file << "&#x03C;a href=\"" << url << "/KWSMatrix.html\"&#x03E; Matrix View &#x03C;/a&#x03E;" << std::endl;
-
           long int posslash = (*it).GetFilename().find_last_of("/");
           long int posbackslash = (*it).GetFilename().find_last_of("\\");
           
@@ -731,6 +729,7 @@ bool Generator::GenerateDart(const char* dir,int maxError,bool group,std::string
           std::string htmlfile = (*it).GetFilename().substr(pos+1,(*it).GetFilename().size()-pos-1);
           htmlfile += ".html";
           file << "<Url>"<< url.c_str() << "/" << htmlfile.c_str() << "</Url>" << std::endl;
+          file << "<UrlName>View KWStyle File</UrlName>" << std::endl;
           }
         first = false;
         file << "          <Text>";
