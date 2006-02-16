@@ -738,7 +738,13 @@ bool Generator::GenerateDart(const char* dir,int maxError,bool group,std::string
       file << (*it).GetErrorTag((*itError).number);
       file << " : ";
       std::string desc = (*itError).description;
-      long int pos = desc.find("<");
+      long int pos = desc.find("&",0);
+      while(pos != -1)
+        {
+        desc.replace(pos,1,"&amp;");
+        pos = desc.find("&",pos+3);
+        }
+      pos = desc.find("<");
       while(pos != -1)
         {
         desc.replace(pos,1,"&#x03C;");
