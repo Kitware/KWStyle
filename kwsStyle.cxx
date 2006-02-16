@@ -212,6 +212,7 @@ int main(int argc, char **argv)
       recursive = true;
       }
     AddDirectory(inputFilename.c_str(),filenames,recursive);
+
     }
 
   // if the -D command is used
@@ -287,6 +288,8 @@ int main(int argc, char **argv)
     filenames.push_back(inputFilename);
     }
 
+  // sort the filenames
+  std::sort(filenames.begin(), filenames.end());
 
   std::vector<std::string>::const_iterator it = filenames.begin();
 
