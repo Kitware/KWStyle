@@ -8,11 +8,10 @@
 <EndOfFileNewLine>1</EndOfFileNewLine>
 <Tabs>1</Tabs>
 <Comments>/**, *, */,true</Comments>
-<Header>headers/CMakeHeader.h,false,true</Header>
+<Header>/projects/KWStyle/KWStyle/Web/headers/CMakeHeader.h,false,true</Header>
 <Indent>SPACE,2,true,true</Indent>
-<Namespace>itk</Namespace>
-<NameOfClass>[NameOfClass],itk</NameOfClass>
-<IfNDefDefine>__[NameOfClass]_[Extension]</IfNDefDefine>
+<NameOfClass>[NameOfClass],cm</NameOfClass>
+<IfNDefDefine>[NameOfClass]_[Extension]</IfNDefDefine>
 <EmptyLines>2</EmptyLines>
 <Template>T</Template>
 <Operator>1,1</Operator>
