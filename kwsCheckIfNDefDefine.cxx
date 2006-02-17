@@ -21,6 +21,12 @@ namespace kws {
  *  match can contain [NameOfClass] and [Extension] */
 bool Parser::CheckIfNDefDefine(const char* match)
 {
+  // Check only if we are not a .cxx or .cc or .c file
+  if(m_Filename.find(".c") != -1)
+    {
+    return false;
+    }
+
   m_TestsDone[NDEFINE] = true;
   char* val = new char[512];
   sprintf(val,"#ifndef/#define should match ");
