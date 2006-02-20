@@ -265,10 +265,11 @@ int main(int argc, char **argv)
       for(unsigned int i=0;i<directory.GetNumberOfFiles();i++)
         {
         std::string file = directory.GetFile(i);
-        if((file.find(".h") != -1)
+        if(((file.find(".h") != -1)
            || (file.find(".hxx") != -1)
            || (file.find(".cxx") != -1)
-           || (file.find(".txx") != -1)
+           || (file.find(".txx") != -1))
+           && (file.find(".htm")  == -1)
            )
           {
           filenames.push_back(dirname+file);
