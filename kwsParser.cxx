@@ -1115,7 +1115,7 @@ bool Parser::IsInComments(long int pos) const
 }
 
 /**  return true if the position pos is between 'begin' and 'end' */
-bool Parser::IsBetweenChars(const char begin, const char end ,long int pos,bool withComments) const
+bool Parser::IsBetweenCharsFast(const char begin, const char end ,long int pos,bool withComments) const
 {
   std::string stream = m_BufferNoComment;
   if(withComments)
@@ -1140,7 +1140,35 @@ bool Parser::IsBetweenChars(const char begin, const char end ,long int pos,bool 
     b0 = stream.find(begin,b0+1);
     b1 = stream.find(end,b0);
     }
+  return false;
+}
 
+/**  return true if the position pos is between 'begin' and 'end' */
+bool Parser::IsBetweenChars(const char begin, const char end ,long int pos,bool withComments) const
+{
+  std::string stream = m_BufferNoComment;
+  if(withComments)
+    {
+    stream = m_Buffer;
+    }
+
+  if(pos == -1)
+    {
+    return false;
+    }
+
+  long int b0 = stream.find(begin,0);
+  long int b1 = this->FindClosingChar(begin,end,b0,!withComments);
+
+  while(b0 != -1 && b1 != -1 && b1>b0)
+    {
+    if(pos>b0 && pos<b1)
+      {
+      return true;
+      }
+    b0 = stream.find(begin,b0+1);
+    b1 = this->FindClosingChar(begin,end,b0,!withComments);
+    }
   return false;
 }
 
@@ -2099,15 +2127,15 @@ long Parser::FindConstructor(const std::string & buffer, const std::string & cla
 
 /** Find the closing char given the position of the opening char */
 long int Parser::FindClosingChar(char openChar, char closeChar, long int pos,bool noComment) const
-{
-  const char* stream = m_Buffer.c_str();
+{  
+  std::string stream = m_Buffer.c_str();
   if(noComment)
     {
     stream = m_BufferNoComment.c_str();
     }
 
   long int open = 1;
-  for(size_t i=pos+1;i<m_Buffer.length();i++)
+  for(size_t i=pos+1;i<stream.length();i++)
     { 
     if(stream[i] == openChar)
       {
@@ -2122,7 +2150,7 @@ long int Parser::FindClosingChar(char openChar, char closeChar, long int pos,boo
       return (long int)i;
       }
     }
-  return -1; // closing bracket not found
+  return -1; // closing char not found
 }
 
 } // end namespace kws

@@ -152,7 +152,8 @@ public:
   /** Check the comments
    * The comment definition should be set before CheckIndent() to get the correct indentation
    * for the comments. */
-  bool CheckComments(const char* begin,const char* middle,const char* end,bool allowEmptyLineBeforeClass=false);
+  bool CheckComments(const char* begin,const char* middle,const char* end,
+                     bool allowEmptyLineBeforeClass=false);
 
   /** Check the indent size 
    *  Not in the header file if there is one 
@@ -161,10 +162,11 @@ public:
   bool CheckIndent(IndentType,
                    unsigned long size,
                    bool doNotCheckHeader=false,
-                   bool allowBlockLine = false);
+                   bool allowBlockLine = false,
+                   unsigned int maxLength = 81);
 
   /** Check Operator spaces foo=bar or foo = bar, etc... */
-  bool CheckOperator(unsigned int foo, unsigned int bar);
+  bool CheckOperator(unsigned int foo, unsigned int bar,bool doNotCheckInsideParenthesis=true);
 
   /** Check the number of character per line */
   bool CheckLineLength(unsigned long max);
@@ -193,7 +195,7 @@ public:
   bool CheckIfNDefDefine(const char* match);
 
   /** Check the first namespace in the file */
-  bool CheckNamespace(const char* name);
+  bool CheckNamespace(const char* name,bool doNotCheckMain=true);
 
   /** Check the templates */
   bool CheckTemplate(const char* regex);
@@ -240,7 +242,7 @@ protected:
   
   /** Check the operator.
    *  \warning This function add an error in the Error list */
-  bool FindOperator(const char* op,unsigned int before, unsigned int after);
+  bool FindOperator(const char* op,unsigned int before, unsigned int after,bool doNotCheckInsideParenthesis=true);
 
   /** Get the class position within the file. This function checks that this is the 
    *  classname */
@@ -306,7 +308,9 @@ protected:
   /** Find the defaults var values in the .txx or .cxx file. */
   //void FindAndAddDefaultValues(std::string buffer, long start, XMLDescription &desc) const;
 
-  /** Return true if the position pos is between <>. */
+  /** Return true if the position pos is between <>.
+   *  The Fast version just check for <test> and not for <test<>,test<>>*/
+  bool IsBetweenCharsFast(const char begin, const char end, long int pos,bool withComments=false) const;
   bool IsBetweenChars(const char begin, const char end, long int pos,bool withComments=false) const;
 
   /** Removes ass CtrlN characters from the buffer. */

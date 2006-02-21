@@ -23,8 +23,18 @@ namespace kws {
 /** Find the name space 
  *  using namespace is prohibited for this parser 
  *  We look if the closing bracket is at the end of the file, if yes we accept otherwise we reject*/
-bool Parser::CheckNamespace(const char* name)
+bool Parser::CheckNamespace(const char* name,bool doNotCheckMain)
 {
+  // If there is a 'int main' keyword in the file we do not check
+  if(doNotCheckMain)
+    {
+    if(m_BufferNoComment.find("main",0) != -1)
+      {
+      return false;
+      }
+    }
+
+
   m_TestsDone[NAMESPACE] = true;
   char* val = new char[255];
   sprintf(val,"The first namespace of the file should match %s",name);

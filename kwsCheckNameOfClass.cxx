@@ -111,7 +111,7 @@ long int Parser::GetClassPosition(long int position) const
   std::string nameOfClass = "";
   while(pos!=-1)
     {
-    if(!IsBetweenChars('<','>',pos))
+    if(!IsBetweenCharsFast('<','>',pos))
       {
       bool valid = true;      
       // We check that the word class is alone

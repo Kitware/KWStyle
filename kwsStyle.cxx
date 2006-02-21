@@ -254,27 +254,25 @@ int main(int argc, char **argv)
         start = pos+1;
         }
 
+      bool recursive = false;
+      if(dirname.find("[R]",0) != -1)
+        {
+        recursive = true;
+        }
+
+      long int space = dirname.find(" ");
+      if(space != -1)
+        {
+        dirname = dirname.substr(0,space);
+        }
+
       // Add a / if necessary
       if((dirname[dirname.length()-1] != '/') && (dirname[dirname.length()-1] != '\\'))
         {
         dirname += "/";
         }
 
-      itksys::Directory directory;
-      directory.Load(dirname.c_str());
-      for(unsigned int i=0;i<directory.GetNumberOfFiles();i++)
-        {
-        std::string file = directory.GetFile(i);
-        if(((file.find(".h") != -1)
-           || (file.find(".hxx") != -1)
-           || (file.find(".cxx") != -1)
-           || (file.find(".txx") != -1))
-           && (file.find(".htm")  == -1)
-           )
-          {
-          filenames.push_back(dirname+file);
-          }
-        }
+      AddDirectory(dirname.c_str(),filenames,recursive);
 
       if(pos != fileSize)
         {

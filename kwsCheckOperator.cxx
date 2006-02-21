@@ -17,7 +17,7 @@
 namespace kws {
 
 /** Check the number of spaces before and after the operator */
-bool Parser::CheckOperator(unsigned int before, unsigned int after)
+bool Parser::CheckOperator(unsigned int before, unsigned int after,bool doNotCheckInsideParenthesis)
 {
   m_TestsDone[OPERATOR] = true;
   m_TestsDescription[OPERATOR] = "Number of spaces for the operators shoud be: before=";
@@ -30,32 +30,32 @@ bool Parser::CheckOperator(unsigned int before, unsigned int after)
 
   bool hasErrors = false;
 
-  if(!this->FindOperator("==",before,after))
+  if(!this->FindOperator("==",before,after,doNotCheckInsideParenthesis))
     {
     hasErrors = true;
     }
   
-  if(!this->FindOperator("!=",before,after))
+  if(!this->FindOperator("!=",before,after,doNotCheckInsideParenthesis))
     {
     hasErrors = true;
     }
 
-  if(!this->FindOperator("-=",before,after))
+  if(!this->FindOperator("-=",before,after,doNotCheckInsideParenthesis))
     {
     hasErrors = true;
     }
 
-  if(!this->FindOperator("/=",before,after))
+  if(!this->FindOperator("/=",before,after,doNotCheckInsideParenthesis))
     {
     hasErrors = true;
     }
 
-  if(!this->FindOperator("+=",before,after))
+  if(!this->FindOperator("+=",before,after,doNotCheckInsideParenthesis))
     {
     hasErrors = true;
     }
 
-  if(!this->FindOperator("*=",before,after))
+  if(!this->FindOperator("*=",before,after,doNotCheckInsideParenthesis))
     {
     hasErrors = true;
     }
@@ -64,7 +64,9 @@ bool Parser::CheckOperator(unsigned int before, unsigned int after)
   // of the previous defined operator
   bool doNotCheck = false;
   long int operatorPos = m_BufferNoComment.find("=",0);
-  if( (operatorPos == m_BufferNoComment.find("!=",0)+1)
+
+  if( (doNotCheckInsideParenthesis && this->IsBetweenCharsFast('(',')',operatorPos,false)) 
+    || (operatorPos == m_BufferNoComment.find("!=",0)+1)
     || (operatorPos == m_BufferNoComment.find("*=",0)+1)
     || (operatorPos == m_BufferNoComment.find("-=",0)+1)
     || (operatorPos == m_BufferNoComment.find("+=",0)+1)
@@ -111,7 +113,9 @@ bool Parser::CheckOperator(unsigned int before, unsigned int after)
 
     doNotCheck = false;
     long int tmpoperatorPos = m_BufferNoComment.find("=",operatorPos+1);
-    if( (tmpoperatorPos == m_BufferNoComment.find("!=",operatorPos+1)+1)
+
+    if( (doNotCheckInsideParenthesis && this->IsBetweenCharsFast('(',')',tmpoperatorPos,false)) 
+    ||  (tmpoperatorPos == m_BufferNoComment.find("!=",operatorPos+1)+1)
     || (tmpoperatorPos == m_BufferNoComment.find("*=",operatorPos+1)+1)
     || (tmpoperatorPos == m_BufferNoComment.find("-=",operatorPos+1)+1)
     || (tmpoperatorPos == m_BufferNoComment.find("+=",operatorPos+1)+1)
@@ -131,7 +135,7 @@ bool Parser::CheckOperator(unsigned int before, unsigned int after)
 }
 
 /** Check the operator */
-bool Parser::FindOperator(const char* op,unsigned int before, unsigned int after)
+bool Parser::FindOperator(const char* op,unsigned int before, unsigned int after,bool doNotCheckInsideParenthesis)
 {
   bool hasErrors = false;
   long int pos = 0;
@@ -159,7 +163,9 @@ bool Parser::FindOperator(const char* op,unsigned int before, unsigned int after
     if(bef != before || aft != after)
       {
       // we make sure that the keyword operator is not defined right before
-      if(operatorPos != m_BufferNoComment.find("operator",operatorPos-11)+8)
+      if(operatorPos != m_BufferNoComment.find("operator",operatorPos-11)+8
+        && (doNotCheckInsideParenthesis && !this->IsBetweenCharsFast('(',')',operatorPos,false)) 
+        )
         {
         Error error;
         error.line = this->GetLineNumber(operatorPos,true);

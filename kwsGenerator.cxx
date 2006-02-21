@@ -52,14 +52,17 @@ bool Generator::GenerateDescription(const char* dir)
   
   file << "<br>" << std::endl;
 
-  ParserVectorType::const_iterator it = m_Parsers->begin();
-  for(unsigned int i=0;i<NUMBER_ERRORS;i++)
+  if(m_Parsers->size() > 0)
     {
-    file << "<font color=\"" << ErrorColor[i] << "\">" << std::endl;
-    file << ErrorTag[i]  << std::endl;
-    file << "</font> : " << std::endl;
-    file << (*it).GetTestDescription(i).c_str() << std::endl;
-    file << "<br>" << std::endl;
+    ParserVectorType::const_iterator it = m_Parsers->begin();
+    for(unsigned int i=0;i<NUMBER_ERRORS;i++)
+      {
+      file << "<font color=\"" << ErrorColor[i] << "\">" << std::endl;
+      file << ErrorTag[i]  << std::endl;
+      file << "</font> : " << std::endl;
+      file << (*it).GetTestDescription(i).c_str() << std::endl;
+      file << "<br>" << std::endl;
+      }
     }
 
   this->CreateFooter(&file);    
