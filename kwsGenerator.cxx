@@ -421,7 +421,7 @@ bool Generator::CreateHeader(std::ostream * file,const char* title)
   // Now create the top frame
  *file << "<table width=\"100%\" border=\"0\">" << std::endl;
  *file << " <tr>" << std::endl;
- *file << "   <td width=\"15%\" height=\"2\"><img src=\"Logo.gif\" width=\"100\" height=\"64\"></td>" << std::endl;
+ *file << "   <td width=\"15%\" height=\"2\"><img src=\"Logo.gif\"></td>" << std::endl;
  *file << "   <td width=\"85%\" height=\"2\" bgcolor=\"#0099CC\"> " << std::endl;
 
  // remove the last extension
