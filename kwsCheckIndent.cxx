@@ -454,6 +454,7 @@ bool Parser::InitIndentation()
   this->AddIndent("#include",ALIGN_LEFT,0);
   this->AddIndent("#if",ALIGN_LEFT,0);
   this->AddIndent("#elif",ALIGN_LEFT,0);
+  this->AddIndent("#else",ALIGN_LEFT,0);
   this->AddIndent("#endif",ALIGN_LEFT,0);
   this->AddIndent("#ifndef",ALIGN_LEFT,0);
   this->AddIndent("#define",ALIGN_LEFT,0);
