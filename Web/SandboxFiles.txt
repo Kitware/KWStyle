@@ -1,4 +1,4 @@
-Examples [R]
-IGSTK [R]
-Source [R]
-Testing
+/projects/KWStyle/IGSTKSandbox/Examples [R]
+/projects/KWStyle/IGSTKSandbox/IGSTK [R]
+/projects/KWStyle/IGSTKSandbox/Source [R]
+/projects/KWStyle/IGSTKSandbox/Testing

@@ -250,8 +250,12 @@ int main(int argc, char **argv)
         }
       else
         {
-        dirname = buffer.substr(start,pos-start-1);
+        dirname = buffer.substr(start,pos-start);
         start = pos+1;
+        }
+      if(dirname.size() < 2)
+        {
+        break;
         }
 
       bool recursive = false;
