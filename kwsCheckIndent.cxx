@@ -192,9 +192,23 @@ bool Parser::CheckIndent(IndentType itype,
       wantedIndent += size*sindent->after;
       firstChar = false;
       }
-    else if((it != m_Buffer.end()) && ((*it) == '{')) // openning bracket
+    else if((it != m_Buffer.end()) && ((*it) == '{') && !this->IsInComments(pos)) // openning bracket
       {
-      wantedIndent += size;
+      bool check = true;
+      // Check if { is after //
+      long int doubleslash = m_Buffer.find_last_of("//",pos);
+      if(doubleslash != -1)
+        {
+        if(this->GetLineNumber(doubleslash) == this->GetLineNumber(pos))
+          {
+          check = false;
+          }
+        }
+
+      if(check)
+        {
+        wantedIndent += size;
+        }
       }
     
     if(firstChar) // general case
@@ -269,9 +283,22 @@ bool Parser::CheckIndent(IndentType itype,
         }
       }
 
-    if((it != m_Buffer.end()) && ((*it) == '}') && !sindent) // closing bracket
+    if((it != m_Buffer.end()) && ((*it) == '}') && !sindent && !this->IsInComments(pos)) // closing bracket
       {
-      wantedIndent -= size;
+      bool check = true;
+      // Check if { is after //
+      long int doubleslash = m_Buffer.find_last_of("//",pos);
+      if(doubleslash != -1)
+        {
+        if(this->GetLineNumber(doubleslash) == this->GetLineNumber(pos))
+          {
+          check = false;
+          }
+        }
+      if(check)
+        {
+        wantedIndent -= size;
+        }
       }
     
     firstChar = false;
