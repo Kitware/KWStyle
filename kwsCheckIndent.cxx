@@ -46,7 +46,8 @@ long int Parser::GetCurrentIdent(std::string line,char type)
 bool Parser::CheckIndent(IndentType itype,
                          unsigned long size,
                          bool doNotCheckHeader,
-                         bool allowBlockLine)
+                         bool allowBlockLine,
+                         unsigned int maxLength)
 {
   m_TestsDone[INDENT] = true;
   m_TestsDescription[INDENT] = "The Indent should respect: ";
@@ -234,23 +235,37 @@ bool Parser::CheckIndent(IndentType itype,
           && !this->IsBetweenChars('(',')',pos,true)
           )
         {
-        Error error;
-        error.line = this->GetLineNumber(pos);
-        error.line2 = error.line;
-        error.number = INDENT;
-        error.description = "Indent is wrong ";
-        char* val = new char[10];
-        sprintf(val,"%d",currentIndent); 
-        error.description += val;
-        error.description += " (should be ";
-        delete [] val;
-        val = new char[10];
-        sprintf(val,"%d",wantedIndent);
-        error.description += val;
-        error.description += ")";
-        delete [] val;
-        m_ErrorList.push_back(error);
-        hasError = true;
+
+        // We check that the previous line is not ending with a semicolon
+        // and that the sum of the two lines is more than maxLength
+        std::string previousLine = this->GetLine(this->GetLineNumber(pos)-2);
+        std::string currentLine = this->GetLine(this->GetLineNumber(pos)-1);
+        if( (previousLine[previousLine.size()-1] != ';')
+           && (previousLine.size()+currentLine.size()-currentIndent>maxLength)
+          )
+          {
+          // Do nothing
+          }
+        else
+          {
+          Error error;
+          error.line = this->GetLineNumber(pos);
+          error.line2 = error.line;
+          error.number = INDENT;
+          error.description = "Indent is wrong ";
+          char* val = new char[10];
+          sprintf(val,"%d",currentIndent); 
+          error.description += val;
+          error.description += " (should be ";
+          delete [] val;
+          val = new char[10];
+          sprintf(val,"%d",wantedIndent);
+          error.description += val;
+          error.description += ")";
+          delete [] val;
+          m_ErrorList.push_back(error);
+          hasError = true;
+          }
         }
       }
 
@@ -270,7 +285,7 @@ bool Parser::CheckIndent(IndentType itype,
  return !hasError;
 }
 
-
+/** Init the indentation */
 bool Parser::InitIndentation()
 {
   m_IdentPositionVector.clear();
@@ -407,6 +422,28 @@ bool Parser::InitIndentation()
     posClass = this->GetClassPosition(posClass+1);
     }
   */
+
+  // int main()
+  long int posMain = m_BufferNoComment.find("main",0);
+  while(posMain != -1)
+    {
+    long int bracket = m_BufferNoComment.find('{',posMain+4);
+    if(bracket != -1)
+      {
+      // translate the position in the buffer position;
+      long int posMainComments = this->GetPositionWithComments(bracket);      
+      IndentPosition ind;
+      ind.position = posMainComments;
+      ind.current = 0;
+      ind.after = 1;
+      m_IdentPositionVector.push_back(ind);
+      ind.position = this->FindClosingChar('{','}',posMainComments);      
+      ind.current = -1;
+      ind.after = -1;
+      m_IdentPositionVector.push_back(ind);
+      }
+    posMain = m_BufferNoComment.find("main",posMain+4);
+    }
 
   // Some words should be indented as the previous indent
   this->AddIndent("public:",-1,0);
