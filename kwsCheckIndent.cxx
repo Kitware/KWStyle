@@ -163,7 +163,6 @@ bool Parser::CheckIndent(IndentType itype,
     if(sindent)
       {
       long int wanted = wantedIndent+size*sindent->current;
-      //std::cout << "Got l=" << this->GetLineNumber(sindent->position) << " : " << wantedIndent << " : " << sindent->current << " : " << sindent->after << std::endl;
       if(sindent->current == ALIGN_LEFT)
         {
         wanted = 0;
@@ -171,23 +170,36 @@ bool Parser::CheckIndent(IndentType itype,
 
       else if(currentIndent != wanted)
         {
-        Error error;
-        error.line = this->GetLineNumber(pos);
-        error.line2 = error.line;
-        error.number = INDENT;
-        error.description = "Special Indent is wrong ";
-        char* val = new char[10];
-        sprintf(val,"%d",sindent->current); 
-        error.description += val;
-        error.description += " (should be ";
-        delete [] val;
-        val = new char[10];
-        sprintf(val,"%d",wanted);
-        error.description += val;
-        error.description += ")";
-        delete [] val;
-        m_ErrorList.push_back(error);
-        hasError = true;
+        // We check that the previous line is not ending with a semicolon
+        // and that the sum of the two lines is more than maxLength
+        std::string previousLine = this->GetLine(this->GetLineNumber(pos)-2);
+        std::string currentLine = this->GetLine(this->GetLineNumber(pos)-1);
+        if( (previousLine[previousLine.size()-1] != ';')
+           && (previousLine.size()+currentLine.size()-currentIndent>maxLength)
+          )
+          {
+          // Do nothing
+          }
+        else
+          {
+          Error error;
+          error.line = this->GetLineNumber(pos);
+          error.line2 = error.line;
+          error.number = INDENT;
+          error.description = "Special Indent is wrong ";
+          char* val = new char[10];
+          sprintf(val,"%d",sindent->current); 
+          error.description += val;
+          error.description += " (should be ";
+          delete [] val;
+          val = new char[10];
+          sprintf(val,"%d",wanted);
+          error.description += val;
+          error.description += ")";
+          delete [] val;
+          m_ErrorList.push_back(error);
+          hasError = true;
+          }
         }
       wantedIndent += size*sindent->after;
       firstChar = false;
