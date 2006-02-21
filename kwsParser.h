@@ -27,7 +27,7 @@
 namespace kws
 {
 
-#define NUMBER_ERRORS 20
+#define NUMBER_ERRORS 21
 
 typedef enum
   {
@@ -38,31 +38,33 @@ typedef enum
 typedef enum
   {
   LINE_LENGTH = 0,
-  IVAR_PUBLIC = 1,
-  IVAR_REGEX = 2,
-  SEMICOLON_SPACE = 3,
-  DECL_ORDER = 4,
-  EOF_NEW_LINE = 5,
-  TABS = 6,
-  INDENT = 7,
-  HEADER = 8,
-  NDEFINE = 9,
-  TYPEDEF_REGEX = 10,
-  TYPEDEF_ALIGN = 11,
-  NAMESPACE = 12,
-  NAMEOFCLASS = 13,
-  WRONGCOMMENT = 14,
-  MISSINGCOMMENT = 15,
-  EMPTYLINES = 16,
-  TEMPLATE = 17,
-  OPERATOR = 18,
-  BLACKLIST = 19
+  IVAR_PUBLIC,
+  IVAR_REGEX,
+  IVAR_ALIGN,
+  SEMICOLON_SPACE,
+  DECL_ORDER,
+  EOF_NEW_LINE,
+  TABS,
+  INDENT,
+  HEADER,
+  NDEFINE,
+  TYPEDEF_REGEX,
+  TYPEDEF_ALIGN,
+  NAMESPACE,
+  NAMEOFCLASS,
+  WRONGCOMMENT,
+  MISSINGCOMMENT,
+  EMPTYLINES,
+  TEMPLATE,
+  OPERATOR,
+  BLACKLIST
   } ErrorType;
 
 const char ErrorTag[NUMBER_ERRORS][4] = {
    {'L','E','N','\0'},
    {'I','V','P','\0'},
    {'I','V','R','\0'},
+   {'I','V','A','\0'},
    {'S','E','M','\0'},
    {'D','C','L','\0'},
    {'E','O','F','\0'},
@@ -172,7 +174,7 @@ public:
   bool CheckLineLength(unsigned long max);
 
   /** Check if the internal parameters of the class are correct */
-  bool CheckInternalVariables(const char* regEx);
+  bool CheckInternalVariables(const char* regEx,bool alignement = true);
 
   /** Check if the typedefs of the class are correct */
   bool CheckTypedefs(const char* regEx, bool alignment = true);
@@ -233,7 +235,6 @@ public:
 
   /** Given the name of the check to perform and the default value perform the check */
   bool Check(const char* name, const char* value);
-
 
 protected:
 
