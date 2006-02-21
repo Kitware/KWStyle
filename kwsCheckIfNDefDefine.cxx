@@ -186,6 +186,7 @@ bool Parser::CheckIfNDefDefine(const char* match)
         error.line2 = this->GetLineNumber(end,true);
         error.number = NDEFINE;
         error.description = "#ifndef/#define does not match expression";
+        error.description = ifndef+" v.s. "+toMatch;
         m_ErrorList.push_back(error);
         return false;
         }
