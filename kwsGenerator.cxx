@@ -114,17 +114,30 @@ bool Generator::GenerateMatrix(const char* dir)
   ParserVectorType::const_iterator it = m_Parsers->begin();
   while(it != m_Parsers->end())
     {
-    // Extract the filename
-    //std::string filename = dir;
-    //filename += "/";
+    // Replace '/' by '_'
+    std::string filename = (*it).GetFilename();
+    long int slash = filename.find_last_of("/");
+    unsigned int maxDir = 3;// make sure this is the same number as the matrix
+    unsigned int i=0;
+    while(slash != -1 && i<maxDir) 
+      {
+      filename.replace(slash,1,"_");
+      slash = filename.find_last_of("/");
+      i++;
+      }
+    slash = filename.find_last_of("/");
+    if(slash != -1)
+      {
+      filename = filename.substr(slash+1,filename.size()-slash-1);
+      }
 
-    long int slash = (*it).GetFilename().find_last_of("/");
+    slash = (*it).GetFilename().find_last_of("/");
     if(slash == -1)
       {
       slash = 0;
       }
+
     std::string nameofclass = (*it).GetFilename().substr(slash+1,((*it).GetFilename().size())-slash-1);
-    std::string filename = nameofclass;
     std::string filenamecorrect = nameofclass;
     filename += ".html";
 
@@ -209,8 +222,27 @@ bool Generator::GenerateHTML(const char* dir)
       }
 
     // Extract the filename
+    // Replace '/' by '_'
     std::string filename = dir;
     filename += "/";
+    std::string filename2 = (*it).GetFilename();
+    long int slash = filename2.find_last_of("/");
+    unsigned int i = 0;
+    unsigned int maxDir = 3;// make sure this is the same number as the matrix
+    while(slash != -1 && i<maxDir) 
+      {
+      filename2.replace(slash,1,"_");
+      slash = filename2.find_last_of("/");
+      i++;
+      }
+    slash = filename2.find_last_of("/");
+    if(slash != -1)
+      {
+      filename2 = filename2.substr(slash+1,filename2.size()-slash-1);
+      }
+    filename += filename2;
+    
+    /*
     long int slash = (*it).GetFilename().find_last_of("/");
     if(slash == -1)
       {
@@ -218,6 +250,8 @@ bool Generator::GenerateHTML(const char* dir)
       }
     std::string nameofclass = (*it).GetFilename().substr(slash+1,((*it).GetFilename().size())-slash-1);  
     filename += nameofclass;
+    */
+    
     filename += ".html";
 
     file.open(filename.c_str(), std::ios::binary | std::ios::out);
@@ -711,7 +745,7 @@ bool Generator::GenerateDart(const char* dir,int maxError,bool group,std::string
         if(url != "")
           {
           // We had a link to the dashboard
-          long int posslash = (*it).GetFilename().find_last_of("/");
+          /*long int posslash = (*it).GetFilename().find_last_of("/");
           long int posbackslash = (*it).GetFilename().find_last_of("\\");
           
           long int pos = 0;
@@ -730,6 +764,24 @@ bool Generator::GenerateDart(const char* dir,int maxError,bool group,std::string
             pos++;
             }
           std::string htmlfile = (*it).GetFilename().substr(pos+1,(*it).GetFilename().size()-pos-1);
+          */
+
+          std::string htmlfile = (*it).GetFilename();
+          long int slash = htmlfile.find_last_of("/");
+          unsigned int i = 0;
+          unsigned int maxDir = 3;// make sure this is the same number as the matrix
+          while(slash != -1 && i<maxDir) 
+            {
+            htmlfile.replace(slash,1,"_");
+            slash = htmlfile.find_last_of("/");
+            i++;
+            }
+          slash = htmlfile.find_last_of("/");
+          if(slash != -1)
+            {
+            htmlfile = htmlfile.substr(slash+1,htmlfile.size()-slash-1);
+            }
+          
           htmlfile += ".html";
           file << "<Url>"<< url.c_str() << "/" << htmlfile.c_str() << "</Url>" << std::endl;
           file << "<UrlName>View KWStyle File</UrlName>" << std::endl;
