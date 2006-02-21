@@ -250,7 +250,7 @@ protected:
   long int GetClassPosition(long int position) const;
 
   /** Return the position in the line given the position in the text */ 
-  unsigned long GetPositionInLine(unsigned long pos);
+  unsigned long GetPositionInLine(long pos);
 
   /** Find an ivar in the source code */
   std::string Parser::FindInternalVariable(long int start, long int end,long int& pos);

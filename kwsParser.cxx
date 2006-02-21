@@ -446,10 +446,10 @@ std::string Parser::FindNextWord(long int pos) const
 }
 
 /** Return the position in the line given the position in the text */ 
-unsigned long Parser::GetPositionInLine(unsigned long pos)
+unsigned long Parser::GetPositionInLine(long pos)
 {
   long begin = pos;
-  while(m_BufferNoComment[begin]!='\n')
+  while(begin>0 && m_BufferNoComment[begin]!='\n')
     {
     begin--;
     }
