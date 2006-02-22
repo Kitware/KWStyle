@@ -28,12 +28,13 @@ bool Parser::CheckNamespace(const char* name,bool doNotCheckMain)
   // If there is a 'int main' keyword in the file we do not check
   if(doNotCheckMain)
     {
-    if(m_BufferNoComment.find("main",0) != -1)
+    if( (m_BufferNoComment.find("main",0) != -1)
+       || (m_BufferNoComment.find("class",0) == -1)
+      )
       {
       return false;
       }
     }
-
 
   m_TestsDone[NAMESPACE] = true;
   char* val = new char[255];
