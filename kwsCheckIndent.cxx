@@ -484,6 +484,78 @@ bool Parser::InitIndentation()
     posMain = m_BufferNoComment.find("main",posMain+4);
     }
 
+  // switch/case statement
+  // for the moment break; restore the indentation
+  long int posCase = m_BufferNoComment.find("case",0);
+  bool firstCase = true;
+  long int openningBracket = -1;
+  long int closingBracket = -1;
+  while(posCase != -1)
+    {
+    // If this is the first case we find the openning { in order to 
+    // find the closing } of the switch statement
+    if(firstCase)
+      {
+      openningBracket = m_BufferNoComment.find_last_of("{",posCase);
+      closingBracket = this->FindClosingChar('{','}',openningBracket,true);        
+      int i = closingBracket;
+      i--;
+        
+      // The char just before the closing brace should trigger the end
+      while(i>0 && (m_BufferNoComment[i] == ' ' 
+        || m_BufferNoComment[i] == '\r' ||  m_BufferNoComment[i] == '\n'))
+        {
+        i--;
+        }
+      long int posColumnComments = this->GetPositionWithComments(i);      
+      IndentPosition ind;
+      ind.position = posColumnComments;
+      ind.current = 0;
+      ind.after = -1; 
+      m_IdentPositionVector.push_back(ind);
+
+      // Do the default case
+      long int defaultPos = m_BufferNoComment.find("default",posCase);
+      if(defaultPos != -1)
+        {
+        long int posColumnComments = this->GetPositionWithComments(defaultPos);      
+        IndentPosition ind;
+        ind.position = posColumnComments;
+        ind.current = -1;
+        ind.after = 0; 
+        m_IdentPositionVector.push_back(ind);
+        }
+
+      firstCase = false;
+      }
+    else if(posCase<closingBracket)
+      {
+      long int posColumnComments = this->GetPositionWithComments(posCase);      
+      IndentPosition ind;
+      ind.position = posColumnComments;
+      ind.current = -1;
+      ind.after = -1; 
+      m_IdentPositionVector.push_back(ind);
+      }
+
+    long int column = m_BufferNoComment.find(':',posCase+3);
+    if(column != -1)
+      {
+      // translate the position in the buffer position;
+      long int posColumnComments = this->GetPositionWithComments(column);      
+      IndentPosition ind;
+      ind.position = posColumnComments;
+      ind.current = 0;
+      ind.after = 1; 
+      m_IdentPositionVector.push_back(ind);
+      }
+    posCase = m_BufferNoComment.find("case",posCase+3);
+    if(posCase>closingBracket)
+      {
+      firstCase = true;
+      }
+    }
+
   // Some words should be indented as the previous indent
   this->AddIndent("public:",-1,0);
   this->AddIndent("private:",-1,0);
