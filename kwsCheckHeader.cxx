@@ -34,141 +34,270 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL,bool useCVS
   bool hasError = false;
   if(!filename)
     {
-    std::cout << "CheckHeader(): Please specify an header file" << std::endl;
-    return false;
-    }
-  
-  // Read the file
-  std::ifstream file;
-  file.open(filename, std::ios::binary | std::ios::in);
-  if(!file.is_open())
-    {
-    std::cout << "Cannot open file: " << filename << std::endl;
+    std::cout << "CheckHeader(): Please specify an header file or a directory containing headers" << std::endl;
     return false;
     }
 
-  file.seekg(0,std::ios::end);
-  unsigned long fileSize = file.tellg();
-  file.seekg(0,std::ios::beg);
+  std::vector<std::string> fileNames;
 
-  char* buf = new char[fileSize+1];
-  file.read(buf,fileSize);
-  buf[fileSize] = 0;
-  std::string buffer(buf);
-  buffer.resize(fileSize);
-  file.close();
-  delete [] buf;
-
-  this->ConvertBufferToWindowsFileType(buffer);
-
-  m_HeaderFilename = filename;
-  
-  // Check the file char by char
-  std::string::const_iterator ith = buffer.begin();
-  std::string::const_iterator it = m_Buffer.begin();
-
-  unsigned int pos = 0;
-  unsigned int posh = 0;
-  int line = -1;
-
-  while((ith != buffer.end()) && (it != m_Buffer.end()))
+  // Check if we have a directory or header
+  itksys::Directory directory;
+  if(directory.Load(filename))
     {
-    // if we have cvs
-    if((*ith == '$') && useCVS)
+    std::string dirname = filename;
+    if(dirname[dirname.size()-1] != '/')
       {
-      ith++;
-      posh++;
-      it++;
-      pos++;
-      while(((*ith) != '$') && (ith != buffer.end()))
+      dirname += "/";
+      }
+
+    for(unsigned int i=0;i<directory.GetNumberOfFiles();i++)
+      {
+      std::string file = directory.GetFile(i);
+      std::string fullpath = dirname+file;
+      
+      if(file!=".." && file!=".")
+        {
+        fileNames.push_back(dirname+file);
+        }
+      }
+    }
+  else
+    {
+    fileNames.push_back(filename);
+    }
+
+  // Create a temporary vector of errors
+  std::vector<ErrorVectorType> tempErrors;
+
+  std::vector<std::string>::const_iterator itFilename = fileNames.begin();  
+  while(itFilename != fileNames.end())
+    {
+    hasError = false;
+    //std::cout << "Checking header : " << (*itFilename).c_str() << std::endl;
+
+    // Read the header file
+    std::ifstream file;
+    file.open((*itFilename).c_str(), std::ios::binary | std::ios::in);
+    if(!file.is_open())
+      {
+      std::cout << "Cannot open header file: " << (*itFilename).c_str() << std::endl;
+      return false;
+      }
+
+    file.seekg(0,std::ios::end);
+    unsigned long fileSize = file.tellg();
+    file.seekg(0,std::ios::beg);
+
+    char* buf = new char[fileSize+1];
+    file.read(buf,fileSize);
+    buf[fileSize] = 0;
+    std::string buffer(buf);
+    buffer.resize(fileSize);
+    file.close();
+    delete [] buf;
+
+    this->ConvertBufferToWindowsFileType(buffer);
+    
+    ErrorVectorType  tempErrorVector;
+
+    // Check the file char by char
+    std::string::const_iterator ith = buffer.begin();
+    std::string::const_iterator it = m_Buffer.begin();
+
+    unsigned int pos = 0;
+    unsigned int posh = 0;
+    int line = -1;
+
+    while((ith != buffer.end()) && (it != m_Buffer.end()))
+      {
+      // if we have cvs
+      if((*ith == '$') && useCVS)
         {
         ith++;
         posh++;
-        }
-      while(((*it) != '$') && (it != m_Buffer.end()))
-        {
-        pos++;
         it++;
+        pos++;
+        while(((*ith) != '$') && (ith != buffer.end()))
+          {
+          ith++;
+          posh++;
+          }
+        while(((*it) != '$') && (it != m_Buffer.end()))
+          {
+          pos++;
+          it++;
+          }
+        //continue;
         }
-      //continue;
-      }
-     
-    if((*it) != (*ith))
-      {
-      // Check if we have a <NA> tag
-      if((*ith) == '<')
+       
+      if((*it) != (*ith))
         {
-        long int pos2 = buffer.find("<NA>",posh);
-        long int pos3 = buffer.find("<NA>\n",posh);
+        // Check if we have a <NA> tag
+        if((*ith) == '<')
+          {
+          long int pos2 = buffer.find("<NA>",posh);
+          long int pos3 = buffer.find("<NA>\n",posh);
 
-        // We skip the line
-        if(pos3 == posh)
-          {
-          while(((*ith) != '\n') && (ith != buffer.end()))
+          // We skip the line
+          if(pos3 == posh)
             {
-            ith++;
-            posh++;
-            }
-          while(((*it) != '\n') && (it != m_Buffer.end()))
-            {
-            pos++;
-            it++;
-            }
-          continue;
-          }
-        // if we have the tag we skip the word
-        else if(pos2 == posh)
-          {
-          while(((*ith) != ' ') && (ith != buffer.end()))
-            {
-            ith++;
-            posh++;
-            }
-          while(((*it) != ' ') && (it != m_Buffer.end()))
-            {
-            pos++;
-            it++;
-            }
-          continue;
-          }
-        }
-      // if we should not check the spaces at the end of line
-      else if( (!considerSpaceEOL)
-        && ((*ith == ' ') || (*it == ' '))
-        )
-        {
-        // search if we are effectively at the end of the line
-        bool isAtEnd = true;
-        if(*it == ' ')
-          {
-          std::string::const_iterator ittemp = it;
-          while((ittemp != m_Buffer.end()) && ((*ittemp) != '\n'))
-            {
-            if(*ittemp != ' ')
+            while(((*ith) != '\n') && (ith != buffer.end()))
               {
-              isAtEnd = false;
-              break;
+              ith++;
+              posh++;
               }
-            ittemp++;
+            while(((*it) != '\n') && (it != m_Buffer.end()))
+              {
+              pos++;
+              it++;
+              }
+            continue;
+            }
+          // if we have the tag we skip the word
+          else if(pos2 == posh)
+            {
+            while(((*ith) != ' ') && (ith != buffer.end()))
+              {
+              ith++;
+              posh++;
+              }
+            while(((*it) != ' ') && (it != m_Buffer.end()))
+              {
+              pos++;
+              it++;
+              }
+            continue;
             }
           }
-        else if(*ith == ' ')
+        // if we should not check the spaces at the end of line
+        else if( (!considerSpaceEOL)
+          && ((*ith == ' ') || (*it == ' '))
+          )
           {
-          std::string::const_iterator ittemp = ith;
-          while((ittemp != buffer.end()) && ((*ittemp) != '\n'))
+          // search if we are effectively at the end of the line
+          bool isAtEnd = true;
+          if(*it == ' ')
             {
-            if(*ittemp != ' ')
+            std::string::const_iterator ittemp = it;
+            while((ittemp != m_Buffer.end()) && ((*ittemp) != '\n'))
               {
-              isAtEnd = false;
-              break;
+              if(*ittemp != ' ')
+                {
+                isAtEnd = false;
+                break;
+                }
+              ittemp++;
               }
-            ittemp++;
+            }
+          else if(*ith == ' ')
+            {
+            std::string::const_iterator ittemp = ith;
+            while((ittemp != buffer.end()) && ((*ittemp) != '\n'))
+              {
+              if(*ittemp != ' ')
+                {
+                isAtEnd = false;
+                break;
+                }
+              ittemp++;
+              }
+            }
+
+          // If we are at the end we skip the line
+          if(!isAtEnd)
+            {
+            while((ith != buffer.end()) && ((*ith) != '\n'))
+              {
+              ith++;
+              posh++;
+              }
+            while((it != m_Buffer.end()) && ((*it) != '\n'))
+              {
+              pos++;
+              it++;
+              }
+            continue;
             }
           }
 
-        // If we are at the end we skip the line
-        if(!isAtEnd)
+        // Report the error
+        //hasError = true;
+
+        // We report the wrong word and the line
+        int l = this->GetLineNumber(pos);
+        if(l != line)
           {
+          line = l;
+          // Find the word
+          long int poshw = buffer.find(' ',posh);
+          long int poshw2 = buffer.find('\n',posh);
+          std::string wordh = "";
+          if(poshw < poshw2)
+            {
+            wordh = buffer.substr(posh,poshw-posh);
+            }
+          else if (poshw2 != -1)
+            {
+            wordh = buffer.substr(posh,poshw2-posh);
+            }
+
+          // Find the word
+          long int posw = m_Buffer.find(' ',pos);
+          long int posw2 = m_Buffer.find('\n',pos);
+          std::string word = "";
+          if(posw < posw2)
+            {
+            word = m_Buffer.substr(pos,posw-pos);
+            }
+          else if (poshw2 != -1)
+            {
+            word = m_Buffer.substr(pos,posw2-pos);
+            }
+
+          if(word == wordh)
+            {
+            wordh = "wrong ident";
+            }
+         
+          if(word == " ")
+            {
+            word = "[space]";
+            }
+          if(wordh == " ")
+            {
+            wordh = "[space]";
+            }
+         if(word == "\r")
+            {
+            word = "[end of line]";
+            }
+          if(wordh == "\r")
+            {
+            wordh = "[end of line]";
+            }
+          
+          if(word[0] == 0)
+            {
+            word = "[no char]";
+            }
+          if(wordh[0] == 0)
+            {
+            wordh = "[no char]";
+            }
+
+          Error error;
+          error.line = line;
+          error.line2 = error.line;
+          error.number = HEADER;
+          error.description = "Header mismatch: ";
+          error.description += word;
+          error.description += " (";
+          error.description += wordh;
+          error.description += ")";
+          tempErrorVector.push_back(error);
+          hasError = true;
+
+          // We skip that line   
           while((ith != buffer.end()) && ((*ith) != '\n'))
             {
             ith++;
@@ -179,125 +308,75 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL,bool useCVS
             pos++;
             it++;
             }
-          continue;
           }
         }
 
-      // Report the error
-      hasError = true;
-
-      // We report the wrong word and the line
-      int l = this->GetLineNumber(pos);
-      if(l != line)
+      if(ith != buffer.end())
         {
-        line = l;
-        // Find the word
-        long int poshw = buffer.find(' ',posh);
-        long int poshw2 = buffer.find('\n',posh);
-        std::string wordh = "";
-        if(poshw < poshw2)
-          {
-          wordh = buffer.substr(posh,poshw-posh);
-          }
-        else if (poshw2 != -1)
-          {
-          wordh = buffer.substr(posh,poshw2-posh);
-          }
+        posh++;
+        ith++;
+        }
 
-        // Find the word
-        long int posw = m_Buffer.find(' ',pos);
-        long int posw2 = m_Buffer.find('\n',pos);
-        std::string word = "";
-        if(posw < posw2)
-          {
-          word = m_Buffer.substr(pos,posw-pos);
-          }
-        else if (poshw2 != -1)
-          {
-          word = m_Buffer.substr(pos,posw2-pos);
-          }
-
-        if(word == wordh)
-          {
-          wordh = "wrong ident";
-          }
-       
-        if(word == " ")
-          {
-          word = "[space]";
-          }
-        if(wordh == " ")
-          {
-          wordh = "[space]";
-          }
-       if(word == "\r")
-          {
-          word = "[end of line]";
-          }
-        if(wordh == "\r")
-          {
-          wordh = "[end of line]";
-          }
-        
-        if(word[0] == 0)
-          {
-          word = "[no char]";
-          }
-        if(wordh[0] == 0)
-          {
-          wordh = "[no char]";
-          }
-
-        Error error;
-        error.line = line;
-        error.line2 = error.line;
-        error.number = HEADER;
-        error.description = "Header mismatch: ";
-        error.description += word;
-        error.description += " (";
-        error.description += wordh;
-        error.description += ")";
-        m_ErrorList.push_back(error);
-        hasError = true;
-
-        // We skip that line   
-        while((ith != buffer.end()) && ((*ith) != '\n'))
-          {
-          ith++;
-          posh++;
-          }
-        while((it != m_Buffer.end()) && ((*it) != '\n'))
-          {
-          pos++;
-          it++;
-          }
+      if(it != m_Buffer.end())
+        {
+        pos++;
+        it++;
         }
       }
 
-    if(ith != buffer.end())
+    if(it == m_Buffer.end())
       {
-      posh++;
-      ith++;
+      Error error;
+      error.line = 1;
+      error.line2 = error.line;
+      error.number = HEADER;
+      error.description = "The header is incomplete";
+      tempErrorVector.push_back(error);
+      hasError = true;
       }
 
-    if(it != m_Buffer.end())
+    // If we don't have any errors we return the current errors
+    if(!hasError)
       {
-      pos++;
-      it++;
+      m_HeaderFilename = (*itFilename);
+      ErrorVectorType::const_iterator itErr = tempErrorVector.begin();
+      while(itErr != tempErrorVector.end())
+        {
+        m_ErrorList.push_back(*itErr);
+        itErr++;
+        }
+      return true;
       }
-    }
 
-  if(it == m_Buffer.end())
+    tempErrors.push_back(tempErrorVector);
+
+    itFilename++;
+    } // end loop of filenames
+
+  // We check the less errors we can have
+  unsigned int header=0;
+  int minErrors = 9999999999999;
+  unsigned int i=0;
+  std::vector<ErrorVectorType>::const_iterator itErrV = tempErrors.begin();
+  while(itErrV != tempErrors.end())
     {
-    Error error;
-    error.line = 1;
-    error.line2 = error.line;
-    error.number = HEADER;
-    error.description = "The header is incomplete";
-    m_ErrorList.push_back(error);
-    hasError = true;
+    if((int)(*itErrV).size() < minErrors)
+      {
+      header = i;
+      minErrors = (*itErrV).size();
+      }
+    i++;
+    itErrV++;
+    }
+ 
+  ErrorVectorType::const_iterator itErr = tempErrors[header].begin();
+  while(itErr != tempErrors[header].end())
+    {
+    m_ErrorList.push_back(*itErr);
+    itErr++;
     }
 
+  m_HeaderFilename = fileNames[header];
   return !hasError;
 }
 
