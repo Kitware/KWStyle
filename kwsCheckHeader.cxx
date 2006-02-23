@@ -55,7 +55,7 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL,bool useCVS
       std::string file = directory.GetFile(i);
       std::string fullpath = dirname+file;
       
-      if(file!=".." && file!=".")
+      if(file!=".." && file!="." && file!="CVS")
         {
         fileNames.push_back(dirname+file);
         }
@@ -232,7 +232,7 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL,bool useCVS
           long int poshw = buffer.find(' ',posh);
           long int poshw2 = buffer.find('\n',posh);
           std::string wordh = "";
-          if(poshw < poshw2)
+          if(poshw!= -1 && poshw < poshw2)
             {
             wordh = buffer.substr(posh,poshw-posh);
             }
@@ -245,7 +245,7 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL,bool useCVS
           long int posw = m_Buffer.find(' ',pos);
           long int posw2 = m_Buffer.find('\n',pos);
           std::string word = "";
-          if(posw < posw2)
+          if(posw!=-1 && posw < posw2)
             {
             word = m_Buffer.substr(pos,posw-pos);
             }
