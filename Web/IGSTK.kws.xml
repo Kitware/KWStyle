@@ -8,7 +8,7 @@
 <EndOfFileNewLine>1</EndOfFileNewLine>
 <Tabs>1</Tabs>
 <Comments>/**, *, */,true</Comments>
-<Header>/projects/KWStyle/KWStyle/Web/headers/IGSTKHeader.h,false,true</Header>
+<Header>/projects/KWStyle/KWStyle/Web/headers/IGSTKSandbox,false,true</Header>
 <Indent>SPACE,2,true,true</Indent>
 <Namespace>igstk</Namespace>
 <NameOfClass>[NameOfClass],igstk</NameOfClass>
