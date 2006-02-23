@@ -238,7 +238,7 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL,bool useCVS
             }
           else if (poshw2 != -1)
             {
-            wordh = buffer.substr(posh,poshw2-posh);
+            wordh = buffer.substr(posh,poshw2-posh-1);
             }
 
           // Find the word
@@ -251,7 +251,7 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL,bool useCVS
             }
           else if (poshw2 != -1)
             {
-            word = m_Buffer.substr(pos,posw2-pos);
+            word = m_Buffer.substr(pos,posw2-pos-1);
             }
 
           if(word == wordh)
