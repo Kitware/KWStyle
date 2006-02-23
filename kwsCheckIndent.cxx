@@ -261,13 +261,25 @@ bool Parser::CheckIndent(IndentType itype,
           && !this->IsBetweenChars('(',')',pos,true)
           )
         {
+        // If we are inside an enum we do not check indent
+        bool isInsideEnum = false;
+        long int bracket = m_Buffer.find_last_of('{',pos);
+        if(bracket != -1)
+          {
+          unsigned int l = this->FindPreviousWord(bracket-1,true).size();
+          if(this->FindPreviousWord(bracket-l-2,true) == "enum")
+            {
+            isInsideEnum = true;
+            }
+          }
 
         // We check that the previous line is not ending with a semicolon
         // and that the sum of the two lines is more than maxLength
         std::string previousLine = this->GetLine(this->GetLineNumber(pos)-2);
         std::string currentLine = this->GetLine(this->GetLineNumber(pos)-1);
-        if( (previousLine[previousLine.size()-1] != ';')
-           && (previousLine.size()+currentLine.size()-currentIndent>maxLength)
+        if(( (previousLine[previousLine.size()-1] != ';')
+           && (previousLine.size()+currentLine.size()-currentIndent>maxLength))
+          || (isInsideEnum)
           )
           {
           // Do nothing
@@ -357,97 +369,69 @@ bool Parser::InitIndentation()
     posNamespace = m_BufferNoComment.find("namespace",posNamespace+1);
     }
 
+  // Create a list of position specific for namespaces
+  std::vector<int> namespacePos;
+  std::vector<IndentPosition>::iterator itIdentPos = m_IdentPositionVector.begin();
+  while(itIdentPos != m_IdentPositionVector.end())
+    {
+    namespacePos.push_back((*itIdentPos).position);
+    itIdentPos++;
+    }
+
   // Check if the { is the first in the file/function or in a namespace
   long int posClass = m_BufferNoComment.find('{',0);
   while(posClass != -1)
     {
+    // We count the number of { and } before posClass
+    int nOpen = 0;
+    int nClose = 0;  
+
+    long int open = m_BufferNoComment.find('{',0);
+    while(open!=-1 && open<posClass)
+      {
+      nOpen++;
+      open = m_BufferNoComment.find('{',open+1);
+      }
+
+    long int close = m_BufferNoComment.find('}',0);
+    while(close!=-1 && close<posClass)
+      {
+      nClose++;
+      close = m_BufferNoComment.find('}',close+1);
+      }
+
+    // Remove the potential namespaces
+    std::vector<int>::const_iterator itN = namespacePos.begin();
+    while(itN != namespacePos.end())
+      {
+      if((*itN)<=this->GetPositionWithComments(posClass))
+        {
+        nOpen--;
+        }
+      itN++;
+      }
+    
     bool defined = false;
-    // Check if this is not the namespace previously defined
-    std::vector<IndentPosition>::iterator itIdentPos = m_IdentPositionVector.begin();
-    while(itIdentPos != m_IdentPositionVector.end())
+      
+    if(nClose == nOpen)
       {
-      if((*itIdentPos).position == this->GetPositionWithComments(posClass))
+      // Check if this is not the namespace previously defined
+      std::vector<long int>::iterator itname = namespacevec.begin();
+      while(itname != namespacevec.end())
         {
-        defined = true;
-        break;
-        }
-      itIdentPos++;
-      }
-
-    if(!defined)
-      {
-      // Look backward
-      long int close = 1;
-      long int i = posClass-1;
-      bool found = false;
-
-      while((close!=2) && (i>0))
-        {
-        if(m_BufferNoComment[i] == '{')
+        if((*itname) == this->GetPositionWithComments(posClass))
           {
-          close++;
+          defined = true;
+          break;
           }
-        if(m_BufferNoComment[i] == '}')
-          {
-          close--;       
-          }
-       if(close == 2)
-         {
-         found = true;
-         break;
-         }
-        i--;
-        }
-
-      if(found)
-        {
-        bool defined = false;
-        // Check if this is not the namespace previously defined
-        std::vector<long int>::iterator itname = namespacevec.begin();
-        while(itname != namespacevec.end())
-          {
-          if((*itname) == this->GetPositionWithComments(i))
-            {
-            defined = true;
-            break;
-            }
-          itname++;
-          }
-
-        if(!defined)
-          {
-          found = false;
-          }
-        }
-
-      if(found)
-        {
-        // translate the position in the buffer position;
-        long int posClassComments = this->GetPositionWithComments(posClass);      
-        IndentPosition ind;
-        ind.position = posClassComments;
-        ind.current = 0;
-        ind.after = 1;
-        m_IdentPositionVector.push_back(ind);
-        ind.position = this->FindClosingChar('{','}',posClassComments);      
-        ind.current = -1;
-        ind.after = -1;
-        m_IdentPositionVector.push_back(ind);
+        itname++;
         }
       }
-    posClass = m_BufferNoComment.find('{',posClass+1);
-    }
-
-  
-  /*// class
-  long int posClass = this->GetClassPosition(0);
-  while(posClass != -1)
-    {
-    long int bracket = m_BufferNoComment.find('{',posClass-2);
-    if(bracket != -1)
+      
+    if((nClose == nOpen) && !defined)
       {
       // translate the position in the buffer position;
-      long int posClassComments = this->GetPositionWithComments(bracket);      
+      long int posClassComments = this->GetPositionWithComments(posClass);      
       IndentPosition ind;
       ind.position = posClassComments;
       ind.current = 0;
@@ -458,9 +442,8 @@ bool Parser::InitIndentation()
       ind.after = -1;
       m_IdentPositionVector.push_back(ind);
       }
-    posClass = this->GetClassPosition(posClass+1);
+    posClass = m_BufferNoComment.find('{',posClass+1);
     }
-  */
 
   // int main()
   long int posMain = m_BufferNoComment.find("main",0);
@@ -486,74 +469,112 @@ bool Parser::InitIndentation()
 
   // switch/case statement
   // for the moment break; restore the indentation
-  long int posCase = m_BufferNoComment.find("case",0);
-  bool firstCase = true;
-  long int openningBracket = -1;
-  long int closingBracket = -1;
-  while(posCase != -1)
+  long int posSwitch = m_BufferNoComment.find("switch",0);
+  while(posSwitch != -1)
     {
     // If this is the first case we find the openning { in order to 
     // find the closing } of the switch statement
-    if(firstCase)
-      {
-      openningBracket = m_BufferNoComment.find_last_of("{",posCase);
-      closingBracket = this->FindClosingChar('{','}',openningBracket,true);        
-      int i = closingBracket;
-      i--;
-        
-      // The char just before the closing brace should trigger the end
-      while(i>0 && (m_BufferNoComment[i] == ' ' 
-        || m_BufferNoComment[i] == '\r' ||  m_BufferNoComment[i] == '\n'))
-        {
-        i--;
-        }
-      long int posColumnComments = this->GetPositionWithComments(i);      
-      IndentPosition ind;
-      ind.position = posColumnComments;
-      ind.current = 0;
-      ind.after = -1; 
-      m_IdentPositionVector.push_back(ind);
+    long int openningBracket = m_BufferNoComment.find("{",posSwitch);
+    long int closingBracket = this->FindClosingChar('{','}',openningBracket,true);        
+    long int posColumnComments = this->GetPositionWithComments(closingBracket);      
+    IndentPosition ind;
+    ind.position = posColumnComments;
+    ind.current = -1;
+    ind.after = -2; 
+    m_IdentPositionVector.push_back(ind);
 
-      // Do the default case
-      long int defaultPos = m_BufferNoComment.find("default",posCase);
-      if(defaultPos != -1)
-        {
-        long int posColumnComments = this->GetPositionWithComments(defaultPos);      
-        IndentPosition ind;
-        ind.position = posColumnComments;
-        ind.current = -1;
-        ind.after = 0; 
-        m_IdentPositionVector.push_back(ind);
-        }
-
-      firstCase = false;
-      }
-    else if(posCase<closingBracket)
+    // Do the default case
+    long int defaultPos = m_BufferNoComment.find("default",openningBracket);
+    if(defaultPos != -1)
       {
-      long int posColumnComments = this->GetPositionWithComments(posCase);      
+      long int posColumnComments = this->GetPositionWithComments(defaultPos);      
       IndentPosition ind;
       ind.position = posColumnComments;
       ind.current = -1;
-      ind.after = -1; 
+      ind.after = 0; 
       m_IdentPositionVector.push_back(ind);
       }
 
-    long int column = m_BufferNoComment.find(':',posCase+3);
-    if(column != -1)
+    long int posCase = m_BufferNoComment.find("case",openningBracket);
+    bool firstCase = true;
+    long int previousCase = openningBracket;
+
+    while(posCase!= -1 && posCase<closingBracket)
       {
-      // translate the position in the buffer position;
-      long int posColumnComments = this->GetPositionWithComments(column);      
-      IndentPosition ind;
-      ind.position = posColumnComments;
-      ind.current = 0;
-      ind.after = 1; 
-      m_IdentPositionVector.push_back(ind);
+      // Check if we don't have any switch statement inside
+      long int insideSwitch = m_BufferNoComment.find("switch",previousCase);
+      if(insideSwitch>openningBracket && insideSwitch<posCase)
+        {
+        // jump to the end of the inside switch/case
+        long int insideBracket = m_BufferNoComment.find("{",insideSwitch);
+        posCase = this->FindClosingChar('{','}',insideBracket,true);        
+        }
+      else
+        {
+        long int posColumnComments = this->GetPositionWithComments(posCase);      
+        IndentPosition ind;
+        ind.position = posColumnComments;
+        if(firstCase)
+          {
+          ind.current = 0;
+          }
+        else
+          {
+          ind.current = -1;
+          }
+        ind.after = 0; 
+          
+        m_IdentPositionVector.push_back(ind);
+        
+        long int column = m_BufferNoComment.find(':',posCase+3);
+        if(column != -1)
+          {
+          // translate the position in the buffer position;
+          long int posColumnComments = this->GetPositionWithComments(column);      
+          IndentPosition ind;
+          ind.position = posColumnComments;
+          if(firstCase)
+            {
+            ind.current = 0;
+            ind.after = 1; 
+            }
+          else
+            {
+            ind.current = -1;
+            ind.after = 0; 
+            }
+          m_IdentPositionVector.push_back(ind);
+
+          // Sometimes there is a { right after the : we skip it if this is
+          // the case
+          long int ic = posColumnComments+1;
+          while(ic<(long int)m_Buffer.size() 
+            && (m_Buffer[ic] == ' ' 
+            || m_Buffer[ic] == '\r' 
+            || m_Buffer[ic] == '\n'))
+            {
+            ic++;
+            }
+          if(m_Buffer[ic] == '{')
+            {
+            IndentPosition ind;
+            ind.position = ic;
+            ind.current = 0;
+            ind.after = 0; 
+            m_IdentPositionVector.push_back(ind);
+            ind.position = this->FindClosingChar('{','}',ic);   
+            ind.current = 0;
+            ind.after = 0; 
+            m_IdentPositionVector.push_back(ind);
+            }
+          }
+        }
+      firstCase = false;
+      previousCase = posCase;
+      posCase = m_BufferNoComment.find("case",posCase+1);
       }
-    posCase = m_BufferNoComment.find("case",posCase+3);
-    if(posCase>closingBracket)
-      {
-      firstCase = true;
-      }
+
+    posSwitch = m_BufferNoComment.find("switch",posSwitch+3);
     }
 
   // Some words should be indented as the previous indent
@@ -585,7 +606,6 @@ void Parser::AddIndent(const char* name,long int current,long int after)
     m_IdentPositionVector.push_back(ind);
     posPrev = m_Buffer.find(name,posPrev+1);
     }
-
 }
 
 } // end namespace kws

@@ -368,16 +368,22 @@ std::string Parser::GetLine(unsigned long i) const
 }
 
 /** Find the previous word given a position */
-std::string Parser::FindPreviousWord(long int pos) const
+std::string Parser::FindPreviousWord(long int pos,bool withComments) const
 {
+  std::string stream = m_BufferNoComment;
+  if(withComments)
+    {
+    stream = m_Buffer;
+    }
+
   long i=pos;
 
-  while(m_BufferNoComment[i] != ' ' && m_BufferNoComment[i] != '\r' && i>0)
+  while(stream[i] != ' ' && stream[i] != '\r' && i>0)
     {
     i--;
     }
 
-  if(m_BufferNoComment[i] == '\r' && i>1)
+  if(stream[i] == '\r' && i>1)
     {
     i--;
     }
@@ -387,17 +393,17 @@ std::string Parser::FindPreviousWord(long int pos) const
   std::string ivar = "";
   while(i>=0 && inWord)
     {
-    if(m_BufferNoComment[i] != ' ' && m_BufferNoComment[i] != '\n' && m_BufferNoComment[i] != '\r')
+    if(stream[i] != ' ' && stream[i] != '\n' && stream[i] != '\r')
       {
       std::string store = ivar;
-      ivar = m_BufferNoComment[i];
+      ivar = stream[i];
       ivar += store;
       inWord = true;
       first = true;
       }
     else // we have a space
       {
-      if(m_BufferNoComment[i] == '\r')
+      if(stream[i] == '\r')
         {
         // do nothing
         }

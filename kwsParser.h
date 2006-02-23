@@ -278,7 +278,7 @@ protected:
   //size_t FindAndAddName(const std::string & buffer, XMLDescription &desc, std::string fileName) const;
 
   /** Find the previous word given a position */
-  std::string FindPreviousWord(long int pos) const;
+  std::string FindPreviousWord(long int pos,bool withComments=false) const;
 
   /** Find the next word given a position */
   std::string FindNextWord(long int pos) const;
