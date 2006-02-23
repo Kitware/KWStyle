@@ -355,7 +355,7 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL,bool useCVS
 
   // We check the less errors we can have
   unsigned int header=0;
-  int minErrors = 9999999999999;
+  int minErrors = 9999999;
   unsigned int i=0;
   std::vector<ErrorVectorType>::const_iterator itErrV = tempErrors.begin();
   while(itErrV != tempErrors.end())
