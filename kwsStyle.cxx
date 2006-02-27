@@ -30,11 +30,13 @@
 struct kwsFeature{
   std::string name;
   std::string value;
+  std::string filename;
   bool enable;
   };
 
 // List of features to check
 std::vector<kwsFeature> features;
+std::vector<kwsFeature> overwriteFeatures;
 
 void AddFeature(const char* name,const char* value,bool enable)
 {
@@ -42,6 +44,7 @@ void AddFeature(const char* name,const char* value,bool enable)
   f.name = name;
   f.value = value;
   f.enable = enable;
+  f.filename = "";
   features.push_back(f);
 }
 
@@ -71,7 +74,6 @@ void DisableFeature(const char* name)
       }
     it++;
     }
-
 }
 
 /** Push the filenames in the vector */
@@ -116,6 +118,10 @@ int main(int argc, char **argv)
   command.SetOption("exporthtml","exporthtml",false,"Export the HTML report online");
   command.SetOption("xml","xml",false,"Read a XML configure file");
   command.AddOptionField("xml","filename",MetaCommand::STRING,false);
+
+  command.SetOption("overwrite","o",false,"Overwrite rules file");
+  command.AddOptionField("overwrite","filename",MetaCommand::STRING,false);
+
   command.SetOption("dirfile","D",false,"Specify a file listing all the directories");
   command.SetOption("blacklist","b",false,"Specify a black list of words");
   command.AddOptionField("blacklist","filename",MetaCommand::STRING,false);
@@ -159,7 +165,7 @@ int main(int argc, char **argv)
     AddFeature("BlackList",blacklist.c_str(),true);
     }
 
-  // If we should generate the HTML file
+  // If we should look the definition from the xml file
   if(command.GetOptionWasSet("xml"))
     {
     std::string xml = command.GetValueAsString("xml","filename");
@@ -183,6 +189,94 @@ int main(int argc, char **argv)
     reader.Close();
     }
 
+  
+  // If we should look at some overwritten rules
+  if(command.GetOptionWasSet("overwrite"))
+    {
+    std::string overwrite = command.GetValueAsString("overwrite","filename");
+    
+    // Read the file
+    std::ifstream file;
+    file.open(overwrite.c_str(), std::ios::binary | std::ios::in);
+    if(!file.is_open())
+      {
+      std::cout << "Cannot open file: " << overwrite.c_str() << std::endl;
+      return 0;
+      }
+    file.seekg(0,std::ios::end);
+    unsigned long fileSize = file.tellg();
+    file.seekg(0,std::ios::beg);
+
+    char* buf = new char[fileSize+1];
+    file.read(buf,fileSize);
+    buf[fileSize] = 0; 
+    std::string buffer(buf);
+    buffer.resize(fileSize);
+    delete [] buf;
+   
+    long int start = 0;
+    long int pos = buffer.find("\n",start);
+    do    
+      {
+      std::string line = "";
+
+      if(pos == -1)
+        {
+        line = buffer.substr(start,buffer.length()-start);
+        pos = fileSize; // we stop
+        }
+      else
+        {
+        line = buffer.substr(start,pos-start);
+        start = pos+1;
+        }
+      if(line.size() < 2)
+        {
+        break;
+        }
+
+      long int p = line.find(" ");
+      if(p != -1)
+        {
+        kwsFeature f;
+        f.filename = line.substr(0,p);
+        long int p1 = p;
+        p = line.find(" ",p+1);
+        if(p!=-1)
+          {
+          f.name = line.substr(p1+1,p-p1-1); 
+          }
+        p1 = p;
+        p = line.find(" ",p+1);
+        std::string enablestring = line.substr(p1+1,p-p1-1);
+        if(enablestring.find("Enable") != -1)
+          {
+          f.enable = true;
+          }
+        else
+          {
+          f.enable = false;
+          }
+
+        p1 = p;
+        p = line.find("\n",p+1);
+          
+        if(p!=-1)
+          {
+          f.value = line.substr(p1+1,p-p1-1);
+          }
+        
+        overwriteFeatures.push_back(f);
+        }
+
+      if(pos != fileSize)
+        {
+        pos = buffer.find("\n",start);
+        }
+      } while(pos<(long int)fileSize);
+ 
+    file.close();
+    }
 
   std::string inputFilename = command.GetValueAsString("infile");
 
@@ -196,12 +290,8 @@ int main(int argc, char **argv)
       }
     }
    
-  //std::string inputFilename = "C:/Julien/Workspace/Insight/Code/Common/itkPolyLineParametricPath.h";
-  //bool parseDirectory = false;
-
   std::vector<std::string> filenames;
   std::vector<kws::Parser> m_Parsers;
-
 
   // if the -d command is used
   if(parseDirectory)
@@ -334,7 +424,25 @@ int main(int argc, char **argv)
     std::vector<kwsFeature>::iterator itf = features.begin();
     while(itf != features.end())
       {
-      if((*itf).enable)
+      // Check if we have a match in the list of overwriteFeatures
+      bool checked = false;
+      std::vector<kwsFeature>::iterator itof = overwriteFeatures.begin();
+      while(itof != overwriteFeatures.end())
+        {
+        if(
+          ((*it).find((*itof).filename.c_str()) != -1) 
+           && (!strcmp((*itof).name.c_str(),(*itf).name.c_str())))
+          {
+          if((*itof).enable)
+            {
+            parser.Check((*itof).name.c_str(),(*itof).value.c_str());
+            }
+          checked = true;
+          }
+        itof++;
+        }
+
+      if(!checked && (*itf).enable)
         {
         parser.Check((*itf).name.c_str(),(*itf).value.c_str());
         }
