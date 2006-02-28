@@ -17,7 +17,7 @@
 namespace kws {
 
 /** Check if the typedefs of the class are correct */
-bool Parser::CheckTypedefs(const char* regEx, bool alignment)
+bool Parser::CheckTypedefs(const char* regEx, bool alignment,unsigned int maxLength)
 {
   if(alignment)
     {
@@ -62,16 +62,29 @@ bool Parser::CheckTypedefs(const char* regEx, bool alignment)
       // if the typedef is on a line close to the previous one we check
       if(typdefline-previousline<2)
         {
-         if(l!=previouspos)
-           {
-           Error error;
-           error.line = this->GetLineNumber(beg,true);
-           error.line2 = error.line;
-           error.number = TYPEDEF_ALIGN;
-           error.description = "Type definition (" + var + ") is not aligned with the previous one";
-           m_ErrorList.push_back(error);
-           hasError = true;
-           }
+        // We check that the previous line is not ending with a semicolon
+        // and that the sum of the two lines is more than maxLength
+        std::string previousLine = this->GetLine(this->GetLineNumber(beg,true)-2);
+        std::string currentLine = this->GetLine(this->GetLineNumber(beg,true)-1);
+        if( (previousLine[previousLine.size()-1] != ';')
+           && (previousLine.size()+currentLine.size()>maxLength)
+          )
+          {
+          // Do nothing
+          }
+        else
+          {
+          if(l!=previouspos)
+            {
+            Error error;
+            error.line = this->GetLineNumber(beg,true);
+            error.line2 = error.line;
+            error.number = TYPEDEF_ALIGN;
+            error.description = "Type definition (" + var + ") is not aligned with the previous one";
+            m_ErrorList.push_back(error);
+            hasError = true;
+            }
+          }
         }
       else
         {

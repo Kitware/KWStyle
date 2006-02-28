@@ -177,7 +177,8 @@ public:
   bool CheckInternalVariables(const char* regEx,bool alignement = true);
 
   /** Check if the typedefs of the class are correct */
-  bool CheckTypedefs(const char* regEx, bool alignment = true);
+  bool CheckTypedefs(const char* regEx, bool alignment = true,
+                     unsigned int maxLength = 81);
 
   /** Check the order of the declaration */
   bool CheckDeclarationOrder(unsigned int posPublic, unsigned int posProtected, unsigned int posPrivate);
