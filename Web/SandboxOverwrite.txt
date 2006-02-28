@@ -1,1 +1,2 @@
 igstkViewTest.cxx Namespace Disable
+igstkViewRefreshRateTest.cxx Namespace Disable
