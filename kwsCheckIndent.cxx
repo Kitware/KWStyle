@@ -203,7 +203,7 @@ bool Parser::CheckIndent(IndentType itype,
       wantedIndent += size*sindent->after;
       firstChar = false;
       }
-    else if((it != m_Buffer.end()) && ((*it) == '{') && !this->IsInAnyComments(pos)) // openning bracket
+    else if((it != m_Buffer.end()) && ((*it) == '{') && !this->IsInComments(pos)) // openning bracket
       {
       bool check = true;
       // Check if { is after //
@@ -225,7 +225,7 @@ bool Parser::CheckIndent(IndentType itype,
     if(firstChar) // general case
       {
       // if we are in a comment
-      if(this->IsInAnyComments(pos))
+      if(this->IsInComments(pos))
         {
         // We check how much space we have in the middle section
         unsigned int nSpaceMiddle = 0;
@@ -306,7 +306,7 @@ bool Parser::CheckIndent(IndentType itype,
         }
       }
 
-    if((it != m_Buffer.end()) && ((*it) == '}') && !sindent && !this->IsInAnyComments(pos)) // closing bracket
+    if((it != m_Buffer.end()) && ((*it) == '}') && !sindent && !this->IsInComments(pos)) // closing bracket
       {
       bool check = true;
       // Check if { is after //
