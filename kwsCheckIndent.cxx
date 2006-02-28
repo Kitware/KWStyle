@@ -114,7 +114,6 @@ bool Parser::CheckIndent(IndentType itype,
       }
     }
 
-
   char type = ' ';
   if(itype == (IndentType)TABS) {type = '\t';}
 
@@ -204,7 +203,7 @@ bool Parser::CheckIndent(IndentType itype,
       wantedIndent += size*sindent->after;
       firstChar = false;
       }
-    else if((it != m_Buffer.end()) && ((*it) == '{') && !this->IsInComments(pos)) // openning bracket
+    else if((it != m_Buffer.end()) && ((*it) == '{') && !this->IsInAnyComments(pos)) // openning bracket
       {
       bool check = true;
       // Check if { is after //
@@ -226,7 +225,7 @@ bool Parser::CheckIndent(IndentType itype,
     if(firstChar) // general case
       {
       // if we are in a comment
-      if(this->IsInComments(pos))
+      if(this->IsInAnyComments(pos))
         {
         // We check how much space we have in the middle section
         unsigned int nSpaceMiddle = 0;
@@ -307,7 +306,7 @@ bool Parser::CheckIndent(IndentType itype,
         }
       }
 
-    if((it != m_Buffer.end()) && ((*it) == '}') && !sindent && !this->IsInComments(pos)) // closing bracket
+    if((it != m_Buffer.end()) && ((*it) == '}') && !sindent && !this->IsInAnyComments(pos)) // closing bracket
       {
       bool check = true;
       // Check if { is after //
@@ -389,28 +388,45 @@ bool Parser::InitIndentation()
     long int open = m_BufferNoComment.find('{',0);
     while(open!=-1 && open<posClass)
       {
-      nOpen++;
+      bool isNamespace = false;
+      // Remove the potential namespaces
+      std::vector<int>::const_iterator itN = namespacePos.begin();
+      while(itN != namespacePos.end())
+        {
+        if((*itN)==this->GetPositionWithComments(open))
+          {
+          isNamespace = true;
+          }
+        itN++;
+        }
+      if(!isNamespace)
+        {
+        nOpen++;
+        }
       open = m_BufferNoComment.find('{',open+1);
       }
 
     long int close = m_BufferNoComment.find('}',0);
     while(close!=-1 && close<posClass)
       {
-      nClose++;
+      bool isNamespace = false;
+      // Remove the potential namespaces
+      std::vector<int>::const_iterator itN = namespacePos.begin();
+      while(itN != namespacePos.end())
+        {
+        if((*itN)==this->GetPositionWithComments(close))
+          {
+          isNamespace = true;
+          }
+        itN++;
+        }
+      if(!isNamespace)
+        {
+        nClose++;
+        }
       close = m_BufferNoComment.find('}',close+1);
       }
 
-    // Remove the potential namespaces
-    std::vector<int>::const_iterator itN = namespacePos.begin();
-    while(itN != namespacePos.end())
-      {
-      if((*itN)<=this->GetPositionWithComments(posClass))
-        {
-        nOpen--;
-        }
-      itN++;
-      }
-    
     bool defined = false;
       
     if(nClose == nOpen)
@@ -431,7 +447,7 @@ bool Parser::InitIndentation()
     if((nClose == nOpen) && !defined)
       {
       // translate the position in the buffer position;
-      long int posClassComments = this->GetPositionWithComments(posClass);      
+      long int posClassComments = this->GetPositionWithComments(posClass); 
       IndentPosition ind;
       ind.position = posClassComments;
       ind.current = 0;

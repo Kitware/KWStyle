@@ -186,16 +186,19 @@ bool Parser::CheckComments(const char* begin,const char* middle,const char* end,
          poscombegt = m_Buffer.find(m_CommentBegin,poscombegt+1);
          }
 
-       std::string sub = m_Buffer.substr(poscombeg,poscom-poscombeg);
-       if(sub.find("\\class") == -1)
+       if(poscombeg!=-1 && (poscom-poscombeg>0))
          {
-         Error error;
-         error.line = this->GetLineNumber(poswithcom,false);
-         error.line2 = error.line;
-         error.number = MISSINGCOMMENT;
-         error.description = "comment doesn't have \\class";
-         m_ErrorList.push_back(error);
-         hasError = true;
+         std::string sub = m_Buffer.substr(poscombeg,poscom-poscombeg);
+         if(sub.find("\\class") == -1)
+           {
+           Error error;
+           error.line = this->GetLineNumber(poswithcom,false);
+           error.line2 = error.line;
+           error.number = MISSINGCOMMENT;
+           error.description = "comment doesn't have \\class";
+           m_ErrorList.push_back(error);
+           hasError = true;
+           }
          }
        }
      }

@@ -1120,6 +1120,65 @@ bool Parser::IsInComments(long int pos) const
   return false;
 }
 
+
+bool Parser::IsInAnyComments(long int pos) const
+{
+  //Check //
+  long int posslash = m_Buffer.find("//",0);
+  long int posend = -1;
+  if(posslash != -1)
+    {
+    posend = m_Buffer.find("\n",posslash);
+    }
+
+  while(posend != -1)
+    {
+    if(pos<posend && pos>posslash)
+      {
+      return true;
+      }
+    posslash = m_Buffer.find("//",posend+1);
+    if(posslash != -1)
+      {
+      posend = m_Buffer.find("\n",posslash);
+      }
+    else
+      {
+      posend = -1;
+      }
+    }
+
+  // Check the /* */
+  long int posstart = m_Buffer.find("/*",0);
+  posend = -1;
+  if(posstart != -1)
+    {
+    posend = m_Buffer.find("*/",posstart);
+    }
+
+  while(posend != -1)
+    {
+    if(pos<posend && pos>posstart)
+      {
+      return true;
+      }
+    posstart = m_Buffer.find("/*",posend+1);
+    if(posstart != -1)
+      {
+      posend = m_Buffer.find("*/",posstart);
+      }
+    else
+      {
+      posend = -1;
+      }
+    }
+
+
+  return false;
+     
+}
+
+
 /**  return true if the position pos is between 'begin' and 'end' */
 bool Parser::IsBetweenCharsFast(const char begin, const char end ,long int pos,bool withComments) const
 {

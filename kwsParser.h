@@ -345,6 +345,10 @@ protected:
   /**  return true if the position pos is inside a comment */
   bool Parser::IsInComments(long int pos) const;
 
+  /**  return true if the position pos is inside a comment defined as the compiler
+   *   i.e // or /* */
+  bool Parser::IsInAnyComments(long int pos) const;
+
   /** Given the position without comments return the position with the comments */
   long int GetPositionWithComments(long int pos) const;
 
