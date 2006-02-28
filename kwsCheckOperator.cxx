@@ -106,7 +106,7 @@ bool Parser::CheckOperator(unsigned int before, unsigned int after,bool doNotChe
         error.line2 = error.line;
         error.number = OPERATOR;
         error.description = "Spaces around operator are wrong";
-        m_ErrorList.push_back(error);
+        //m_ErrorList.push_back(error);
         hasErrors = true;
         }
       }
