@@ -106,7 +106,7 @@ bool Parser::CheckOperator(unsigned int before, unsigned int after,bool doNotChe
         error.line2 = error.line;
         error.number = OPERATOR;
         error.description = "Spaces around operator are wrong";
-        //m_ErrorList.push_back(error);
+        m_ErrorList.push_back(error);
         hasErrors = true;
         }
       }
@@ -171,8 +171,22 @@ bool Parser::FindOperator(const char* op,unsigned int before, unsigned int after
         error.line = this->GetLineNumber(operatorPos,true);
         error.line2 = error.line;
         error.number = OPERATOR;
-        error.description = "Spaces around operator are wrong";
+        error.description = "Spaces around operator are wrong: ";
+        error.description += "before = ";
+        char* val = new char[10];
+        sprintf(val,"%d",bef);
+        error.description += val;
+        error.description += " v.s ";
+        sprintf(val,"%d",before);
+        error.description += val;
+        error.description += " ,after = ";
+        sprintf(val,"%d",aft);
+        error.description += val;
+        error.description += " v.s ";
+        sprintf(val,"%d",after);
+        error.description += val;
         m_ErrorList.push_back(error);
+        delete [] val;
         hasErrors = true;
         }
       }
