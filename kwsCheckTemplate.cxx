@@ -35,16 +35,49 @@ bool Parser::CheckTemplate(const char* regEx)
   long int templatePos = m_BufferNoComment.find("template",0);
   while(templatePos != -1 ) 
     {
+    bool valid = true;
+
+    if(m_BufferNoComment[templatePos-1]!=' ' 
+      && m_BufferNoComment[templatePos-1]!='\n')
+      {
+      valid = false;
+      }
+    else if(m_BufferNoComment[templatePos+8]!=' ' 
+         && m_BufferNoComment[templatePos+8]!='\n')
+      {
+      valid = false;
+      }
+
     // Definition is template <whatever name,whatever name2 = test, ...>
     long int inf = m_BufferNoComment.find("<",templatePos);
     long int sup = m_BufferNoComment.find(">",inf);
 
     if(inf == -1 || sup == -1)
       {
-      std::cout << "CheckTemplate(): There is a problem parsing the file" << std::endl;
-      return false;
+      //std::cout << "CheckTemplate(): There is a problem parsing the file" << std::endl;
+      valid = false;
       }
-   
+    else
+      {
+      for(long int p=templatePos+8;p<inf;p++)
+        {
+        if(m_BufferNoComment[p]!=' ' && m_BufferNoComment[p]!='\n'
+           && m_BufferNoComment[p]!='\r')
+          {
+          valid = false;
+          break;
+          }
+        }
+      }
+
+
+
+    if(!valid)
+      {
+      templatePos = m_BufferNoComment.find("template",templatePos+1);
+      continue;
+      }
+
     long int i = inf+1;
     bool inWord = false;
     bool afterEqual = false;
