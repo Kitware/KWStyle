@@ -27,7 +27,7 @@
 namespace kws
 {
 #define MAX_CHAR 99999999
-#define NUMBER_ERRORS 21
+#define NUMBER_ERRORS 22
 
 typedef enum
   {
@@ -45,6 +45,7 @@ typedef enum
   DECL_ORDER,
   EOF_NEW_LINE,
   TABS,
+  SPACES,
   INDENT,
   HEADER,
   NDEFINE,
@@ -69,6 +70,7 @@ const char ErrorTag[NUMBER_ERRORS][4] = {
    {'D','C','L','\0'},
    {'E','O','F','\0'},
    {'T','A','B','\0'},
+   {'E','S','P','\0'},
    {'I','N','D','\0'},
    {'H','R','D','\0'},
    {'D','E','F','\0'},
@@ -182,6 +184,9 @@ public:
 
   /** Check the order of the declaration */
   bool CheckDeclarationOrder(unsigned int posPublic, unsigned int posProtected, unsigned int posPrivate);
+
+  /** Check for extra spaces */
+  bool CheckExtraSpaces(unsigned long max);
 
   /** Check the number of space between the end of the declaration
    *  and the semicolon */

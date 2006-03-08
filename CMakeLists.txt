@@ -40,6 +40,7 @@ kwsCheckEmptyLines.cxx
 kwsCheckTemplate.cxx
 kwsCheckOperator.cxx
 kwsCheckBlackList.cxx
+kwsCheckExtraSpaces.cxx
 )
 
 LINK_LIBRARIES(

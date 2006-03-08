@@ -150,6 +150,7 @@ int main(int argc, char **argv)
   AddFeature("SemicolonSpace","0",true);
   AddFeature("EndOfFileNewLine","",true);
   AddFeature("Tabs","",true);
+  AddFeature("Spaces","0",true);
   AddFeature("Comments","/**, *, */,true",true);
   AddFeature("Header","c:/Julien/Workspace/KWStyle/kwsHeader.h,false,true",true);
   AddFeature("Indent","kws::SPACE,2,true,true",true);
