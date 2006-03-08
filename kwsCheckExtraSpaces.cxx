@@ -35,7 +35,7 @@ bool Parser::CheckExtraSpaces(unsigned long max,bool checkEmptyLines)
     if(!checkEmptyLines)
       {
       // Check if the line is empty
-      long pos = posEndOfLine;
+      long pos = posEndOfLine-1;
       bool empty = true;
       while(pos>0 && m_Buffer[pos]!='\n')
         {
