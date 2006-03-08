@@ -63,7 +63,7 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment)
       error.line = this->GetLineNumber(pos,true);
       error.line2 = error.line;
       error.number = IVAR_PUBLIC;
-      error.description = "Encapsulcation not preserved";
+      error.description = "Encapsulation not preserved";
       m_ErrorList.push_back(error);
       hasError = true;
       
@@ -233,6 +233,102 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment)
     }
 
   return !hasError;
+}
+
+/** Find an ivar in the source code */
+std::string Parser::FindInternalVariable(long int start, long int end,long int & pos)
+{
+  long int posSemicolon = m_BufferNoComment.find(";",start);
+  if(posSemicolon != -1 && posSemicolon<end)
+    {
+    // We try to find the word before that
+    unsigned long i=posSemicolon-1;
+    bool inWord = true;
+    bool first = false;
+    std::string ivar = "";
+    while(i>=0 && inWord)
+      {
+      if(m_BufferNoComment[i] != ' ')
+        {
+        if((m_BufferNoComment[i] == '}')
+          || (m_BufferNoComment[i] == ')')
+          || (m_BufferNoComment[i] == ']')
+          || (m_BufferNoComment[i] == '\n')
+          )
+          {
+          inWord = false;
+          }
+        else
+          {
+          std::string store = ivar;
+          ivar = m_BufferNoComment[i];
+          ivar += store;
+          inWord = true;
+          first = true;
+          }
+        }
+      else // we have a space
+        {
+        if(first)
+          {
+          inWord = false;
+          }
+        }
+      i--;
+      }
+    pos = posSemicolon;
+
+    // We extract the complete definition.
+    // This means that we look for a '{' or '}' or '{' 
+    while(i>=0)
+      {
+      if((m_BufferNoComment[i] == '{')
+        //|| (m_BufferNoComment[i] == '}')
+        )
+        {
+        break;
+        }
+      i--;
+      }
+
+    std::string subphrase = "";
+    if(i>=0)
+      {
+      subphrase = m_BufferNoComment.substr(i+1,posSemicolon-i-1);
+      }
+
+    if( (subphrase.find("=") == -1)
+      && (subphrase.find("(") == -1)
+      && (subphrase.find("typedef") == -1)
+      && (subphrase.find("}") == -1)
+      )
+      {
+      return ivar;
+      }
+
+    // We find the words until we find a semicolon
+    /*long int p = pos;
+    std::string pword = this->FindPreviousWord(p);
+    bool isTypedef = false;
+    while((pword.size()>0) && (pword.find(";") == -1) && (p>0))
+      {
+      if(pword.find("typedef") != -1)
+        {
+        isTypedef = true;
+        break;
+        }
+      p -= pword.size();
+      pword = this->FindPreviousWord(p);
+      }
+
+    if(!isTypedef)
+      {
+      return ivar;
+      }*/
+    }
+
+  pos = -1;
+  return "";
 }
 
 } // end namespace kws
