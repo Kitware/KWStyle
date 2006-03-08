@@ -465,20 +465,39 @@ bool Parser::InitIndentation()
   long int posMain = m_BufferNoComment.find("main",0);
   while(posMain != -1)
     {
-    long int bracket = m_BufferNoComment.find('{',posMain+4);
-    if(bracket != -1)
+    // Check if the next char is '('
+    bool valid = true;
+    unsigned long pos = posMain+5;
+    while(pos<m_BufferNoComment.size() 
+         && (m_BufferNoComment[pos]==' ' 
+         || m_BufferNoComment[pos]=='\r'
+         || m_BufferNoComment[pos]=='\n')
+         )
       {
-      // translate the position in the buffer position;
-      long int posMainComments = this->GetPositionWithComments(bracket);      
-      IndentPosition ind;
-      ind.position = posMainComments;
-      ind.current = 0;
-      ind.after = 1;
-      m_IdentPositionVector.push_back(ind);
-      ind.position = this->FindClosingChar('{','}',posMainComments);      
-      ind.current = -1;
-      ind.after = -1;
-      m_IdentPositionVector.push_back(ind);
+      pos++;
+      }
+    
+    if(m_BufferNoComment[pos]!='(')
+      {
+      valid = false;
+      }
+    if(valid)
+      {
+      long int bracket = m_BufferNoComment.find('{',posMain+4);
+      if(bracket != -1)
+        {
+        // translate the position in the buffer position;
+        long int posMainComments = this->GetPositionWithComments(bracket);      
+        IndentPosition ind;
+        ind.position = posMainComments;
+        ind.current = 0;
+        ind.after = 1;
+        m_IdentPositionVector.push_back(ind);
+        ind.position = this->FindClosingChar('{','}',posMainComments);      
+        ind.current = -1;
+        ind.after = -1;
+        m_IdentPositionVector.push_back(ind);
+        }
       }
     posMain = m_BufferNoComment.find("main",posMain+4);
     }
@@ -601,6 +620,7 @@ bool Parser::InitIndentation()
   // some words should be always align left
   this->AddIndent("#include",ALIGN_LEFT,0);
   this->AddIndent("#if",ALIGN_LEFT,0);
+  this->AddIndent("#ifdef",ALIGN_LEFT,0);
   this->AddIndent("#elif",ALIGN_LEFT,0);
   this->AddIndent("#else",ALIGN_LEFT,0);
   this->AddIndent("#endif",ALIGN_LEFT,0);
