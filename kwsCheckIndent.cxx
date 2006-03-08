@@ -626,6 +626,7 @@ bool Parser::InitIndentation()
   this->AddIndent("#endif",ALIGN_LEFT,0);
   this->AddIndent("#ifndef",ALIGN_LEFT,0);
   this->AddIndent("#define",ALIGN_LEFT,0);
+  this->AddIndent("#undef",ALIGN_LEFT,0);
 
   return true;
 }
