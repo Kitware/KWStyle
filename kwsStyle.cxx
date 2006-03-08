@@ -112,6 +112,7 @@ int main(int argc, char **argv)
   command.SetOption("directory","d",false,"Specify a directory");
   command.SetOption("recursive","R",false,"Associated with -d recurse through directories");
   command.SetOption("verbose","v",false,"Display errors");
+  command.SetOption("extraverbose","xv",false,"Display more errors");
 
   command.SetOption("html","html",false,"Generate the HTML report");
   command.AddOptionField("html","filename",MetaCommand::STRING,false);
@@ -390,11 +391,6 @@ int main(int argc, char **argv)
 
   while(it != filenames.end())
     {
-    if(!command.GetOptionWasSet("exporthtml"))
-      {
-      std::cout << "Processing " << (*it).c_str() << std::endl;
-      }
-
     // We open the file
     std::ifstream file;
     file.open((*it).c_str(), std::ios::binary | std::ios::in);
@@ -450,8 +446,14 @@ int main(int argc, char **argv)
       }
 
     // If we should display the error
-    if(command.GetOptionWasSet("verbose"))
+    if(command.GetOptionWasSet("verbose")
+      || command.GetOptionWasSet("extraverbose")
+      )
       {
+      if(command.GetOptionWasSet("extraverbose") || parser.GetLastErrors().size() > 0)
+        {
+        std::cout << "Processing " << (*it).c_str() << std::endl;
+        }
       std::cout << parser.GetLastErrors().c_str() << std::endl;
       }
         
