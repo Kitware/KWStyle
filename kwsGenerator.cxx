@@ -310,7 +310,7 @@ bool Generator::GenerateHTML(const char* dir)
       
       std::string l = (*it).GetLine(i);
 
-      // If the error is of type INDENT we show the problem as _
+      // If the error is of type INDENT we show the problem as *
       if(errorTag.find("IND") != -1)
         {
         unsigned int k = 0;
@@ -321,6 +321,17 @@ bool Generator::GenerateHTML(const char* dir)
             l[k]='*'; 
             }
           k++;
+          }
+        }
+
+      // If the error is of type extra spaces we show the problem as *
+      if(errorTag.find("ESP") != -1)
+        {
+        int k = l.size()-1;
+        while(k>0 && (l[k] == ' '))
+          {
+          l[k]='*'; 
+          k--;
           }
         }
 
