@@ -16,8 +16,6 @@
 
 namespace kws {
 
-
-
 /** Check if the end of the file has a new line */
 bool Parser::CheckEndOfFileNewLine()
 {
