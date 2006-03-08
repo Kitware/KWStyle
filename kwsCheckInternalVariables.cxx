@@ -301,6 +301,8 @@ std::string Parser::FindInternalVariable(long int start, long int end,long int &
       && (subphrase.find("(") == -1)
       && (subphrase.find("typedef") == -1)
       && (subphrase.find("}") == -1)
+      && (subphrase.find("friend") == -1)
+      && (subphrase.find("class") == -1)
       )
       {
       return ivar;
