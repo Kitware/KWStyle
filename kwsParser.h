@@ -26,7 +26,7 @@
 
 namespace kws
 {
-
+#define MAX_CHAR 99999999
 #define NUMBER_ERRORS 21
 
 typedef enum

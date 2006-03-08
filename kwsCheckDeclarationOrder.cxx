@@ -60,8 +60,8 @@ bool Parser::CheckDeclarationOrder(unsigned int posPublic, unsigned int posProte
 
   // public v.s protected
   if( (posPublic > posProtected)
-      && (posPublic != -1)
-      && (posProtected != -1)
+      && (protectedFirst != MAX_CHAR)
+      && (publicFirst != MAX_CHAR)
       && (protectedFirst > publicFirst)
     ) 
     {
@@ -74,10 +74,10 @@ bool Parser::CheckDeclarationOrder(unsigned int posPublic, unsigned int posProte
     hasError = true;
     }
   else if(
-     (posPublic > posProtected)
-      && (posPublic != -1)
-      && (posProtected != -1)
-      && (protectedFirst > publicFirst)
+     (posPublic < posProtected)
+      && (protectedFirst != MAX_CHAR)
+      && (publicFirst != MAX_CHAR)
+      && (protectedFirst < publicFirst)
       )
      {
      Error error;
@@ -89,10 +89,10 @@ bool Parser::CheckDeclarationOrder(unsigned int posPublic, unsigned int posProte
      hasError = true;
      }
 
-  // protected v.s. private 
+  // protected v.s. private
   if( (posPrivate > posProtected)
-      && (posPrivate != -1)
-      && (posProtected != -1)
+      && (protectedFirst != MAX_CHAR)
+      && (privateFirst != MAX_CHAR)
       && (protectedFirst > privateFirst)
     ) 
     {
@@ -106,8 +106,8 @@ bool Parser::CheckDeclarationOrder(unsigned int posPublic, unsigned int posProte
     }
   else if(
      (posPrivate > posProtected)
-      && (posPrivate != -1)
-      && (posProtected != -1)
+      && (protectedFirst != MAX_CHAR)
+      && (privateFirst != MAX_CHAR)
       && (protectedFirst > privateFirst)
       )
      {
@@ -122,8 +122,8 @@ bool Parser::CheckDeclarationOrder(unsigned int posPublic, unsigned int posProte
 
   // Public v.s. Private
   if( (posPublic > posPrivate)
-      && (posPublic != -1)
-      && (posPrivate != -1)
+      && (privateFirst != MAX_CHAR)
+      && (publicFirst != MAX_CHAR)
       && (privateFirst > publicFirst)
     ) 
     {
@@ -137,8 +137,8 @@ bool Parser::CheckDeclarationOrder(unsigned int posPublic, unsigned int posProte
     }
   else if(
      (posPublic > posPrivate)
-      && (posPublic != -1)
-      && (posPrivate != -1)
+      && (privateFirst != MAX_CHAR)
+      && (publicFirst != MAX_CHAR)
       && (privateFirst > publicFirst)
       )
      {
@@ -156,17 +156,17 @@ bool Parser::CheckDeclarationOrder(unsigned int posPublic, unsigned int posProte
    info.line =  this->GetLineNumber(protectedFirst,true);
    info.line2 = this->GetLineNumber(publicFirst,true);
    info.number = DECL_ORDER;
-   if(publicFirst == -1)
+   if(publicFirst == MAX_CHAR)
      {
      info.description = "This class doesn't have any public method";
      m_InfoList.push_back(info);
      }
-   if(protectedFirst == -1)
+   if(protectedFirst == MAX_CHAR)
      {
      info.description = "This class doesn't have any protected method";
      m_InfoList.push_back(info);
      }
-   if(privateFirst == -1)
+   if(privateFirst == MAX_CHAR)
      {
      info.description = "This class doesn't have any private method";
      m_InfoList.push_back(info);

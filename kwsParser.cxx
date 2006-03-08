@@ -508,35 +508,39 @@ long int Parser::GetLineNumber(long int pos,bool withoutComments) const
 /** Find public area in source code. */
 void Parser::FindPublicArea(long &before, long &after, size_t startPos) const
 {
-  const long maxchar = 99999999;
   before = 0;
   after = 0;
 
   // First look if public is before protected and private
-  long pub = m_BufferNoComment.find("public", startPos);
-  long priv = m_BufferNoComment.find("private", startPos);
-  long protect = m_BufferNoComment.find("protected", startPos);
+  long pub = m_BufferNoComment.find("public:", startPos);
+  long priv = m_BufferNoComment.find("private:", startPos);
+  long protect = m_BufferNoComment.find("protected:", startPos);
+  
+  if(pub == -1)
+    {
+    pub = MAX_CHAR;
+    }
 
   if(priv == -1)
     {
-    priv = maxchar;
+    priv = MAX_CHAR;
     }
 
   if(protect == -1)
     {
-    protect = maxchar;
+    protect = MAX_CHAR;
     }
 
   if(pub>priv || pub>protect)
      {
-     if(pub>=priv && pub <=protect)
+     if(pub>=priv && pub<=protect)
        {
        before = priv;
        after = protect;
        }
-     else if(pub<=priv && pub >= protect)
+     else if(pub<=priv && pub>=protect)
        {
-       before = protect;
+       before = pub;
        after = priv;
        }
      else
@@ -560,7 +564,7 @@ void Parser::FindPublicArea(long &before, long &after, size_t startPos) const
     }
 
   // If there is nothing after we point to the end of the class
-  if(after == maxchar)
+  if(after == MAX_CHAR)
     {
     long int classpos = this->GetClassPosition(startPos);
     if(classpos != -1)
@@ -584,21 +588,25 @@ void Parser::FindProtectedArea(long &before, long &after, size_t startPos) const
 {
   before = 0;
   after = 0;
-  const long maxchar = 99999999;
 
   // First look if public is before protected and private
-  long pub = m_BufferNoComment.find("public", startPos);
-  long priv = m_BufferNoComment.find("private", startPos);
-  long protect = m_BufferNoComment.find("protected", startPos);
+  long pub = m_BufferNoComment.find("public:", startPos);
+  long priv = m_BufferNoComment.find("private:", startPos);
+  long protect = m_BufferNoComment.find("protected:", startPos);
 
   if(priv == -1)
     {
-    priv = maxchar;
+    priv = MAX_CHAR;
+    }
+  
+  if(protect == -1)
+    {
+    protect = MAX_CHAR;
     }
 
   if(pub == -1)
     {
-    pub = maxchar;
+    pub = MAX_CHAR;
     }
 
   if(protect>priv || protect>pub)
@@ -634,7 +642,7 @@ void Parser::FindProtectedArea(long &before, long &after, size_t startPos) const
 
 
   // If there is nothing after we point to the end of the class
-  if(after == maxchar)
+  if(after == MAX_CHAR)
     {
     long int classpos = this->GetClassPosition(startPos);
     if(classpos != -1)
@@ -657,21 +665,25 @@ void Parser::FindPrivateArea(long &before, long &after, size_t startPos) const
 {
   before = 0;
   after = 0;
-  const long maxchar = 99999999;
 
   // First look if public is before protected and private
-  long pub = m_BufferNoComment.find("public", startPos);
-  long priv = m_BufferNoComment.find("private", startPos);
-  long protect = m_BufferNoComment.find("protected", startPos);
+  long pub = m_BufferNoComment.find("public:", startPos);
+  long priv = m_BufferNoComment.find("private:", startPos);
+  long protect = m_BufferNoComment.find("protected:", startPos);
+  
+  if(priv == -1)
+    {
+    priv = MAX_CHAR;
+    }
 
   if(pub == -1)
     {
-    pub = maxchar;
+    pub = MAX_CHAR;
     }
 
   if(protect == -1)
     {
-    protect = maxchar;
+    protect = MAX_CHAR;
     }
 
   if(priv>pub || priv>protect)
@@ -706,7 +718,7 @@ void Parser::FindPrivateArea(long &before, long &after, size_t startPos) const
     }
 
   // If there is nothing after we point to the end of the class
-  if(after == maxchar)
+  if(after == MAX_CHAR)
     {
     long int classpos = this->GetClassPosition(startPos);
     if(classpos != -1)
