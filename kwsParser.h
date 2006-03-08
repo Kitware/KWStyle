@@ -149,7 +149,7 @@ public:
   bool CheckTabs();
 
   /** Check the number of succesive empty lines */
-  bool CheckEmptyLines(unsigned long max);
+  bool CheckEmptyLines(unsigned long max,bool checkEndOfFile=false);
 
   /** Check the comments
    * The comment definition should be set before CheckIndent() to get the correct indentation

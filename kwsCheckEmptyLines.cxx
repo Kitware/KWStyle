@@ -18,7 +18,7 @@ namespace kws {
 
 
 /** Check the number of succesive empty lines */
-bool Parser::CheckEmptyLines(unsigned long max)
+bool Parser::CheckEmptyLines(unsigned long max, bool checkEndOfFile)
 {
   m_TestsDone[EMPTYLINES] = true;
   char* val = new char[255];
@@ -48,23 +48,36 @@ bool Parser::CheckEmptyLines(unsigned long max)
 
     if(empty>max)
       {
-      Error error;
-      error.line = j;
-      error.line2 = error.line;
-      error.number = EMPTYLINES;
-      error.description = "Empty lines exceed ";
-      char* val = new char[10];
-      sprintf(val,"%d",empty);
-      error.description += val;
-      error.description += " (max=";
-      delete [] val;
-      val = new char[10];
-      sprintf(val,"%d",max);
-      error.description += val;
-      error.description += ")";
-      delete [] val;
-      m_ErrorList.push_back(error);
-      hasError = true;
+      bool valid = true;
+      // Check if we are at the end of the file
+      if(!checkEndOfFile)
+        {
+        if(m_Buffer.find_first_not_of("\r\n ",i) == -1)
+          {
+          valid = false;
+          }
+        }
+
+      if(valid)
+        {
+        Error error;
+        error.line = j;
+        error.line2 = error.line;
+        error.number = EMPTYLINES;
+        error.description = "Empty lines exceed ";
+        char* val = new char[10];
+        sprintf(val,"%d",empty);
+        error.description += val;
+        error.description += " (max=";
+        delete [] val;
+        val = new char[10];
+        sprintf(val,"%d",max);
+        error.description += val;
+        error.description += ")";
+        delete [] val;
+        m_ErrorList.push_back(error);
+        hasError = true;
+        }
       }
     j++;
     i += line.length()+1;
