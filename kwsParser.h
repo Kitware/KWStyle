@@ -186,7 +186,7 @@ public:
   bool CheckDeclarationOrder(unsigned int posPublic, unsigned int posProtected, unsigned int posPrivate);
 
   /** Check for extra spaces */
-  bool CheckExtraSpaces(unsigned long max);
+  bool CheckExtraSpaces(unsigned long max,bool checkEmptyLines=false);
 
   /** Check the number of space between the end of the declaration
    *  and the semicolon */
