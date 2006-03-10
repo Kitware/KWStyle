@@ -14,6 +14,8 @@
 =========================================================================*/
 #include "kwsParser.h"
 
+#include <itksys/ios/sstream>
+
 namespace kws {
 
 /** Constructor */
@@ -314,23 +316,27 @@ std::string Parser::GetInfo()
 
 void Parser::ConvertBufferToWindowsFileType(std::string & buffer)
 {
-  long int pos = buffer.find("\n");
-  long int pos2 = -1;
-  if(pos>1)
+  size_t cc;
+  const char* inch = buffer.c_str();
+  std::vector<char> outBuffer;
+  size_t inStrSize = buffer.size();
+  // Reserve enough space for most files
+  outBuffer.reserve(inStrSize+1000);
+
+  for ( cc = 0; cc < inStrSize; ++ cc )
     {
-    pos2 = buffer.find("\r\n",pos-1); 
-    }
-  
-  while(pos != -1 && (pos-pos2)!=1)
-    {
-    buffer.insert(pos,"\r");
-    pos = buffer.find("\n",pos+2);
-    if(pos>1)
+    if ( *inch == '\n' )
       {
-      pos2 = buffer.find("\r\n",pos-1);   
+      if ( cc == 0 || *(inch-1) != '\r' )
+        {
+        outBuffer.push_back('\r');
+        }
       }
+    outBuffer.push_back(*inch);
+    inch ++;
     }
-  
+  outBuffer.push_back(0);
+  buffer = &*outBuffer.begin();
 }
 
 /** Return the number of lines */
