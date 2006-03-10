@@ -31,6 +31,54 @@ bool Parser::CheckLineLength(unsigned long max)
   unsigned long i = 0;
   unsigned long j = 1;
   bool hasError = false;
+
+  size_t cc;
+  const char* inch = m_Buffer.c_str();
+  size_t inStrSize = m_Buffer.size();
+  size_t line_start = 0;
+  size_t line_end = 0;
+  size_t line_count = 1;
+  m_Positions.push_back(0);
+  for ( cc = 0; cc < inStrSize; ++ cc )
+    {
+    if ( *inch == '\n' )
+      {
+      m_Positions.push_back(cc);
+      line_end = cc;
+      size_t line_length = line_end - line_start;
+      if(line_length > max)
+        {
+        Error error;
+        error.line = line_count;
+        error.line2 = error.line;
+        error.number = LINE_LENGTH;
+        error.description = "Line length exceed ";
+        char* val = new char[10];
+        sprintf(val,"%d",line_length);
+        error.description += val;
+        error.description += " (max=";
+        delete [] val;
+        val = new char[10];
+        sprintf(val,"%d",max);
+        error.description += val;
+        error.description += ")";
+        delete [] val;
+        m_ErrorList.push_back(error);
+        hasError = true;
+        }
+      line_start = cc + 1;
+      line_count ++;
+      }
+    inch ++;
+    }
+  m_Positions.push_back(cc);
+  /*
+  std::cout << "----------------------" << std::endl;
+  for ( cc = 0; cc < m_Positions.size(); ++ cc )
+    {
+    std::cout << "Pos: " << m_Positions[cc] << std::endl;
+    }
+  std::cout << "----------------------" << std::endl;
   while(i<total)
     {
     // extract the line
@@ -61,6 +109,13 @@ bool Parser::CheckLineLength(unsigned long max)
     }
 
   m_Positions.push_back(total-1);
+  std::cout << "----------------------" << std::endl;
+  for ( cc = 0; cc < m_Positions.size(); ++ cc )
+    {
+    std::cout << "Pos: " << m_Positions[cc] << std::endl;
+    }
+  std::cout << "----------------------" << std::endl;
+  */
     
   return !hasError;
 }
