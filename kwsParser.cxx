@@ -1538,6 +1538,110 @@ long int Parser::IsTemplated(const std::string & buffer, long int classnamepos) 
 /** Remove the comments */
 void Parser::RemoveComments()
 {
+  m_CommentPositions.clear();
+  size_t cc;
+  const char* inch = m_Buffer.c_str();
+  std::vector<char> outBuffer;
+  size_t inStrSize = m_Buffer.size();
+  // Reserve enough space for all files. The size will be at least the size of
+  // the file.
+  outBuffer.reserve(inStrSize+1);
+
+  bool inComment = false;
+  bool copyChar;
+  bool cppComment = false;
+
+  size_t beginOfComment = 0;
+  size_t endOfComment = 0;
+
+  for ( cc = 0; cc < inStrSize; ++ cc )
+    {
+    copyChar = true;
+    if ( !inComment )
+      {
+      if ( *inch == '/' )
+        {
+        if ( cc < inStrSize-1 )
+          {
+          if ( *(inch+1) == '*' )
+            {
+            inComment = true;
+            beginOfComment = cc;
+            }
+          else if ( *(inch+1) == '/' )
+            {
+            inComment = true;
+            beginOfComment = cc;
+            cppComment = true;
+            }
+          }
+        }
+      }
+    else
+      {
+      if ( cppComment && *inch == '\n' )
+        {
+        endOfComment = cc+1;
+        inComment = false;
+        copyChar = false;
+        PairType pair(beginOfComment, endOfComment);
+        m_CommentPositions.push_back(pair);
+        }
+      if ( *inch == '/' )
+        {
+        if ( cc > 0 && *(inch-1) == '*' )
+          {
+          endOfComment = cc+1;
+          inComment = false;
+          copyChar = false;
+          PairType pair(beginOfComment, endOfComment);
+          m_CommentPositions.push_back(pair);
+          }
+        }
+      }
+    if ( inComment )
+      {
+      copyChar = false;
+      }
+    if ( copyChar )
+      {
+      outBuffer.push_back(*inch);
+      }
+    inch ++;
+    }
+  outBuffer.push_back(0);
+  m_BufferNoComment = &*outBuffer.begin();
+}
+  /*
+  std::cout << "Remove comments:" << std::endl
+    << "------------------------------" << std::endl
+    << m_Buffer << std::endl
+    << "------------------------------" << std::endl
+    << m_BufferNoComment << std::endl
+    << "------------------------------" << std::endl;
+  for ( cc = 0; cc < m_CommentPositions.size(); ++ cc )
+    {
+    std::cout << "Comment: " << m_CommentPositions[cc].first << " -> " << m_CommentPositions[cc].second << std::endl;
+    }
+  std::cout 
+    << "------------------------------" << std::endl;
+  this->OldRemoveComments();
+  std::cout 
+    << m_BufferNoComment << std::endl
+    << "------------------------------" << std::endl;
+  for ( cc = 0; cc < m_CommentPositions.size(); ++ cc )
+    {
+    std::cout << "Comment: " << m_CommentPositions[cc].first << " -> " << m_CommentPositions[cc].second << std::endl;
+    }
+  std::cout 
+    << "------------------------------" << std::endl;
+
+  abort();
+  */
+
+#if 0
+void Parser::RemoveComments()
+{
   m_BufferNoComment = m_Buffer;
   m_CommentPositions.clear();
   unsigned long size = m_BufferNoComment.size();
@@ -1600,6 +1704,7 @@ void Parser::RemoveComments()
   m_BufferNoComment[size-count] = '\0';
   m_BufferNoComment.resize(size-count);
 }
+#endif
 
 /** Find the constructor in the file */
 long Parser::FindConstructor(const std::string & buffer, const std::string & className, bool headerfile, size_t startPos) const
