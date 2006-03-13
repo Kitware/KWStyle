@@ -1539,6 +1539,7 @@ long int Parser::IsTemplated(const std::string & buffer, long int classnamepos) 
 */
 
 /** Remove the comments */
+#if 1
 void Parser::RemoveComments()
 {
   m_CommentPositions.clear();
@@ -1587,6 +1588,7 @@ void Parser::RemoveComments()
         endOfComment = cc+1;
         inComment = false;
         copyChar = false;
+        cppComment = false;
         PairType pair(beginOfComment, endOfComment);
         m_CommentPositions.push_back(pair);
         }
@@ -1615,32 +1617,7 @@ void Parser::RemoveComments()
   outBuffer.push_back(0);
   m_BufferNoComment = &*outBuffer.begin();
 }
-  /*
-  std::cout << "Remove comments:" << std::endl
-    << "------------------------------" << std::endl
-    << m_Buffer << std::endl
-    << "------------------------------" << std::endl
-    << m_BufferNoComment << std::endl
-    << "------------------------------" << std::endl;
-  for ( cc = 0; cc < m_CommentPositions.size(); ++ cc )
-    {
-    std::cout << "Comment: " << m_CommentPositions[cc].first << " -> " << m_CommentPositions[cc].second << std::endl;
-    }
-  std::cout 
-    << "------------------------------" << std::endl;
-  this->OldRemoveComments();
-  std::cout 
-    << m_BufferNoComment << std::endl
-    << "------------------------------" << std::endl;
-  for ( cc = 0; cc < m_CommentPositions.size(); ++ cc )
-    {
-    std::cout << "Comment: " << m_CommentPositions[cc].first << " -> " << m_CommentPositions[cc].second << std::endl;
-    }
-  std::cout 
-    << "------------------------------" << std::endl;
-
-  abort();
-  */
+#endif
 
 #if 0
 void Parser::RemoveComments()
