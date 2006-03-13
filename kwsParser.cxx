@@ -363,7 +363,10 @@ std::string Parser::GetLine(unsigned long i) const
    {
    if(lines == i)
      {
-     return m_Buffer.substr(prec,pos-prec-1);
+     if(pos-prec-1>0)
+       {
+       return m_Buffer.substr(prec,pos-prec-1);
+       }
      }
    lines++;
    prec = pos;
