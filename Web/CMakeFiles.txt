@@ -1,4 +1,4 @@
-/projects/KWStyle/CMake/Source
-/projects/KWStyle/CMake/Source/CPack
-/projects/KWStyle/CMake/Source/CTest
-/projects/KWStyle/CMake/Source/CurseDialog
+/projects/KWStyle/CMakeCVS/Source
+/projects/KWStyle/CMakeCVS/Source/CPack
+/projects/KWStyle/CMakeCVS/Source/CTest
+/projects/KWStyle/CMakeCVS/Source/CurseDialog
