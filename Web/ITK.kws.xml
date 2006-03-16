@@ -7,6 +7,7 @@
 <SemicolonSpace>0</SemicolonSpace>
 <EndOfFileNewLine>1</EndOfFileNewLine>
 <Tabs>1</Tabs>
+<Spaces>3</Spaces>
 <Comments>/**, *, */,true</Comments>
 <Header>/projects/KWStyle/KWStyle/Web/headers/ITKHeader.h,false,true</Header>
 <Indent>SPACE,2,true,true</Indent>
