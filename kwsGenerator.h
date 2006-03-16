@@ -68,7 +68,7 @@ public:
     }
  
   /** Generate the HTML files */
-  bool GenerateHTML(const char* dir);
+  bool GenerateHTML(const char* dir,bool showAllErrors = true);
 
   /** Export the HTML report */
   void ExportHTML(std::ostream & output);
@@ -82,7 +82,7 @@ private:
 
   bool CreateHeader(std::ostream * file,const char* title);
   bool CreateFooter(std::ostream * file);
-  bool GenerateMatrix(const char* dir);
+  bool GenerateMatrix(const char* dir,bool showAllErrors);
   bool GenerateDescription(const char* dir);
 
   ParserVectorType* m_Parsers;

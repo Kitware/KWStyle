@@ -113,6 +113,7 @@ int main(int argc, char **argv)
   command.SetOption("recursive","R",false,"Associated with -d recurse through directories");
   command.SetOption("verbose","v",false,"Display errors");
   command.SetOption("quiteverbose","qv",false,"Display less information");
+  command.SetOption("lesshtml","lesshtml",false,"Display less HTML");
 
   command.SetOption("html","html",false,"Generate the HTML report");
   command.AddOptionField("html","filename",MetaCommand::STRING,false);
@@ -471,7 +472,9 @@ int main(int argc, char **argv)
     std::string html = command.GetValueAsString("html","filename");
     kws::Generator generator;
     generator.SetParser(&m_Parsers);
-    generator.GenerateHTML(html.c_str());
+
+    bool showNoErrors = command.GetOptionWasSet("lesshtml");
+    generator.GenerateHTML(html.c_str(),!showNoErrors);
     }
 
   // If we should export the html report

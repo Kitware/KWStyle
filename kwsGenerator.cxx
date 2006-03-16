@@ -73,7 +73,7 @@ bool Generator::GenerateDescription(const char* dir)
 }
 
 /** Generate the Matrix representation */
-bool Generator::GenerateMatrix(const char* dir)
+bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
 {
   std::cout << "Generating Matrix...";
 
@@ -114,6 +114,13 @@ bool Generator::GenerateMatrix(const char* dir)
   ParserVectorType::const_iterator it = m_Parsers->begin();
   while(it != m_Parsers->end())
     {
+    
+    if(!showAllErrors && (*it).GetErrors().size() == 0)
+      {
+      it++;
+      continue;
+      }
+
     // Replace '/' by '_'
     std::string filename = (*it).GetFilename();
     long int slash = filename.find_last_of("/");
@@ -164,7 +171,6 @@ bool Generator::GenerateMatrix(const char* dir)
         itError++;
         }
 
-
       file << "  <td width=\"" << width << "%\"";
       if(nerror == 0)
         {
@@ -189,7 +195,6 @@ bool Generator::GenerateMatrix(const char* dir)
 
     it++;
     }
-   
 
   file << "</table>" << std::endl;
   
@@ -201,10 +206,10 @@ bool Generator::GenerateMatrix(const char* dir)
 }
 
 /** Generate the HTML files */
-bool Generator::GenerateHTML(const char* dir)
+bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
 {
   // Generate the matrix representation
-  this->GenerateMatrix(dir);
+  this->GenerateMatrix(dir,showAllErrors);
   this->GenerateDescription(dir);
 
   std::cout << "Generating HTML...";
@@ -213,6 +218,12 @@ bool Generator::GenerateHTML(const char* dir)
   ParserVectorType::const_iterator it = m_Parsers->begin();
   while(it != m_Parsers->end())
     {
+    if(!showAllErrors && (*it).GetErrors().size() == 0)
+      {
+      it++;
+      continue;
+      }
+
     std::ofstream file;
 
     if((*it).GetFilename().size() == 0)
