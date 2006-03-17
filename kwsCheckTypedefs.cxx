@@ -80,7 +80,14 @@ bool Parser::CheckTypedefs(const char* regEx, bool alignment,unsigned int maxLen
             error.line = this->GetLineNumber(beg,true);
             error.line2 = error.line;
             error.number = TYPEDEF_ALIGN;
-            error.description = "Type definition (" + var + ") is not aligned with the previous one";
+            error.description = "Type definition (" + var + ") is not aligned with the previous one: ";
+            char* var = new char[10];
+            sprintf(var,"%d",l);
+            error.description += var;
+            error.description += " v.s. ";
+            sprintf(var,"%d",previouspos);
+            error.description += var;
+            delete [] var;
             m_ErrorList.push_back(error);
             hasError = true;
             }

@@ -169,6 +169,7 @@ bool Parser::CheckIndent(IndentType itype,
 
       else if(currentIndent != wanted)
         {
+        bool returnError = true;
         // We check that the previous line is not ending with a semicolon
         // and that the sum of the two lines is more than maxLength
         std::string previousLine = this->GetLine(this->GetLineNumber(pos)-2);
@@ -177,9 +178,10 @@ bool Parser::CheckIndent(IndentType itype,
            && (previousLine.size()+currentLine.size()-currentIndent>maxLength)
           )
           {
-          // Do nothing
+          returnError = false;
           }
-        else
+
+        if(returnError)
           {
           Error error;
           error.line = this->GetLineNumber(pos);
@@ -272,6 +274,8 @@ bool Parser::CheckIndent(IndentType itype,
             }
           }
 
+        bool reportError = true;
+
         // We check that the previous line is not ending with a semicolon
         // and that the sum of the two lines is more than maxLength
         std::string previousLine = this->GetLine(this->GetLineNumber(pos)-2);
@@ -281,9 +285,34 @@ bool Parser::CheckIndent(IndentType itype,
           || (isInsideEnum)
           )
           {
-          // Do nothing
+          reportError = false;
           }
+        // Check if the line start with '<<' if this is the case we ignorr it
+        else if((*it) == '<' && (*(it+1) == '<'))
+          {
+          long int posInf = previousLine.find("<<");
+          if((posInf != -1) && (posInf == currentIndent+1))
+            {
+            reportError = false;
+            } 
+          }
+        // We don't care about everything between the class and '{'
         else
+          {
+          long int classPos = m_Buffer.find("class",0);
+          while(classPos!=-1)
+            {
+            long int endClass = m_Buffer.find("{",classPos);
+            if(endClass!=-1 && (long int)pos<endClass && (long int)pos>classPos)
+              {
+              reportError = false;
+              break;
+              }
+            classPos = m_Buffer.find("class",classPos+1);
+            }
+          }
+
+        if(reportError)
           {
           Error error;
           error.line = this->GetLineNumber(pos);
