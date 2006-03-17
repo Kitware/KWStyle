@@ -2,6 +2,7 @@ vnl_c_vector+char-.cxx Header Disable
 vnl_c_vector+short-.cxx Header Disable
 vnl_c_vector+ushort-.cxx Header Disable
 vnl_complex_traits+char-.h Header Disable
+vnl_complex_traits+char-.h IfNDefDefine Disable
 vnl_matrix+short-.cxx Header Disable
 vnl_matrix+char-.cxx Header Disable
 vnl_matrix+ushort-.cxx Header Disable

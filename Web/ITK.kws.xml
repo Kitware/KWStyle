@@ -15,6 +15,6 @@
 <NameOfClass>[NameOfClass],itk</NameOfClass>
 <IfNDefDefine>__[NameOfClass]_[Extension]</IfNDefDefine>
 <EmptyLines>2</EmptyLines>
-<Template>T</Template>
+<Template>[TNV]</Template>
 <Operator>1,1</Operator>
 </Description>
