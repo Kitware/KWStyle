@@ -257,9 +257,12 @@ bool Parser::CheckIndent(IndentType itype,
           }
         }
 
+
       if((currentIndent != wantedIndent) 
-          && !this->IsBetweenChars('<','>',pos,true)
-          && !this->IsBetweenChars('(',')',pos,true)
+          && !this->IsBetweenCharsFast('<','>',pos,true)
+          && !this->IsBetweenCharsFast('(',')',pos,true)
+          && !this->IsBetweenChars('(',')',pos,true) 
+          && !this->IsBetweenChars('<','>',pos,true) 
           )
         {
         // If we are inside an enum we do not check indent

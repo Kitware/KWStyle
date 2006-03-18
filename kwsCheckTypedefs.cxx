@@ -62,19 +62,28 @@ bool Parser::CheckTypedefs(const char* regEx, bool alignment,unsigned int maxLen
       // if the typedef is on a line close to the previous one we check
       if(typdefline-previousline<2)
         {
-        // We check that the previous line is not ending with a semicolon
-        // and that the sum of the two lines is more than maxLength
-        std::string previousLine = this->GetLine(this->GetLineNumber(beg,true)-2);
-        std::string currentLine = this->GetLine(this->GetLineNumber(beg,true)-1);
-        if( (previousLine[previousLine.size()-1] != ';')
-           && (previousLine.size()+currentLine.size()>maxLength)
-          )
+        if(l!=previouspos)
           {
-          // Do nothing
-          }
-        else
-          {
-          if(l!=previouspos)
+          bool reportError = true;
+          // We check that the previous line is not ending with a semicolon
+          // and that the sum of the two lines is more than maxLength
+          std::string previousLine = this->GetLine(this->GetLineNumber(beg,true)-2);
+          std::string currentLine = this->GetLine(this->GetLineNumber(beg,true)-1);
+          if( (previousLine[previousLine.size()-1] != ';')
+             && (previousLine.size()+currentLine.size()>maxLength)
+            )
+            {
+            reportError = false;
+            }
+
+          // Check if the alignement is possible due to the length of the line
+          long int size = currentLine.size()-l;
+          if(previouspos+size>(long int)maxLength)
+            {
+            reportError = false;
+            }
+
+          if(reportError)
             {
             Error error;
             error.line = this->GetLineNumber(beg,true);

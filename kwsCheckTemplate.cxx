@@ -81,9 +81,16 @@ bool Parser::CheckTemplate(const char* regEx)
     long int i = inf+1;
     bool inWord = false;
     bool afterEqual = false;
+    int level = 0;
     std::string currentWord = "";
+
     while(i<=sup)
       {
+      if(m_BufferNoComment[i] == '<')
+        {
+        level++;
+        }
+
       // If we have a space
       if(m_BufferNoComment[i] == ' ')
         {
@@ -94,7 +101,7 @@ bool Parser::CheckTemplate(const char* regEx)
         {
         inWord = false;
 
-        if(!afterEqual && !regex.find(currentWord))
+        if(!afterEqual && !regex.find(currentWord) && level==0)
           {
           Error error;
           error.line = this->GetLineNumber(i,true);
@@ -122,6 +129,11 @@ bool Parser::CheckTemplate(const char* regEx)
           }
         currentWord += m_BufferNoComment[i];
         inWord = true;
+        }
+
+       if(m_BufferNoComment[i] == '>')
+        {
+        level--;
         }
       i++;
       }
