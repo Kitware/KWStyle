@@ -16,3 +16,6 @@ vnl_vector+char-.cxx Header Disable
 vnl_vector+short-.cxx Header Disable
 vnl_vector+ushort-.cxx Header Disable
 itkWeakPointer.h Template Disable
+itkBSplineInterpolationWeightFunction.txx Namespace Disable
+itkWindowedSincInterpolateImageFunction.h DeclarationOrder Disable
+itkCommand.h Typedefs Disable
