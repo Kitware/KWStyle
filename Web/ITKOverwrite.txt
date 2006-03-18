@@ -15,3 +15,4 @@ vnl_matrix_fixed_ref+double.4.4-.cxx Header Disable
 vnl_vector+char-.cxx Header Disable
 vnl_vector+short-.cxx Header Disable
 vnl_vector+ushort-.cxx Header Disable
+itkWeakPointer.h Template Disable
