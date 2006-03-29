@@ -2,6 +2,7 @@ igstkViewTest.cxx Namespace Disable
 igstkViewRefreshRateTest.cxx Namespace Disable
 igstkObliqueImageSpatialObjectRepresentationTest.cxx Namespace Disable
 igstkTubeReaderTest.cxx Namespace Disable
+igstkFlockOfBirdsTrackerTest.cxx Namespace Disable
 Configure.h LineLength Disable
 Configure.h IfNDefDefine Disable
 igstkSystemInformation.h.in IfNDefDefine Disable
