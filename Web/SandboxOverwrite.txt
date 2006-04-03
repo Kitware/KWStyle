@@ -9,3 +9,4 @@ igstkSystemInformation.h.in IfNDefDefine Disable
 igstkSystemInformation.cxx Operator Disable
 igstkPivotCalibration.h DeclarationOrder Disable
 igstkEvents Typedefs Disable
+igstkPivotCalibrationReaderTest.cxx Namespace Disable
