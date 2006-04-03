@@ -18,7 +18,7 @@ namespace kws {
 
 
 /** Check the number of character per line */
-bool Parser::CheckLineLength(unsigned long max)
+bool Parser::CheckLineLength(unsigned long max,bool checkHeader)
 {
   m_TestsDone[LINE_LENGTH] = true;
   char* val = new char[255];
@@ -31,6 +31,24 @@ bool Parser::CheckLineLength(unsigned long max)
   unsigned long i = 0;
   unsigned long j = 1;
   bool hasError = false;
+
+  unsigned long fileSize = 0;
+  // If we do not want to check the header
+  if(!checkHeader)
+    {
+    std::ifstream file;
+    file.open(m_HeaderFilename.c_str(), std::ios::binary | std::ios::in);
+    if(!file.is_open())
+      {
+      std::cout << "CheckLineLength() - Cannot open file: " 
+                << m_HeaderFilename << std::endl;
+      return false;
+      }
+
+    file.seekg(0,std::ios::end);
+    fileSize = file.tellg();
+    file.close();
+    }
 
   size_t cc;
   const char* inch = m_Buffer.c_str();
@@ -46,7 +64,7 @@ bool Parser::CheckLineLength(unsigned long max)
       m_Positions.push_back(cc);
       line_end = cc;
       size_t line_length = line_end - line_start;
-      if(line_length > max)
+      if(line_length > max && cc>fileSize)
         {
         Error error;
         error.line = line_count;
@@ -72,51 +90,7 @@ bool Parser::CheckLineLength(unsigned long max)
     inch ++;
     }
   m_Positions.push_back(cc);
-  /*
-  std::cout << "----------------------" << std::endl;
-  for ( cc = 0; cc < m_Positions.size(); ++ cc )
-    {
-    std::cout << "Pos: " << m_Positions[cc] << std::endl;
-    }
-  std::cout << "----------------------" << std::endl;
-  while(i<total)
-    {
-    // extract the line
-    std::string line = m_Buffer.substr(i+1,m_Buffer.find("\n",i+1)-i-1);
-    m_Positions.push_back(i);
-    if(line.length() > max)
-      {
-      Error error;
-      error.line = j;
-      error.line2 = error.line;
-      error.number = LINE_LENGTH;
-      error.description = "Line length exceed ";
-      char* val = new char[10];
-      sprintf(val,"%d",line.length());
-      error.description += val;
-      error.description += " (max=";
-      delete [] val;
-      val = new char[10];
-      sprintf(val,"%d",max);
-      error.description += val;
-      error.description += ")";
-      delete [] val;
-      m_ErrorList.push_back(error);
-      hasError = true;
-      }
-    j++;
-    i += line.length()+1;
-    }
 
-  m_Positions.push_back(total-1);
-  std::cout << "----------------------" << std::endl;
-  for ( cc = 0; cc < m_Positions.size(); ++ cc )
-    {
-    std::cout << "Pos: " << m_Positions[cc] << std::endl;
-    }
-  std::cout << "----------------------" << std::endl;
-  */
-    
   return !hasError;
 }
 

@@ -173,7 +173,7 @@ public:
   bool CheckOperator(unsigned int foo, unsigned int bar,bool doNotCheckInsideParenthesis=true);
 
   /** Check the number of character per line */
-  bool CheckLineLength(unsigned long max);
+  bool CheckLineLength(unsigned long max,bool checkHeader=false);
 
   /** Check if the internal parameters of the class are correct */
   bool CheckInternalVariables(const char* regEx,bool alignement = true);
