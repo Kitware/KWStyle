@@ -1108,6 +1108,34 @@ bool Parser::IsInAnyComments(long int pos) const
      
 }
 
+/**  return true if the position pos is between " " */
+bool Parser::IsBetweenQuote(long int pos,bool withComments) const
+{
+  std::string stream = m_BufferNoComment;
+  if(withComments)
+    {
+    stream = m_Buffer;
+    }
+
+  if(pos == -1)
+    {
+    return false;
+    }
+
+  long int b0 = stream.find('"',0);
+  long int b1 = stream.find('"',b0+1);
+
+  while(b0 != -1 && b1 != -1 && b1>b0)
+    {
+    if(pos>b0 && pos<b1)
+      {
+      return true;
+      }
+    b0 = stream.find('"',b1+1);
+    b1 = stream.find('"',b0+1);
+    }
+  return false;
+}
 
 /**  return true if the position pos is between 'begin' and 'end' */
 bool Parser::IsBetweenCharsFast(const char begin, const char end ,long int pos,bool withComments) const

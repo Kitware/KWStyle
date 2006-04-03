@@ -320,6 +320,9 @@ protected:
   bool IsBetweenCharsFast(const char begin, const char end, long int pos,bool withComments=false) const;
   bool IsBetweenChars(const char begin, const char end, long int pos,bool withComments=false) const;
 
+  /**  return true if the position pos is between " " */
+  bool Parser::IsBetweenQuote(long int pos,bool withComments=false) const;
+
   /** Removes ass CtrlN characters from the buffer. */
   void RemoveCtrlN(std::string & buffer) const;
 

@@ -205,7 +205,10 @@ bool Parser::CheckIndent(IndentType itype,
       wantedIndent += size*sindent->after;
       firstChar = false;
       }
-    else if((it != m_Buffer.end()) && ((*it) == '{') && !this->IsInComments(pos)) // openning bracket
+    else if((it != m_Buffer.end()) && ((*it) == '{') 
+             && !this->IsInComments(pos)
+             && !this->IsBetweenQuote(pos,true)
+             ) // openning bracket
       {
       bool check = true;
       // Check if { is after //
@@ -338,7 +341,9 @@ bool Parser::CheckIndent(IndentType itype,
         }
       }
 
-    if((it != m_Buffer.end()) && ((*it) == '}') && !sindent && !this->IsInComments(pos)) // closing bracket
+    if((it != m_Buffer.end()) && ((*it) == '}') && !sindent 
+       && !this->IsInComments(pos)
+       && !this->IsBetweenQuote(pos,true)) // closing bracket
       {
       bool check = true;
       // Check if { is after //
