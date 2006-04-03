@@ -18,6 +18,7 @@
 #include <iostream>
 #include <fstream>
 #include <itksys/Directory.hxx>
+#include <itksys/SystemTools.hxx>
 #include <cmath>
 #include <sstream>
 #include "kwsXMLReader.h"
@@ -79,15 +80,35 @@ void DisableFeature(const char* name)
 /** Push the filenames in the vector */
 void AddDirectory(const char* dirname,std::vector<std::string> & filenames,bool recurse = false)
 {
-  std::cout << "parsing " << dirname << std::endl;
+  // check if this is a directory or a file
+  std::string filename = dirname;
+
+  if(itksys::SystemTools::FileExists(filename.c_str())
+    && ((filename.find(".h") != -1)
+       || (filename.find(".hxx") != -1)
+       || (filename.find(".cxx") != -1)
+       || (filename.find(".txx") != -1))
+       )
+    {
+    filenames.push_back(filename);
+    return;
+    }
+  
+  // Add a / if necessary
+  if((filename[filename.length()-1] != '/') && (filename[filename.length()-1] != '\\'))
+    {
+    filename += "/";
+    }
+
+  std::cout << "parsing " << filename.c_str() << std::endl;
   itksys::Directory directory;
-  directory.Load(dirname);
+  directory.Load(filename.c_str());
   itksys::Directory dir2;
 
   for(unsigned int i=0;i<directory.GetNumberOfFiles();i++)
     {
     std::string file = directory.GetFile(i);
-    std::string fullpathdir = dirname+file+"/";
+    std::string fullpathdir = filename+file+"/";
     if(recurse && file!=".." && file!="." && dir2.Load(fullpathdir.c_str()))
       {
       AddDirectory(fullpathdir.c_str(),filenames,true);
@@ -98,7 +119,7 @@ void AddDirectory(const char* dirname,std::vector<std::string> & filenames,bool 
        || (file.find(".txx") != -1)
        )
       {
-      filenames.push_back(dirname+file);
+      filenames.push_back(filename+file);
       }
     }
 }
@@ -361,12 +382,6 @@ int main(int argc, char **argv)
       if(space != -1)
         {
         dirname = dirname.substr(0,space);
-        }
-
-      // Add a / if necessary
-      if((dirname[dirname.length()-1] != '/') && (dirname[dirname.length()-1] != '\\'))
-        {
-        dirname += "/";
         }
 
       AddDirectory(dirname.c_str(),filenames,recursive);
