@@ -7,7 +7,7 @@ SET (CTEST_COMMAND
 "/projects/KWStyle/CMake/bin/ctest -D ExperimentalStart"
 "/projects/KWStyle/CMake/bin/ctest -D ExperimentalUpdate"
 "/projects/KWStyle/CMake/bin/ctest -D ExperimentalConfigure"
-"/projects/KWStyle/KWStyle-Linux/KWStyle -lesshtml -xml /projects/KWStyle/KWStyle/Web/IGSTK.kws.xml -kwsurl http://66.194.253.24/KWStyleExamples/IGSTK -html /projects/KWStyle/Examples/IGSTK -dart ${CTEST_BINARY_DIRECTORY} -1 1 -R -D /projects/KWStyle/KWStyle/Web/IGSTKFiles.txt"
+"/projects/KWStyle/KWStyle-Linux/KWStyle -lesshtml -o /projects/KWStyle/KWStyle/Web/IGSTKOverwrite.txt -xml /projects/KWStyle/KWStyle/Web/IGSTK.kws.xml -kwsurl http://66.194.253.24/KWStyleExamples/IGSTK -html /projects/KWStyle/Examples/IGSTK -dart ${CTEST_BINARY_DIRECTORY} -1 1 -R -D /projects/KWStyle/KWStyle/Web/IGSTKFiles.txt"
 "/projects/KWStyle/CMake/bin/ctest -D ExperimentalSubmit"
 )
 
