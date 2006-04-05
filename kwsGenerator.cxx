@@ -2,9 +2,8 @@
 
   Program:   KWStyle - Kitware Style Checker
   Module:    kwsGenerator.cxx
-  Author:    Julien Jomier
 
-  Copyright (c) Kitware, Inc., Insight Consortium.  All rights reserved.
+  Copyright (c) Kitware, Inc.  All rights reserved.
   See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
 
      This software is distributed WITHOUT ANY WARRANTY; without even
