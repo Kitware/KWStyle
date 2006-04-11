@@ -10,3 +10,4 @@ igstkSystemInformation.cxx Operator Disable
 igstkPivotCalibration.h DeclarationOrder Disable
 igstkEvents Typedefs Disable
 igstkPivotCalibrationReaderTest.cxx Namespace Disable
+igstkMacros.h Indent Disable
