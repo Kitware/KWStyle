@@ -10,6 +10,11 @@ IF( USE_ITK_FILE )
   INCLUDE( ${USE_ITK_FILE} )
 ENDIF( USE_ITK_FILE )
 
+# Add testing
+MARK_AS_ADVANCED( DART_ROOT )
+INCLUDE (${CMAKE_ROOT}/Modules/Dart.cmake)
+
+
 INCLUDE_DIRECTORIES(
 ${ITK_SOURCE_DIR}/Utilities/MetaIO
 #${ITK_DIR}/Utilities/itksys
