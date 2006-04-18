@@ -1,2 +1,3 @@
 igstkMacros.h Indent Disable
 igstkNDICommandInterpreter.h Indent Disable
+igstkDICOMImageReaderTest.cxx Namespace Disable
