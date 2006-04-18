@@ -1612,9 +1612,9 @@ void Parser::RemoveComments()
       {
       if ( cppComment && *inch == '\n' )
         {
-        endOfComment = cc+1;
+        endOfComment = cc;
         inComment = false;
-        copyChar = false;
+        copyChar = true;
         cppComment = false;
         PairType pair(beginOfComment, endOfComment);
         m_CommentPositions.push_back(pair);
