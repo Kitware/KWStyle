@@ -13,3 +13,4 @@ igstkPivotCalibrationReaderTest.cxx Namespace Disable
 igstkMacros.h Indent Disable
 igstkDICOMImageReaderTest.cxx Namespace Disable
 igstkDICOMImageReaderErrorsTest.cxx Namespace Disable
+igstkCTImageSpatialObjectRepresentationTest.cxx Namespace Disable
