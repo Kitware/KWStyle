@@ -35,7 +35,7 @@ bool Parser::CheckTypedefs(const char* regEx, bool alignment,unsigned int maxLen
   // typedef type MyTypeDef;
   bool hasError = false;
 
-  itksys::RegularExpression regex(regEx);
+  kwssys::RegularExpression regex(regEx);
 
   long int previousline = 0;
   long int previouspos = 0;

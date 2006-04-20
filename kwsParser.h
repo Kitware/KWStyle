@@ -18,9 +18,9 @@
 #include <fstream>
 #include <stdio.h>
 #include <vector>
-#include <itksys/SystemTools.hxx>
-#include <itksys/Directory.hxx>
-#include <itksys/RegularExpression.hxx>
+#include <kwssys/SystemTools.hxx>
+#include <kwssys/Directory.hxx>
+#include <kwssys/RegularExpression.hxx>
 #include <algorithm>
 
 namespace kws

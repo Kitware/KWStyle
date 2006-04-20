@@ -16,8 +16,8 @@
 #include "metaCommand.h"
 #include <iostream>
 #include <fstream>
-#include <itksys/Directory.hxx>
-#include <itksys/SystemTools.hxx>
+#include <kwssys/Directory.hxx>
+#include <kwssys/SystemTools.hxx>
 #include <cmath>
 #include <sstream>
 #include "kwsXMLReader.h"
@@ -82,7 +82,7 @@ void AddDirectory(const char* dirname,std::vector<std::string> & filenames,bool 
   // check if this is a directory or a file
   std::string filename = dirname;
 
-  if(itksys::SystemTools::FileExists(filename.c_str())
+  if(kwssys::SystemTools::FileExists(filename.c_str())
     && ((filename.find(".h") != -1)
        || (filename.find(".hxx") != -1)
        || (filename.find(".cxx") != -1)
@@ -100,9 +100,9 @@ void AddDirectory(const char* dirname,std::vector<std::string> & filenames,bool 
     }
 
   std::cout << "parsing " << filename.c_str() << std::endl;
-  itksys::Directory directory;
+  kwssys::Directory directory;
   directory.Load(filename.c_str());
-  itksys::Directory dir2;
+  kwssys::Directory dir2;
 
   for(unsigned int i=0;i<directory.GetNumberOfFiles();i++)
     {
@@ -125,7 +125,7 @@ void AddDirectory(const char* dirname,std::vector<std::string> & filenames,bool 
 
 int main(int argc, char **argv)
 {
-  double time0 = itksys::SystemTools::GetTime();
+  double time0 = kwssys::SystemTools::GetTime();
 
   MetaCommand command;
 

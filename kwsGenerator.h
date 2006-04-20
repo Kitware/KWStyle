@@ -19,7 +19,7 @@
 #include <fstream>
 #include <stdio.h>
 #include <vector>
-#include <itksys/SystemTools.hxx>
+#include <kwssys/SystemTools.hxx>
 
 namespace kws
 {

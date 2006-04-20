@@ -24,7 +24,7 @@ bool Parser::CheckTemplate(const char* regEx)
   m_TestsDescription[TEMPLATE] = "Template should match the regex: ";
   m_TestsDescription[TEMPLATE] += regEx;
 
-  itksys::RegularExpression regex(regEx);
+  kwssys::RegularExpression regex(regEx);
 
   bool hasErrors = false;
   // We check all the templates in the file

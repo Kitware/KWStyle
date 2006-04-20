@@ -37,7 +37,7 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment)
   // float myParam;
   bool hasError = false;
 
-  itksys::RegularExpression regex(regEx);
+  kwssys::RegularExpression regex(regEx);
 
   // First we check in the public area
   long int publicFirst;

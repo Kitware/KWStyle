@@ -37,7 +37,7 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL,bool useCVS
   std::vector<std::string> fileNames;
 
   // Check if we have a directory or header
-  itksys::Directory directory;
+  kwssys::Directory directory;
   if(directory.Load(filename))
     {
     std::string dirname = filename;
