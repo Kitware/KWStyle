@@ -1,5 +1,8 @@
 PROJECT(KWStyle)
 
+SET(EXECUTABLE_OUTPUT_PATH ${KWStyle_BINARY_DIR} CACHE INTERNAL "Output directory for executable")
+SET(LIBRARY_OUTPUT_PATH ${KWStyle_BINARY_DIR} CACHE INTERNAL "Output directory for libraries")
+
 # Disable MSVC 8 warnings
 IF(WIN32)
   ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE)
