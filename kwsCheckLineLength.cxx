@@ -34,20 +34,33 @@ bool Parser::CheckLineLength(unsigned long max,bool checkHeader)
   unsigned long fileSize = 0;
   
   // If we do not want to check the header
-  if(!checkHeader && m_HeaderFilename.size()>0)
+  if(!checkHeader)
     {
-    std::ifstream file;
-    file.open(m_HeaderFilename.c_str(), std::ios::binary | std::ios::in);
-    if(!file.is_open())
+    if(m_HeaderFilename.size()>0)
       {
-      std::cout << "CheckLineLength() - Cannot open file: " 
-                << m_HeaderFilename << std::endl;
+      std::ifstream file;
+      file.open(m_HeaderFilename.c_str(), std::ios::binary | std::ios::in);
+      if(!file.is_open())
+        {
+        std::cout << "CheckLineLength() - Cannot open file: " 
+                  << m_HeaderFilename << std::endl;
+        }
+      else
+        {
+        file.seekg(0,std::ios::end);
+        fileSize = file.tellg();
+        file.close();
+        }
       }
     else
       {
-      file.seekg(0,std::ios::end);
-      fileSize = file.tellg();
-      file.close();
+      // we look at the first '*/' in the file which indicated the end of the current header
+      // This assume that there is an header at some point  
+      long int endHeader = m_Buffer.find("*/",0);
+      if(endHeader>0)
+        {
+        fileSize = endHeader;
+        }
       }
     }
 
