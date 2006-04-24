@@ -90,19 +90,36 @@ bool Parser::CheckIndent(IndentType itype,
   this->InitIndentation();
 
   // If we do not want to check the header
-  if((m_HeaderFilename.size() > 0) && doNotCheckHeader)
+  if(doNotCheckHeader)
     {
-    std::ifstream file;
-    file.open(m_HeaderFilename.c_str(), std::ios::binary | std::ios::in);
-    if(!file.is_open())
+    unsigned long fileSize = 0;
+    // if the file is specified
+    if(m_HeaderFilename.size() > 0)
       {
-      std::cout << "Cannot open file: " << m_HeaderFilename << std::endl;
-      return false;
+      std::ifstream file;
+      file.open(m_HeaderFilename.c_str(), std::ios::binary | std::ios::in);
+      if(!file.is_open())
+        {
+        std::cout << "Cannot open file: " << m_HeaderFilename << std::endl;
+        return false;
+        }
+
+      file.seekg(0,std::ios::end);
+      fileSize = file.tellg();
+      file.close();
+      }
+    else 
+      {
+      // we look at the first '*/' in the file which indicated the end of the current header
+      // This assume that there is an header at some point  
+      long int endHeader = m_Buffer.find("*/",0);
+      if(endHeader>0)
+        {
+        fileSize = endHeader;
+        }
       }
 
-    file.seekg(0,std::ios::end);
-    unsigned long fileSize = file.tellg();
-    file.close();
+    // We skip the header
     for(unsigned int i=0;i<fileSize;i++)
       {
       if(it != m_Buffer.end())
