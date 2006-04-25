@@ -164,7 +164,7 @@ int main(int argc, char **argv)
     }
 
   // Add the features
-  AddFeature("Header","c:/Julien/Workspace/KWStyle/kwsHeader.h,false,true",true); // should be first
+  //AddFeature("Header","c:/Julien/Workspace/KWStyle/kwsHeader.h,false,true",true); // should be first
   AddFeature("LineLength","80",true);
   AddFeature("DeclarationOrder","0,1,2",true);
   AddFeature("Typedefs","[A-Z]",true);
@@ -172,7 +172,7 @@ int main(int argc, char **argv)
   AddFeature("SemicolonSpace","0",true);
   AddFeature("EndOfFileNewLine","",true);
   AddFeature("Tabs","",true);
-  AddFeature("Spaces","0",true);
+  AddFeature("Spaces","3",true);
   AddFeature("Comments","/**, *, */,true",true);
   AddFeature("Indent","kws::SPACE,2,true,true",true);
   AddFeature("Namespace","itk",true);
