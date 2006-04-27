@@ -282,7 +282,6 @@ std::string Parser::FindInternalVariable(long int start, long int end,long int &
     while(i>=0)
       {
       if((m_BufferNoComment[i] == '{')
-        //|| (m_BufferNoComment[i] == '}')
         )
         {
         break;
@@ -302,30 +301,11 @@ std::string Parser::FindInternalVariable(long int start, long int end,long int &
       && (subphrase.find("}") == -1)
       && (subphrase.find("friend") == -1)
       && (subphrase.find("class") == -1)
+      && (subphrase.find("return") == -1)
       )
       {
       return ivar;
       }
-
-    // We find the words until we find a semicolon
-    /*long int p = pos;
-    std::string pword = this->FindPreviousWord(p);
-    bool isTypedef = false;
-    while((pword.size()>0) && (pword.find(";") == -1) && (p>0))
-      {
-      if(pword.find("typedef") != -1)
-        {
-        isTypedef = true;
-        break;
-        }
-      p -= pword.size();
-      pword = this->FindPreviousWord(p);
-      }
-
-    if(!isTypedef)
-      {
-      return ivar;
-      }*/
     }
 
   pos = -1;
