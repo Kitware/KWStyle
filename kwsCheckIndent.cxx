@@ -89,6 +89,18 @@ bool Parser::CheckIndent(IndentType itype,
   // Create the indentation
   this->InitIndentation();
 
+  // List the identation vector
+  /*std::vector<IndentPosition>::const_iterator itInd = 
+                                              m_IdentPositionVector.begin();
+
+  while(itInd != m_IdentPositionVector.end())
+    {
+    IndentPosition indentPos = *itInd;
+    std::cout << this->GetLineNumber(indentPos.position) << std::endl;
+    itInd++;
+    }
+  */
+
   // If we do not want to check the header
   if(doNotCheckHeader)
     {
@@ -309,7 +321,7 @@ bool Parser::CheckIndent(IndentType itype,
           {
           reportError = false;
           }
-        // Check if the line start with '<<' if this is the case we ignorr it
+        // Check if the line start with '<<' if this is the case we ignore it
         else if((*it) == '<' && (*(it+1) == '<'))
           {
           long int posInf = previousLine.find("<<");
@@ -357,7 +369,8 @@ bool Parser::CheckIndent(IndentType itype,
         }
       }
 
-    if((it != m_Buffer.end()) && ((*it) == '}') && !sindent 
+    if((it != m_Buffer.end()) && ((*it) == '}') 
+       && !sindent 
        && !this->IsInComments(pos)
        && !this->IsBetweenQuote(pos,true)) // closing bracket
       {
@@ -673,11 +686,11 @@ bool Parser::InitIndentation()
   // some words should be always align left
   this->AddIndent("#include",ALIGN_LEFT,0);
   this->AddIndent("#if",ALIGN_LEFT,0);
-  this->AddIndent("#ifdef",ALIGN_LEFT,0);
+  //this->AddIndent("#ifdef",ALIGN_LEFT,0); // #if is taking care of it
   this->AddIndent("#elif",ALIGN_LEFT,0);
   this->AddIndent("#else",ALIGN_LEFT,0);
   this->AddIndent("#endif",ALIGN_LEFT,0);
-  this->AddIndent("#ifndef",ALIGN_LEFT,0);
+  //this->AddIndent("#ifndef",ALIGN_LEFT,0); // #if is taking care of it
   this->AddIndent("#define",ALIGN_LEFT,0);
   this->AddIndent("#undef",ALIGN_LEFT,0);
 

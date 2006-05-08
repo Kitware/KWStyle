@@ -1131,8 +1131,18 @@ bool Parser::IsBetweenQuote(long int pos,bool withComments) const
     return false;
     }
 
+  // We don't want to check for \" otherwise it fails
   long int b0 = stream.find('"',0);
+  while((b0!=-1) && (stream[b0-1]=='\\'))
+    {
+    b0 = stream.find('"',b0+1);
+    }
+
   long int b1 = stream.find('"',b0+1);
+  while((b1!=-1) && (stream[b1-1]=='\\'))
+    {
+    b1 = stream.find('"',b1+1);
+    }
 
   while(b0 != -1 && b1 != -1 && b1>b0)
     {
@@ -1141,7 +1151,16 @@ bool Parser::IsBetweenQuote(long int pos,bool withComments) const
       return true;
       }
     b0 = stream.find('"',b1+1);
+    while((b0!=-1) && (stream[b0-1]=='\\'))
+      {
+      b0 = stream.find('"',b0+1);
+      }
+
     b1 = stream.find('"',b0+1);
+    while((b1!=-1) && (stream[b1-1]=='\\'))
+      {
+      b1 = stream.find('"',b1+1);
+      }
     }
   return false;
 }
