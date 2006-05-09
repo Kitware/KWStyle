@@ -1117,6 +1117,26 @@ bool Parser::IsInAnyComments(long int pos) const
      
 }
 
+
+bool Parser::IsValidQuote(std::string & stream,long int pos) const
+{
+  // We need to count the number of \ if it's an odd number
+  // then this is not a valid "
+  int n = 0;
+  long int i = pos-1;
+  while(i>0 && stream[i]=='\\')
+    {
+    n++;
+    i--;
+    }
+
+  if(n%2==0)
+    {
+    return true;
+    }
+  return false;
+}
+
 /**  return true if the position pos is between " " */
 bool Parser::IsBetweenQuote(long int pos,bool withComments) const
 {
@@ -1133,13 +1153,13 @@ bool Parser::IsBetweenQuote(long int pos,bool withComments) const
 
   // We don't want to check for \" otherwise it fails
   long int b0 = stream.find('"',0);
-  while((b0!=-1) && (stream[b0-1]=='\\'))
+  while((b0!=-1) && !this->IsValidQuote(stream,b0))
     {
     b0 = stream.find('"',b0+1);
     }
 
   long int b1 = stream.find('"',b0+1);
-  while((b1!=-1) && (stream[b1-1]=='\\'))
+  while((b1!=-1) && !this->IsValidQuote(stream,b1))
     {
     b1 = stream.find('"',b1+1);
     }
@@ -1151,13 +1171,13 @@ bool Parser::IsBetweenQuote(long int pos,bool withComments) const
       return true;
       }
     b0 = stream.find('"',b1+1);
-    while((b0!=-1) && (stream[b0-1]=='\\'))
+    while((b0!=-1) && !this->IsValidQuote(stream,b0))
       {
       b0 = stream.find('"',b0+1);
       }
 
     b1 = stream.find('"',b0+1);
-    while((b1!=-1) && (stream[b1-1]=='\\'))
+    while((b1!=-1) && !this->IsValidQuote(stream,b1))
       {
       b1 = stream.find('"',b1+1);
       }
