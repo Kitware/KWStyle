@@ -8,7 +8,7 @@ SET (CTEST_COMMAND
 "/projects/KWStyle/CMake/bin/ctest -D ExperimentalUpdate"
 "/projects/KWStyle/CMake/bin/ctest -D ExperimentalConfigure"
 "/projects/KWStyle/KWStyle-Linux/KWStyle -xml /projects/KWStyle/KWStyle/Web/CMake.kws.xml -html /projects/KWStyle/Examples/CMake -kwsurl http://66.194.253.24/KWStyleExamples/CMake -dart ${CTEST_BINARY_DIRECTORY} -1 1 -R  -D /projects/KWStyle/KWStyle/Web/CMakeFiles.txt"
-"/projects/KWStyle/CMake/bin/ctest -D ExperimentalSubmit"
+"/projects/KWStyle/CMake/bin/ctest -D ExperimentalSubmit -A ${CTEST_SCRIPT_DIRECTORY}/${CTEST_SCRIPT_NAME}"
 )
 
 # what cmake command to use for configuring this dashboard
