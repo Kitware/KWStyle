@@ -1,4 +1,4 @@
-/*=========================================================================
+/*========================================================================
 
   Program:   KWStyle - Kitware Style Checker
   Module:    kwsStyle.cxx
@@ -73,6 +73,26 @@ void DisableFeature(const char* name)
       return;
       }
     it++;
+    }
+}
+
+/** Remove files */
+void RemoveFile(const char* regEx,std::vector<std::string> & filenames)
+{
+  kwssys::RegularExpression regex(regEx);
+  std::vector<std::string>::iterator it = filenames.begin(); 
+  
+  while(it != filenames.end())
+    {
+    if(regex.find((*it).c_str()))
+      {
+      it = filenames.erase(it);
+      std::cout << "Removing file: " << *it << std::endl;
+      }
+    else
+      {
+      it++;
+      }
     }
 }
 
@@ -352,6 +372,12 @@ int main(int argc, char **argv)
    
     long int start = 0;
     long int pos = buffer.find("\n",start);
+    long int posr = buffer.find("\r",start);
+    if(posr == -1)
+      {
+      posr = pos;
+      }
+
     do    
       {
       std::string dirname = "";
@@ -363,7 +389,7 @@ int main(int argc, char **argv)
         }
       else
         {
-        dirname = buffer.substr(start,pos-start);
+        dirname = buffer.substr(start,posr-start);
         start = pos+1;
         }
       if(dirname.size() < 2)
@@ -371,23 +397,39 @@ int main(int argc, char **argv)
         break;
         }
 
-      bool recursive = false;
-      if(dirname.find("[R]",0) != -1)
-        {
-        recursive = true;
-        }
-
       long int space = dirname.find(" ");
-      if(space != -1)
+      
+      // if we should remove the file
+      if(dirname.find("-f",0) != -1)
         {
-        dirname = dirname.substr(0,space);
+        std::string fileToRemove = dirname.substr(3,dirname.size()-3);
+        RemoveFile(fileToRemove.c_str(),filenames);
         }
+      else // we add a directory
+        {
+        bool recursive = false;
+        if(dirname.find("[R]",0) != -1)
+          {
+          recursive = true;
+          }
 
-      AddDirectory(dirname.c_str(),filenames,recursive);
+        long int space = dirname.find(" ");
+        if(space != -1)
+          {
+          dirname = dirname.substr(0,space);
+          }
+
+        AddDirectory(dirname.c_str(),filenames,recursive);
+        }
 
       if(pos != fileSize)
         {
         pos = buffer.find("\n",start);
+        posr = buffer.find("\r",start);
+        if(posr == -1)
+          {
+          posr = pos;
+          }
         }
       } while(pos<(long int)fileSize);
  
