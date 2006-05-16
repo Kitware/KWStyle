@@ -2,3 +2,4 @@
 /projects/KWStyle/CMakeCVS/Source/CPack
 /projects/KWStyle/CMakeCVS/Source/CTest
 /projects/KWStyle/CMakeCVS/Source/CurseDialog
+-f (Lexer\.cxx)
