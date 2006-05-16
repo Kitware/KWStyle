@@ -87,7 +87,6 @@ void RemoveFile(const char* regEx,std::vector<std::string> & filenames)
     if(regex.find((*it).c_str()))
       {
       it = filenames.erase(it);
-      std::cout << "Removing file: " << *it << std::endl;
       }
     else
       {
