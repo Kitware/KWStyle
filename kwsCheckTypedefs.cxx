@@ -79,6 +79,7 @@ bool Parser::CheckTypedefs(const char* regEx, bool alignment,unsigned int maxLen
           long int size = currentLine.size()-l;
           if(previouspos+size>(long int)maxLength)
             {
+            previouspos = l;
             reportError = false;
             }
 
