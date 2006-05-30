@@ -83,6 +83,26 @@ bool Parser::CheckTypedefs(const char* regEx, bool alignment,unsigned int maxLen
             reportError = false;
             }
 
+          // This one is a bit tricky. Check the minimum
+          // typedef igstk::VascularNetworkObject   VascularNetworkObjectType;
+          // typedef VascularNetworkObjectType::VesselObjectType VesselObjectType;
+          // First find the optimal position (one space) for the current line
+          unsigned long optimalCurrentLinePos = l;
+          while(optimalCurrentLinePos>1 && currentLine[optimalCurrentLinePos-1] == ' ')
+            {
+            optimalCurrentLinePos--;
+            }
+          optimalCurrentLinePos++;
+          // Second find the size of the previous typedefs;
+          long int sizeTypedef = previousLine.size()-previouspos;
+          // if the size is too big we don't report
+          if(optimalCurrentLinePos+sizeTypedef>maxLength)
+            {
+            previouspos = l;
+            reportError = false;
+            }
+
+
           if(reportError)
             {
             Error error;
