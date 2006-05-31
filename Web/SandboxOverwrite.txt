@@ -14,3 +14,5 @@ igstkMacros.h Indent Disable
 igstkDICOMImageReaderTest.cxx Namespace Disable
 igstkDICOMImageReaderErrorsTest.cxx Namespace Disable
 igstkCTImageSpatialObjectRepresentationTest.cxx Namespace Disable
+igstkUSImageObjectRepresentationTest.cxx Namespace Disable
+igstkVascularNetworkReaderTest.cxx Namespace Disable
