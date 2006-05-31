@@ -16,3 +16,4 @@ igstkDICOMImageReaderErrorsTest.cxx Namespace Disable
 igstkCTImageSpatialObjectRepresentationTest.cxx Namespace Disable
 igstkUSImageObjectRepresentationTest.cxx Namespace Disable
 igstkVascularNetworkReaderTest.cxx Namespace Disable
+igstkFlockOfBirdsCommandInterpreter.cxx Indent Disable
