@@ -345,6 +345,22 @@ bool Parser::CheckIndent(IndentType itype,
             classPos = m_Buffer.find("class",classPos+1);
             }
           }
+        // If the ident is between a '=' and a ';' we ignore
+        // This is for listes. THIS IS NOT A STRICT CHECK. Might be missing some.
+        if(reportError)
+          {
+          long int classPos = m_Buffer.find("=",0);
+          while(classPos!=-1)
+            {
+            long int endClass = m_Buffer.find(";",classPos);
+            if(endClass!=-1 && (long int)pos<endClass && (long int)pos>classPos)
+              {
+              reportError = false;
+              break;
+              }
+            classPos = m_Buffer.find("=",classPos+1);
+            }
+          }
 
         if(reportError)
           {
