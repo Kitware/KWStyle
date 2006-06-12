@@ -7,7 +7,7 @@ SET(DROP_METHOD http)
 SET (DROP_SITE "public.kitware.com")
 SET (DROP_LOCATION "/cgi-bin/HTTPUploadDartFile.cgi")
 SET (TRIGGER_SITE 
-  "http://${DROP_SITE}/cgi-bin/Submit-KWStyle-TestingResults.cgi")
+  "http://${DROP_SITE}/cgi-bin/SubmitKWStyle.cgi")
 
 # Project Home Page
 SET (PROJECT_URL "http://public.kitware.com/KWStyle")
