@@ -148,6 +148,15 @@ int main(int argc, char **argv)
 
   MetaCommand command;
 
+  // Check if -cvs is defined and put MetaCommand in quiet mode
+  for(unsigned int j=0;j<argc;j++)
+    {
+    if(!strcmp(argv[j],"-cvs"))
+      {
+      command.SetVerbose(false);
+      }
+    }  
+
   command.SetOption("directory","d",false,"Specify a directory");
   command.SetOption("recursive","R",false,"Associated with -d recurse through directories");
   command.SetOption("verbose","v",false,"Display errors");
@@ -156,6 +165,7 @@ int main(int argc, char **argv)
 
   command.SetOption("html","html",false,"Generate the HTML report");
   command.AddOptionField("html","filename",MetaCommand::STRING,false);
+  command.SetOption("cvs","cvs",false,"Using KWStyle as a cvs precommit script");
   command.SetOption("exporthtml","exporthtml",false,"Export the HTML report online");
   command.SetOption("xml","xml",false,"Read a XML configure file");
   command.AddOptionField("xml","filename",MetaCommand::STRING,false);
@@ -442,6 +452,41 @@ int main(int argc, char **argv)
   // sort the filenames
   std::sort(filenames.begin(), filenames.end());
 
+  
+  // if the -cvs command is used
+  // WARNING this option should be last because its postion is used
+  // to determine the filenames.
+  if(command.GetOptionWasSet("cvs"))
+    {
+    filenames.clear();
+    int cvspos = 0;
+    unsigned int i=0;
+    // Look for the position of the cvs command
+    for(i=0;i<argc;i++)
+      {
+      if(!strcmp(argv[i],"-cvs"))
+        {
+        cvspos = i;
+        break;
+        }
+      }     
+    cvspos++;
+    std::string cvsdir = argv[cvspos];
+    cvspos++;
+    for(i=cvspos;i<argc;i++)
+      {
+      std::string filename = argv[i];
+      if((filename.substr(filename.size()-4,4) == ".hxx")
+        || (filename.substr(filename.size()-4,4) == ".txx")
+        || (filename.substr(filename.size()-4,4) == ".cxx")
+        || (filename.substr(filename.size()-2,2) == ".h")
+        )
+        {
+        filenames.push_back(filename);
+        }
+      }
+    }
+
   std::vector<std::string>::const_iterator it = filenames.begin();
 
   unsigned long errors =0;
@@ -461,7 +506,7 @@ int main(int argc, char **argv)
     if(!file.is_open())
       {
       std::cout << "Cannot open file: " << (*it).c_str() << std::endl;
-      return 0;
+      return 1;
       }
 
     file.seekg(0,std::ios::end);
@@ -515,6 +560,15 @@ int main(int argc, char **argv)
       std::cout << parser.GetLastErrors().c_str() << std::endl;
       }
         
+    if(command.GetOptionWasSet("cvs"))
+      {
+      std::cout << parser.GetLastErrors().c_str() << std::endl;
+      if(parser.GetErrors().size()>0)
+        {
+        return 1;
+        }
+      }
+    
     m_Parsers.push_back(parser);
     it++;
     } // end filenames
@@ -558,5 +612,5 @@ int main(int argc, char **argv)
     generator.GenerateDart(dart.c_str(),maxerror,grouperrors,url,time0);
     }
 
-  return 1;
+  return 0;
 }

@@ -14,101 +14,143 @@
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
-#ifndef __MetaCommand_H_
-#define __MetaCommand_H_
+#ifndef ITKMetaIO_METACOMMAND_H
+#define ITKMetaIO_METACOMMAND_H
+
 
 #ifdef _MSC_VER
 #pragma warning ( disable : 4786 )
 #endif
 
 #include <stdlib.h>
-#include <iostream>
 #include <string>
 #include <vector>
 #include <list>
 #include <map>
+
+#if (METAIO_USE_NAMESPACE)
+namespace METAIO_NAMESPACE {
+#endif
+
+#include <iostream>
+#include <fstream>
+
+#define METAIO_STL std
+#define METAIO_STREAM std
 
 class MetaCommand
 {
 
 public:
 
-  typedef enum {INT,FLOAT,CHAR,STRING,LIST,FLAG} TypeEnumType;
+  typedef enum {DATA_NONE,DATA_IN,DATA_OUT} DataEnumType;
+  typedef enum {INT,FLOAT,CHAR,STRING,LIST,FLAG,BOOL} TypeEnumType;
 
   struct Field{
-    std::string name;
-    std::string description;
-    std::string value;
+    METAIO_STL::string  name;
+    METAIO_STL::string  description;
+    METAIO_STL::string  value;
     TypeEnumType type;
-    bool externaldata;
-    bool required;
-    bool userDefined;
+    DataEnumType externaldata;
+    METAIO_STL::string  rangeMin;
+    METAIO_STL::string  rangeMax;
+    bool         required;
+    bool         userDefined;
     };
 
   struct Option{
-    std::string name;
-    std::string description;
-    std::string tag;
-    std::vector<Field> fields;
-    bool required;
-    bool userDefined;
-    bool complete;
+    METAIO_STL::string        name;
+    METAIO_STL::string        description;
+    METAIO_STL::string        tag;
+    METAIO_STL::vector<Field> fields;
+    bool               required;
+    bool               userDefined;
+    bool               complete;
   };
 
-  typedef std::vector<Option>                OptionVector; 
+  typedef METAIO_STL::vector<Option>                OptionVector; 
   
   MetaCommand();
   ~MetaCommand() {}
 
   bool SetOption(Option option);
-  bool SetOption(std::string name,
-                 std::string tag,
+  bool SetOption(METAIO_STL::string name,
+                 METAIO_STL::string tag,
                  bool required,
-                 std::string description,
-                 std::vector<Field> fields);
-  bool SetOption(std::string name,
-                 std::string tag,
+                 METAIO_STL::string description,
+                 METAIO_STL::vector<Field> fields);
+  bool SetOption(METAIO_STL::string name,
+                 METAIO_STL::string tag,
                  bool required,
-                 std::string description,
+                 METAIO_STL::string description,
                  TypeEnumType type = FLAG,
-                 std::string defVal = "");
+                 METAIO_STL::string defVal = "");
 
   /** Fields are added in order */
-  bool AddField(std::string name,
-                std::string description,
+  bool AddField(METAIO_STL::string name,
+                METAIO_STL::string description,
                 TypeEnumType type,
-                bool externalData);
+                DataEnumType externalData = DATA_NONE,
+                METAIO_STL::string rangeMin = "",
+                METAIO_STL::string rangeMax = ""
+                );
+
+  /** For backward compatibility */
+  bool AddField(METAIO_STL::string name,
+                METAIO_STL::string description,
+                TypeEnumType type,
+                bool externalData
+                )
+    {
+    if(externalData)
+      {
+      return this->AddField(name,description,type,DATA_IN);
+      }
+    else
+      {
+      return this->AddField(name,description,type,DATA_NONE);
+      }
+    }
+
   
   /** Add a field to an option */
-  bool AddOptionField(std::string optionName,
-                      std::string name,
+  bool AddOptionField(METAIO_STL::string optionName,
+                      METAIO_STL::string name,
                       TypeEnumType type,
                       bool required=true,
-                      std::string defVal = "",
-                      std::string description = "");
+                      METAIO_STL::string defVal = "",
+                      METAIO_STL::string description = "",
+                      DataEnumType externalData = DATA_NONE);
   
+  /** Set the range of value as an option */
+  bool SetOptionRange(METAIO_STL::string optionName,
+                      METAIO_STL::string name,
+                      METAIO_STL::string rangeMin,
+                      METAIO_STL::string rangeMax);
+
+
   /** Collect all the information until the next tag 
    * \warning this function works only if the field is of type String */
-  void SetOptionComplete(std::string optionName,
+  void SetOptionComplete(METAIO_STL::string optionName,
                          bool complete);  
 
   /** Get the values given the option name */
-  bool GetValueAsBool(std::string optionName,std::string fieldName="");
-  bool GetValueAsBool(Option option,std::string fieldName="");
+  bool GetValueAsBool(METAIO_STL::string optionName,METAIO_STL::string fieldName="");
+  bool GetValueAsBool(Option option,METAIO_STL::string fieldName="");
 
-  float GetValueAsFloat(std::string optionName,std::string fieldName="");
-  float GetValueAsFloat(Option option,std::string fieldName="");
+  float GetValueAsFloat(METAIO_STL::string optionName,METAIO_STL::string fieldName="");
+  float GetValueAsFloat(Option option,METAIO_STL::string fieldName="");
 
-  int GetValueAsInt(std::string optionName,std::string fieldName="");
-  int GetValueAsInt(Option option,std::string fieldName="");
+  int GetValueAsInt(METAIO_STL::string optionName,METAIO_STL::string fieldName="");
+  int GetValueAsInt(Option option,METAIO_STL::string fieldName="");
 
-  std::string GetValueAsString(std::string optionName,std::string fieldName="");
-  std::string GetValueAsString(Option option,std::string fieldName="");
+  METAIO_STL::string GetValueAsString(METAIO_STL::string optionName,METAIO_STL::string fieldName="");
+  METAIO_STL::string GetValueAsString(Option option,METAIO_STL::string fieldName="");
 
-  std::list< std::string > GetValueAsList(std::string optionName);
-  std::list< std::string > GetValueAsList(Option option);
+  METAIO_STL::list< METAIO_STL::string > GetValueAsList(METAIO_STL::string optionName);
+  METAIO_STL::list< METAIO_STL::string > GetValueAsList(Option option);
 
-  bool GetOptionWasSet(std::string optionName);
+  bool GetOptionWasSet(METAIO_STL::string optionName);
   bool GetOptionWasSet(Option option);
 
   /** List the options */
@@ -116,32 +158,53 @@ public:
   void ListOptionsXML();
   void ListOptionsSimplified();
 
-  Option * GetOptionByMinusTag(std::string minusTag);
-  Option * GetOptionByTag(std::string minusTag);
+  Option * GetOptionByMinusTag(METAIO_STL::string minusTag);
+  Option * GetOptionByTag(METAIO_STL::string minusTag);
 
-  bool OptionExistsByMinusTag(std::string minusTag);
+  bool OptionExistsByMinusTag(METAIO_STL::string minusTag);
 
   bool Parse(int argc, char* argv[]);
   
   /** Given an XML buffer fill in the command line arguments */
   bool ParseXML(const char* buffer);
 
+  /** Export the current command line arguments to a Grid Application
+   *  Description file */
+  bool ExportGAD(bool dynamic=false);
+
   /** Extract the date from cvs date */
-  std::string ExtractDateFromCVS(std::string date);
+  METAIO_STL::string ExtractDateFromCVS(METAIO_STL::string date);
 
   /** Set the version of the app */
-  std::string GetVersion() 
+  METAIO_STL::string GetVersion() 
     { return m_Version; }
 
   void SetVersion(const char* version) 
     { m_Version=version; }
   
+  /** Get the name of the application */
+  METAIO_STL::string GetApplicationName() 
+    { return m_ExecutableName; }
+
   /** Set the date of the app */
-  std::string GetDate() 
+  METAIO_STL::string GetDate() 
     { return m_Date; }
 
   void SetDate(const char* date) 
     { m_Date=date; }
+
+  void SetName(const char* name) 
+    { m_Name=name; }
+
+  void SetDescription(const char* description) 
+    { m_Description=description; }
+  METAIO_STL::string GetDescription() const
+    {return m_Description;}
+
+  void SetAuthor(const char* author) 
+    { m_Author=author; }
+  METAIO_STL::string GetAuthor() const
+    {return m_Author;}
 
   long GetOptionId(Option* option);
 
@@ -155,17 +218,23 @@ public:
 
   void SetHelpCallBack(void (* newHelpCallBack)(void))
     { m_HelpCallBack = newHelpCallBack; }
+  
+  METAIO_STL::string TypeToString(TypeEnumType type);
+  TypeEnumType StringToType(const char* type);
+
+  void SetVerbose(bool verbose) {m_Verbose = verbose;}
 
 protected:
 
-  std::string TypeToString(TypeEnumType type);
-  TypeEnumType StringToType(const char* type);
-
   /** Small XML helper */
-  std::string GetXML(const char* buffer,const char* desc,unsigned long pos);
+  METAIO_STL::string GetXML(const char* buffer,const char* desc,unsigned long pos);
 
-  std::string m_Version;
-  std::string m_Date;
+  METAIO_STL::string m_Version;
+  METAIO_STL::string m_Date;
+  METAIO_STL::string m_Name;
+  METAIO_STL::string m_Description;
+  METAIO_STL::string m_Author;
+  METAIO_STL::string m_ExecutableName;
 
 private:
 
@@ -175,7 +244,12 @@ private:
   OptionVector m_ParsedOptionVector; // We store the parsed option in
                                      //   case we have multiple options
 
+  bool         m_Verbose;
+
 }; // end of class
 
+#if (METAIO_USE_NAMESPACE)
+};
+#endif
 
 #endif 
