@@ -31,4 +31,5 @@ CVSCOMMAND:FILEPATH=/usr/bin/cvs
 ITK_DIR:PATH=/projects/KWStyle/Insight-Linux
 VTK_DIR:PATH=/projects/KWStyle/VTK-Linux
 FLTK_DIR:PATH=/projects/KWStyle/FLTK-Linux
+IGSTK_USE_KWSTYLE:BOOL=ON
 ")
