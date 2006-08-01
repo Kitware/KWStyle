@@ -3,6 +3,7 @@
 SET(KWSYS_NAMESPACE kwssys)
 SET(KWSYS_USE_SystemTools 1)
 SET(KWSYS_USE_RegularExpression 1)
+SET(KWSYS_USE_Glob 1)
 SET(KWSYS_USE_Directory 1)
 SET(KWSYS_USE_Base64 1)
 SET(KWSYS_USE_FundamentalType 1)
