@@ -35,7 +35,7 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
     unsigned long space = 0;
     while(i>=0)
       {
-      if(m_BufferNoComment[i] == ' ')
+       if(m_BufferNoComment[i] == ' ')
         {
         space++;
         if(space > max)

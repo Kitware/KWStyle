@@ -12,11 +12,14 @@ ENDIF(WIN32)
 MARK_AS_ADVANCED( DART_ROOT )
 INCLUDE (${CMAKE_ROOT}/Modules/Dart.cmake)
 
+IF (BUILD_TESTING)
+  SUBDIRS(Testing)
+ENDIF (BUILD_TESTING)
 
 INCLUDE_DIRECTORIES(${KWStyle_BINARY_DIR}/Utilities)
 
 SET(KWStyle_SRCS
-kwsStyle.cxx
+metaCommand.cxx
 kwsParser.cxx
 kwsParser.h
 kwsXMLReader.h
@@ -41,7 +44,7 @@ kwsCheckTemplate.cxx
 kwsCheckOperator.cxx
 kwsCheckBlackList.cxx
 kwsCheckExtraSpaces.cxx
-metaCommand.cxx
+kwsStatementPerLine.cxx
 )
 
 LINK_LIBRARIES(
@@ -50,7 +53,7 @@ kwssys
 
 SUBDIRS(Utilities)
 
-ADD_EXECUTABLE( KWStyle ${KWStyle_SRCS})
-
-
+ADD_LIBRARY(KWStyleLib ${KWStyle_SRCS})
+ADD_EXECUTABLE(KWStyle kwsStyle.cxx)
+TARGET_LINK_LIBRARIES(KWStyle KWStyleLib)
 

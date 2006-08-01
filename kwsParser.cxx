@@ -78,6 +78,11 @@ bool Parser::Check(const char* name, const char* value)
     this->CheckExtraSpaces(atoi(value));
     return true;
     }
+  else if(!strcmp(name,"StatementPerLine"))
+    {
+    this->CheckStatementPerLine(atoi(value));
+    return true;
+    }
   else if(!strcmp(name,"Comments"))
     {
     std::string val = value;

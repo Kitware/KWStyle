@@ -18,6 +18,7 @@
 #include <fstream>
 #include <kwssys/Directory.hxx>
 #include <kwssys/SystemTools.hxx>
+#include <kwssys/Glob.hxx>
 #include <cmath>
 #include <sstream>
 #include "kwsXMLReader.h"
@@ -96,7 +97,7 @@ void RemoveFile(const char* regEx,std::vector<std::string> & filenames)
 }
 
 /** Push the filenames in the vector */
-void AddDirectory(const char* dirname,std::vector<std::string> & filenames,bool recurse = false)
+/*void AddDirectory(const char* dirname,std::vector<std::string> & filenames,bool recurse = false)
 {
   // check if this is a directory or a file
   std::string filename = dirname;
@@ -141,6 +142,7 @@ void AddDirectory(const char* dirname,std::vector<std::string> & filenames,bool 
       }
     }
 }
+*/
 
 int main(int argc, char **argv)
 {
@@ -149,7 +151,7 @@ int main(int argc, char **argv)
   MetaCommand command;
 
   // Check if -cvs is defined and put MetaCommand in quiet mode
-  for(unsigned int j=0;j<argc;j++)
+  for(int j=0;j<argc;j++)
     {
     if(!strcmp(argv[j],"-cvs"))
       {
@@ -348,13 +350,20 @@ int main(int argc, char **argv)
   // if the -d command is used
   if(parseDirectory)
     {
-    bool recursive = false;
+    kwssys::Glob glob;
     if(command.GetOptionWasSet("recursive"))
       {
-      recursive = true;
+      glob.RecurseOn();
       }
-    AddDirectory(inputFilename.c_str(),filenames,recursive);
+    std::string globoption = inputFilename.c_str();
+    
+    if(kwssys::SystemTools::FileExists(inputFilename.c_str()))
+      {
+      globoption += "*.*";
+      }
 
+    glob.FindFiles(globoption.c_str());
+    filenames = glob.GetFiles();
     }
 
   // if the -D command is used
@@ -414,12 +423,18 @@ int main(int argc, char **argv)
         std::string fileToRemove = dirname.substr(3,dirname.size()-3);
         RemoveFile(fileToRemove.c_str(),filenames);
         }
+      else if(kwssys::SystemTools::FileExists(dirname.c_str()))
+        {
+        filenames.push_back(dirname);
+        }
       else // we add a directory
         {
-        bool recursive = false;
+        bool gotrecurse = false;
+        kwssys::Glob glob;
         if(dirname.find("[R]",0) != -1)
           {
-          recursive = true;
+          glob.RecurseOn();
+          gotrecurse = true;
           }
 
         long int space = dirname.find(" ");
@@ -427,8 +442,17 @@ int main(int argc, char **argv)
           {
           dirname = dirname.substr(0,space);
           }
-
-        AddDirectory(dirname.c_str(),filenames,recursive);
+     
+        std::string globoption = dirname.c_str();
+        glob.FindFiles(globoption.c_str());
+        std::vector<std::string> globfiles = glob.GetFiles();
+        std::vector<std::string>::const_iterator itglob = globfiles.begin();
+        while(itglob != globfiles.end())
+          {
+          filenames.push_back(*itglob);
+          std::cout << "file = " << *itglob << std::endl;
+          itglob++;
+          }
         }
 
       if(pos != fileSize)
@@ -460,7 +484,7 @@ int main(int argc, char **argv)
     {
     filenames.clear();
     int cvspos = 0;
-    unsigned int i=0;
+    int i=0;
     // Look for the position of the cvs command
     for(i=0;i<argc;i++)
       {

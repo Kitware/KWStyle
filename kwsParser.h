@@ -26,7 +26,7 @@
 namespace kws
 {
 #define MAX_CHAR 99999999
-#define NUMBER_ERRORS 22
+#define NUMBER_ERRORS 23
 
 typedef enum
   {
@@ -57,7 +57,8 @@ typedef enum
   EMPTYLINES,
   TEMPLATE,
   OPERATOR,
-  BLACKLIST
+  BLACKLIST,
+  STATEMENTPERLINE
   } ErrorType;
 
 const char ErrorTag[NUMBER_ERRORS][4] = {
@@ -82,7 +83,8 @@ const char ErrorTag[NUMBER_ERRORS][4] = {
    {'E','M','L','\0'},
    {'T','P','L','\0'},
    {'O','P','S','\0'},
-   {'B','L','K','\0'}
+   {'B','L','K','\0'},
+   {'S','P','L','\0'}
   };
 
 
@@ -190,6 +192,9 @@ public:
   /** Check the number of space between the end of the declaration
    *  and the semicolon */
   bool CheckSemicolonSpace(unsigned long max);
+ 
+  /** Check the number of statements per line */
+  bool CheckStatementPerLine(unsigned long max=1);
 
   /** Check if the end of the file has a new line */
   bool CheckEndOfFileNewLine();
