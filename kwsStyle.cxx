@@ -450,7 +450,6 @@ int main(int argc, char **argv)
         while(itglob != globfiles.end())
           {
           filenames.push_back(*itglob);
-          std::cout << "file = " << *itglob << std::endl;
           itglob++;
           }
         }
