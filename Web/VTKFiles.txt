@@ -1,1 +1,3 @@
-/projects/KWStyle/VTK/Common
+/projects/KWStyle/VTK/Common/*.h
+/projects/KWStyle/VTK/Common/*.cxx
+/projects/KWStyle/VTK/Common/*.txx

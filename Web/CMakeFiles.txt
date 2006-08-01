@@ -1,5 +1,13 @@
-/projects/KWStyle/CMakeCVS/Source
-/projects/KWStyle/CMakeCVS/Source/CPack
-/projects/KWStyle/CMakeCVS/Source/CTest
-/projects/KWStyle/CMakeCVS/Source/CurseDialog
+/projects/KWStyle/CMakeCVS/Source/*.txx
+/projects/KWStyle/CMakeCVS/Source/*.cxx
+/projects/KWStyle/CMakeCVS/Source/*.h*
+/projects/KWStyle/CMakeCVS/Source/CPack/*.txx
+/projects/KWStyle/CMakeCVS/Source/CPack/*.cxx
+/projects/KWStyle/CMakeCVS/Source/CPack/*.h*
+/projects/KWStyle/CMakeCVS/Source/CTest/*.txx
+/projects/KWStyle/CMakeCVS/Source/CTest/*.cxx
+/projects/KWStyle/CMakeCVS/Source/CTest/*.h*
+/projects/KWStyle/CMakeCVS/Source/CurseDialog/*.h*
+/projects/KWStyle/CMakeCVS/Source/CurseDialog/*.cxx
+/projects/KWStyle/CMakeCVS/Source/CurseDialog/*.txx
 -f (Lexer\.cxx)
