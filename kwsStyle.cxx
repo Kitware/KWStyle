@@ -212,6 +212,7 @@ int main(int argc, char **argv)
   AddFeature("EmptyLines","2",true); 
   AddFeature("Template","T",true); 
   AddFeature("Operator","1,1",true);
+  AddFeature("StatementPerLine","1",true);
 
   if(command.GetOptionWasSet("blacklist"))
     {
