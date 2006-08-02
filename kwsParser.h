@@ -26,7 +26,7 @@
 namespace kws
 {
 #define MAX_CHAR 99999999
-#define NUMBER_ERRORS 23
+#define NUMBER_ERRORS 24
 
 typedef enum
   {
@@ -58,7 +58,8 @@ typedef enum
   TEMPLATE,
   OPERATOR,
   BLACKLIST,
-  STATEMENTPERLINE
+  STATEMENTPERLINE,
+  VARIABLEPERLINE
   } ErrorType;
 
 const char ErrorTag[NUMBER_ERRORS][4] = {
@@ -84,7 +85,8 @@ const char ErrorTag[NUMBER_ERRORS][4] = {
    {'T','P','L','\0'},
    {'O','P','S','\0'},
    {'B','L','K','\0'},
-   {'S','P','L','\0'}
+   {'S','P','L','\0'},
+   {'V','P','L','\0'}
   };
 
 
@@ -195,6 +197,9 @@ public:
  
   /** Check the number of statements per line */
   bool CheckStatementPerLine(unsigned long max=1);
+  
+  /** Check the number of variables per line */
+  bool CheckVariablePerLine(unsigned long max=1);
 
   /** Check if the end of the file has a new line */
   bool CheckEndOfFileNewLine();
@@ -277,16 +282,6 @@ protected:
   /** Find the line number in the commented text given the character description */
   long int GetLineNumber(long int pos,bool withoutComments=false) const;
 
-  /** Find the parameters. */
-  //void FindAndAddParameters(std::string buffer, XMLDescription &desc, size_t startPos=0) const;
-
-  /** Find the typedefs (only the public ones). */
-  //void FindAndAddTypeDefinitions(const std::string & buffer, XMLDescription &desc, size_t startPos=0) const;
-
-  /** Find the name of the filter and templates, etc ... Returns the position 
-      within the file where class definition starts. */
-  //size_t FindAndAddName(const std::string & buffer, XMLDescription &desc, std::string fileName) const;
-
   /** Find the previous word given a position */
   std::string FindPreviousWord(long int pos,bool withComments=false) const;
 
@@ -296,28 +291,8 @@ protected:
   /** Find the closing bracket given the position of the opening bracket. */
   long int FindClosingChar(char openChar, char closeChar, long int pos,bool noComment=false) const;
 
- 
   /** Find the constructor in the file. */
   long FindConstructor(const std::string & buffer, const std::string & className, bool headerfile=true, size_t startPos=0) const;
-
-  /** Find first occurrence of a SetFunction which is not implemented by a macro. 
-      Return position after function ")" if found or any position after "void" if not found.
-      flag = true indicates successful finding, otherwise false.
-      isVoidSetFunc is returned as true if a function like "void Set...()" or
-      "void Set...(void)" is detected.
-   */
-  size_t FindAndAddNonMacroSetFunction(std::string buffer, long startPos,
-                                       std::string &paramName, 
-                                       std::string &paramType,
-                                       bool &flag,
-                                       bool &isVoidSetFunc) const;
-
-  /** Starting from startPos scan for all SetFunctions which are not implemented 
-    by a macro. Add their type and name to the list of parameters. */
-  //void FindAndAddNonMacroSetFunctions(std::string buffer, XMLDescription &desc, long startPos) const;
-
-  /** Find the defaults var values in the .txx or .cxx file. */
-  //void FindAndAddDefaultValues(std::string buffer, long start, XMLDescription &desc) const;
 
   /** Return true if the position pos is between <>.
    *  The Fast version just check for <test> and not for <test<>,test<>>*/
@@ -347,15 +322,6 @@ protected:
   /** Return the position of the template if the class has a template otherwise -1. */
   long int IsTemplated(const std::string & buffer, long int pos) const;
 
-  /** Find the comments. */
-  //bool FindAndAddComments(const std::string & buffer, XMLDescription &desc) const;
-
-  /** Remove string area from start to end (incl) from buffer if filename contains className. */
-  /*std::string RemoveArea(const std::string fileName,
-                         std::string buffer, 
-                         const std::string className,
-                         const std::string &start, const std::string &end);
-*/
   /**  return true if the position pos is inside a comment */
   bool Parser::IsInComments(long int pos) const;
 

@@ -83,6 +83,11 @@ bool Parser::Check(const char* name, const char* value)
     this->CheckStatementPerLine(atoi(value));
     return true;
     }
+  else if(!strcmp(name,"VariablePerLine"))
+    {
+    this->CheckVariablePerLine(atoi(value));
+    return true;
+    }
   else if(!strcmp(name,"Comments"))
     {
     std::string val = value;

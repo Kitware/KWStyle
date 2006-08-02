@@ -61,6 +61,9 @@ void ChangeFeature(const char* name,const char* value)
       }
     it++;
     }
+
+  // The feature was not found we add it
+  AddFeature(name,value,true);
 }
 
 void DisableFeature(const char* name)
@@ -213,6 +216,7 @@ int main(int argc, char **argv)
   AddFeature("Template","T",true); 
   AddFeature("Operator","1,1",true);
   AddFeature("StatementPerLine","1",true);
+  AddFeature("VariablePerLine","1",true);
 
   if(command.GetOptionWasSet("blacklist"))
     {
