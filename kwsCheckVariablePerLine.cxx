@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   KWStyle - Kitware Style Checker
-  Module:    kwsVariablePerLine.cxx
+  Module:    kwsCheckVariablePerLine.cxx
 
   Copyright (c) Kitware, Inc.  All rights reserved.
   See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
@@ -27,11 +27,12 @@ bool Parser::CheckVariablePerLine(unsigned long max)
 
   // For the moment only standard types are defined.
   // We might be able to do more with finding typedefs
-  #define ntypes 3
-  const char* types[ntypes] = {
-   {"int"},
-   {"unsigned int"},
-   {"char"}};
+  #define ntypes 10
+  const char* types[ntypes] = {"int","unsigned int",
+   "char","unsigned char",
+   "short","unsigned short",
+   "long","unsigned long",
+   "float","double"};
 
   bool hasError = false;
   for(unsigned int i = 0;i<ntypes;i++)

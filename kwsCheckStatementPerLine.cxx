@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   KWStyle - Kitware Style Checker
-  Module:    kwsStatementPerLine.cxx
+  Module:    kwsCheckStatementPerLine.cxx
 
   Copyright (c) Kitware, Inc.  All rights reserved.
   See Copyright.txt or http://www.kitware.com/Copyright.htm for details.

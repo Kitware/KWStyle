@@ -44,8 +44,8 @@ kwsCheckTemplate.cxx
 kwsCheckOperator.cxx
 kwsCheckBlackList.cxx
 kwsCheckExtraSpaces.cxx
-kwsStatementPerLine.cxx
-kwsVariablePerLine.cxx
+kwsCheckStatementPerLine.cxx
+kwsCheckVariablePerLine.cxx
 )
 
 LINK_LIBRARIES(
