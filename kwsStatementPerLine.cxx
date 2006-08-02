@@ -21,7 +21,7 @@ bool Parser::CheckStatementPerLine(unsigned long max)
 {
   m_TestsDone[STATEMENTPERLINE] = true;
   char* val = new char[255];
-  sprintf(val,"Statements = %d max spaces",max);
+  sprintf(val,"Statements per line = %d max",max);
   m_TestsDescription[STATEMENTPERLINE] = val;
   delete [] val;
 
