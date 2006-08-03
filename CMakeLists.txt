@@ -1,7 +1,10 @@
 PROJECT(KWStyle)
 
+# Output directories
 SET(EXECUTABLE_OUTPUT_PATH ${KWStyle_BINARY_DIR} CACHE INTERNAL "Output directory for executable")
 SET(LIBRARY_OUTPUT_PATH ${KWStyle_BINARY_DIR} CACHE INTERNAL "Output directory for libraries")
+
+SET(CXX_TEST_PATH ${EXECUTABLE_OUTPUT_PATH})
 
 # Disable MSVC 8 warnings
 IF(WIN32)
