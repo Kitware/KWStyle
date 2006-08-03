@@ -61,9 +61,6 @@ void ChangeFeature(const char* name,const char* value)
       }
     it++;
     }
-
-  // The feature was not found we add it
-  AddFeature(name,value,true);
 }
 
 void DisableFeature(const char* name)
@@ -198,7 +195,7 @@ int main(int argc, char **argv)
     }
 
   // Add the features
-  //AddFeature("Header","c:/Julien/Workspace/KWStyle/kwsHeader.h,false,true",true); // should be first
+  AddFeature("Header","dummyheader.h,false,true",true); // should be first
   AddFeature("LineLength","80",true);
   AddFeature("DeclarationOrder","0,1,2",true);
   AddFeature("Typedefs","[A-Z]",true);
