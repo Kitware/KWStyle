@@ -6,6 +6,9 @@ SET(LIBRARY_OUTPUT_PATH ${KWStyle_BINARY_DIR} CACHE INTERNAL "Output directory f
 
 SET(CXX_TEST_PATH ${EXECUTABLE_OUTPUT_PATH})
 
+SET(KWStyle_VERSION_MAJOR "1")
+SET(KWStyle_VERSION_MINOR "0")
+
 # Disable MSVC 8 warnings
 IF(WIN32)
   ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE)
@@ -21,14 +24,20 @@ ENDIF (BUILD_TESTING)
 
 INCLUDE_DIRECTORIES(${KWStyle_BINARY_DIR}/Utilities)
 
+SET(KWStyle_HDRS
+kwsParser.h
+kwsHeader.h
+kwsXMLReader.h
+kwsGenerator.h
+kwsTestFile.h
+metaCommand.h
+)
+
 SET(KWStyle_SRCS
 metaCommand.cxx
 kwsParser.cxx
-kwsParser.h
-kwsXMLReader.h
 kwsXMLReader.cxx
 kwsGenerator.cxx
-kwsGenerator.h
 kwsCheckLineLength.cxx
 kwsCheckHeader.cxx
 kwsCheckSemicolonSpace.cxx
@@ -57,7 +66,41 @@ kwssys
 
 SUBDIRS(Utilities)
 
-ADD_LIBRARY(KWStyleLib ${KWStyle_SRCS})
+ADD_LIBRARY(KWStyleLib ${KWStyle_SRCS} ${KWStyle_HDRS})
 ADD_EXECUTABLE(KWStyle kwsStyle.cxx)
 TARGET_LINK_LIBRARIES(KWStyle KWStyleLib)
 
+# Installation file
+INSTALL(TARGETS KWStyle KWStyleLib
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib/KWStyle)
+INSTALL(FILES ${KWStyle_HDRS} DESTINATION include/KWStyle)
+INSTALL(FILES ${KWStyle_SRCS} DESTINATION source)
+
+# CPack options
+INCLUDE(InstallRequiredSystemLibraries)
+
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "KWStyle")
+SET(CPACK_PACKAGE_VENDOR "Kitware Inc.")
+SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/ReadMe.txt")
+SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/Copyright.txt")
+SET(CPACK_PACKAGE_VERSION_MAJOR "1")
+SET(CPACK_PACKAGE_VERSION_MINOR "0")
+SET(CPACK_PACKAGE_VERSION_PATCH "0")
+SET(CPACK_PACKAGE_INSTALL_DIRECTORY "KWStyle ${KWStyle_VERSION_MAJOR}.${KWStyle_VERSION_MINOR}")
+IF(WIN32 AND NOT UNIX)
+  # There is a bug in NSI that does not handle full unix paths properly. Make
+  # sure there is at least one set of four (4) backlasshes.
+  SET(CPACK_PACKAGE_ICON "${KWStyle_SOURCE_DIR}/Web/images\\\\TitleBar.bmp")
+  SET(CPACK_NSIS_INSTALLED_ICON_NAME "relwithdebinfo\\\\KWStyle.exe")
+  SET(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} The source code checker")
+  SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\public.kitware.com/KWStyle")
+  SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\public.kitware.com/KWStyle")
+  SET(CPACK_NSIS_MODIFY_PATH ON)
+ELSE(WIN32 AND NOT UNIX)
+  SET(CPACK_STRIP_FILES "bin/KWStyle")
+  SET(CPACK_SOURCE_STRIP_FILES "")
+ENDIF(WIN32 AND NOT UNIX)
+SET(CPACK_PACKAGE_EXECUTABLES "KWStyldfsdfsde" "KWStyle")
+INCLUDE(CPack)
