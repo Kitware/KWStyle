@@ -610,6 +610,32 @@ bool Parser::InitIndentation()
       ind.current = -1;
       ind.after = 0; 
       m_IdentPositionVector.push_back(ind);
+      // Find the ':' after the default
+      long int column = m_BufferNoComment.find(":",defaultPos+1);
+      column = this->GetPositionWithComments(column);      
+      
+      // Sometimes there is a { right after the : we skip it if this is
+      // the case
+      long int ic = column+1;
+      while(ic<(long int)m_Buffer.size() 
+            && (m_Buffer[ic] == ' ' 
+            || m_Buffer[ic] == '\r' 
+            || m_Buffer[ic] == '\n'))
+        {
+        ic++;
+        }
+      if(m_Buffer[ic] == '{')
+        {
+        IndentPosition ind;
+        ind.position = ic;
+        ind.current = 0;
+        ind.after = 0; 
+        m_IdentPositionVector.push_back(ind);
+        ind.position = this->FindClosingChar('{','}',ic);   
+        ind.current = 0;
+        ind.after = 0; 
+        m_IdentPositionVector.push_back(ind);
+        }
       }
 
     long int posCase = m_BufferNoComment.find("case",openningBracket);
@@ -644,6 +670,13 @@ bool Parser::InitIndentation()
         m_IdentPositionVector.push_back(ind);
         
         long int column = m_BufferNoComment.find(':',posCase+3);
+        // Make sure that we are not checing '::'
+        while(column+1<(long int)m_BufferNoComment.size()
+          && m_BufferNoComment[column+1]==':')
+          {
+          column = m_BufferNoComment.find(':',column+2);
+          }
+
         if(column != -1)
           {
           // translate the position in the buffer position;
