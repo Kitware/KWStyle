@@ -594,11 +594,11 @@ int main(int argc, char **argv)
         }
       }
     
+    errors += parser.GetErrors().size();
     m_Parsers.push_back(parser);
     it++;
     } // end filenames
 
-  //std::cout << "Errors = " << errors << std::endl;
 
   // If we should generate the HTML file
   if(command.GetOptionWasSet("html"))
@@ -635,6 +635,12 @@ int main(int argc, char **argv)
       }
 
     generator.GenerateDart(dart.c_str(),maxerror,grouperrors,url,time0);
+    }
+
+  // If we have errors we return false
+  if(errors>0)
+    {
+    return 1;
     }
 
   return 0;
