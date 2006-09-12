@@ -58,6 +58,7 @@ kwsCheckBlackList.cxx
 kwsCheckExtraSpaces.cxx
 kwsCheckStatementPerLine.cxx
 kwsCheckVariablePerLine.cxx
+kwsCheckBadCharacters.cxx
 )
 
 LINK_LIBRARIES(
@@ -77,6 +78,14 @@ INSTALL(TARGETS KWStyle KWStyleLib
         ARCHIVE DESTINATION lib/KWStyle)
 INSTALL(FILES ${KWStyle_HDRS} DESTINATION include/KWStyle)
 INSTALL(FILES ${KWStyle_SRCS} DESTINATION source)
+
+
+INSTALL(FILES ${KWStyle_SOURCE_DIR}/Documentation/Install/ITK.kws.xml DESTINATION bin)
+INSTALL(FILES ${KWStyle_SOURCE_DIR}/Documentation/Install/VTK.kws.xml DESTINATION bin)
+
+# Install the headers
+INSTALL(FILES ${KWStyle_SOURCE_DIR}/Web/headers/VTKHeader.h DESTINATION bin/headers)
+INSTALL(FILES ${KWStyle_SOURCE_DIR}/Web/headers/ITKHeader.h DESTINATION bin/headers)
 
 # CPack options
 INCLUDE(InstallRequiredSystemLibraries)

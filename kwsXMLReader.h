@@ -29,7 +29,7 @@ public:
 
   XMLReader();
   ~XMLReader();
-  int Open(const char* filename);
+  bool Open(const char* filename);
   std::string GetTag();
   std::string GetCurrentTag();
   std::string GetValue();

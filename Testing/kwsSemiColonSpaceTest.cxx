@@ -46,6 +46,86 @@ int kwsSemiColonSpaceTest(int, char* [] )
     }
   std::cout << "[PASSED]" << std::endl;
 
+  // Test for bad syntax
+  buffer = "Test();;";
+  parser.ClearErrors();
+  parser.SetBuffer(buffer);
+  parser.Check("SemicolonSpace","0");
+  std::cout << "Test for bad syntax: ";
+  errors = parser.GetErrors();
+  if(errors.size() > 0)
+    {
+    for(unsigned int i=0;i<errors.size();i++)
+      {
+      std::cout << errors[i].description << std::endl;
+      }
+    }
+  else
+    {
+    std::cout << "[FAILED]" << std::endl;
+    return EXIT_FAILURE;
+    }
+  std::cout << "[PASSED]" << std::endl;
+
+  // Test for bad syntax
+  buffer = "class myclass\n{\nmyfunction(){this is a test};\n\n\n\n};";
+  parser.ClearErrors();
+  parser.SetBuffer(buffer);
+  parser.Check("SemicolonSpace","0");
+  std::cout << "Test for bad syntax: ";
+  errors = parser.GetErrors();
+  if(errors.size() > 0)
+    {
+    for(unsigned int i=0;i<errors.size();i++)
+      {
+      std::cout << errors[i].description << std::endl;
+      }
+    }
+  else
+    {
+    std::cout << "[FAILED]" << std::endl;
+    return EXIT_FAILURE;
+    }
+  std::cout << "[PASSED]" << std::endl;
+ 
+  // Test for good syntax
+  buffer = "class myclass\n{\nmyfunction(){};\n\n\n\n};";
+  parser.ClearErrors();
+  parser.SetBuffer(buffer);
+  parser.Check("SemicolonSpace","0");
+
+  std::cout << "Test for good syntax: ";
+  errors = parser.GetErrors();
+  if(errors.size() > 0)
+    {
+    for(unsigned int i=0;i<errors.size();i++)
+      {
+      std::cout << errors[i].description << std::endl;
+      }
+    std::cout << "[FAILED]" << std::endl;
+    return EXIT_FAILURE;
+    }
+  std::cout << "[PASSED]" << std::endl;
+
+  // Test for good syntax
+  buffer = "class myclass\n{\nmyfunction(){test;}\n\n\n\n};";
+  parser.ClearErrors();
+  parser.SetBuffer(buffer);
+  parser.Check("SemicolonSpace","0");
+
+  std::cout << "Test for good syntax: ";
+  errors = parser.GetErrors();
+  if(errors.size() > 0)
+    {
+    for(unsigned int i=0;i<errors.size();i++)
+      {
+      std::cout << errors[i].description << std::endl;
+      }
+    std::cout << "[FAILED]" << std::endl;
+    return EXIT_FAILURE;
+    }
+  std::cout << "[PASSED]" << std::endl;
+
   // Test for good syntax
   buffer = "Test();";
   parser.ClearErrors();
@@ -63,7 +143,6 @@ int kwsSemiColonSpaceTest(int, char* [] )
     std::cout << "[FAILED]" << std::endl;
     return EXIT_FAILURE;
     }
-
   std::cout << "[PASSED]" << std::endl;
 
   std::cout << "[DONE]" << std::endl;

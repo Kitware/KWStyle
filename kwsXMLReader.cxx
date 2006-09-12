@@ -25,13 +25,13 @@ XMLReader::~XMLReader()
 {
 }
 
-int XMLReader::Open(const char* filename)
+bool XMLReader::Open(const char* filename)
 {
   // Open file for reading
   m_File.open(filename,std::ifstream::binary);
   if (m_File == NULL)
     {
-    return -1;
+    return false;
     }
 
   m_File.seekg(0,std::ios::end);
@@ -45,7 +45,7 @@ int XMLReader::Open(const char* filename)
   m_Buffer.resize(fileSize);
   delete [] buf;
    
-  return 0;
+  return true;
 } 
 
 std::string XMLReader::GetValue()

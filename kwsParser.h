@@ -26,7 +26,7 @@
 namespace kws
 {
 #define MAX_CHAR 99999999
-#define NUMBER_ERRORS 24
+#define NUMBER_ERRORS 25
 
 typedef enum
   {
@@ -59,7 +59,8 @@ typedef enum
   OPERATOR,
   BLACKLIST,
   STATEMENTPERLINE,
-  VARIABLEPERLINE
+  VARIABLEPERLINE,
+  BADCHARACTERS
   } ErrorType;
 
 const char ErrorTag[NUMBER_ERRORS][4] = {
@@ -86,7 +87,8 @@ const char ErrorTag[NUMBER_ERRORS][4] = {
    {'O','P','S','\0'},
    {'B','L','K','\0'},
    {'S','P','L','\0'},
-   {'V','P','L','\0'}
+   {'V','P','L','\0'},
+   {'B','C','H','\0'},
   };
 
 
@@ -201,6 +203,9 @@ public:
   /** Check the number of variables per line */
   bool CheckVariablePerLine(unsigned long max=1);
 
+  /** Check bad characters */
+  bool CheckBadCharacters(bool withComments=true);
+
   /** Check if the end of the file has a new line */
   bool CheckEndOfFileNewLine();
 
@@ -290,6 +295,9 @@ protected:
 
   /** Find the closing bracket given the position of the opening bracket. */
   long int FindClosingChar(char openChar, char closeChar, long int pos,bool noComment=false) const;
+
+  /** Find the opening bracket given the position of the closing bracket. */
+  long int FindOpeningChar(char closeChar, char openChar, long int pos,bool noComment=false) const;
 
   /** Find the constructor in the file. */
   long FindConstructor(const std::string & buffer, const std::string & className, bool headerfile=true, size_t startPos=0) const;

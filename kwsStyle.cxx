@@ -214,6 +214,7 @@ int main(int argc, char **argv)
   AddFeature("Operator","1,1",true);
   AddFeature("StatementPerLine","1",true);
   AddFeature("VariablePerLine","1",true);
+  AddFeature("BadCharacters","true",true);
 
   if(command.GetOptionWasSet("blacklist"))
     {
@@ -226,23 +227,28 @@ int main(int argc, char **argv)
     {
     std::string xml = command.GetValueAsString("xml","filename");
     kws::XMLReader reader;
-    reader.Open(xml.c_str());
-    
-    std::vector<kwsFeature>::iterator it = features.begin();
-    while(it != features.end())
+    if(reader.Open(xml.c_str()))
       {
-      std::string val = reader.GetValue((*it).name.c_str());
-      if(val.length() > 0 )
+      std::vector<kwsFeature>::iterator it = features.begin();
+      while(it != features.end())
         {
-        ChangeFeature((*it).name.c_str(),val.c_str()); 
+        std::string val = reader.GetValue((*it).name.c_str());
+        if(val.length() > 0 )
+          {
+          ChangeFeature((*it).name.c_str(),val.c_str()); 
+          }
+        else
+          {
+          DisableFeature((*it).name.c_str());
+          }
+        it++;
         }
-      else
-        {
-        DisableFeature((*it).name.c_str());
-        }
-      it++;
+      reader.Close();
       }
-    reader.Close();
+    else
+      {
+      std::cout << "Cannot open configuration file: " << xml.c_str() << std::endl;
+      }
     }
 
   

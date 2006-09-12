@@ -83,6 +83,18 @@ bool Parser::Check(const char* name, const char* value)
     this->CheckStatementPerLine(atoi(value));
     return true;
     }
+ else if(!strcmp(name,"BadCharacters"))
+    {
+    if(!strcmp(value,"true"))
+      {
+      this->CheckBadCharacters(true);
+      }
+    else
+      {
+      this->CheckBadCharacters(false);
+      }
+    return true;
+    }
   else if(!strcmp(name,"VariablePerLine"))
     {
     this->CheckVariablePerLine(atoi(value));
@@ -1580,5 +1592,34 @@ long int Parser::FindClosingChar(char openChar, char closeChar, long int pos,boo
     }
   return -1; // closing char not found
 }
+
+/** Find the opening char given the position of the closing char */
+long int Parser::FindOpeningChar(char closeChar, char openChar, long int pos,bool noComment) const
+{  
+  std::string stream = m_Buffer.c_str();
+  if(noComment)
+    {
+    stream = m_BufferNoComment.c_str();
+    }
+
+  long int close = 1;
+  for(size_t i=pos-1;i>0;i--)
+    { 
+    if(stream[i] == closeChar)
+      {
+      close++;
+      }
+    else if(stream[i] == openChar)
+      {
+      close--;
+      }
+    if(close == 0)
+      {
+      return (long int)i;
+      }
+    }
+  return -1; // opening char not found
+}
+
 
 } // end namespace kws

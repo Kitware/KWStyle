@@ -86,7 +86,7 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
         error.line = this->GetLineNumber(i,true);
         error.line2 = error.line;
         error.number = SEMICOLON_SPACE;
-        error.description = "Too many semicolons: ";
+        error.description = "Too many semicolons";
         m_ErrorList.push_back(error);
         hasError = true;
         }
@@ -97,6 +97,79 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
       i++;
       }
     posSemicolon = m_BufferNoComment.find(";",i+1);
+    }
+
+
+  // We also check if we have unecessary semicolons
+  posSemicolon = m_BufferNoComment.find(";",0);
+  while(posSemicolon != -1)
+    {
+    // check if we have a } before
+    long int pos = posSemicolon;
+    pos--;
+    while(pos>0 && 
+      (m_BufferNoComment[pos] == ' ' 
+      || m_BufferNoComment[pos] == '\n' 
+      || m_BufferNoComment[pos] == '\r'))
+      {
+      pos--;
+      }
+
+    if(m_BufferNoComment[pos] == '}')
+      {
+      bool error = true;
+      // We check that this is not a class
+      long int openingChar = this->FindOpeningChar('}','{',pos,true);
+      long int classPos = this->GetClassPosition(0);
+      
+      if(classPos != -1 && openingChar!= -1)
+        {
+        for(unsigned long i=classPos;i<(unsigned long)openingChar+1;i++)
+          {
+          if(m_BufferNoComment[i] == '{')
+            {
+            classPos = i;
+            break;
+            }
+          }
+        if(openingChar == classPos)
+          {
+          error = false;
+          }
+        }
+
+      // Check if the {} is empty or not
+      if(openingChar!= -1)
+        {
+        bool empty = true;
+        for(unsigned long i=openingChar+1;i<(unsigned long)pos;i++)
+          {
+          if(m_BufferNoComment[i] != ' ' || m_BufferNoComment[i] != '\r'
+            || m_BufferNoComment[i] != '\n')
+            {
+            empty = false;
+            break;
+            }
+          }
+        if(empty)
+          {
+          error = false;
+          }
+        }
+
+      
+      if(error)
+        {
+        Error error;
+        error.line = this->GetLineNumber(pos,true);
+        error.line2 = error.line;
+        error.number = SEMICOLON_SPACE;
+        error.description = "Unecessary semicolon";
+        m_ErrorList.push_back(error);
+        hasError = true;
+        }
+      }
+    posSemicolon = m_BufferNoComment.find(";",posSemicolon+1);
     }
 
   return !hasError;
