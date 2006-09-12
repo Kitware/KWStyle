@@ -165,6 +165,9 @@ int main(int argc, char **argv)
   command.SetOption("quiteverbose","qv",false,"Display less information");
   command.SetOption("lesshtml","lesshtml",false,"Display less HTML");
 
+  command.SetOption("vim","vim",false,"Generate errors as VIM format");
+
+
   command.SetOption("html","html",false,"Generate the HTML report");
   command.AddOptionField("html","filename",MetaCommand::STRING,false);
   command.SetOption("cvs","cvs",false,"Using KWStyle as a cvs precommit script");
@@ -525,7 +528,8 @@ int main(int argc, char **argv)
   while(it != filenames.end())
     {
     if(!command.GetOptionWasSet("quiteverbose") &&
-       !command.GetOptionWasSet("exporthtml")
+       !command.GetOptionWasSet("exporthtml") &&
+       !command.GetOptionWasSet("vim")
       )
       {
       std::cout << "Processing " << (*it).c_str() << std::endl;
@@ -590,7 +594,20 @@ int main(int argc, char **argv)
       {
       std::cout << parser.GetLastErrors().c_str() << std::endl;
       }
-        
+
+    if(command.GetOptionWasSet("vim"))
+      {
+      // Format the string as vim
+      const kws::Parser::ErrorVectorType errors = parser.GetErrors();
+      kws::Parser::ErrorVectorType::const_iterator eit = errors.begin();
+      while(eit != errors.end())
+        {
+        std::cout << (*it).c_str() << ":" << (*eit).line << ":" 
+                  << (*eit).description << std::endl;
+        eit++;
+        }
+      }
+            
     if(command.GetOptionWasSet("cvs"))
       {
       std::cout << parser.GetLastErrors().c_str() << std::endl;
