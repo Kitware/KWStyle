@@ -155,8 +155,15 @@ std::string Parser::FindTypedef(long int start, long int end,long int & pos,long
     }
 
   typdefpos = posTypedef;
-
   long int posSemicolon = m_BufferNoComment.find(";",posTypedef);
+
+  // Check if we have any () in the subword then we don't check the typdef
+  std::string sub = m_BufferNoComment.substr(posTypedef,posSemicolon-posTypedef);
+  if((sub.find("(",0) != -1) || (sub.find(")",0) != -1))
+    {
+    pos = posSemicolon;
+    return "";
+    }
 
   std::string typedefname = "";
   if(posSemicolon != -1 && posSemicolon<end)
@@ -169,23 +176,12 @@ std::string Parser::FindTypedef(long int start, long int end,long int & pos,long
       {
       if(m_BufferNoComment[i] != ' ')
         {
-        /*if((m_BufferNoComment[i] == '}')
-          || (m_BufferNoComment[i] == ')')
-          || (m_BufferNoComment[i] == ']')
-          || (m_BufferNoComment[i] == '\n')
-          )
-          {
-          inWord = false;
-          }
-        else
-          {*/
-          std::string store = typedefname;
-          typedefname = m_BufferNoComment[i];
-          typedefname += store;
-          beg = i;
-          inWord = true;
-          first = true;
-          //}
+        std::string store = typedefname;
+        typedefname = m_BufferNoComment[i];
+        typedefname += store;
+        beg = i;
+        inWord = true;
+        first = true;
         }
       else // we have a space
         {
