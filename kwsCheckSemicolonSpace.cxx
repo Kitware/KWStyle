@@ -121,21 +121,31 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
       // We check that this is not a class
       long int openingChar = this->FindOpeningChar('}','{',pos,true);
       long int classPos = this->GetClassPosition(0);
-      
-      if(classPos != -1 && openingChar!= -1)
+
+      while(classPos != -1)
         {
-        for(unsigned long i=classPos;i<(unsigned long)openingChar+1;i++)
+        if(classPos != -1 && openingChar!= -1)
           {
-          if(m_BufferNoComment[i] == '{')
+          for(unsigned long i=classPos;i<(unsigned long)openingChar+1;i++)
             {
-            classPos = i;
-            break;
+            if(m_BufferNoComment[i] == '{')
+              {
+              classPos = i;
+              break;
+              }
+            }
+          if(openingChar == classPos)
+            {
+            error = false;
             }
           }
-        if(openingChar == classPos)
-          {
-          error = false;
-          }
+        classPos = this->GetClassPosition(classPos+1);
+        }
+
+      std::string word = this->FindPreviousWord(openingChar);
+      if(word == "enum")
+        {
+        error = false;
         }
 
       // Check if the {} is empty or not
@@ -164,7 +174,7 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
         error.line = this->GetLineNumber(pos,true);
         error.line2 = error.line;
         error.number = SEMICOLON_SPACE;
-        error.description = "Unecessary semicolon";
+        error.description = "Unnecessary semicolon";
         m_ErrorList.push_back(error);
         hasError = true;
         }
