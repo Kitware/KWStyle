@@ -352,6 +352,9 @@ protected:
   /** Helper function to add words to the special indent vector */
   void AddIndent(const char* name,long int current,long int after);
 
+  /** Find the end of the class */
+  long int FindEndOfClass(long int position) const;
+
 private:
 
   ErrorVectorType m_ErrorList;

@@ -591,7 +591,15 @@ void Parser::FindPublicArea(long &before, long &after, size_t startPos) const
      else
        {
        before = pub;
-       after = pub;
+       long int eoc = this->FindEndOfClass(pub);
+       if(eoc != -1)
+         {
+         after = eoc;
+         }
+       else
+         {
+         after = pub; // end of class
+         }
        }
      }
   else
@@ -669,7 +677,15 @@ void Parser::FindProtectedArea(long &before, long &after, size_t startPos) const
      else
        {
        before = protect;
-       after = protect; // end of class
+       long int eoc = this->FindEndOfClass(protect);
+       if(eoc != -1)
+         {
+         after = eoc;
+         }
+       else
+         {
+         after = protect; // end of class
+         }
        }
      }
   else
@@ -704,6 +720,62 @@ void Parser::FindProtectedArea(long &before, long &after, size_t startPos) const
       }
     }
 }
+
+
+/** Find the end of the class */
+long int Parser::FindEndOfClass(long int position) const
+{
+  // Try to find the end of the class
+  long int endclass = m_BufferNoComment.find("}",position);
+  while(endclass != -1)
+    {
+    bool isClass = true;
+    // if the next char is not a semicolon this cannot be a class
+    for(unsigned long i=endclass+1;i<m_BufferNoComment.size();i++)
+      {
+      if( (m_BufferNoComment[i] != ' ') && (m_BufferNoComment[i] != '\r')
+        && (m_BufferNoComment[i] != '\n') && (m_BufferNoComment[i] != ';')
+        )
+        {
+        isClass = false;
+        break;
+        }
+      if(m_BufferNoComment[i] == ';')
+        {
+        break;
+        }
+      }
+
+    if(isClass)
+      {
+      long int openingChar = this->FindOpeningChar('}','{',endclass,true);
+      // check if we have the class name somewhere
+      long int classPos = m_BufferNoComment.find("class",0);
+      while(classPos != -1)
+        {
+        if(classPos != -1 && openingChar!= -1)
+          {
+          for(unsigned long i=classPos;i<(unsigned long)openingChar+1;i++)
+            {
+            if(m_BufferNoComment[i] == '{')
+              {
+              classPos = i;
+              break;
+              }
+            }
+          if(openingChar == classPos)
+            {
+            return endclass;
+            }
+          }
+        classPos = m_BufferNoComment.find("class",classPos+1);
+        }
+      }     
+    endclass = m_BufferNoComment.find("}",endclass+1);
+    }
+  return -1;
+}
+
 
 /** Find private area in source code. */
 void Parser::FindPrivateArea(long &before, long &after, size_t startPos) const
@@ -746,7 +818,15 @@ void Parser::FindPrivateArea(long &before, long &after, size_t startPos) const
      else
        {
        before = priv;
-       after = priv; // end of class
+       long int eoc = this->FindEndOfClass(priv);
+       if(eoc != -1)
+         {
+         after = eoc;
+         }
+       else
+         {
+         after = priv; // end of class
+         }
        }
      }
   else
@@ -780,282 +860,6 @@ void Parser::FindPrivateArea(long &before, long &after, size_t startPos) const
       }
     }
 }
-
-//----------------------------------------------------------------------------------
-/** Find the maximum setInput method. In some classes it helps to detect
-    the correct number of inputs. */
-//----------------------------------------------------------------------------------
-/*int Parser::FindSetInputNum(const std::string & buffer, size_t startPos) const
-{
-  // Return value.
-  int numInputs=0;
-
-  // Variables to restrict the search to the public part only
-  long before = 0;
-  long after = 0;
-
-  FindPublicArea(buffer, before, after, startPos);
-
-  // Find all SetInput methods which have something with "Image" 
-  // or "LevelSet" in its parameters.
-  long first = buffer.find("SetInput1", before);
-  long img   = buffer.find("Image", before);
-  long last  = buffer.find(";", first);
-  if ((last>first) && (numInputs<1) && (img < last)){ numInputs = 1; }
-
-  // Search for SetInput2 in the same way.
-  first = buffer.find("SetInput2", before);
-  img   = buffer.find("Image", before);
-  last  = buffer.find(";", first);
-  if ((last>first) && (numInputs<2) && (img < last)){ numInputs = 2; }
-
-  // Search for SetInput3 in the same way.
-  first = buffer.find("SetInput3", before);
-  img   = buffer.find("Image", before);
-  last  = buffer.find(";", first);
-  if ((last>first) && (numInputs<3) && (img < last)){ numInputs = 3; }
-
-  return numInputs;
-}
-*/
-
-/** Find Set/Get Macro Parameters which are public*/
-/*void Parser::FindAndAddParameters(std::string buffer, XMLDescription &desc, size_t startPos) const
-{
-  // Chck for the following set macros:
-  static const int NumMacros=5;
-  static const std::string MacroNames[NumMacros][2] =
-  {
-    { "itkSetMacro",            ")" }, 
-    { "itkSetStringMacro",      ")" },
-    { "itkSetObjectMacro",      ")" },
-    { "itkSetConstObjectMacro", ")" },
-    { "itkSetClampMacro",       "," }
-  };
-
-  // Variables to restrict the search to the public part only
-  long before = 0;
-  long after = 0;
-
-  FindPublicArea(buffer, before, after, startPos);
-
-  // Look for each macro set string.
-  for (int m=0; m < NumMacros; ++m)
-    {
-    long first = buffer.find(MacroNames[m][0], before);
-    long last = buffer.find(";",first);
-
-    while((last>first) && (first!= -1) && (last !=-1) && (last<after))
-      {
-      ParametersDescription param;
-      std::string val = buffer.substr(first,last-first);
-
-      // Find the Name after "(":
-      long p0 = val.find("(",0);
-      long p1 = val.find(",",p0);
-      std::string Name = val.substr(p0+1,p1-p0-1);
-      RemoveChar(Name,' ');
-
-      // Find the Type if it's not a string set macro. We need to search 
-      // from the first comma to the next separator symbol. For macros 
-      // with more than two params it's the next ",", otherwise a ")".
-      std::string paramType = "";
-      if (MacroNames[m][0] == "itkSetStringMacro")
-        {
-        paramType = "String";
-        }
-      else
-        {
-        p0 = val.find(",",0);
-        p1 = val.find(MacroNames[m][1] ,p0+1);
-        paramType = val.substr(p0+1,p1-p0-1);
-        RemoveChar(paramType, ' ');
-        }
-
-      if (!paramType.empty()) 
-        {
-        param.call = "Set";
-        param.call += Name;
-        param.name = Name;
-        param.type = paramType;
-
-        desc.parameters.push_back(param);
-        }
-
-      // Look for the different set macros.
-      first = buffer.find(MacroNames[m][0], last);
-      last = buffer.find(";",first);
-      }
-    }
-
-
-  // Now find the vector macro ( 3 arguments
-  long first = buffer.find("itkSetVectorMacro",before);
-  long last = buffer.find(";",first);
-  
-  while((last>first) && (first!= -1) && (last !=-1) && (last<after))
-    {
-    ParametersDescription param;
-    std::string val = buffer.substr(first,last-first);
-
-    // Find the Name
-    long p0 = val.find("(",0);
-    long p1 = val.find(",",p0);
-    std::string Name = val.substr(p0+1,p1-p0-1);
-    RemoveChar(Name,' ');
-
-    // Find the RealType
-    p0 = val.find(",",p1);
-    p1 = val.find(",",p0+1);
-    std::string RealType = val.substr(p0+1,p1-p0-1);
-    RemoveChar(RealType,' ');
-  
-    // Find the dimension
-    p0 = val.find(",",p1);
-    p1 = val.find(")",p0+1);
-    std::string Dimension = val.substr(p0+1,p1-p0-1);
-    RemoveChar(Dimension,' ');
-  
-    std::string paramType = "itk::Vector<";
-    paramType += RealType;
-    paramType += ",";
-    paramType += Dimension;
-    paramType += ">";
-
-    param.call = "Set";
-    param.call += Name;
-    param.name = Name;
-    param.type = paramType;
-
-    desc.parameters.push_back(param);
-
-    first = buffer.find("itkSetVectorMacro",last);
-    last = buffer.find(";",first);
-    }
-}
-*/
-
-
-/** Find the typedefs (only the public ones) */
-/*void Parser::FindAndAddTypeDefinitions(const std::string & buffer, XMLDescription &desc, size_t startPos) const
-{
-  // Variables to restrict the search to the public part only
-  long before = 0;
-  long after = 0;
-
-  FindPublicArea(buffer, before, after, startPos);
-
-  // Now we search the typedefs
-  long first = buffer.find("typedef",before);
-  if(first == -1)
-    {
-    return;
-    }
-
-  long last = buffer.find(";",first);
-  if(last == -1)
-    {
-    return;
-    }
-
-  while((last>first) && (first!= -1) && (last !=-1) && (last<after))
-    {
-    TypeDefinitions type;
-    std::string val = buffer.substr(first,last-first);
- 
-    // Remove the typedef
-    val = val.erase(0,8);
-
-    // If typename exists remove it
-    long pos = val.find("typename",0);
-    if(pos != -1 && pos < 12)
-      {
-      val = val.erase(0,pos+8);
-      }
-
-    // We remove the "\n" chars
-    pos = val.find("\n",0);
-    while(pos != -1)  
-      {
-      if(pos == 0)
-        {
-        val.erase(pos,1);
-        }
-      else
-        {
-        val.erase(pos-1,2);
-        }
-      pos = val.find("\n",0);
-      }
-
-    // we remove any extra spaces before the name
-    while(val.find(" ",0) == 0)
-      {
-      val = val.erase(0,1);
-      }
-
-    // if we have something like itk::Image<const char,3>
-    // we just have to be sure that the space is not in between brackets
-    // Then we find the next space
-    pos = val.find(" ",0);
-    // we check if the space is not between brackets
-    long b1 = val.find("<",0);
-
-    // Find the last > of the typedefs
-    long b3 = val.find(">",0);
-    long b2 = -1;
-    while(b3!=-1)
-      {
-      b2 = b3;
-      b3 = val.find(">",b3+1);
-      }
-
-    while(pos>b1 && pos<b2 && pos!= -1 && b1!=-1)
-      {
-      pos = val.find(" ",pos+1);
-      }
-
-    if(pos == -1)
-      {
-      return;
-      }
-
-     std::string Reference = val.substr(0,pos);
- 
-    // We remove extra spaces, by having only one space between words
-    RemoveChar(Reference,' ');
-    long spacepos = Reference.find("  ");
-    while(spacepos != -1)
-      {
-      Reference.erase(spacepos,1);
-      spacepos = Reference.find("  ",0);
-      }
-
-    type.reference = Reference; 
-
-    if(pos == -1)
-      {
-      return;
-      }
-
-    std::string Name = val.substr(pos,val.size()-pos);
-    RemoveChar(Name,' ');
-    type.name = Name;
-    desc.typedefs.push_back(type);
-    first = buffer.find("typedef",last);
-    if(first == -1)
-      {
-      return;
-      }
-    last = buffer.find(";",first);
-    if(first == -1)
-      {
-      return;
-      }
-    }
-}
-*/
-
 
 /**  return true if the position pos is inside a comment */
 bool Parser::IsInComments(long int pos) const

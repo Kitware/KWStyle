@@ -177,11 +177,9 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment)
   pos = privateFirst;
   previousline = 0;
   previouspos = 0;
-
-  while(pos!= -1)
+  while(pos != -1)
     {
-    std::string var = this->FindInternalVariable(pos+1,privateLast,pos);
-
+    std::string var = this->FindInternalVariable(pos+1,privateLast,pos); 
     if(var == "")
       {
       continue;
@@ -234,11 +232,11 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment)
   return !hasError;
 }
 
-/** Find an ivar in the source code */
+/** Find the first ivar in the source code */
 std::string Parser::FindInternalVariable(long int start, long int end,long int & pos)
 {
   long int posSemicolon = m_BufferNoComment.find(";",start);
-  if(posSemicolon != -1 && posSemicolon<end)
+  while(posSemicolon != -1 && posSemicolon<end)
     {
     // We try to find the word before that
     unsigned long i=posSemicolon-1;
@@ -276,12 +274,11 @@ std::string Parser::FindInternalVariable(long int start, long int end,long int &
       i--;
       }
     pos = posSemicolon;
-
     // We extract the complete definition.
     // This means that we look for a '{' or '}' or '{' 
-    while(i>=0)
+    while(i>0)
       {
-      if((m_BufferNoComment[i] == '{')
+      if((m_BufferNoComment[i] == ';')
         )
         {
         break;
@@ -304,8 +301,11 @@ std::string Parser::FindInternalVariable(long int start, long int end,long int &
       && (subphrase.find("return") == -1)
       )
       {
+
       return ivar;
       }
+
+    posSemicolon = m_BufferNoComment.find(";",posSemicolon+1);
     }
 
   pos = -1;
