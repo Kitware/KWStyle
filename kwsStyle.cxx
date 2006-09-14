@@ -166,7 +166,7 @@ int main(int argc, char **argv)
   command.SetOption("lesshtml","lesshtml",false,"Display less HTML");
 
   command.SetOption("vim","vim",false,"Generate errors as VIM format");
-
+  command.SetOption("msvc","msvc",false,"Generate errors as MSVC format");
 
   command.SetOption("html","html",false,"Generate the HTML report");
   command.AddOptionField("html","filename",MetaCommand::STRING,false);
@@ -597,7 +597,7 @@ int main(int argc, char **argv)
 
     if(command.GetOptionWasSet("vim"))
       {
-      // Format the string as vim
+      // Format the string for vim
       const kws::Parser::ErrorVectorType errors = parser.GetErrors();
       kws::Parser::ErrorVectorType::const_iterator eit = errors.begin();
       while(eit != errors.end())
@@ -606,6 +606,19 @@ int main(int argc, char **argv)
                   << (*eit).description << std::endl;
         eit++;
         }
+      }
+    else if(command.GetOptionWasSet("msvc"))
+      {
+      // Format the string for Visual Studio
+      const kws::Parser::ErrorVectorType errors = parser.GetErrors();
+      kws::Parser::ErrorVectorType::const_iterator eit = errors.begin();
+      while(eit != errors.end())
+        {
+        std::cout << (*it).c_str() << "(" << (*eit).line << ") : error " << (*eit).number << ":"  
+                  << (*eit).description << std::endl;
+        eit++;
+        }
+ 
       }
             
     if(command.GetOptionWasSet("cvs"))
