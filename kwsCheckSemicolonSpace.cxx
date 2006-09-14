@@ -120,8 +120,8 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
       bool error = true;
       // We check that this is not a class
       long int openingChar = this->FindOpeningChar('}','{',pos,true);
-      long int classPos = this->GetClassPosition(0);
 
+      long int classPos = m_BufferNoComment.find("class");
       while(classPos != -1)
         {
         if(classPos != -1 && openingChar!= -1)
@@ -139,7 +139,7 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
             error = false;
             }
           }
-        classPos = this->GetClassPosition(classPos+1);
+        classPos = m_BufferNoComment.find("class",classPos+1);
         }
 
       std::string word = this->FindPreviousWord(openingChar);
