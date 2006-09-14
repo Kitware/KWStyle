@@ -529,7 +529,7 @@ int main(int argc, char **argv)
     {
     if(!command.GetOptionWasSet("quiteverbose") &&
        !command.GetOptionWasSet("exporthtml") &&
-       !command.GetOptionWasSet("vim")
+       !command.GetOptionWasSet("vim") && !command.GetOptionWasSet("msvc")
       )
       {
       std::cout << "Processing " << (*it).c_str() << std::endl;
@@ -590,7 +590,10 @@ int main(int argc, char **argv)
       }
 
     // If we should display the error
-    if(command.GetOptionWasSet("verbose"))
+    if(command.GetOptionWasSet("verbose") 
+      && !command.GetOptionWasSet("msvc")
+      && !command.GetOptionWasSet("vim")
+      )
       {
       std::cout << parser.GetLastErrors().c_str() << std::endl;
       }
