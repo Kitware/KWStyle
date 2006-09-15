@@ -163,7 +163,7 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment)
         error.line = this->GetLineNumber(pos,true);
         error.line2 = error.line;
         error.number = IVAR_REGEX;
-        error.description = "Internal variable doesn't match regular expression";
+        error.description = "Internal variable (" + var + ") is not aligned with the previous one";
         m_ErrorList.push_back(error);
         hasError = true;
         }
@@ -222,7 +222,7 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment)
         error.line = this->GetLineNumber(pos,true);
         error.line2 = error.line;
         error.number = IVAR_REGEX;
-        error.description = "Internal variable doesn't match regular expression";
+        error.description = "Internal variable(" + var + ") doesn't match regular expression";
         m_ErrorList.push_back(error);
         hasError = true;
         }
@@ -299,6 +299,8 @@ std::string Parser::FindInternalVariable(long int start, long int end,long int &
       && (subphrase.find("friend") == -1)
       && (subphrase.find("class") == -1)
       && (subphrase.find("return") == -1)
+      && (subphrase.find("\"") == -1)
+      && (subphrase.find("<<") == -1)
       )
       {
 
