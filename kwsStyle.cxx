@@ -96,54 +96,6 @@ void RemoveFile(const char* regEx,std::vector<std::string> & filenames)
     }
 }
 
-/** Push the filenames in the vector */
-/*void AddDirectory(const char* dirname,std::vector<std::string> & filenames,bool recurse = false)
-{
-  // check if this is a directory or a file
-  std::string filename = dirname;
-
-  if(kwssys::SystemTools::FileExists(filename.c_str())
-    && ((filename.find(".h") != -1)
-       || (filename.find(".hxx") != -1)
-       || (filename.find(".cxx") != -1)
-       || (filename.find(".txx") != -1))
-       )
-    {
-    filenames.push_back(filename);
-    return;
-    }
-  
-  // Add a / if necessary
-  if((filename[filename.length()-1] != '/') && (filename[filename.length()-1] != '\\'))
-    {
-    filename += "/";
-    }
-
-  std::cout << "parsing " << filename.c_str() << std::endl;
-  kwssys::Directory directory;
-  directory.Load(filename.c_str());
-  kwssys::Directory dir2;
-
-  for(unsigned int i=0;i<directory.GetNumberOfFiles();i++)
-    {
-    std::string file = directory.GetFile(i);
-    std::string fullpathdir = filename+file+"/";
-    if(recurse && file!=".." && file!="." && dir2.Load(fullpathdir.c_str()))
-      {
-      AddDirectory(fullpathdir.c_str(),filenames,true);
-      }
-    else if((file.find(".h") != -1)
-       || (file.find(".hxx") != -1)
-       || (file.find(".cxx") != -1)
-       || (file.find(".txx") != -1)
-       )
-      {
-      filenames.push_back(filename+file);
-      }
-    }
-}
-*/
-
 int main(int argc, char **argv)
 {
   double time0 = kwssys::SystemTools::GetTime();
@@ -167,6 +119,7 @@ int main(int argc, char **argv)
 
   command.SetOption("vim","vim",false,"Generate errors as VIM format");
   command.SetOption("msvc","msvc",false,"Generate errors as MSVC format");
+  command.SetOption("gcc","gcc",false,"Generate errors as GCC format");
 
   command.SetOption("html","html",false,"Generate the HTML report");
   command.AddOptionField("html","filename",MetaCommand::STRING,false);
@@ -530,6 +483,7 @@ int main(int argc, char **argv)
     if(!command.GetOptionWasSet("quiteverbose") &&
        !command.GetOptionWasSet("exporthtml") &&
        !command.GetOptionWasSet("vim") && !command.GetOptionWasSet("msvc")
+       && !command.GetOptionWasSet("gcc")
       )
       {
       std::cout << "Processing " << (*it).c_str() << std::endl;
@@ -593,6 +547,7 @@ int main(int argc, char **argv)
     if(command.GetOptionWasSet("verbose") 
       && !command.GetOptionWasSet("msvc")
       && !command.GetOptionWasSet("vim")
+      && !command.GetOptionWasSet("gcc")
       )
       {
       std::cout << parser.GetLastErrors().c_str() << std::endl;
@@ -618,6 +573,18 @@ int main(int argc, char **argv)
       while(eit != errors.end())
         {
         std::cout << (*it).c_str() << "(" << (*eit).line << ") : error " << (*eit).number << ":"  
+                  << (*eit).description << std::endl;
+        eit++;
+        }
+      }
+     else if(command.GetOptionWasSet("gcc"))
+      {
+      // Format the string for Visual Studio
+      const kws::Parser::ErrorVectorType errors = parser.GetErrors();
+      kws::Parser::ErrorVectorType::const_iterator eit = errors.begin();
+      while(eit != errors.end())
+        {
+        std::cout << (*it).c_str() << ":" << (*eit).line << ": error: " 
                   << (*eit).description << std::endl;
         eit++;
         }
