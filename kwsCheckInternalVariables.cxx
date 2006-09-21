@@ -163,7 +163,7 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment)
         error.line = this->GetLineNumber(pos,true);
         error.line2 = error.line;
         error.number = IVAR_REGEX;
-        error.description = "Internal variable (" + var + ") is not aligned with the previous one";
+        error.description = "Internal variable (" + var + ") doesn't match regular expression.";
         m_ErrorList.push_back(error);
         hasError = true;
         }
