@@ -142,6 +142,28 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
         classPos = m_BufferNoComment.find("class",classPos+1);
         }
 
+      // We check that this is not a enum
+      long int enumPos = m_BufferNoComment.find("enum");
+      while(enumPos != -1)
+        {
+        if(enumPos != -1 && openingChar!= -1)
+          {
+          for(unsigned long i=enumPos;i<(unsigned long)openingChar+1;i++)
+            {
+            if(m_BufferNoComment[i] == '{')
+              {
+              enumPos = i;
+              break;
+              }
+            }
+          if(openingChar == enumPos)
+            {
+            error = false;
+            }
+          }
+        enumPos = m_BufferNoComment.find("enum",enumPos+1);
+        }
+
       std::string word = this->FindPreviousWord(openingChar);
       if(word == "enum")
         {
