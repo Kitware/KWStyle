@@ -273,10 +273,10 @@ protected:
   unsigned long GetPositionInLine(long pos);
 
   /** Find an ivar in the source code */
-  std::string Parser::FindInternalVariable(long int start, long int end,long int& pos);
+  std::string FindInternalVariable(long int start, long int end,long int& pos);
 
   /** Find a typedef in the source code */
-  std::string Parser::FindTypedef(long int start, long int end,long int& pos,long int & beg,long int & typedefpos);
+  std::string FindTypedef(long int start, long int end,long int& pos,long int & beg,long int & typedefpos);
 
   /** Reduces multiple spaces in buffer to one. */
   void ReduceMultipleSpaces(std::string & buffer);
@@ -331,17 +331,17 @@ protected:
   long int IsTemplated(const std::string & buffer, long int pos) const;
 
   /**  return true if the position pos is inside a comment */
-  bool Parser::IsInComments(long int pos) const;
+  bool IsInComments(long int pos) const;
 
   /**  return true if the position pos is inside a comment defined as the compiler
    *   i.e // or /* */
-  bool Parser::IsInAnyComments(long int pos) const;
+  bool IsInAnyComments(long int pos) const;
 
   /** Given the position without comments return the position with the comments */
   long int GetPositionWithComments(long int pos) const;
 
   /** Init the indentation step for CheckIndent() */
-  bool Parser::InitIndentation();
+  bool InitIndentation();
 
   /** Extract the current line from pos to  \n */
   std::string ExtractLine(long pos);
