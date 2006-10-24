@@ -159,7 +159,11 @@ std::string Parser::FindTypedef(long int start, long int end,long int & pos,long
 
   // Check if we have any () in the subword then we don't check the typdef
   std::string sub = m_BufferNoComment.substr(posTypedef,posSemicolon-posTypedef);
-  if((sub.find("(",0) != -1) || (sub.find(")",0) != -1))
+  if((sub.find("(",0) != -1) 
+    || (sub.find(")",0) != -1)
+    || (sub.find("{",0) != -1)
+    || (sub.find("}",0) != -1)
+    )
     {
     pos = posSemicolon;
     return "";
