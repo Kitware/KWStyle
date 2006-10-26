@@ -175,7 +175,9 @@ public:
                    unsigned int maxLength = 81);
 
   /** Check Operator spaces foo=bar or foo = bar, etc... */
-  bool CheckOperator(unsigned int foo, unsigned int bar,bool doNotCheckInsideParenthesis=true);
+  bool CheckOperator(unsigned int foo, unsigned int bar,
+                     unsigned long maxSize=81,
+                     bool doNotCheckInsideParenthesis=true);
 
   /** Check the number of character per line */
   bool CheckLineLength(unsigned long max,bool checkHeader=false);
@@ -263,7 +265,9 @@ protected:
   
   /** Check the operator.
    *  \warning This function add an error in the Error list */
-  bool FindOperator(const char* op,unsigned int before, unsigned int after,bool doNotCheckInsideParenthesis=true);
+  bool FindOperator(const char* op,unsigned int before, 
+                    unsigned int after,unsigned long maxSize,
+                    bool doNotCheckInsideParenthesis=true);
 
   /** Get the class position within the file. This function checks that this is the 
    *  classname */
