@@ -156,6 +156,7 @@ int main(int argc, char **argv)
   AddFeature("DeclarationOrder","0,1,2",true);
   AddFeature("Typedefs","[A-Z]",true);
   AddFeature("InternalVariables","m_[A-Z]",true);
+  AddFeature("Struct","[a-z]",true);
   AddFeature("SemicolonSpace","0",true);
   AddFeature("EndOfFileNewLine","",true);
   AddFeature("Tabs","",true);

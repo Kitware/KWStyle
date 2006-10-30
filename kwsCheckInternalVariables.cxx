@@ -56,6 +56,11 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment)
       continue;
       }
 
+    if(this->IsInStruct(pos))
+      {
+      continue;
+      }
+
     if(var.length() > 0)
       {
       Error error;
@@ -312,9 +317,7 @@ std::string Parser::FindInternalVariable(long int start, long int end,long int &
       )
       {
       // Check that we are not inside a function(){}
-      if(!this->IsInFunction(posSemicolon)
-        && !this->IsInStruct(posSemicolon)
-        )
+      if(!this->IsInFunction(posSemicolon))
         {
         return ivar;
         }

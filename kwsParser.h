@@ -26,7 +26,7 @@
 namespace kws
 {
 #define MAX_CHAR 99999999
-#define NUMBER_ERRORS 25
+#define NUMBER_ERRORS 27
 
 typedef enum
   {
@@ -40,6 +40,8 @@ typedef enum
   IVAR_PUBLIC,
   IVAR_REGEX,
   IVAR_ALIGN,
+  SVAR_REGEX,
+  SVAR_ALIGN,
   SEMICOLON_SPACE,
   DECL_ORDER,
   EOF_NEW_LINE,
@@ -66,6 +68,8 @@ typedef enum
 const char ErrorTag[NUMBER_ERRORS][4] = {
    {'L','E','N','\0'},
    {'I','V','P','\0'},
+   {'I','V','R','\0'},
+   {'I','V','A','\0'},
    {'I','V','R','\0'},
    {'I','V','A','\0'},
    {'S','E','M','\0'},
@@ -184,6 +188,9 @@ public:
 
   /** Check if the internal parameters of the class are correct */
   bool CheckInternalVariables(const char* regEx,bool alignement = true);
+  
+  /** Check if the strcut parameters of the class are correct */
+  bool CheckStruct(const char* regEx,bool alignement = true);
 
   /** Check if the typedefs of the class are correct */
   bool CheckTypedefs(const char* regEx, bool alignment = true,

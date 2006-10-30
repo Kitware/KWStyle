@@ -59,6 +59,7 @@ kwsCheckExtraSpaces.cxx
 kwsCheckStatementPerLine.cxx
 kwsCheckVariablePerLine.cxx
 kwsCheckBadCharacters.cxx
+kwsCheckStruct.cxx
 )
 
 LINK_LIBRARIES(

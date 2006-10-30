@@ -58,6 +58,11 @@ bool Parser::Check(const char* name, const char* value)
     this->CheckInternalVariables(value);
     return true;
     }
+   else if(!strcmp(name,"Struct"))
+    {
+    this->CheckStruct(value);
+    return true;
+    }
   else if(!strcmp(name,"SemicolonSpace"))
     {
     this->CheckSemicolonSpace(atoi(value));
