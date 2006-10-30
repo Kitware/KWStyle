@@ -170,6 +170,23 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
         error = false;
         }
 
+      // We check that this is not a static variable
+      long int i = pos--;
+      while(i>0)
+        {
+        if(m_BufferNoComment[i]==';' 
+          || (m_BufferNoComment[i]==')'))
+          {
+          break;
+          }
+        i--;
+        }
+      std::string substring = m_BufferNoComment.substr(i,openingChar-i);
+      if(substring.find("static") != -1)
+        {
+        error = false;
+        }
+      
       // Check if the {} is empty or not
       if(openingChar!= -1)
         {
