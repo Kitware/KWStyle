@@ -861,6 +861,59 @@ void Parser::FindPrivateArea(long &before, long &after, size_t startPos) const
     }
 }
 
+/** Return true if the position pos is inside a function 
+ *  This function works on the m_BufferNoComment */
+bool Parser::IsInFunction(long int pos) const
+{
+  if((pos == -1) || pos > (long int)m_BufferNoComment.size()-1)
+    {
+    return false;
+    }
+
+  // a function is defined as:
+  // function() {}; and if() {} is considered as a function
+  // here.
+ 
+  unsigned int close = 1;
+  bool check = false;
+
+  // We go backwards
+  long int i = pos;
+  while(i>0)
+    {
+    if(m_BufferNoComment[i] == '}')
+      {
+      close++;
+      }
+    else if(m_BufferNoComment[i] == '{')
+      {
+      check = true;
+      close--;
+      }
+    else if(m_BufferNoComment[i] == ')')
+      {
+      if(check && close==0)
+        {
+        return true;
+        }
+      }
+    else if(m_BufferNoComment[i] == ' '
+            || m_BufferNoComment[i] == '\r'
+            || m_BufferNoComment[i] == '\n'
+            )
+      {
+
+      }
+    else
+      {
+      check = false;
+      }
+    i--;
+    }
+
+  return false;
+}
+
 /**  return true if the position pos is inside a comment */
 bool Parser::IsInComments(long int pos) const
 {

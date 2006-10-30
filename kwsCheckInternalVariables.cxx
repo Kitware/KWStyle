@@ -275,18 +275,26 @@ std::string Parser::FindInternalVariable(long int start, long int end,long int &
       }
     pos = posSemicolon;
     // We extract the complete definition.
-    // This means that we look for a '{' or '}' or '{' 
+    // This means that we look for a '{' or '}' or '{' or ':'
+    // but not '::'
     while(i>0)
       {
-      if((m_BufferNoComment[i] == ';')
-        )
+      if(m_BufferNoComment[i] == ';')
         {
         break;
+        }
+      else if(m_BufferNoComment[i] == ':')
+        {
+        if((m_BufferNoComment[i-1] != ':') && (m_BufferNoComment[i+1] != ':'))
+          {
+          break;
+          }
         }
       i--;
       }
 
     std::string subphrase = "";
+
     if(i>=0)
       {
       subphrase = m_BufferNoComment.substr(i+1,posSemicolon-i-1);
@@ -303,8 +311,11 @@ std::string Parser::FindInternalVariable(long int start, long int end,long int &
       && (subphrase.find("<<") == -1)
       )
       {
-
-      return ivar;
+      // Check that we are not inside a function(){}
+      if(!this->IsInFunction(posSemicolon))
+        {
+        return ivar;
+        }
       }
 
     posSemicolon = m_BufferNoComment.find(";",posSemicolon+1);

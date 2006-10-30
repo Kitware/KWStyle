@@ -327,15 +327,14 @@ protected:
   /** Find private area in source code. */
   void FindPrivateArea(long &before, long &after, size_t startPos=0) const;
 
-  /** Find the maximum setInput method. In some classes it helps to detect
-      the correct number of inputs. */
-  int FindSetInputNum(const std::string & buffer, size_t startPos=0) const;
-
   /** Return the position of the template if the class has a template otherwise -1. */
   long int IsTemplated(const std::string & buffer, long int pos) const;
 
   /**  return true if the position pos is inside a comment */
   bool IsInComments(long int pos) const;
+  
+  /**  return true if the position pos is inside a function */
+  bool IsInFunction(long int pos) const;
 
   /**  return true if the position pos is inside a comment defined as the compiler
    *   i.e // or /* */
