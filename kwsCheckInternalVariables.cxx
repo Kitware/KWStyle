@@ -312,7 +312,9 @@ std::string Parser::FindInternalVariable(long int start, long int end,long int &
       )
       {
       // Check that we are not inside a function(){}
-      if(!this->IsInFunction(posSemicolon))
+      if(!this->IsInFunction(posSemicolon)
+        && !this->IsInStruct(posSemicolon)
+        )
         {
         return ivar;
         }

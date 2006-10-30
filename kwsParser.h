@@ -336,6 +336,9 @@ protected:
   /**  return true if the position pos is inside a function */
   bool IsInFunction(long int pos) const;
 
+  /**  return true if the position pos is inside a struct */
+  bool IsInStruct(long int pos) const;
+
   /**  return true if the position pos is inside a comment defined as the compiler
    *   i.e // or /* */
   bool IsInAnyComments(long int pos) const;

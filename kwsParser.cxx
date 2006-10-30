@@ -914,6 +914,38 @@ bool Parser::IsInFunction(long int pos) const
   return false;
 }
 
+/** Return true if the position pos is inside a struct 
+ *  This function works on the m_BufferNoComment */
+bool Parser::IsInStruct(long int pos) const
+{
+  if((pos == -1) || pos > (long int)m_BufferNoComment.size()-1)
+    {
+    return false;
+    }
+  
+  long int b = m_BufferNoComment.find("struct",0);
+  while(b!=-1)
+    {
+    while(b<(long int)m_BufferNoComment.size())
+      {
+      if(m_BufferNoComment[b] == '{')
+        {
+        break;
+        }
+      b++;
+      }
+
+    long int c=this->FindClosingChar('{','}',b,true);
+    if(pos<c && pos>b)
+      {
+      return true;
+      break;
+      }
+    b = m_BufferNoComment.find("struct",b+1);
+    }
+  return false;
+}
+
 /**  return true if the position pos is inside a comment */
 bool Parser::IsInComments(long int pos) const
 {

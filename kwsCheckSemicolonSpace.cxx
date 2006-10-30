@@ -186,6 +186,32 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
         {
         error = false;
         }
+
+
+      // We check that this is not a variable definition
+      i = posSemicolon-1;
+      while(i>0)
+        {
+        if(m_BufferNoComment[i]=='}')
+          {
+          long int openingChar = this->FindOpeningChar('}','{',i,true);
+          long int j = openingChar-1;
+          while(j>0 && (m_BufferNoComment[j]==' ' 
+            || m_BufferNoComment[j]=='\n' 
+            || m_BufferNoComment[j]=='\r')
+            )
+            {
+            j--;
+            }
+  
+          if(m_BufferNoComment[j]=='=')
+            {
+            error = false;
+            }
+          break;
+          }
+        i--;
+        }
       
       // Check if the {} is empty or not
       if(openingChar!= -1)
