@@ -69,14 +69,29 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL,bool useCVS
   while(itFilename != fileNames.end())
     {
     hasError = false;
-    //std::cout << "Checking header : " << (*itFilename).c_str() << std::endl;
+
+    // if there is no space in the name (i.e on linux) we remove the
+    // '"' if any. 
+    std::string filename = *itFilename;
+    if(filename.find(' ')==-1)
+      {
+      filename = "";
+      unsigned long k=0;
+      for(unsigned long j=0;j<(*itFilename).size();j++)
+        {
+        if((*itFilename)[j] != '\"')
+          {
+          filename[k++]=(*itFilename)[j];
+          }
+        }
+      }
 
     // Read the header file
     std::ifstream file;
-    file.open((*itFilename).c_str(), std::ios::binary | std::ios::in);
+    file.open(filename.c_str(), std::ios::binary | std::ios::in);
     if(!file.is_open())
       {
-      std::cout << "Cannot open header file: " << (*itFilename).c_str() << std::endl;
+      std::cout << "Cannot open header file: " << filename.c_str() << std::endl;
       return false;
       }
 
