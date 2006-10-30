@@ -119,6 +119,7 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL,bool useCVS
     unsigned int posh = 0;
     int line = -1;
 
+
     while((ith != buffer.end()) && (it != m_Buffer.end()))
       {
       // if we have cvs
@@ -394,11 +395,12 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL,bool useCVS
     {
     headerFilename = "";
     unsigned long k=0;
-    for(unsigned long j=0;j<fileNames[header].size();j++)
+    std::string headerFilename2 = fileNames[header];
+    for(unsigned long j=0;j<headerFilename2.size();j++)
       {
-      if(fileNames[header][j] != '\"')
+      if(headerFilename2[j] != '\"')
         {
-        headerFilename[k++]=(*itFilename)[j];
+        headerFilename+=headerFilename2[j];
         }
       }
     }
