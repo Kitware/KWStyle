@@ -81,17 +81,17 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL,bool useCVS
         {
         if((*itFilename)[j] != '\"')
           {
-          headerFilename[k++]=(*itFilename)[j];
+          headerFilename+=(*itFilename)[j];
           }
         }
       }
 
     // Read the header file
     std::ifstream file;
-    file.open((*itFilename).c_str(), std::ios::binary | std::ios::in);
+    file.open(headerFilename.c_str(), std::ios::binary | std::ios::in);
     if(!file.is_open())
       {
-      std::cout << "Cannot open header file: " << (*itFilename).c_str() << std::endl;
+      std::cout << "Cannot open header file: " << headerFilename.c_str() << std::endl;
       return false;
       }
 
@@ -349,7 +349,7 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL,bool useCVS
     // If we don't have any errors we return the current errors
     if(!hasError)
       {
-      m_HeaderFilename = (*itFilename);
+      m_HeaderFilename = headerFilename;
       ErrorVectorType::const_iterator itErr = tempErrorVector.begin();
       while(itErr != tempErrorVector.end())
         {
@@ -387,7 +387,23 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL,bool useCVS
     itErr++;
     }
 
-  m_HeaderFilename = fileNames[header];
+  // if there is no space in the name (i.e on linux) we remove the
+  // '"' if any. 
+  std::string headerFilename = fileNames[header];
+  if(headerFilename.find(' ')==-1)
+    {
+    headerFilename = "";
+    unsigned long k=0;
+    for(unsigned long j=0;j<fileNames[header].size();j++)
+      {
+      if(fileNames[header][j] != '\"')
+        {
+        headerFilename[k++]=(*itFilename)[j];
+        }
+      }
+    }
+
+  m_HeaderFilename = headerFilename;
   return !hasError;
 }
 
