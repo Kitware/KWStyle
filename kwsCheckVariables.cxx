@@ -26,7 +26,6 @@ bool Parser::CheckVariables(const char* regEx)
   // First we need to find the parameters
   bool hasError = false;
 
-/*
   kwssys::RegularExpression regex(regEx);
 
   // We first read the .h if any
@@ -66,7 +65,8 @@ bool Parser::CheckVariables(const char* regEx)
   buffer = this->RemoveComments(buffer.c_str());
   
   // Construct the list of variables to check
-  std::vector<std::string> ivars;
+  typedef std::pair<std::string,int> PairType;
+  std::vector<PairType> ivars;
   long int pos = 0;
   while(pos != -1)
     {
@@ -81,38 +81,96 @@ bool Parser::CheckVariables(const char* regEx)
           correct+=var[i];
           }
         }
-      ivars.push_back(correct);
+      PairType p;
+      p.first = correct;
+      p.second = this->GetLineNumber(pos,true)-1;
+      ivars.push_back(p);
       }
     }
 
-
   // Do the checking
-  std::vector<std::string>::const_iterator it = ivars.begin();
+  std::vector<PairType>::const_iterator it = ivars.begin();
   while(it != ivars.end())
     {
-    long posVar = m_BufferNoComment.find(*it);
+    std::string v = (*it).first;
+    int p =(*it).second;
+    long posVar = m_BufferNoComment.find(v);
     while(posVar != -1)
       {
       // Extract the complete insert of the variable
-      //unsigned long
-      //while(
+      if(!this->IsBetweenQuote(posVar)
+        &&(
+        m_BufferNoComment[posVar-1]=='.'
+        || m_BufferNoComment[posVar-1]=='>'
+        || m_BufferNoComment[posVar-1]=='\n'
+        || m_BufferNoComment[posVar-1]==' '
+        || m_BufferNoComment[posVar-1]=='('
+        || m_BufferNoComment[posVar-1]=='['
+        )
+        &&(
+        m_BufferNoComment[posVar+v.size()]=='.'
+        || m_BufferNoComment[posVar+v.size()]=='>'
+        || m_BufferNoComment[posVar+v.size()]=='\n'
+        || m_BufferNoComment[posVar+v.size()]==' '
+        || m_BufferNoComment[posVar+v.size()]=='('
+        || m_BufferNoComment[posVar+v.size()]=='['
+        || m_BufferNoComment[posVar+v.size()]==')'
+        || m_BufferNoComment[posVar+v.size()]==']'
+        )
+        )
+        {
+
+      unsigned long i = posVar-1;
+      while(i>0)
+        {
+        if(m_BufferNoComment[i]==' '
+         || m_BufferNoComment[i]=='('
+         || m_BufferNoComment[i]=='['
+         || m_BufferNoComment[i]=='\n'
+         || m_BufferNoComment[i]=='!'
+         || m_BufferNoComment[i]=='{'
+         || m_BufferNoComment[i]==';'
+         )
+          {
+          break;
+          }
+        i--;
+        }
+
+      std::string var = m_BufferNoComment.substr(i+1,posVar-i+v.size()-1);
+      
+      bool showError = true;
+
+      // Check if this a macro
+      if(this->GetLineNumber(posVar,true) == p+1)
+        {
+        showError = false;
+        }
+      else
+        {
+        std::string line = this->GetLine(this->GetLineNumber(posVar,true)-1);
+        if(line.find("Macro") != -1)
+          {
+          showError = false;
+          }
+        }
 
       // Check the regex
-      if(!regex.find(var))
+      if(showError && !regex.find(var))
         {
         Error error;
-        error.line = this->GetLineNumber(pos,true);
+        error.line = this->GetLineNumber(posVar,true);
         error.line2 = error.line;
         error.number = VARS;
         error.description = "variable (" + var + ") doesn't match regular expression";
         m_ErrorList.push_back(error);
         hasError = true;
         }
-      posVar = m_BufferNoComment.find(*it,posVar+1);
+        }
+      posVar = m_BufferNoComment.find(v,posVar+1);
       }
     it++;
     }
-*/
   return !hasError;
 }
 
