@@ -22,8 +22,11 @@ bool Parser::CheckVariables(const char* regEx)
   m_TestsDescription[VARS] = "ivars implentation should match regular expression: ";
   m_TestsDescription[VARS] += regEx;
 
+
   // First we need to find the parameters
   bool hasError = false;
+
+/*
   kwssys::RegularExpression regex(regEx);
 
   // We first read the .h if any
@@ -82,6 +85,7 @@ bool Parser::CheckVariables(const char* regEx)
       }
     }
 
+
   // Do the checking
   std::vector<std::string>::const_iterator it = ivars.begin();
   while(it != ivars.end())
@@ -90,11 +94,8 @@ bool Parser::CheckVariables(const char* regEx)
     while(posVar != -1)
       {
       // Extract the complete insert of the variable
-      unsigned long
-      while(
-
-
-
+      //unsigned long
+      //while(
 
       // Check the regex
       if(!regex.find(var))
@@ -107,12 +108,11 @@ bool Parser::CheckVariables(const char* regEx)
         m_ErrorList.push_back(error);
         hasError = true;
         }
-
       posVar = m_BufferNoComment.find(*it,posVar+1);
       }
     it++;
     }
-
+*/
   return !hasError;
 }
 

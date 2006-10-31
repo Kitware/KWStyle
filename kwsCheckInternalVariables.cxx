@@ -130,6 +130,11 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment)
       {
       continue;
       }
+ 
+    if(this->IsInStruct(pos))
+      {
+      continue;
+      }
 
     if(var.length() > 0)
       {
@@ -186,6 +191,11 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment)
     {
     std::string var = this->FindInternalVariable(pos+1,privateLast,pos); 
     if(var == "")
+      {
+      continue;
+      }
+    
+    if(this->IsInStruct(pos))
       {
       continue;
       }

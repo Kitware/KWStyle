@@ -1347,6 +1347,8 @@ std::string Parser::RemoveComments(const char* buffer)
     {
     m_BufferNoComment = &*outBuffer.begin();
     }
+
+  return "";
 }
 #endif
 
