@@ -130,6 +130,8 @@ bool Parser::CheckVariables(const char* regEx)
          || m_BufferNoComment[i]=='!'
          || m_BufferNoComment[i]=='{'
          || m_BufferNoComment[i]==';'
+         || m_BufferNoComment[i]=='<'
+         || m_BufferNoComment[i]=='*'
          )
           {
           break;
