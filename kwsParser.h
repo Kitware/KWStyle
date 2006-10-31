@@ -26,7 +26,7 @@
 namespace kws
 {
 #define MAX_CHAR 99999999
-#define NUMBER_ERRORS 27
+#define NUMBER_ERRORS 28
 
 typedef enum
   {
@@ -42,6 +42,7 @@ typedef enum
   IVAR_ALIGN,
   SVAR_REGEX,
   SVAR_ALIGN,
+  VARS,
   SEMICOLON_SPACE,
   DECL_ORDER,
   EOF_NEW_LINE,
@@ -70,8 +71,9 @@ const char ErrorTag[NUMBER_ERRORS][4] = {
    {'I','V','P','\0'},
    {'I','V','R','\0'},
    {'I','V','A','\0'},
-   {'I','V','R','\0'},
-   {'I','V','A','\0'},
+   {'S','V','R','\0'},
+   {'S','V','A','\0'},
+   {'V','A','R','\0'},
    {'S','E','M','\0'},
    {'D','C','L','\0'},
    {'E','O','F','\0'},
@@ -189,6 +191,9 @@ public:
   /** Check if the internal parameters of the class are correct */
   bool CheckInternalVariables(const char* regEx,bool alignement = true);
   
+  /** Check variables implementation */
+  bool CheckVariables(const char* regEx);
+
   /** Check if the strcut parameters of the class are correct */
   bool CheckStruct(const char* regEx,bool alignement = true);
 
@@ -238,7 +243,7 @@ public:
   bool CheckBlackList(const char* filename);
 
   /** Remove the comments. */
-  void RemoveComments();
+  std::string RemoveComments(const char* buffer=NULL);
 
   /** Clear the error list */
   void ClearErrors() {m_ErrorList.clear();}
@@ -285,6 +290,9 @@ protected:
 
   /** Find an ivar in the source code */
   std::string FindInternalVariable(long int start, long int end,long int& pos);
+  
+  /** Find an ivar in the source code */
+  std::string FindVariable(std::string & buffer,long int start, long int end,long int& pos);
 
   /** Find a typedef in the source code */
   std::string FindTypedef(long int start, long int end,long int& pos,long int & beg,long int & typedefpos);
@@ -341,10 +349,10 @@ protected:
   bool IsInComments(long int pos) const;
   
   /**  return true if the position pos is inside a function */
-  bool IsInFunction(long int pos) const;
+  bool IsInFunction(long int pos,const char* buffer=NULL) const;
 
   /**  return true if the position pos is inside a struct */
-  bool IsInStruct(long int pos) const;
+  bool IsInStruct(long int pos,const char* buffer=NULL) const;
 
   /**  return true if the position pos is inside a comment defined as the compiler
    *   i.e // or /* */

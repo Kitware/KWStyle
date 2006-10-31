@@ -58,6 +58,11 @@ bool Parser::Check(const char* name, const char* value)
     this->CheckInternalVariables(value);
     return true;
     }
+  else if(!strcmp(name,"Variables"))
+    {
+    this->CheckVariables(value);
+    return true;
+    }
    else if(!strcmp(name,"Struct"))
     {
     this->CheckStruct(value);
@@ -868,9 +873,15 @@ void Parser::FindPrivateArea(long &before, long &after, size_t startPos) const
 
 /** Return true if the position pos is inside a function 
  *  This function works on the m_BufferNoComment */
-bool Parser::IsInFunction(long int pos) const
-{
-  if((pos == -1) || pos > (long int)m_BufferNoComment.size()-1)
+bool Parser::IsInFunction(long int pos,const char* buffer) const
+{ 
+  std::string buf = m_BufferNoComment;
+  
+  if(buffer)
+    {
+    buf = buffer;
+    }
+  if((pos == -1) || pos > (long int)buf.size()-1)
     {
     return false;
     }
@@ -886,25 +897,25 @@ bool Parser::IsInFunction(long int pos) const
   long int i = pos;
   while(i>0)
     {
-    if(m_BufferNoComment[i] == '}')
+    if(buf[i] == '}')
       {
       close++;
       }
-    else if(m_BufferNoComment[i] == '{')
+    else if(buf[i] == '{')
       {
       check = true;
       close--;
       }
-    else if(m_BufferNoComment[i] == ')')
+    else if(buf[i] == ')')
       {
       if(check && close==0)
         {
         return true;
         }
       }
-    else if(m_BufferNoComment[i] == ' '
-            || m_BufferNoComment[i] == '\r'
-            || m_BufferNoComment[i] == '\n'
+    else if(buf[i] == ' '
+            || buf[i] == '\r'
+            || buf[i] == '\n'
             )
       {
 
@@ -921,19 +932,25 @@ bool Parser::IsInFunction(long int pos) const
 
 /** Return true if the position pos is inside a struct 
  *  This function works on the m_BufferNoComment */
-bool Parser::IsInStruct(long int pos) const
-{
-  if((pos == -1) || pos > (long int)m_BufferNoComment.size()-1)
+bool Parser::IsInStruct(long int pos,const char* buffer) const
+{ 
+  std::string buf = m_BufferNoComment;
+  if(buffer)
+    {
+    buf = buffer;
+    }
+
+  if((pos == -1) || pos > (long int)buf.size()-1)
     {
     return false;
     }
   
-  long int b = m_BufferNoComment.find("struct",0);
+  long int b = buf.find("struct",0);
   while(b!=-1)
     {
-    while(b<(long int)m_BufferNoComment.size())
+    while(b<(long int)buf.size())
       {
-      if(m_BufferNoComment[b] == '{')
+      if(buf[b] == '{')
         {
         break;
         }
@@ -946,7 +963,7 @@ bool Parser::IsInStruct(long int pos) const
       return true;
       break;
       }
-    b = m_BufferNoComment.find("struct",b+1);
+    b = buf.find("struct",b+1);
     }
   return false;
 }
@@ -1224,13 +1241,30 @@ long int Parser::IsTemplated(const std::string & buffer, long int classnamepos) 
 
 /** Remove the comments */
 #if 1
-void Parser::RemoveComments()
+std::string Parser::RemoveComments(const char* buffer)
 {
-  m_CommentPositions.clear();
+  if(!buffer)
+    {
+    m_CommentPositions.clear();
+    }
   size_t cc;
-  const char* inch = m_Buffer.c_str();
+  const char* inch;
+  if(buffer)
+    {
+    inch = buffer;
+    }
+  else
+    {
+    inch = m_Buffer.c_str();
+    }
+
   std::vector<char> outBuffer;
   size_t inStrSize = m_Buffer.size();
+  if(buffer)
+    {
+    std::string tempbuf = buffer;
+    inStrSize = tempbuf.size();
+    }
   // Reserve enough space for all files. The size will be at least the size of
   // the file.
   outBuffer.reserve(inStrSize+1);
@@ -1274,7 +1308,10 @@ void Parser::RemoveComments()
         copyChar = true;
         cppComment = false;
         PairType pair(beginOfComment, endOfComment);
-        m_CommentPositions.push_back(pair);
+        if(!buffer)
+          {
+          m_CommentPositions.push_back(pair);
+          }
         }
       if ( *inch == '/' )
         {
@@ -1284,7 +1321,10 @@ void Parser::RemoveComments()
           inComment = false;
           copyChar = false;
           PairType pair(beginOfComment, endOfComment);
-          m_CommentPositions.push_back(pair);
+          if(!buffer)
+            {
+            m_CommentPositions.push_back(pair);
+            }
           }
         }
       }
@@ -1299,7 +1339,14 @@ void Parser::RemoveComments()
     inch ++;
     }
   outBuffer.push_back(0);
-  m_BufferNoComment = &*outBuffer.begin();
+  if(buffer)
+    {
+    return &*outBuffer.begin();
+    }
+  else
+    {
+    m_BufferNoComment = &*outBuffer.begin();
+    }
 }
 #endif
 
