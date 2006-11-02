@@ -352,7 +352,7 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL,bool useCVS
     // If we don't have any errors we return the current errors
     if(!hasError)
       {
-      m_HeaderFilename = headerFilename;
+      m_HeaderFilename = *itFilename;
       ErrorVectorType::const_iterator itErr = tempErrorVector.begin();
       while(itErr != tempErrorVector.end())
         {
@@ -390,24 +390,7 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL,bool useCVS
     itErr++;
     }
 
-  // if there is no space in the name (i.e on linux) we remove the
-  // '"' if any. 
-  /*std::string headerFilename = fileNames[header];
-  if(headerFilename.find(' ')==-1)
-    {
-    headerFilename = "";
-    unsigned long k=0;
-    std::string headerFilename2 = fileNames[header];
-    for(unsigned long j=0;j<headerFilename2.size();j++)
-      {
-      if(headerFilename2[j] != '\"')
-        {
-        headerFilename+=headerFilename2[j];
-        }
-      }
-    }
-*/
-  m_HeaderFilename = headerFilename;
+  m_HeaderFilename = fileNames[header];
   return !hasError;
 }
 
