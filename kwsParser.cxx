@@ -55,7 +55,22 @@ bool Parser::Check(const char* name, const char* value)
     }
   else if(!strcmp(name,"InternalVariables"))
     {
-    this->CheckInternalVariables(value);
+    bool alignment = true; // check alignment by default
+    std::string val = value;
+    long pos = val.find(",",0);
+    if(pos != -1)
+      {
+      std::string v1 = val.substr(0,pos);
+      std::string v2 = val.substr(pos+1,val.size()-pos-1);
+      
+      if(!strcmp(v2.c_str(),"false") || !strcmp(v2.c_str(),"0"))
+        {
+        alignment = false;
+        }
+      val = v1;
+      }
+    
+    this->CheckInternalVariables(val.c_str(),alignment);
     return true;
     }
   else if(!strcmp(name,"Variables"))

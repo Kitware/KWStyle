@@ -155,7 +155,7 @@ int main(int argc, char **argv)
   AddFeature("LineLength","80",true);
   AddFeature("DeclarationOrder","0,1,2",true);
   AddFeature("Typedefs","[A-Z]",true);
-  AddFeature("InternalVariables","m_[A-Z]",true);
+  AddFeature("InternalVariables","m_[A-Z],true",true);
   AddFeature("Variables","this->[A-Z]",true);
   AddFeature("Struct","[a-z]",true);
   AddFeature("SemicolonSpace","0",true);
