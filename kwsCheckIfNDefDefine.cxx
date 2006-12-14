@@ -157,11 +157,6 @@ bool Parser::CheckIfNDefDefine(const char* match)
       long int point = m_Filename.find_last_of(".");
       long int slash = m_Filename.find_last_of("/");
 
-      if(slash == -1)
-        {
-        slash = 0;
-        }
-
       std::string nameofclass = m_Filename.substr(slash+1,point-slash-1);
       std::string extension = m_Filename.substr(point+1,m_Filename.size()-point-1);
 

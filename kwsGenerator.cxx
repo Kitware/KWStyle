@@ -101,16 +101,48 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
   file << "    <div align=\"center\">Filename</div>" << std::endl;
   file << "  </td>" << std::endl;
 
-  unsigned int width = 70/NUMBER_ERRORS;
+  // Check the number of tests that have been performed
+  bool tests[NUMBER_ERRORS];
   for(unsigned int i=0;i<NUMBER_ERRORS;i++)
     {
+    tests[i] = false;
+    }
+
+  ParserVectorType::const_iterator it = m_Parsers->begin();
+  while(it != m_Parsers->end())
+    {
+    for(unsigned int i=0;i<NUMBER_ERRORS;i++)
+      {
+      if((*it).HasBeenPerformed(i))
+        {
+        tests[i] = true;
+        }
+      }
+    it++;
+    }
+  unsigned int nTests = 0;
+  for(unsigned int i=0;i<NUMBER_ERRORS;i++)
+    {
+    if(tests[i])
+      {
+      nTests++;
+      }
+    }
+
+  unsigned int width = 70/nTests;
+  for(unsigned int i=0;i<NUMBER_ERRORS;i++)
+    {
+    if(!tests[i])
+      {
+      continue;
+      }
     file << "  <td width=\"" << width << "%\">" << std::endl;
     file << "    <div align=\"center\">" << ErrorTag[i] << "</div>" << std::endl;
     file << "  </td>" << std::endl;
     }
   file << "</tr>" << std::endl;
 
-  ParserVectorType::const_iterator it = m_Parsers->begin();
+  it = m_Parsers->begin();
   while(it != m_Parsers->end())
     {
     
@@ -138,10 +170,6 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
       }
 
     slash = (*it).GetFilename().find_last_of("/");
-    if(slash == -1)
-      {
-      slash = 0;
-      }
 
     std::string nameofclass = (*it).GetFilename().substr(slash+1,((*it).GetFilename().size())-slash-1);
     std::string filenamecorrect = nameofclass;
@@ -153,9 +181,13 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
     file << "    <div align=\"center\"> <a href=\"" << filename.c_str()  << "\">" << filenamecorrect.c_str() << "</a></div>" << std::endl;
     file << "  </td>" << std::endl;
 
-    unsigned int width = 50/NUMBER_ERRORS;
+    unsigned int width = 50/nTests;
     for(unsigned int i=0;i<NUMBER_ERRORS;i++)
       {
+      if(!tests[i])
+        {
+        continue;
+        }
       // Count the number of errors for this type of error
       unsigned int nerror = 0;
       
