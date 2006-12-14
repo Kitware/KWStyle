@@ -207,6 +207,17 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
 /** Generate the HTML files */
 bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
 {
+  // Check if the directory exists. If not create it
+  kwssys::Directory directory;
+  if(!directory.Load(dir))
+    {
+    std::cout << "Creating HTML directory: " << dir << std::endl;
+    if(!kwssys::SystemTools::MakeDirectory(dir))
+      {
+      std::cout << "Cannot create HTML directory: " << dir << std::endl;
+      }
+    }
+
   // Generate the matrix representation
   this->GenerateMatrix(dir,showAllErrors);
   this->GenerateDescription(dir);
