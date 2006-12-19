@@ -58,7 +58,8 @@ bool Parser::CheckVariablePerLine(unsigned long max)
       if(firstWord)
         {
         bool ignore = false;
-        std::string line = this->GetLine(this->GetLineNumber(posType,false));
+        std::string line = this->GetLine(this->GetLineNumber(posType,true)-1);
+        
         // If we have any '(' or ')' in the line we stop
         if(line.find('(') == -1)
           {
