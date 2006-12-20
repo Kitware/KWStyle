@@ -40,8 +40,11 @@ bool Parser::CheckStatementPerLine(unsigned long max)
       }
     else
       {
-      currentLine = this->GetLineNumber(posSemicolon,true);
-      statements = 1;
+      if(!this->IsBetweenCharsFast('(',')',posSemicolon,false))
+        {
+        currentLine = this->GetLineNumber(posSemicolon,true);
+        statements = 1;
+        }
       }
 
     if(statements > max)
