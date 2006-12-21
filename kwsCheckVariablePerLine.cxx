@@ -60,6 +60,27 @@ bool Parser::CheckVariablePerLine(unsigned long max)
         bool ignore = false;
         std::string line = this->GetLine(this->GetLineNumber(posType,true)-1);
         
+        // Check if we have any comments
+        int poscom = line.find("//",0);
+        if(poscom != -1)        
+          {
+          line = line.substr(0,poscom);
+          }
+        poscom = line.find("/*",0);
+        while(poscom != -1)        
+          {
+          int poscomend = line.find("*/",0);
+          if(poscomend == -1)
+            {
+            line = line.substr(0,poscom);
+            break;
+            }
+          
+          std::string line_temp = line.substr(0,poscom);
+          line = line_temp+line.substr(poscomend+2,line.size()-poscomend-2);
+          poscom = line.find("/*",poscom+1);
+          }
+
         // If we have any '(' or ')' in the line we stop
         if(line.find('(') == -1)
           {
