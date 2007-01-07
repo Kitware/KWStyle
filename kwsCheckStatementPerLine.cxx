@@ -33,14 +33,14 @@ bool Parser::CheckStatementPerLine(unsigned long max)
     {
     // If we are on the same line
     if((this->GetLineNumber(posSemicolon,true) == currentLine)
-      && (!this->IsBetweenCharsFast('(',')',posSemicolon,false))
+      && (!this->IsBetweenChars('(',')',posSemicolon,false))
       )
       {
       statements++;
       }
     else
       {
-      if(!this->IsBetweenCharsFast('(',')',posSemicolon,false))
+      if(!this->IsBetweenChars('(',')',posSemicolon,false))
         {
         currentLine = this->GetLineNumber(posSemicolon,true);
         statements = 1;
