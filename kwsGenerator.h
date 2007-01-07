@@ -50,8 +50,8 @@ const char ErrorColor[NUMBER_ERRORS][8] = {
   {'#','0','0','0','0','F','F','\0'},
   {'#','D','4','D','0','C','8','\0'},
   {'#','0','0','0','0','F','F','\0'},
-  {'#','6','6','0','0','3','3','\0'},
-  {'#','6','6','0','0','3','3','\0'}
+  {'#','9','9','C','C','C','C','\0'},
+  {'#','C','C','C','C','F','F','\0'}
   };
 
 class Generator
@@ -83,6 +83,9 @@ public:
                     bool group = false,std::string url="",
                     double time=0);
 
+  /** Set the configuration file */
+  void ReadConfigurationFile(const char* configFile);
+
 private:
 
   bool CreateHeader(std::ostream * file,const char* title);
@@ -91,7 +94,9 @@ private:
   bool GenerateDescription(const char* dir);
 
   ParserVectorType* m_Parsers;
-
+  std::string       m_ProjectTitle;
+  std::string       m_ProjectLogo;
+  std::string       m_KWStyleLogo;
 };
 
 } // end namespace kws

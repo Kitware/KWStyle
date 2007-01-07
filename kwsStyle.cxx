@@ -615,6 +615,12 @@ int main(int argc, char **argv)
     kws::Generator generator;
     generator.SetParser(&m_Parsers);
 
+    if(command.GetOptionWasSet("xml"))
+      {
+      std::string xml = command.GetValueAsString("xml","filename");
+      generator.ReadConfigurationFile(xml.c_str());
+      }
+
     bool showNoErrors = command.GetOptionWasSet("lesshtml");
     generator.GenerateHTML(html.c_str(),!showNoErrors);
     }
@@ -623,6 +629,11 @@ int main(int argc, char **argv)
   if(command.GetOptionWasSet("exporthtml"))
     {
     kws::Generator generator;
+    if(command.GetOptionWasSet("xml"))
+      {
+      std::string xml = command.GetValueAsString("xml","filename");
+      generator.ReadConfigurationFile(xml.c_str());
+      }
     generator.SetParser(&m_Parsers);
     generator.ExportHTML(std::cout);
     }
@@ -634,6 +645,11 @@ int main(int argc, char **argv)
     int maxerror = command.GetValueAsInt("dart","maxerror");
     bool grouperrors = command.GetValueAsBool("dart","group");
     kws::Generator generator;
+    if(command.GetOptionWasSet("xml"))
+      {
+      std::string xml = command.GetValueAsString("xml","filename");
+      generator.ReadConfigurationFile(xml.c_str());
+      }
     generator.SetParser(&m_Parsers);
 
     std::string url = "";
