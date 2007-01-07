@@ -16,194 +16,205 @@
 namespace kws {
 
 /** Check the comments
- * The comment definition should be set before CheckIndent() to get the correct indentation
- * for the comments. */
-bool Parser::CheckComments(const char* begin,const char* middle,const char* end,bool allowEmptyLineBeforeClass)
+ *  The comment definition should be set before CheckIndent() to get the correct indentation
+ *  for the comments. */
+bool Parser::CheckComments(const char* begin,const char* middle,const char* end,
+                           bool allowEmptyLineBeforeClass,
+                           bool checkWrongComment,
+                           bool checkMissingComment)
 {
-  m_TestsDone[WRONGCOMMENT] = true;
-  m_TestsDescription[WRONGCOMMENT] = "The comments are misspelled";
-  
   bool hasError = false;
-  // Set the ivars for the indent checking
-  m_CommentBegin = begin;
-  m_CommentMiddle = middle;
-  m_CommentEnd = end;
-
-  // We check if we have duplicate code in the comments
-  std::vector<PairType>::const_iterator it = m_CommentPositions.begin();
-  while(it != m_CommentPositions.end())
+    
+  if(checkWrongComment)
     {
-    std::string previousWord = "";
-    long int i = (*it).first;
-    while((i<(long int)m_Buffer.size()) && i<(*it).second)
-      {    
-      // we go to the next space
-      while((i<(long int)m_Buffer.size()) && ((m_Buffer[i] != ' ') && (m_Buffer[i] != '\r') && (m_Buffer[i] != '\r')) && i<(*it).second)
-        {
-        i++;
-        }
-      bool inWord = true;
-      bool first = false;
-      std::string word = "";
-      
-      while((i<(long int)m_Buffer.size()) && i<(*it).second && inWord)
-        {
-        if(m_Buffer[i] != ' ' && m_Buffer[i] != '\r' && m_Buffer[i] != '\n')
+    m_TestsDone[WRONGCOMMENT] = true;
+    m_TestsDescription[WRONGCOMMENT] = "The comments are misspelled";
+    
+    // Set the ivars for the indent checking
+    m_CommentBegin = begin;
+    m_CommentMiddle = middle;
+    m_CommentEnd = end;
+
+    // We check if we have duplicate code in the comments
+    std::vector<PairType>::const_iterator it = m_CommentPositions.begin();
+    while(it != m_CommentPositions.end())
+      {
+      std::string previousWord = "";
+      long int i = (*it).first;
+      while((i<(long int)m_Buffer.size()) && i<(*it).second)
+        {    
+        // we go to the next space
+        while((i<(long int)m_Buffer.size()) && ((m_Buffer[i] != ' ') && (m_Buffer[i] != '\r') && (m_Buffer[i] != '\r')) && i<(*it).second)
           {
-          word += m_Buffer[i];
-          inWord = true;
-          first = true;
+          i++;
           }
-        else // we have a space
+        bool inWord = true;
+        bool first = false;
+        std::string word = "";
+        
+        while((i<(long int)m_Buffer.size()) && i<(*it).second && inWord)
           {
-          if(first)
+          if(m_Buffer[i] != ' ' && m_Buffer[i] != '\r' && m_Buffer[i] != '\n')
             {
-            inWord = false;
-            i--;
+            word += m_Buffer[i];
+            inWord = true;
+            first = true;
+            }
+          else // we have a space
+            {
+            if(first)
+              {
+              inWord = false;
+              i--;
+              }
+            }
+          i++;
+          }
+
+        if(word.size()>0)
+          {
+          if(word != previousWord)
+            {
+            previousWord = word;
+            }
+          else if(previousWord.size() > 1 && 
+               previousWord[0] != '/'
+               && previousWord[0]<48 && previousWord[0]>57 // We check if the first word is not a number
+               ) // avoid single char and comment
+            {
+            Error error;
+            error.line = this->GetLineNumber(i,false);
+            error.line2 = error.line;
+            error.number = WRONGCOMMENT;
+            error.description = "Duplicate word: ";
+            error.description += previousWord;
+            m_ErrorList.push_back(error);
+            hasError = true;
             }
           }
-        i++;
         }
+      it++;
+      } // end buffer loop
+    }
 
-      if(word.size()>0)
-        {
-        if(word != previousWord)
-          {
-          previousWord = word;
-          }
-        else if(previousWord.size() > 1 && 
-             previousWord[0] != '/'
-             ) // avoid single char and comment
-          {
-          Error error;
-          error.line = this->GetLineNumber(i,false);
-          error.line2 = error.line;
-          error.number = WRONGCOMMENT;
-          error.description = "Duplicate word";
-          m_ErrorList.push_back(error);
-          hasError = true;
-          }
-        }
+  if(checkMissingComment)
+    {
+    // Check if there is a comment before each class
+    m_TestsDone[MISSINGCOMMENT] = true;
+    m_TestsDescription[MISSINGCOMMENT] = "The class should have previously define comments starting with \\class";
+
+    if(allowEmptyLineBeforeClass)
+      {
+      m_TestsDescription[MISSINGCOMMENT] += " (allowing empty line)";
       }
-    it++;
-    } // end buffer loop
+    else
+      {
+      m_TestsDescription[MISSINGCOMMENT] += " (not allowing empty line)";
+      }
 
-  // Check if there is a comment before each class
-  m_TestsDone[MISSINGCOMMENT] = true;
-  m_TestsDescription[MISSINGCOMMENT] = "The class should have previously define comments starting with \\class";
-
-  if(allowEmptyLineBeforeClass)
-    {
-    m_TestsDescription[MISSINGCOMMENT] += " (allowing empty line)";
-    }
-  else
-    {
-    m_TestsDescription[MISSINGCOMMENT] += " (not allowing empty line)";
-    }
-
- long int pos = this->GetClassPosition(0);
- while(pos  != -1)
-   {
-   long int poswithcom = this->GetPositionWithComments(pos);
-
-   // Find the last comment (remove spaces if any)
-   std::string commentEnd = "";
-   for(unsigned long j=0;j<m_CommentEnd.size();j++)
+   long int pos = this->GetClassPosition(0);
+   while(pos  != -1)
      {
-     if(m_CommentEnd[j] != ' ')
+     long int poswithcom = this->GetPositionWithComments(pos);
+
+     // Find the last comment (remove spaces if any)
+     std::string commentEnd = "";
+     for(unsigned long j=0;j<m_CommentEnd.size();j++)
        {
-       commentEnd += m_CommentEnd[j];
-       }
-     }
-
-   long int poscom = m_Buffer.find(commentEnd,0);
-   long int poscomtemp = poscom;
-   while(poscomtemp!=-1 && poscomtemp<poswithcom)
-     {
-     poscom = poscomtemp;
-     poscomtemp = m_Buffer.find(commentEnd,poscomtemp+1);
-     }
-
-
-   // if we don't have the comment
-   if((poscom == -1) || (poscom > poswithcom))
-     {
-     Error error;
-     error.line = this->GetLineNumber(poswithcom,false);
-     error.line2 = error.line;
-     error.number = MISSINGCOMMENT;
-     error.description = "Comment is missing for the class";
-     m_ErrorList.push_back(error);
-     hasError = true;
-     }
-   else
-     {
-     // We check if we have m_CommentEnd before an empty line
-     bool emptyLine = false;
-     bool gotchar = true;
-     for(long int i=poscom;i<poswithcom;i++)
-       {
-       if(m_Buffer[i] == '\n')
+       if(m_CommentEnd[j] != ' ')
          {
-         if(!gotchar)
+         commentEnd += m_CommentEnd[j];
+         }
+       }
+
+     long int poscom = m_Buffer.find(commentEnd,0);
+     long int poscomtemp = poscom;
+     while(poscomtemp!=-1 && poscomtemp<poswithcom)
+       {
+       poscom = poscomtemp;
+       poscomtemp = m_Buffer.find(commentEnd,poscomtemp+1);
+       }
+
+
+     // if we don't have the comment
+     if((poscom == -1) || (poscom > poswithcom))
+       {
+       Error error;
+       error.line = this->GetLineNumber(poswithcom,false);
+       error.line2 = error.line;
+       error.number = MISSINGCOMMENT;
+       error.description = "Comment is missing for the class";
+       m_ErrorList.push_back(error);
+       hasError = true;
+       }
+     else
+       {
+       // We check if we have m_CommentEnd before an empty line
+       bool emptyLine = false;
+       bool gotchar = true;
+       for(long int i=poscom;i<poswithcom;i++)
+         {
+         if(m_Buffer[i] == '\n')
            {
-           emptyLine = true;
-           break;
+           if(!gotchar)
+             {
+             emptyLine = true;
+             break;
+             }
+           gotchar = false;
            }
-         gotchar = false;
+
+         if( (m_Buffer[i] != '\n') 
+           && (m_Buffer[i] != '\r') 
+           && (m_Buffer[i] != ' '))
+           {
+           gotchar = true;
+           }   
          }
 
-       if( (m_Buffer[i] != '\n') 
-         && (m_Buffer[i] != '\r') 
-         && (m_Buffer[i] != ' '))
+       if(emptyLine)
          {
-         gotchar = true;
-         }   
-       }
-
-     if(emptyLine)
-       {
-       if(!allowEmptyLineBeforeClass)
-         {
-         Error error;
-         error.line = this->GetLineNumber(poswithcom,false);
-         error.line2 = error.line;
-         error.number = MISSINGCOMMENT;
-         error.description = "Comment is missing for the class";
-         m_ErrorList.push_back(error);
-         hasError = true;
-         }
-       }
-     else  // we check that the word \class exists
-       {
-       // Find the last 
-       long int poscombeg = m_Buffer.find(m_CommentBegin,0);
-       long int poscombegt = poscombeg;
-       while(poscombegt!=-1 && poscombegt<poscom)
-         {
-         poscombeg = poscombegt;
-         poscombegt = m_Buffer.find(m_CommentBegin,poscombegt+1);
-         }
-
-       if(poscombeg!=-1 && (poscom-poscombeg>0))
-         {
-         std::string sub = m_Buffer.substr(poscombeg,poscom-poscombeg);
-         if(sub.find("\\class") == -1)
+         if(!allowEmptyLineBeforeClass)
            {
            Error error;
            error.line = this->GetLineNumber(poswithcom,false);
            error.line2 = error.line;
            error.number = MISSINGCOMMENT;
-           error.description = "comment doesn't have \\class";
+           error.description = "Comment is missing for the class";
            m_ErrorList.push_back(error);
            hasError = true;
            }
          }
-       }
-     }
-   pos = this->GetClassPosition(pos+1);
-   }
+       else  // we check that the word \class exists
+         {
+         // Find the last 
+         long int poscombeg = m_Buffer.find(m_CommentBegin,0);
+         long int poscombegt = poscombeg;
+         while(poscombegt!=-1 && poscombegt<poscom)
+           {
+           poscombeg = poscombegt;
+           poscombegt = m_Buffer.find(m_CommentBegin,poscombegt+1);
+           }
 
+         if(poscombeg!=-1 && (poscom-poscombeg>0))
+           {
+           std::string sub = m_Buffer.substr(poscombeg,poscom-poscombeg);
+           if(sub.find("\\class") == -1)
+             {
+             Error error;
+             error.line = this->GetLineNumber(poswithcom,false);
+             error.line2 = error.line;
+             error.number = MISSINGCOMMENT;
+             error.description = "comment doesn't have \\class";
+             m_ErrorList.push_back(error);
+             hasError = true;
+             }
+           }
+         }
+       }
+     pos = this->GetClassPosition(pos+1);
+     }
+   } // end check missing comments
   return !hasError;
 }
 
