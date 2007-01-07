@@ -29,6 +29,7 @@ bool Parser::CheckStatementPerLine(unsigned long max)
   long int posSemicolon = m_BufferNoComment.find(";",0);
   long int currentLine = -1;
   unsigned long statements = 0;
+  bool newline = false;
   while(posSemicolon != -1)
     {
     // If we are on the same line
@@ -47,7 +48,17 @@ bool Parser::CheckStatementPerLine(unsigned long max)
         }
       }
 
-    if(statements > max)
+    long int posSemicolon2 = m_BufferNoComment.find(";",posSemicolon+1);
+    if(this->GetLineNumber(posSemicolon2,true) == currentLine)
+      {
+      newline = false;
+      }
+    else
+      {
+      newline = true;
+      }      
+    
+    if(statements > max && (newline || posSemicolon2==-1))
       {
       Error error;
       error.line = this->GetLineNumber(posSemicolon,true);
@@ -67,7 +78,9 @@ bool Parser::CheckStatementPerLine(unsigned long max)
       m_ErrorList.push_back(error);
       hasError = true;
       }
-    posSemicolon = m_BufferNoComment.find(";",posSemicolon+1);
+
+    posSemicolon = posSemicolon2;
+
     }
 
   return !hasError;
