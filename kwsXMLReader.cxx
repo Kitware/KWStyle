@@ -126,9 +126,6 @@ std::string XMLReader::GetTag()
     pos1 = value.find("<",pos3+1);
     i++;
     }
-
-
-
   return m_Tag;
 }
 

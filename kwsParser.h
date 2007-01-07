@@ -168,7 +168,9 @@ public:
    * The comment definition should be set before CheckIndent() to get the correct indentation
    * for the comments. */
   bool CheckComments(const char* begin,const char* middle,const char* end,
-                     bool allowEmptyLineBeforeClass=false);
+                     bool allowEmptyLineBeforeClass=false,
+                     bool checkWrongComment=true,
+                     bool checkMissingComment=true);
 
   /** Check the indent size 
    *  Not in the header file if there is one 
@@ -189,7 +191,7 @@ public:
   bool CheckLineLength(unsigned long max,bool checkHeader=false);
 
   /** Check if the internal parameters of the class are correct */
-  bool CheckInternalVariables(const char* regEx,bool alignement = true);
+  bool CheckInternalVariables(const char* regEx,bool alignement = true,bool checkProtected=true);
   
   /** Check variables implementation */
   bool CheckVariables(const char* regEx);

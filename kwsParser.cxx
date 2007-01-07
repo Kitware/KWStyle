@@ -50,19 +50,26 @@ bool Parser::Check(const char* name, const char* value)
     }
   else if(!strcmp(name,"Typedefs"))
     {
-    this->CheckTypedefs(value);
-    return true;
-    }
-  else if(!strcmp(name,"InternalVariables"))
-    {
     bool alignment = true; // check alignment by default
     std::string val = value;
     long pos = val.find(",",0);
     if(pos != -1)
       {
       std::string v1 = val.substr(0,pos);
-      std::string v2 = val.substr(pos+1,val.size()-pos-1);
-      
+
+      // Check the alignment
+      long pos1 = val.find(",",pos+1);
+
+      std::string v2 = "";
+      if(pos1 == -1)
+        {
+        v2 = val.substr(pos+1,val.size()-pos-1);
+        }
+      else
+        {
+        v2 = val.substr(pos+1,pos1-pos-1);
+        }
+
       if(!strcmp(v2.c_str(),"false") || !strcmp(v2.c_str(),"0"))
         {
         alignment = false;
@@ -70,7 +77,61 @@ bool Parser::Check(const char* name, const char* value)
       val = v1;
       }
     
-    this->CheckInternalVariables(val.c_str(),alignment);
+    this->CheckTypedefs(val.c_str(),alignment);
+    return true;
+    }
+  else if(!strcmp(name,"InternalVariables"))
+    {
+    bool alignment = true; // check alignment by default
+    bool checkProtected = true; // check protected by default
+    std::string val = value;
+    long pos = val.find(",",0);
+    if(pos != -1)
+      {
+      std::string v1 = val.substr(0,pos);
+
+      // Check the alignment
+      long pos1 = val.find(",",pos+1);
+
+      std::string v2 = "";
+      if(pos1 == -1)
+        {
+        v2 = val.substr(pos+1,val.size()-pos-1);
+        }
+      else
+        {
+        v2 = val.substr(pos+1,pos1-pos-1);
+        }
+
+      if(!strcmp(v2.c_str(),"false") || !strcmp(v2.c_str(),"0"))
+        {
+        alignment = false;
+        }
+
+      if(pos1 != -1)
+        {
+        // Check the protected
+        pos = val.find(",",pos1+1);
+        std::string v3 = "";
+        if(pos == -1)
+          {
+          v3 = val.substr(pos1+1,val.size()-pos1-1);
+          }
+        else
+          {
+          v3 = val.substr(pos1+1,pos-pos1-1);
+          }
+
+        if(!strcmp(v3.c_str(),"false") || !strcmp(v3.c_str(),"0"))
+          {
+          checkProtected = false;
+          }
+        }
+      val = v1;
+      }
+    
+    this->CheckInternalVariables(val.c_str(),alignment,checkProtected);
+
     return true;
     }
   else if(!strcmp(name,"Variables"))
@@ -149,16 +210,63 @@ bool Parser::Check(const char* name, const char* value)
       return false;
       }
     std::string v3 = val.substr(pos1+1,pos-pos1-1);
-    std::string v4 = val.substr(pos+1,val.length()-pos-1);
 
-    if(!strcmp(v4.c_str(),"true"))
+    // Check if we allow empty lines before /class
+    pos1 = val.find(",",pos+1);
+    std::string v4 = "";
+    if(pos1 == -1)
       {
-      this->CheckComments(v1.c_str(),v2.c_str(),v3.c_str(),true);
+      v4 = val.substr(pos+1,val.length()-pos-1);
       }
     else
       {
-      this->CheckComments(v1.c_str(),v2.c_str(),v3.c_str(),false);
+      v4 = val.substr(pos+1,pos1-pos-1);
       }
+
+    bool allowEmptyLine = false;
+    if(!strcmp(v4.c_str(),"true"))
+      {
+      allowEmptyLine = true;
+      }
+
+    // Check if we should check the comments misspeling
+    pos = val.find(",",pos1+1);
+    std::string v5 = "";
+    if(pos == -1)
+      {
+      v5 = val.substr(pos1+1,val.length()-pos1-1);
+      }
+    else
+      {
+      v5 = val.substr(pos1+1,pos-pos1-1);
+      }
+
+    bool checkWrongComment = true;
+    if(!strcmp(v5.c_str(),"false"))
+      {
+      checkWrongComment = false;
+      }
+
+    // Check if we should check the missing comments
+    pos1 = val.find(",",pos+1);
+    std::string v6 = "";
+    if(pos == -1)
+      {
+      v6 = val.substr(pos+1,val.length()-pos-1);
+      }
+    else
+      {
+      v6 = val.substr(pos+1,pos1-pos-1);
+      }
+
+    bool checkMissingComment = true;
+    if(!strcmp(v6.c_str(),"false"))
+      {
+      checkMissingComment = false;
+      }
+
+    this->CheckComments(v1.c_str(),v2.c_str(),v3.c_str(),allowEmptyLine,checkWrongComment,checkMissingComment);
+
     return true;
     }
   // should be before CheckIndent

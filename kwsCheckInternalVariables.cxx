@@ -18,10 +18,13 @@ namespace kws {
 
 
 /** Check if the internal variables of the class are correct */
-bool Parser::CheckInternalVariables(const char* regEx,bool alignment)
+bool Parser::CheckInternalVariables(const char* regEx,bool alignment,bool checkProtected)
 {
-  m_TestsDone[IVAR_PUBLIC] = true;
-  m_TestsDescription[IVAR_PUBLIC] = "ivars should be in the protected or private section";
+  if(checkProtected)
+    {
+    m_TestsDone[IVAR_PUBLIC] = true;
+    m_TestsDescription[IVAR_PUBLIC] = "ivars should be in the protected or private section";
+    }
 
   m_TestsDone[IVAR_REGEX] = true;
   m_TestsDescription[IVAR_REGEX] = "ivars should match regular expression: ";
@@ -63,13 +66,16 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment)
 
     if(var.length() > 0)
       {
-      Error error;
-      error.line = this->GetLineNumber(pos,true);
-      error.line2 = error.line;
-      error.number = IVAR_PUBLIC;
-      error.description = "Encapsulation not preserved";
-      m_ErrorList.push_back(error);
-      hasError = true;
+      if(checkProtected)
+        {
+        Error error;
+        error.line = this->GetLineNumber(pos,true);
+        error.line2 = error.line;
+        error.number = IVAR_PUBLIC;
+        error.description = "Encapsulation not preserved";
+        m_ErrorList.push_back(error);
+        hasError = true;
+        }
       
       // Check the alignment if specified
       if(alignment)

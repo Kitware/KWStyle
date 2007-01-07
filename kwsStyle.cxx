@@ -154,7 +154,7 @@ int main(int argc, char **argv)
   AddFeature("Header","dummyheader.h,false,true",true); // should be first
   AddFeature("LineLength","80",true);
   AddFeature("DeclarationOrder","0,1,2",true);
-  AddFeature("Typedefs","[A-Z]",true);
+  AddFeature("Typedefs","[A-Z],true",true);
   AddFeature("InternalVariables","m_[A-Z],true",true);
   AddFeature("Variables","this->[A-Z]",true);
   AddFeature("Struct","[a-z]",true);
@@ -162,7 +162,7 @@ int main(int argc, char **argv)
   AddFeature("EndOfFileNewLine","",true);
   AddFeature("Tabs","",true);
   AddFeature("Spaces","3",true);
-  AddFeature("Comments","/**, *, */,true",true);
+  AddFeature("Comments","/**, *, */,true,true,true",true);
   AddFeature("Indent","kws::SPACE,2,true,true",true);
   AddFeature("Namespace","itk",true);
   AddFeature("NameOfClass","[NameOfClass],itk",true);
