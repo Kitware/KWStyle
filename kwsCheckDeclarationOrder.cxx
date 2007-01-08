@@ -47,13 +47,43 @@ bool Parser::CheckDeclarationOrder(unsigned int posPublic, unsigned int posProte
   long int publicLast;
   this->FindPublicArea(publicFirst,publicLast);
   
+  long int class_beg = this->GetClassPosition(publicFirst);
+  long int class_end = this->FindEndOfClass(publicFirst);
+  
+  while(publicFirst!=-1 && publicFirst!=MAX_CHAR && (publicFirst<class_beg || publicFirst>class_end))
+    {
+    this->FindPublicArea(publicFirst,publicLast,publicFirst+1);
+    class_beg = this->GetClassPosition(publicFirst);
+    class_end = this->FindEndOfClass(publicFirst);
+    }
+  
   long int protectedFirst;
   long int protectedLast;
   this->FindProtectedArea(protectedFirst,protectedLast);
+
+  class_beg = this->GetClassPosition(protectedFirst);
+  class_end = this->FindEndOfClass(protectedFirst);
   
+  while(protectedFirst!=-1 && protectedFirst!=MAX_CHAR && (protectedFirst<class_beg || protectedFirst>class_end))
+    {
+    this->FindProtectedArea(protectedFirst,protectedLast,protectedFirst+1);
+    class_beg = this->GetClassPosition(protectedFirst);
+    class_end = this->FindEndOfClass(protectedFirst);
+    }
+
   long int privateFirst;
   long int privateLast;
   this->FindPrivateArea(privateFirst,privateLast);
+
+  class_beg = this->GetClassPosition(privateFirst);
+  class_end = this->FindEndOfClass(privateFirst);
+  
+  while(privateFirst!=-1 && privateFirst!=MAX_CHAR && (privateFirst<class_beg || privateFirst>class_end))
+    {
+    this->FindPrivateArea(privateFirst,privateLast,privateFirst+1);
+    class_beg = this->GetClassPosition(privateFirst);
+    class_end = this->FindEndOfClass(privateFirst);
+    }
  
   bool hasError = false;
 
