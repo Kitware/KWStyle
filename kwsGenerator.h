@@ -97,6 +97,7 @@ private:
   std::string       m_ProjectTitle;
   std::string       m_ProjectLogo;
   std::string       m_KWStyleLogo;
+  unsigned int      m_MaxDirectoryDepth;
 };
 
 } // end namespace kws

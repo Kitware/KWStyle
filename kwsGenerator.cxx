@@ -23,6 +23,7 @@ Generator::Generator()
   m_ProjectTitle = "";
   m_ProjectLogo = "Logo.gif";
   m_KWStyleLogo = "kwstylelogo.jpg";
+  m_MaxDirectoryDepth = 99;
 }
 
 /** Destructor */
@@ -181,12 +182,20 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
       continue;
       }
 
-    // Replace '/' by '_'
+    // Replace '/' by '_' (and strip any colon)
     std::string filename = (*it).GetFilename();
+    if(long int pos = filename.find(":/") != -1)
+      {
+      filename = filename.substr(pos+2,filename.size()-pos-2);
+      }
+    if(long int pos = filename.find(":\\") != -1)
+      {
+      filename = filename.substr(pos+2,filename.size()-pos-2);
+      }
+
     long int slash = filename.find_last_of("/");
-    unsigned int maxDir = 3;// make sure this is the same number as the matrix
     unsigned int i=0;
-    while(slash != -1 && i<maxDir) 
+    while(slash != -1 && i<m_MaxDirectoryDepth) 
       {
       filename.replace(slash,1,"_");
       slash = filename.find_last_of("/");
@@ -308,10 +317,18 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
     std::string filename = dir;
     filename += "/";
     std::string filename2 = (*it).GetFilename();
+    if(long int pos = filename2.find(":/") != -1)
+      {
+      filename2 = filename2.substr(pos+2,filename2.size()-pos-2);
+      }
+    if(long int pos = filename2.find(":\\") != -1)
+      {
+      filename2 = filename2.substr(pos+2,filename2.size()-pos-2);
+      }
+
     long int slash = filename2.find_last_of("/");
     unsigned int i = 0;
-    unsigned int maxDir = 3;// make sure this is the same number as the matrix
-    while(slash != -1 && i<maxDir) 
+    while(slash != -1 && i<m_MaxDirectoryDepth) 
       {
       filename2.replace(slash,1,"_");
       slash = filename2.find_last_of("/");
@@ -860,10 +877,18 @@ bool Generator::GenerateDart(const char* dir,int maxError,bool group,std::string
           */
 
           std::string htmlfile = (*it).GetFilename();
+          if(long int pos = htmlfile.find(":/") != -1)
+            {
+            htmlfile = htmlfile.substr(pos+2,htmlfile.size()-pos-2);
+            }
+          if(long int pos = htmlfile.find(":\\") != -1)
+            {
+            htmlfile = htmlfile.substr(pos+2,htmlfile.size()-pos-2);
+            }
+
           long int slash = htmlfile.find_last_of("/");
           unsigned int i = 0;
-          unsigned int maxDir = 3;// make sure this is the same number as the matrix
-          while(slash != -1 && i<maxDir) 
+          while(slash != -1 && i<m_MaxDirectoryDepth) 
             {
             htmlfile.replace(slash,1,"_");
             slash = htmlfile.find_last_of("/");
