@@ -24,6 +24,7 @@ Generator::Generator()
   m_ProjectLogo = "Logo.gif";
   m_KWStyleLogo = "kwstylelogo.jpg";
   m_MaxDirectoryDepth = 99;
+  m_ErrorThreshold = 0;
 }
 
 /** Destructor */
@@ -40,6 +41,7 @@ void Generator::ReadConfigurationFile(const char* configFile)
     m_ProjectTitle = reader.GetValue("Project");
     m_ProjectLogo = reader.GetValue("ProjectLogo");
     m_KWStyleLogo = reader.GetValue("KWStyleLogo");
+    m_ErrorThreshold = atoi(reader.GetValue("ErrorThreshold").c_str());
     reader.Close();
     }
 }
@@ -251,6 +253,10 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
           {
           file << "bgcolor=\"#00aa00\"";
           }
+        }
+      else if(nerror <= m_ErrorThreshold)
+        {
+        file << "bgcolor=\"#ffcc66\"";
         }
       else
         {
