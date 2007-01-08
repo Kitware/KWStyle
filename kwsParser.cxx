@@ -139,9 +139,14 @@ bool Parser::Check(const char* name, const char* value)
     this->CheckVariables(value);
     return true;
     }
-   else if(!strcmp(name,"Struct"))
+  else if(!strcmp(name,"Struct"))
     {
     this->CheckStruct(value);
+    return true;
+    }
+  else if(!strcmp(name,"MemberFunctions"))
+    {
+    this->CheckMemberFunctions(value);
     return true;
     }
   else if(!strcmp(name,"SemicolonSpace"))
@@ -546,12 +551,16 @@ std::string Parser::GetLine(unsigned long i) const
 }
 
 /** Find the previous word given a position */
-std::string Parser::FindPreviousWord(long int pos,bool withComments) const
+std::string Parser::FindPreviousWord(long int pos,bool withComments,std::string buffer) const
 {
-  std::string stream = m_BufferNoComment;
-  if(withComments)
+  std::string stream = buffer;
+  if(buffer.size() == 0)
     {
-    stream = m_Buffer;
+    stream = m_BufferNoComment;
+    if(withComments)
+      {
+      stream = m_Buffer;
+      }
     }
 
   long i=pos;
@@ -1242,12 +1251,16 @@ bool Parser::IsBetweenQuote(long int pos,bool withComments) const
 }
 
 /**  return true if the position pos is between 'begin' and 'end' */
-bool Parser::IsBetweenCharsFast(const char begin, const char end ,long int pos,bool withComments) const
+bool Parser::IsBetweenCharsFast(const char begin, const char end ,long int pos,bool withComments,std::string buffer) const
 {
-  std::string stream = m_BufferNoComment;
-  if(withComments)
+  std::string stream = buffer;
+  if(buffer.size() == 0)
     {
-    stream = m_Buffer;
+    stream = m_BufferNoComment;
+    if(withComments)
+      {
+      stream = m_Buffer;
+      }
     }
 
   if(pos == -1)

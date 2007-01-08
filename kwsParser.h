@@ -26,7 +26,7 @@
 namespace kws
 {
 #define MAX_CHAR 99999999
-#define NUMBER_ERRORS 28
+#define NUMBER_ERRORS 29
 
 typedef enum
   {
@@ -63,7 +63,8 @@ typedef enum
   BLACKLIST,
   STATEMENTPERLINE,
   VARIABLEPERLINE,
-  BADCHARACTERS
+  BADCHARACTERS,
+  MEMBERFUNCTION_REGEX
   } ErrorType;
 
 const char ErrorTag[NUMBER_ERRORS][4] = {
@@ -94,7 +95,8 @@ const char ErrorTag[NUMBER_ERRORS][4] = {
    {'B','L','K','\0'},
    {'S','P','L','\0'},
    {'V','P','L','\0'},
-   {'B','C','H','\0'},
+   {'B','C','H','\0'},   
+   {'M','B','F','\0'},
   };
 
 
@@ -195,6 +197,9 @@ public:
   
   /** Check variables implementation */
   bool CheckVariables(const char* regEx);
+  
+  /** Check Member Functions implementation */
+  bool CheckMemberFunctions(const char* regEx);
 
   /** Check if the strcut parameters of the class are correct */
   bool CheckStruct(const char* regEx,bool alignement = true);
@@ -285,7 +290,7 @@ protected:
 
   /** Get the class position within the file. This function checks that this is the 
    *  classname */
-  long int GetClassPosition(long int position) const;
+  long int GetClassPosition(long int position,std::string buffer="") const;
 
   /** Return the position in the line given the position in the text */ 
   unsigned long GetPositionInLine(long pos);
@@ -295,7 +300,10 @@ protected:
   
   /** Find an ivar in the source code */
   std::string FindVariable(std::string & buffer,long int start, long int end,long int& pos);
-
+  
+  /** Find a member function in the source code */
+  std::string FindMemberFunction(std::string & buffer,long int start, long int end,long int& pos);
+ 
   /** Find a typedef in the source code */
   std::string FindTypedef(long int start, long int end,long int& pos,long int & beg,long int & typedefpos);
 
@@ -309,7 +317,7 @@ protected:
   long int GetLineNumber(long int pos,bool withoutComments=false) const;
 
   /** Find the previous word given a position */
-  std::string FindPreviousWord(long int pos,bool withComments=false) const;
+  std::string FindPreviousWord(long int pos,bool withComments=false,std::string buffer="") const;
 
   /** Find the next word given a position */
   std::string FindNextWord(long int pos) const;
@@ -325,7 +333,7 @@ protected:
 
   /** Return true if the position pos is between <>.
    *  The Fast version just check for <test> and not for <test<>,test<>>*/
-  bool IsBetweenCharsFast(const char begin, const char end, long int pos,bool withComments=false) const;
+  bool IsBetweenCharsFast(const char begin, const char end, long int pos,bool withComments=false,std::string buffer="") const;
   bool IsBetweenChars(const char begin, const char end, long int pos,bool withComments=false) const;
 
   /**  return true if the position pos is between " " */

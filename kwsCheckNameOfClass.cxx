@@ -102,28 +102,33 @@ bool Parser::CheckNameOfClass(const char* name,const char* prefix)
  *  The return position is a position right after the name of the class (meaning before a : or a { 
  *  Returns -1 if not found
  */
-long int Parser::GetClassPosition(long int position) const
+long int Parser::GetClassPosition(long int position,std::string buffer) const
 {
-  long int pos = m_BufferNoComment.find("class",position);
+  if(buffer.size() == 0)
+    {
+    buffer = m_BufferNoComment;
+    }
+
+  long int pos = buffer.find("class",position);
 
   long int errorpos = 0;
   std::string nameOfClass = "";
   while(pos!=-1)
     {
-    if(!IsBetweenCharsFast('<','>',pos))
+    if(!this->IsBetweenCharsFast('<','>',pos,false,buffer))
       {
       bool valid = true;      
       // We check that the word class is alone
       if(pos>1)
         {
-        if(m_BufferNoComment[pos-1] != ' ' && m_BufferNoComment[pos-1] != '/' && m_BufferNoComment[pos-1] != '\n')
+        if(buffer[pos-1] != ' ' && buffer[pos-1] != '/' && buffer[pos-1] != '\n')
           {
           valid = false;
           }
         }
-      if(pos<(long int)m_BufferNoComment.size()-2)
+      if(pos<(long int)buffer.size()-2)
         {
-        if(m_BufferNoComment[pos+5] != ' ' && m_BufferNoComment[pos+5] != '/' && m_BufferNoComment[pos+5] != '\r')
+        if(buffer[pos+5] != ' ' && buffer[pos+5] != '/' && buffer[pos+5] != '\r')
           {
           valid = false;
           } 
@@ -131,8 +136,8 @@ long int Parser::GetClassPosition(long int position) const
       
       long int i = pos+4;
       // We should get a { before a ;
-      long int brac = m_BufferNoComment.find('{',pos);
-      long int sem = m_BufferNoComment.find(';',pos);
+      long int brac = buffer.find('{',pos);
+      long int sem = buffer.find(';',pos);
 
       if(sem<=brac)
         {
@@ -140,16 +145,16 @@ long int Parser::GetClassPosition(long int position) const
         }
       else
         {
-        while((m_BufferNoComment[i] != '{')
-          && (i<(long)m_BufferNoComment.size())
+        while((buffer[i] != '{')
+          && (i<(long)buffer.size())
           )
           {
-          if(m_BufferNoComment[i] == ';')
+          if(buffer[i] == ';')
             {
             valid = false;
             break;
             }
-          else if(m_BufferNoComment[i] == ':')
+          else if(buffer[i] == ':')
             {
             break;
             }
@@ -162,7 +167,7 @@ long int Parser::GetClassPosition(long int position) const
         return i;
         }
       }
-    pos = m_BufferNoComment.find("class",pos+1);
+    pos = buffer.find("class",pos+1);
     }
 
   return -1;

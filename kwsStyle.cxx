@@ -173,6 +173,7 @@ int main(int argc, char **argv)
   AddFeature("StatementPerLine","1",true);
   AddFeature("VariablePerLine","1",true);
   AddFeature("BadCharacters","true",true);
+  AddFeature("MemberFunctions","*",true);
 
   if(command.GetOptionWasSet("blacklist"))
     {
