@@ -19,7 +19,7 @@ namespace kws {
 bool Parser::CheckMemberFunctions(const char* regEx)
 {
   m_TestsDone[MEMBERFUNCTION_REGEX] = true;
-  m_TestsDescription[MEMBERFUNCTION_REGEX] = "member functions should match regular expression: ";
+  m_TestsDescription[MEMBERFUNCTION_REGEX] = "Member functions should match regular expression: ";
   m_TestsDescription[MEMBERFUNCTION_REGEX] += regEx;
 
   // First we need to find the parameters
