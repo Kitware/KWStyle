@@ -75,20 +75,21 @@ ADD_EXECUTABLE(KWStyle kwsStyle.cxx)
 TARGET_LINK_LIBRARIES(KWStyle KWStyleLib)
 
 # Installation file
-INSTALL(TARGETS KWStyle KWStyleLib
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib/KWStyle)
-INSTALL(FILES ${KWStyle_HDRS} DESTINATION include/KWStyle)
-INSTALL(FILES ${KWStyle_SRCS} DESTINATION source)
+INSTALL(TARGETS KWStyle
+        RUNTIME DESTINATION bin)
+#INSTALL(FILES ${KWStyle_HDRS} DESTINATION include/KWStyle)
+#INSTALL(FILES ${KWStyle_SRCS} DESTINATION source)
 
 
-INSTALL(FILES ${KWStyle_SOURCE_DIR}/Documentation/Install/ITK.kws.xml DESTINATION bin)
-INSTALL(FILES ${KWStyle_SOURCE_DIR}/Documentation/Install/VTK.kws.xml DESTINATION bin)
+INSTALL(FILES ${KWStyle_SOURCE_DIR}/Documentation/Install/ITK.kws.xml DESTINATION share/KWStyle)
+INSTALL(FILES ${KWStyle_SOURCE_DIR}/Documentation/Install/VTK.kws.xml DESTINATION share/KWStyle)
 
 # Install the headers
-INSTALL(FILES ${KWStyle_SOURCE_DIR}/Web/headers/VTKHeader.h DESTINATION bin/headers)
-INSTALL(FILES ${KWStyle_SOURCE_DIR}/Web/headers/ITKHeader.h DESTINATION bin/headers)
+INSTALL(FILES ${KWStyle_SOURCE_DIR}/Web/headers/VTKHeader.h DESTINATION share/KWStyle/headers)
+INSTALL(FILES ${KWStyle_SOURCE_DIR}/Web/headers/ITKHeader.h DESTINATION share/KWStyle/headers)
+
+# Install the logo
+INSTALL(FILES ${KWStyle_SOURCE_DIR}/Documentation/logosmall.jpg DESTINATION share/KWStyle)
 
 # CPack options
 INCLUDE(InstallRequiredSystemLibraries)
