@@ -175,6 +175,7 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
   file << "</tr>" << std::endl;
 
   it = m_Parsers->begin();
+  std::string currentPath = "";
   while(it != m_Parsers->end())
     {
     
@@ -182,6 +183,19 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
       {
       it++;
       continue;
+      }
+
+    // If we have a new directory we show it on a new line
+    std::string filenamePath = kwssys::SystemTools::GetFilenamePath((*it).GetFilename());
+    
+    if(currentPath != filenamePath)
+      {
+      file << "<tr>" << std::endl;
+      file << "  <td width=\"30%\"></td>" << std::endl;
+      file << "  <td bgcolor=\"#CCCCCC\" width=\"70%\" colspan=\"" << nTests << "\"><div align=\"center\">" << std::endl;;
+      file << filenamePath.c_str() << std::endl;
+      file << "</div></td></tr>" << std::endl;
+      currentPath = filenamePath;
       }
 
     // Replace '/' by '_' (and strip any colon)
