@@ -30,22 +30,24 @@ bool Parser::CheckStatementPerLine(unsigned long max)
   long int currentLine = -1;
   unsigned long statements = 0;
   bool newline = false;
+  std::string line = "";
+    
   while(posSemicolon != -1)
     {
     // If we are on the same line
-    if((this->GetLineNumber(posSemicolon,true) == currentLine)
-      && (!this->IsBetweenChars('(',')',posSemicolon,false))
+    unsigned long lineNumber = this->GetLineNumber(posSemicolon,true); 
+    line = this->GetLine(lineNumber-1);
+    if((lineNumber == currentLine)
+      && (!this->IsBetweenChars('(',')',this->GetPositionInLine(posSemicolon),false,line))
+      && (!this->IsBetweenQuote(this->GetPositionInLine(posSemicolon),false,line))
       )
       {
       statements++;
       }
-    else
+    else if(lineNumber != currentLine)
       {
-      if(!this->IsBetweenChars('(',')',posSemicolon,false))
-        {
-        currentLine = this->GetLineNumber(posSemicolon,true);
-        statements = 1;
-        }
+      currentLine = lineNumber;
+      statements = 1;
       }
 
     long int posSemicolon2 = m_BufferNoComment.find(";",posSemicolon+1);
@@ -80,7 +82,6 @@ bool Parser::CheckStatementPerLine(unsigned long max)
       }
 
     posSemicolon = posSemicolon2;
-
     }
 
   return !hasError;

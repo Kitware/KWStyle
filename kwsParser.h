@@ -323,7 +323,7 @@ protected:
   std::string FindNextWord(long int pos) const;
 
   /** Find the closing bracket given the position of the opening bracket. */
-  long int FindClosingChar(char openChar, char closeChar, long int pos,bool noComment=false) const;
+  long int FindClosingChar(char openChar, char closeChar, long int pos,bool noComment=false,std::string buffer="") const;
 
   /** Find the opening bracket given the position of the closing bracket. */
   long int FindOpeningChar(char closeChar, char openChar, long int pos,bool noComment=false) const;
@@ -334,10 +334,10 @@ protected:
   /** Return true if the position pos is between <>.
    *  The Fast version just check for <test> and not for <test<>,test<>>*/
   bool IsBetweenCharsFast(const char begin, const char end, long int pos,bool withComments=false,std::string buffer="") const;
-  bool IsBetweenChars(const char begin, const char end, long int pos,bool withComments=false) const;
+  bool IsBetweenChars(const char begin, const char end, long int pos,bool withComments=false,std::string buffer="") const;
 
   /**  return true if the position pos is between " " */
-  bool IsBetweenQuote(long int pos,bool withComments=false) const;
+  bool IsBetweenQuote(long int pos,bool withComments=false,std::string buffer="") const;
   bool IsValidQuote(std::string & stream,long int pos) const;
 
   /** Removes ass CtrlN characters from the buffer. */

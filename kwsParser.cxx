@@ -1203,12 +1203,17 @@ bool Parser::IsValidQuote(std::string & stream,long int pos) const
 }
 
 /**  return true if the position pos is between " " */
-bool Parser::IsBetweenQuote(long int pos,bool withComments) const
+bool Parser::IsBetweenQuote(long int pos,bool withComments,std::string buffer) const
 {
-  std::string stream = m_BufferNoComment;
-  if(withComments)
+  std::string stream = buffer;
+
+  if(buffer.size()==0)
     {
-    stream = m_Buffer;
+    stream = m_BufferNoComment;
+    if(withComments)
+      {
+      stream = m_Buffer;
+      }
     }
 
   if(pos == -1)
@@ -1284,21 +1289,26 @@ bool Parser::IsBetweenCharsFast(const char begin, const char end ,long int pos,b
 }
 
 /**  return true if the position pos is between 'begin' and 'end' */
-bool Parser::IsBetweenChars(const char begin, const char end ,long int pos,bool withComments) const
+bool Parser::IsBetweenChars(const char begin, const char end ,long int pos,
+                            bool withComments,std::string buffer) const
 {
-  std::string stream = m_BufferNoComment;
-  if(withComments)
+  std::string stream = buffer;
+  if(buffer.size() == 0)
     {
-    stream = m_Buffer;
+    stream = m_BufferNoComment;
+    if(withComments)
+      {
+      stream = m_Buffer;
+      }
     }
-
+  
   if(pos == -1)
     {
     return false;
     }
 
   long int b0 = stream.find(begin,0);
-  long int b1 = this->FindClosingChar(begin,end,b0,!withComments);
+  long int b1 = this->FindClosingChar(begin,end,b0,!withComments,buffer);
 
   while(b0 != -1 && b1 != -1 && b1>b0)
     {
@@ -1307,7 +1317,7 @@ bool Parser::IsBetweenChars(const char begin, const char end ,long int pos,bool 
       return true;
       }
     b0 = stream.find(begin,b0+1);
-    b1 = this->FindClosingChar(begin,end,b0,!withComments);
+    b1 = this->FindClosingChar(begin,end,b0,!withComments,buffer);
     }
   return false;
 }
@@ -1645,12 +1655,17 @@ long Parser::FindConstructor(const std::string & buffer, const std::string & cla
 }
 
 /** Find the closing char given the position of the opening char */
-long int Parser::FindClosingChar(char openChar, char closeChar, long int pos,bool noComment) const
-{  
-  std::string stream = m_Buffer.c_str();
-  if(noComment)
+long int Parser::FindClosingChar(char openChar, char closeChar, 
+                                 long int pos,bool noComment,std::string buffer) const
+{
+  std::string stream = buffer;
+  if(buffer.size() == 0)
     {
-    stream = m_BufferNoComment.c_str();
+    stream = m_Buffer.c_str();
+    if(noComment)
+      {
+      stream = m_BufferNoComment.c_str();
+      }
     }
 
   long int open = 1;
