@@ -1100,6 +1100,45 @@ bool Parser::IsInStruct(long int pos,const char* buffer) const
   return false;
 }
 
+
+/** Return true if the position pos is inside a union 
+ *  This function works on the m_BufferNoComment */
+bool Parser::IsInUnion(long int pos,const char* buffer) const
+{ 
+  std::string buf = m_BufferNoComment;
+  if(buffer)
+    {
+    buf = buffer;
+    }
+
+  if((pos == -1) || pos > (long int)buf.size()-1)
+    {
+    return false;
+    }
+  
+  long int b = buf.find("union",0);
+  while(b!=-1)
+    {
+    while(b<(long int)buf.size())
+      {
+      if(buf[b] == '{')
+        {
+        break;
+        }
+      b++;
+      }
+
+    long int c=this->FindClosingChar('{','}',b,true);
+    if(pos<c && pos>b)
+      {
+      return true;
+      break;
+      }
+    b = buf.find("union",b+1);
+    }
+  return false;
+}
+
 /**  return true if the position pos is inside a comment */
 bool Parser::IsInComments(long int pos) const
 {

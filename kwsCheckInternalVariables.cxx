@@ -59,7 +59,7 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment,bool checkP
       continue;
       }
 
-    if(this->IsInStruct(pos))
+    if(this->IsInStruct(pos) || this->IsInUnion(pos))
       {
       continue;
       }
@@ -137,7 +137,7 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment,bool checkP
       continue;
       }
  
-    if(this->IsInStruct(pos))
+    if(this->IsInStruct(pos) || this->IsInUnion(pos))
       {
       continue;
       }
@@ -201,7 +201,7 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment,bool checkP
       continue;
       }
     
-    if(this->IsInStruct(pos))
+    if(this->IsInStruct(pos) || this->IsInUnion(pos))
       {
       continue;
       }

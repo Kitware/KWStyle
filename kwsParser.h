@@ -363,6 +363,9 @@ protected:
 
   /**  return true if the position pos is inside a struct */
   bool IsInStruct(long int pos,const char* buffer=NULL) const;
+  
+  /**  return true if the position pos is inside a union */
+  bool IsInUnion(long int pos,const char* buffer=NULL) const;
 
   /**  return true if the position pos is inside a comment defined as the compiler
    *   i.e // or /* */
