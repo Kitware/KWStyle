@@ -423,33 +423,75 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
 
     file << "<table width=\"100%\" border=\"0\" height=\"1\">" << std::endl;
   
+   // To speedup the process we list the lines that have errors
+   typedef std::pair<int,std::vector<int>> ErrorLineType;
+   std::vector<ErrorLineType> errorLines;
+
+   const Parser::ErrorVectorType errors = (*it).GetErrors();
+   Parser::ErrorVectorType::const_iterator itError = errors.begin();
+   while(itError != errors.end())
+     {
+     for(unsigned int i=(*itError).line;i<=(*itError).line2;i++)
+       {
+       ErrorLineType errLine;
+       errLine.first = i;
+       
+       // Check if the line already exists
+       std::vector<ErrorLineType>::iterator errorLineIt = errorLines.begin();
+       while(errorLineIt != errorLines.end())
+         {
+         if((*errorLineIt).first == i)
+           {
+           break;
+           }
+         errorLineIt++;
+         }
+
+       if(errorLineIt != errorLines.end())
+         {
+         (*errorLineIt).second.push_back((*itError).number);
+         }
+       else
+         {
+         errLine.second.push_back((*itError).number);
+         errorLines.push_back(errLine);
+         }
+       }
+     itError++;
+     }
+
     bool comment = false;
-    for(unsigned int i=0;i<(*it).GetNumberOfLines();i++)
+    unsigned long nLines = (*it).GetNumberOfLines();
+    for(unsigned int i=0;i<nLines;i++)
       {
       // Look in the errors if there is a match for this line
       int error = -1;
       std::string errorTag = "";
-
-      const Parser::ErrorVectorType errors = (*it).GetErrors();
-      Parser::ErrorVectorType::const_iterator itError = errors.begin();
-      while(itError != errors.end())
+       
+      std::vector<ErrorLineType>::const_iterator errorLineIt = errorLines.begin();
+      while(errorLineIt != errorLines.end())
         {
-        if( ((i+1>=(*itError).line) && (i+1<=(*itError).line2))
-          )
+        if((*errorLineIt).first == i)
           {
-          if(errorTag.size() == 0)
+          std::vector<int>::const_iterator err = (*errorLineIt).second.begin();
+          while(err != (*errorLineIt).second.end())
             {
-            errorTag += (*it).GetErrorTag((*itError).number);
-            }
-          else
-            {
-            errorTag += ",";
-            errorTag += (*it).GetErrorTag((*itError).number);
-            }
-          error = (*itError).number;
-          }
-        itError++;
-        }
+            error = *err;
+            if(errorTag.size() == 0)
+              {
+              errorTag += (*it).GetErrorTag(error);
+              }
+            else
+              {
+              errorTag += ",";
+              errorTag += (*it).GetErrorTag(error);
+              }
+             err++;
+             }
+           break;
+           }
+         errorLineIt++;
+         }
 
       if(error>=0)
         {
@@ -543,12 +585,14 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
         }
 
       space = l.find("*/",0);
+      
       while(space != -1)
         {
         comment = false;
         l.insert(space+2,"</font>");
-        space = l.find("*/",space+8);
-        }
+      
+       space = l.find("*/",space+8);
+       }
 
       // Show the comments in green
       space = l.find("//",0);
