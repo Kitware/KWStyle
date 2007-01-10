@@ -35,7 +35,7 @@ Parser::~Parser()
 }
 
  /** To be able to use std::sort we provide the < operator */
-bool Parser::operator<(const Parser& a) 
+bool Parser::operator<(const Parser& a) const
 {
   // First count the number of slashes or back slashes
   unsigned int aslashes = 0;

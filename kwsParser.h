@@ -139,7 +139,7 @@ public:
   ~Parser();
 
   /** To be able to use std::sort we provide the < operator */
-  bool operator<(const Parser& a);
+  bool operator<(const Parser& a) const;
   
   typedef std::vector<Error> ErrorVectorType;
 
