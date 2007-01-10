@@ -129,7 +129,7 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
   // Contruct the table
   file << "<table width=\"100%\" border=\"0\" height=\"1\">" << std::endl;
   file << "<tr>" << std::endl;
-  file << "  <td width=\"30%\"> " << std::endl;
+  file << "  <td width=\"10%\"> " << std::endl;
   file << "    <div align=\"center\">Filename</div>" << std::endl;
   file << "  </td>" << std::endl;
 
@@ -161,7 +161,7 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
       }
     }
 
-  unsigned int width = 70/nTests;
+  unsigned int width = 90/nTests;
   for(unsigned int i=0;i<NUMBER_ERRORS;i++)
     {
     if(!tests[i])
@@ -175,6 +175,9 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
   file << "</tr>" << std::endl;
 
   it = m_Parsers->begin();
+
+  std::sort(m_Parsers->begin(),m_Parsers->end());
+
   std::string currentPath = "";
   while(it != m_Parsers->end())
     {
@@ -191,8 +194,8 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
     if(currentPath != filenamePath)
       {
       file << "<tr>" << std::endl;
-      file << "  <td width=\"30%\"></td>" << std::endl;
-      file << "  <td bgcolor=\"#CCCCCC\" width=\"70%\" colspan=\"" << nTests << "\"><div align=\"center\">" << std::endl;;
+      file << "  <td width=\"10%\"></td>" << std::endl;
+      file << "  <td bgcolor=\"#CCCCCC\" width=\"70%\" colspan=\"" << nTests << "\"><div align=\"\">" << std::endl;;
       file << filenamePath.c_str() << std::endl;
       file << "</div></td></tr>" << std::endl;
       currentPath = filenamePath;
@@ -231,11 +234,11 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
 
     // Fill in the table
     file << "<tr>" << std::endl;
-    file << "  <td width=\"30%\"> " << std::endl;
+    file << "  <td width=\"10%\"> " << std::endl;
     file << "    <div align=\"center\"> <a href=\"" << filename.c_str()  << "\">" << filenamecorrect.c_str() << "</a></div>" << std::endl;
     file << "  </td>" << std::endl;
 
-    unsigned int width = 50/nTests;
+    unsigned int width = 90/nTests;
     for(unsigned int i=0;i<NUMBER_ERRORS;i++)
       {
       if(!tests[i])
@@ -424,7 +427,7 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
     file << "<table width=\"100%\" border=\"0\" height=\"1\">" << std::endl;
   
    // To speedup the process we list the lines that have errors
-   typedef std::pair<int,std::vector<int>> ErrorLineType;
+   typedef std::pair<int,std::vector<int> > ErrorLineType;
    std::vector<ErrorLineType> errorLines;
 
    const Parser::ErrorVectorType errors = (*it).GetErrors();

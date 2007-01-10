@@ -137,6 +137,9 @@ public:
 
   /** Destructor */
   ~Parser();
+
+  /** To be able to use std::sort we provide the < operator */
+  bool operator<(const Parser& a);
   
   typedef std::vector<Error> ErrorVectorType;
 
