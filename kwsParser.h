@@ -193,7 +193,7 @@ public:
   bool CheckLineLength(unsigned long max,bool checkHeader=false);
 
   /** Check if the internal parameters of the class are correct */
-  bool CheckInternalVariables(const char* regEx,bool alignement = true,bool checkProtected=true);
+  bool CheckInternalVariables(const char* regEx,bool alignement = true,bool checkProtected=false);
   
   /** Check variables implementation */
   bool CheckVariables(const char* regEx);

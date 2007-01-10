@@ -83,7 +83,7 @@ bool Parser::Check(const char* name, const char* value)
   else if(!strcmp(name,"InternalVariables"))
     {
     bool alignment = true; // check alignment by default
-    bool checkProtected = true; // check protected by default
+    bool checkProtected = false; // check protected by default
     std::string val = value;
     long pos = val.find(",",0);
     if(pos != -1)
@@ -122,9 +122,9 @@ bool Parser::Check(const char* name, const char* value)
           v3 = val.substr(pos1+1,pos-pos1-1);
           }
 
-        if(!strcmp(v3.c_str(),"false") || !strcmp(v3.c_str(),"0"))
+        if(!strcmp(v3.c_str(),"true") || !strcmp(v3.c_str(),"1"))
           {
-          checkProtected = false;
+          checkProtected = true;
           }
         }
       val = v1;
