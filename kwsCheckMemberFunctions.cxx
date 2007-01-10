@@ -82,9 +82,17 @@ bool Parser::CheckMemberFunctions(const char* regEx)
     {
     long int current;
     std::string memberFunction = this->FindMemberFunction(m_BufferNoComment,classpos,this->FindEndOfClass(classpos+1),current);
+    std::string classname = this->FindPreviousWord(classpos);
+    std::string destructor = "~";
+    destructor += classname;
+
     while(current!=-1)
       {
-      if(!regex.find(memberFunction))
+      // if the member function is a constructor or destructor we ignore
+      if(memberFunction != classname
+        && memberFunction != destructor
+        && !regex.find(memberFunction)
+        )
         {
         Error error;
         error.line = this->GetLineNumber(current,true);
@@ -96,7 +104,6 @@ bool Parser::CheckMemberFunctions(const char* regEx)
         }
       memberFunction = this->FindMemberFunction(m_BufferNoComment,current+1,this->FindEndOfClass(classpos+1),current);
       }
-    std::string classname = this->FindPreviousWord(classpos);
     classes.push_back(classname);
     classpos = this->GetClassPosition(classpos+1);
     }
@@ -143,7 +150,13 @@ bool Parser::CheckMemberFunctions(const char* regEx)
        if(pos3 != -1)
          {
          std::string functionName = m_BufferNoComment.substr(i,pos3-i);
-         if(!regex.find(functionName))
+         std::string destructor = "~";
+         destructor += classname;
+         // if the member function is a constructor or destructor we ignore
+         if(functionName != classname
+           && functionName != destructor
+           && !regex.find(functionName)
+           )
            {
            Error error;
            error.line = this->GetLineNumber(i,true);
