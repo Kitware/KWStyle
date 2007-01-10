@@ -471,7 +471,7 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
       std::vector<ErrorLineType>::const_iterator errorLineIt = errorLines.begin();
       while(errorLineIt != errorLines.end())
         {
-        if((*errorLineIt).first == i)
+        if((*errorLineIt).first == i+1)
           {
           std::vector<int>::const_iterator err = (*errorLineIt).second.begin();
           while(err != (*errorLineIt).second.end())
