@@ -340,7 +340,6 @@ std::string Parser::FindInternalVariable(long int start, long int end,long int &
           {
           ivar = ivar.substr(1,ivar.size()-1);
           }
-        std::cout << ivar.c_str() << std::endl;
         return ivar;
         }
       }
