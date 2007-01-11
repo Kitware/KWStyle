@@ -183,6 +183,15 @@ std::string Parser::FindMemberFunction(std::string & buffer, long int start, lon
   long int posSemicolon = buffer.find(";",start);
   while(posSemicolon != -1 && posSemicolon<end)
     {
+
+    // We check that we don't have the keyword __attribute__
+    std::string line = this->GetLine(this->GetLineNumber(posSemicolon)-1);
+    if(line.find("_attribute_") != -1)
+      {
+      posSemicolon = buffer.find(";",posSemicolon+1);
+      continue;
+      }
+
     // We try to find a (
     long int i=posSemicolon-1;
     bool inFunction = true;
@@ -197,6 +206,7 @@ std::string Parser::FindMemberFunction(std::string & buffer, long int start, lon
       }
      pos = i-1;
      
+
      // If we have a match we extract the word
      if(pos>start)
        {
