@@ -335,10 +335,15 @@ std::string Parser::FindInternalVariable(long int start, long int end,long int &
       // Check that we are not inside a function(){}
       if(!this->IsInFunction(posSemicolon))
         {
+        // If the ivar start with a * we remove it
+        if(ivar[0] == '*')
+          {
+          ivar = ivar.substr(1,ivar.size()-1);
+          }
+        std::cout << ivar.c_str() << std::endl;
         return ivar;
         }
       }
-
     posSemicolon = m_BufferNoComment.find(";",posSemicolon+1);
     }
 
