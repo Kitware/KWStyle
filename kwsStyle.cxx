@@ -175,18 +175,28 @@ int main(int argc, char **argv)
   AddFeature("BadCharacters","true",true);
   AddFeature("MemberFunctions","*",true);
 
-  if(command.GetOptionWasSet("blacklist"))
-    {
-    std::string blacklist = command.GetValueAsString("blacklist","filename");
-    AddFeature("BlackList",blacklist.c_str(),true);
-    }
-
+  std::string xmlFile = "KWStyle.xml";
   // If we should look the definition from the xml file
   if(command.GetOptionWasSet("xml"))
     {
-    std::string xml = command.GetValueAsString("xml","filename");
+    xmlFile = command.GetValueAsString("xml","filename");
+    }
+
+  // Initialize the configuration parameters
+  std::string blacklist = "";
+  std::string overwrite = "";
+  std::string recursive = "";
+  std::string verbose = "";
+  std::string htmlDirectory = "";
+  std::string lessHTML = "";
+  std::string filesToCheck = "";
+  std::string directoryToCheck = "";
+  std::string fileToCheck = "";
+
+  if(xmlFile.size()>0)
+    {
     kws::XMLReader reader;
-    if(reader.Open(xml.c_str()))
+    if(reader.Open(xmlFile.c_str()))
       {
       std::vector<kwsFeature>::iterator it = features.begin();
       while(it != features.end())
@@ -202,20 +212,52 @@ int main(int argc, char **argv)
           }
         it++;
         }
+
+      // Read the current configuration
+      blacklist = reader.GetValue("BlackList");
+      overwrite = reader.GetValue("OverwriteFile");
+      verbose = reader.GetValue("Verbose");
+      if(verbose[0] != '1')
+        {
+        verbose = "";
+        }
+
+      recursive = reader.GetValue("Recursive");
+      if(recursive[0] != '1')
+        {
+        recursive = "";
+        }
+      htmlDirectory = reader.GetValue("HTMLDirectory");
+      lessHTML = reader.GetValue("LessHTML");
+      filesToCheck = reader.GetValue("Files");
+      directoryToCheck = reader.GetValue("Directory");
+      fileToCheck = reader.GetValue("File");
+
       reader.Close();
       }
     else
       {
-      std::cout << "Cannot open configuration file: " << xml.c_str() << std::endl;
+      std::cout << "Cannot open configuration file: " << xmlFile.c_str() << std::endl;
       }
     }
-
   
+  if(command.GetOptionWasSet("blacklist"))
+    {
+    blacklist = command.GetValueAsString("blacklist","filename");
+    }
+  if(blacklist.size()>0)
+    {
+    AddFeature("BlackList",blacklist.c_str(),true);
+    }
+
   // If we should look at some overwritten rules
   if(command.GetOptionWasSet("overwrite"))
     {
-    std::string overwrite = command.GetValueAsString("overwrite","filename");
-    
+    overwrite = command.GetValueAsString("overwrite","filename");
+    }
+
+  if(overwrite.size()>0)
+    {
     // Read the file
     std::ifstream file;
     file.open(overwrite.c_str(), std::ios::binary | std::ios::in);
@@ -301,13 +343,28 @@ int main(int argc, char **argv)
 
   std::string inputFilename = command.GetValueAsString("infile");
 
-  bool parseDirectory = false;
+  if(fileToCheck.size()>0)
+    {
+    inputFilename = fileToCheck;
+    }
+
+
+  if(command.GetOptionWasSet("recursive"))
+    {
+    recursive = "1";
+    }
+  // if the -D command is used
+  if(command.GetOptionWasSet("dirfile"))
+    {
+    filesToCheck = inputFilename;
+    }
+
   if(command.GetValueAsString("directory").length() > 0)
     {
-    parseDirectory = true;
-    if(inputFilename[inputFilename.size()-1] != '/')
+    directoryToCheck = inputFilename;
+    if(directoryToCheck[directoryToCheck.size()-1] != '/')
       {
-      inputFilename += '/';
+      directoryToCheck += '/';
       }
     }
    
@@ -315,16 +372,16 @@ int main(int argc, char **argv)
   std::vector<kws::Parser> m_Parsers;
 
   // if the -d command is used
-  if(parseDirectory)
+  if(directoryToCheck.size()>0)
     {
     kwssys::Glob glob;
-    if(command.GetOptionWasSet("recursive"))
+    if(recursive.size()>0)
       {
       glob.RecurseOn();
       }
-    std::string globoption = inputFilename.c_str();
+    std::string globoption = directoryToCheck.c_str();
     
-    if(kwssys::SystemTools::FileExists(inputFilename.c_str()))
+    if(kwssys::SystemTools::FileExists(directoryToCheck.c_str()))
       {
       globoption += "*.*";
       }
@@ -332,16 +389,14 @@ int main(int argc, char **argv)
     glob.FindFiles(globoption.c_str());
     filenames = glob.GetFiles();
     }
-
-  // if the -D command is used
-  else if(command.GetOptionWasSet("dirfile"))
+  else if(filesToCheck.size()>0)
     {
     // Read the file
     std::ifstream file;
-    file.open(inputFilename.c_str(), std::ios::binary | std::ios::in);
+    file.open(filesToCheck.c_str(), std::ios::binary | std::ios::in);
     if(!file.is_open())
       {
-      std::cout << "Cannot open file: " << inputFilename.c_str() << std::endl;
+      std::cout << "Cannot open description files: " << filesToCheck.c_str() << std::endl;
       return 0;
       }
     file.seekg(0,std::ios::end);
@@ -444,7 +499,7 @@ int main(int argc, char **argv)
 
   
   // if the -cvs command is used
-  // WARNING this option should be last because its postion is used
+  // WARNING this option should be last because its position is used
   // to determine the filenames.
   if(command.GetOptionWasSet("cvs"))
     {
@@ -546,8 +601,13 @@ int main(int argc, char **argv)
       itf++;
       }
 
+   if(command.GetOptionWasSet("verbose"))
+     {
+     verbose = "1";
+     }
+
     // If we should display the error
-    if(command.GetOptionWasSet("verbose") 
+    if(verbose.size()>0 
       && !command.GetOptionWasSet("msvc")
       && !command.GetOptionWasSet("vim")
       && !command.GetOptionWasSet("gcc")
@@ -608,11 +668,14 @@ int main(int argc, char **argv)
     it++;
     } // end filenames
 
-
-  // If we should generate the HTML file
   if(command.GetOptionWasSet("html"))
     {
-    std::string html = command.GetValueAsString("html","filename");
+    htmlDirectory = command.GetValueAsString("html","filename");
+    }
+
+  // If we should generate the HTML file
+  if(htmlDirectory.size()>0)
+    {
     kws::Generator generator;
     generator.SetParser(&m_Parsers);
 
@@ -622,8 +685,20 @@ int main(int argc, char **argv)
       generator.ReadConfigurationFile(xml.c_str());
       }
 
-    bool showNoErrors = command.GetOptionWasSet("lesshtml");
-    generator.GenerateHTML(html.c_str(),!showNoErrors);
+    bool showNoErrors = false;
+    if(lessHTML.size()>0)
+      {
+      if(lessHTML[0] = '1')
+        {
+        showNoErrors = true;
+        }
+      }
+    
+    if(command.GetOptionWasSet("lesshtml"))
+      {
+      showNoErrors = true;
+      }
+    generator.GenerateHTML(htmlDirectory.c_str(),!showNoErrors);
     }
 
   // If we should export the html report
