@@ -207,7 +207,9 @@ std::string Parser::FindMemberFunction(std::string & buffer, long int start, lon
 
     // We check that we don't have the keyword __attribute__
     std::string line = this->GetLine(this->GetLineNumber(posSemicolon)-1);
-    if(line.find("_attribute_") != -1)
+    if((line.find("_attribute_") != -1)
+      || (line.find(" operator") != -1)
+      )
       {
       posSemicolon = buffer.find(";",posSemicolon+1);
       continue;
