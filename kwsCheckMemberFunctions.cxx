@@ -69,7 +69,8 @@ bool Parser::CheckMemberFunctions(const char* regEx)
       while(classpos!=-1)
         {
         std::string classname = this->FindPreviousWord(classpos,false,buffer);
-        if(buffer[classpos-1] != ' ')
+        if(buffer[classpos-1] != ' '
+          && m_BufferNoComment[classpos-1] != '\n')
           {
           classname = "";
           long int i=classpos-1;
@@ -94,7 +95,10 @@ bool Parser::CheckMemberFunctions(const char* regEx)
     std::string memberFunction = this->FindMemberFunction(m_BufferNoComment,classpos,this->FindEndOfClass(classpos+1),current);
     
     std::string classname = this->FindPreviousWord(classpos);
-    if(m_BufferNoComment[classpos-1] != ' ')
+        
+    if(m_BufferNoComment[classpos-1] != ' ' 
+      && m_BufferNoComment[classpos-1] != '\n'
+      )
       {
       classname = "";
       long int i=classpos-1;
@@ -103,7 +107,7 @@ bool Parser::CheckMemberFunctions(const char* regEx)
         classname = m_BufferNoComment[i]+classname;
         i--;
         }
-      }
+      }    
     std::string destructor = "~";
     destructor += classname;
 
