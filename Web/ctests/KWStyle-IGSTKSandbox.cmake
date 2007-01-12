@@ -5,12 +5,11 @@ SET (KWSTYLE_DIRECTORY "${CTEST_SOURCE_DIRECTORY}/Utilities/KWStyle")
 
 # which ctest command to use for running the dashboard
 SET (CTEST_COMMAND  
-#"/DartClient/CMake/bin/ctest -D Nightly -A ${CTEST_SCRIPT_DIRECTORY}/${CTEST_SCRIPT_NAME}"
-"/projects/KWStyle/CMake/bin/ctest -D NightlyStart"
-"/projects/KWStyle/CMake/bin/ctest -D NightlyUpdate"
-"/projects/KWStyle/CMake/bin/ctest -D NightlyConfigure"
+"/projects/KWStyle/CMake-Linux/bin/ctest -D NightlyStart"
+"/projects/KWStyle/CMake-Linux/bin/ctest -D NightlyUpdate"
+"/projects/KWStyle/CMake-Linux/bin/ctest -D NightlyConfigure"
 "/projects/KWStyle/KWStyle-Linux/KWStyle -lesshtml -o ${KWSTYLE_DIRECTORY}/IGSTKOverwrite.txt -xml ${CTEST_BINARY_DIRECTORY}/IGSTK.kws.xml -kwsurl http://66.194.253.24/KWStyleExamples/IGSTKSandbox -html /projects/KWStyle/Examples/IGSTKSandbox -dart ${CTEST_BINARY_DIRECTORY} -1 1 -D ${KWSTYLE_DIRECTORY}/IGSTKFiles.txt" 
-"/projects/KWStyle/CMake/bin/ctest -D NightlySubmit"
+"/projects/KWStyle/CMake-Linux/bin/ctest -D NightlySubmit"
 )
 
 # what cmake command to use for configuring this dashboard
