@@ -15,7 +15,7 @@ SET (CTEST_COMMAND
 
 # what cmake command to use for configuring this dashboard
 SET (CTEST_CMAKE_COMMAND 
-  "/projects/KWStyle/CMake/bin/cmake"
+  "/projects/KWStyle/CMake-Linux/bin/cmake"
   )
 
 # set any extra envionment varibles here
