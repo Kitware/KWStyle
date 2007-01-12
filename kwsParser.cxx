@@ -37,34 +37,11 @@ Parser::~Parser()
  /** To be able to use std::sort we provide the < operator */
 bool Parser::operator<(const Parser& a) const
 {
-  // First count the number of slashes or back slashes
-  unsigned int aslashes = 0;
-  long int pos = m_Filename.find("/",0);
-  while(pos!= -1)
+  if(m_Filename.compare(a.m_Filename))
     {
-    pos = m_Filename.find("/",pos+1);
-    aslashes++;
+    return false;
     }
-  unsigned int bslashes = 0;
-  pos = a.m_Filename.find("/",0);
-  while(pos!= -1)
-    {
-    pos = a.m_Filename.find("/",pos+1);
-    bslashes++;
-    }
-
-  if(aslashes == bslashes)
-    {
-    if(m_Filename.compare(a.m_Filename))
-      {
-      return false;
-      }
-    return true;
-    }
-  else
-    {
-    return aslashes<bslashes;
-    }
+   return true;
 }
   
 /** Given the name of the check to perform and the default value perform the check */
