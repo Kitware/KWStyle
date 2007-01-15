@@ -210,7 +210,7 @@ std::string Parser::FindMemberFunction(std::string & buffer, long int start, lon
     {
 
     // We check that we don't have the keyword __attribute__
-    std::string line = this->GetLine(this->GetLineNumber(posSemicolon)-1);
+    std::string line = this->GetLine(this->GetLineNumber(posSemicolon,true)-1);
     if((line.find("_attribute_") != -1)
       || (line.find(" operator") != -1)
       )
