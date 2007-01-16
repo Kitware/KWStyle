@@ -163,9 +163,37 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
           }
         enumPos = m_BufferNoComment.find("enum",enumPos+1);
         }
-
+  
       std::string word = this->FindPreviousWord(openingChar);
       if(word == "enum")
+        {
+        error = false;
+        }
+
+      // We check that this is not a struct
+      long int structPos = m_BufferNoComment.find("struct");
+      while(structPos != -1)
+        {
+        if(structPos != -1 && openingChar!= -1)
+          {
+          for(unsigned long i=structPos;i<(unsigned long)openingChar+1;i++)
+            {
+            if(m_BufferNoComment[i] == '{')
+              {
+              structPos = i;
+              break;
+              }
+            }
+          if(openingChar == structPos)
+            {
+            error = false;
+            }
+          }
+        structPos = m_BufferNoComment.find("struct",structPos+1);
+        }
+
+      word = this->FindPreviousWord(openingChar);
+      if(word == "struct")
         {
         error = false;
         }
@@ -186,7 +214,6 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
         {
         error = false;
         }
-
 
       // We check that this is not a variable definition
       i = posSemicolon-1;
