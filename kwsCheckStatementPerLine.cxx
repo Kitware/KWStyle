@@ -37,17 +37,18 @@ bool Parser::CheckStatementPerLine(unsigned long max)
     // If we are on the same line
     unsigned long lineNumber = this->GetLineNumber(posSemicolon,true); 
     line = this->GetLine(lineNumber-1);
-    if((lineNumber == currentLine)
-      && (!this->IsBetweenChars('(',')',this->GetPositionInLine(posSemicolon),false,line))
+
+    if(lineNumber != currentLine)
+      {
+      currentLine = lineNumber;
+      statements = 0;
+      }
+
+    if((!this->IsBetweenChars('(',')',this->GetPositionInLine(posSemicolon),false,line))
       && (!this->IsBetweenQuote(this->GetPositionInLine(posSemicolon),false,line))
       )
       {
       statements++;
-      }
-    else if(lineNumber != currentLine)
-      {
-      currentLine = lineNumber;
-      statements = 1;
       }
 
     long int posSemicolon2 = m_BufferNoComment.find(";",posSemicolon+1);
