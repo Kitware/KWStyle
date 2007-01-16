@@ -675,7 +675,57 @@ long int Parser::GetPositionWithComments(long int pos) const
     it++;
     }
   return pos;
+}  
+
+/** Given the position with comments return the position without the comments */
+long int Parser::GetPositionWithoutComments(long int pos) const
+{
+  long int pos2 = pos;
+  std::vector<PairType>::const_iterator it = m_CommentPositions.begin();
+  while(it != m_CommentPositions.end())
+    {
+    if((pos>=(*it).first))
+      {
+      pos2 -= ((*it).second-(*it).first);
+      }
+    else
+      {
+      break;
+      }
+    it++;
+    }
+  return pos2;
 }
+
+/** Return if the dept of the current class 
+ *  This function works on m_BufferNoComments! */
+long int Parser::IsInClass(long int position) const
+{
+  int inClass = 0;
+  long int classPos = this->GetClassPosition(0);
+  while(classPos!=-1)
+    {
+    long int i=classPos;
+    while(i>0 && i<(long int)m_BufferNoComment.size())
+      {
+      if(m_BufferNoComment[i] == '{')
+        {
+        break;
+        }
+      i++;
+      }
+    long int classEnd = this->FindClosingChar('{','}',i+1,true);
+   
+    if(position>classPos && position<classEnd)
+      {
+      inClass++;
+      }
+    classPos = this->GetClassPosition(classPos+1);
+    }
+
+  return inClass;
+}
+
 
 /** Return the line number in the source code given the character position */
 long int Parser::GetLineNumber(long int pos,bool withoutComments) const

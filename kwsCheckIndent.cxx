@@ -89,18 +89,6 @@ bool Parser::CheckIndent(IndentType itype,
   // Create the indentation
   this->InitIndentation();
 
-  // List the identation vector
-  /*std::vector<IndentPosition>::const_iterator itInd = 
-                                              m_IdentPositionVector.begin();
-
-  while(itInd != m_IdentPositionVector.end())
-    {
-    IndentPosition indentPos = *itInd;
-    std::cout << this->GetLineNumber(indentPos.position) << std::endl;
-    itInd++;
-    }
-  */
-
   // If we do not want to check the header
   if(doNotCheckHeader)
     {
@@ -209,6 +197,22 @@ bool Parser::CheckIndent(IndentType itype,
           returnError = false;
           }
 
+        // We check that any definitions of public:, private: and protected:
+        // are not within a double class (class inside a class)
+        // WARNING: We just ignore the error at that point (maybe more checking
+        // will be necessary)
+        if(sindent->name == "public:" 
+          || sindent->name == "protected:" 
+          || sindent->name == "private:"
+          )
+          {
+          int inClass = this->IsInClass(this->GetPositionWithoutComments(pos));
+          if(inClass>1)
+            {
+            returnError = false;
+            }
+          }
+
         if(returnError)
           {
           Error error;
@@ -217,7 +221,7 @@ bool Parser::CheckIndent(IndentType itype,
           error.number = INDENT;
           error.description = "Special Indent is wrong ";
           char* val = new char[10];
-          sprintf(val,"%d",sindent->current); 
+          sprintf(val,"%d",currentIndent); 
           error.description += val;
           error.description += " (should be ";
           delete [] val;
@@ -346,7 +350,7 @@ bool Parser::CheckIndent(IndentType itype,
             }
           }
         // If the ident is between a '=' and a ';' we ignore
-        // This is for listes. THIS IS NOT A STRICT CHECK. Might be missing some.
+        // This is for lists. THIS IS NOT A STRICT CHECK. Might be missing some.
         if(reportError)
           {
           long int classPos = m_Buffer.find("=",0);
@@ -755,6 +759,7 @@ void Parser::AddIndent(const char* name,long int current,long int after)
     ind.position = posPrev;
     ind.current = current;
     ind.after = after;
+    ind.name = name;
     m_IdentPositionVector.push_back(ind);
     posPrev = m_Buffer.find(name,posPrev+1);
     }

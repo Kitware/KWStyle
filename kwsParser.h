@@ -126,6 +126,8 @@ typedef struct
   // What should be the position in the line of
   // the words after w.r.t the previous position 
   int after;
+  // Name of the current ident
+  std::string name;
   } IndentPosition;
 
 class Parser
@@ -376,6 +378,7 @@ protected:
 
   /** Given the position without comments return the position with the comments */
   long int GetPositionWithComments(long int pos) const;
+  long int GetPositionWithoutComments(long int pos) const;
 
   /** Init the indentation step for CheckIndent() */
   bool InitIndentation();
@@ -391,6 +394,9 @@ protected:
 
   /** Find the end of the class */
   long int FindEndOfClass(long int position) const;
+
+  /** Return if the dept of the current class */
+  long int IsInClass(long int position) const;
 
 private:
 
