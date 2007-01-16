@@ -27,12 +27,12 @@ bool Parser::CheckVariablePerLine(unsigned long max)
 
   // For the moment only standard types are defined.
   // We might be able to do more with finding typedefs
-  #define ntypes 10
+  #define ntypes 11
   const char* types[ntypes] = {"int","unsigned int",
    "char","unsigned char",
    "short","unsigned short",
    "long","unsigned long",
-   "float","double"};
+   "float","double","void"};
 
   bool hasError = false;
   for(unsigned int i = 0;i<ntypes;i++)
