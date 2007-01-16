@@ -239,7 +239,8 @@ std::string Parser::FindMemberFunction(std::string & buffer, long int start, lon
        {
        std::string functionName = "";
        bool inWord = false;
-       for(long int i=pos;i>start;i--)
+       long int i=pos;
+       for(i;i>start;i--)
          {
          if(buffer[i] != ' ' && buffer[i] != '\r' && buffer[i] != '\n')
            {
@@ -251,7 +252,13 @@ std::string Parser::FindMemberFunction(std::string & buffer, long int start, lon
            break;
            }
          }
-       return functionName;
+
+       // Check that this is not a #define (tricky)
+       std::string functionLine = this->GetLine(this->GetLineNumber(i,true)-1);
+       if(functionLine.find("#define") == -1)
+         {
+         return functionName;
+         }
        }
     posSemicolon = buffer.find(";",posSemicolon+1);
     }
