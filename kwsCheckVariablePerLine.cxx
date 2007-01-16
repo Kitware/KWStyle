@@ -81,16 +81,38 @@ bool Parser::CheckVariablePerLine(unsigned long max)
           poscom = line.find("/*",poscom+1);
           }
 
-        // If we have any '(' or ')' in the line we stop
+        // If we have any '(' in the line we stop
         if(line.find('(') == -1)
           {
-          // This is a very simple check we count the number of coma
+          // This is a very simple check we count the number of comas
           unsigned int vars = 1;
           pos = line.find(',',0);
           while(pos!=-1)
             {
-            vars++;
-            pos = line.find(',',pos+1);
+            // Check that we are not initializing an array
+            bool betweenBraces = false;           
+            long int openCurly = pos-1;
+            while(openCurly>0)
+              {
+              // Ok we have the opening
+              if(line[openCurly] == '{')
+                {
+                long int posClosing = this->FindClosingChar('{','}',openCurly,false,line);
+                if(posClosing == -1
+                  || pos<posClosing)
+                  {
+                  betweenBraces = true;
+                  }
+                break;
+                }
+              openCurly--;
+              }
+              
+            if(!betweenBraces)
+              {
+              vars++;
+              }
+            pos = line.find(',',pos+1);  
             }
           
           if(vars > max)
