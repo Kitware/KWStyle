@@ -177,10 +177,14 @@ bool Parser::CheckMemberFunctions(const char* regEx)
          std::string functionName = m_BufferNoComment.substr(i,pos3-i);
          std::string destructor = "~";
          destructor += classname;
+
+         std::string functionLine = this->GetLine(this->GetLineNumber(i,true)-1);
+         
          // if the member function is a constructor or destructor we ignore
          if(functionName != classname
            && functionName != destructor
            && !regex.find(functionName)
+           && functionLine.find("typedef ") == -1
            )
            {
            Error error;
