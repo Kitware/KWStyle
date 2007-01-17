@@ -15,8 +15,6 @@
 
 namespace kws {
 
-
-
 /** Check if the internal variables of the class are correct */
 bool Parser::CheckInternalVariables(const char* regEx,bool alignment,bool checkProtected)
 {
@@ -42,214 +40,219 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment,bool checkP
 
   kwssys::RegularExpression regex(regEx);
 
-  // First we check in the public area
-  long int publicFirst;
-  long int publicLast;
-  this->FindPublicArea(publicFirst,publicLast);
-
-  long int previousline = 0;
-  long int previouspos = 0;
-  
-  long int pos = publicFirst;
-  while(pos!= -1)
+  // We loop through the classes
+  int classPosBegin = this->GetClassPosition(0);
+  while(classPosBegin != -1)
     {
-    std::string var = this->FindInternalVariable(pos+1,publicLast,pos);
-    if(var == "")
-      {
-      continue;
-      }
+    // First we check in the public area
+    long int publicFirst;
+    long int publicLast;
+    this->FindPublicArea(publicFirst,publicLast,classPosBegin);
 
-    if(this->IsInStruct(pos) || this->IsInUnion(pos))
+    long int previousline = 0;
+    long int previouspos = 0;
+    
+    long int pos = publicFirst;
+    while(pos!= -1)
       {
-      continue;
-      }
-
-    if(var.length() > 0)
-      {
-      if(checkProtected)
+      std::string var = this->FindInternalVariable(pos+1,publicLast,pos);
+      if(var == "")
         {
-        Error error;
-        error.line = this->GetLineNumber(pos,true);
-        error.line2 = error.line;
-        error.number = IVAR_PUBLIC;
-        error.description = "Encapsulation not preserved";
-        m_ErrorList.push_back(error);
-        hasError = true;
+        continue;
+        }
+
+      /*if(this->IsInStruct(pos) || this->IsInUnion(pos))
+        {
+        continue;
+        }*/
+
+      if(var.length() > 0)
+        {
+        if(checkProtected)
+          {
+          Error error;
+          error.line = this->GetLineNumber(pos,true);
+          error.line2 = error.line;
+          error.number = IVAR_PUBLIC;
+          error.description = "Encapsulation not preserved";
+          m_ErrorList.push_back(error);
+          hasError = true;
+          }
+        
+        // Check the alignment if specified
+        if(alignment)
+          {
+          // Find the position in the line
+          unsigned long posvar = m_BufferNoComment.find(var,pos-var.size()-2);
+          unsigned long l = this->GetPositionInLine(posvar);
+          unsigned long line = this->GetLineNumber(pos,true);
+
+          // if the typedef is on a line close to the previous one we check
+          if(line-previousline<2)
+            {
+            if(l!=previouspos)
+              {
+              Error error;
+              error.line = this->GetLineNumber(pos,true);
+              error.line2 = error.line;
+              error.number = IVAR_ALIGN;
+              error.description = "Internal variable (" + var + ") is not aligned with the previous one";
+              m_ErrorList.push_back(error);
+              hasError = true;
+              }
+            }
+          else
+            {
+            previouspos = l;
+            }
+          previousline = line;
+          } // end alignement
+
+        if(!regex.find(var))
+          {
+          Error error;
+          error.line = this->GetLineNumber(pos,true);
+          error.line2 = error.line;
+          error.number = IVAR_REGEX;
+          error.description = "Internal variable (" + var + ") doesn't match regular expression";
+          m_ErrorList.push_back(error);
+          hasError = true;
+          }
+        }
+      }
+
+    // Second in the protected area
+    long int protectedFirst;
+    long int protectedLast;
+    this->FindProtectedArea(protectedFirst,protectedLast);
+    pos = protectedFirst;
+
+    previousline = 0;
+    previouspos = 0;
+
+    while(pos!= -1)
+      {
+      std::string var = this->FindInternalVariable(pos+1,protectedLast,pos);
+
+      if(var == "")
+        {
+        continue;
+        }
+   
+      if(this->IsInStruct(pos) || this->IsInUnion(pos))
+        {
+        continue;
+        }
+
+      if(var.length() > 0)
+        {
+        // Check the alignment if specified
+        if(alignment)
+          {
+          // Find the position in the line
+          unsigned long posvar = m_BufferNoComment.find(var,pos-var.size()-2);
+          unsigned long l = this->GetPositionInLine(posvar);
+          unsigned long line = this->GetLineNumber(pos,true);
+
+          // if the typedef is on a line close to the previous one we check
+          if(line-previousline<2)
+            {
+            if(l!=previouspos)
+              {
+              Error error;
+              error.line = this->GetLineNumber(pos,true);
+              error.line2 = error.line;
+              error.number = IVAR_ALIGN;
+              error.description = "Internal variable (" + var + ") is not aligned with the previous one";
+              m_ErrorList.push_back(error);
+              hasError = true;
+              }
+            }
+          else
+            {
+            previouspos = l;
+            }
+          previousline = line;
+          } // end alignement
+
+        if(!regex.find(var))
+          {
+          Error error;
+          error.line = this->GetLineNumber(pos,true);
+          error.line2 = error.line;
+          error.number = IVAR_REGEX;
+          error.description = "Internal variable (" + var + ") doesn't match regular expression.";
+          m_ErrorList.push_back(error);
+          hasError = true;
+          }
+        }
+      }
+
+    // Third and last in the private area
+    long int privateFirst;
+    long int privateLast;
+    this->FindPrivateArea(privateFirst,privateLast);
+    pos = privateFirst;
+    previousline = 0;
+    previouspos = 0;
+    while(pos != -1)
+      {
+      std::string var = this->FindInternalVariable(pos+1,privateLast,pos); 
+      if(var == "")
+        {
+        continue;
         }
       
-      // Check the alignment if specified
-      if(alignment)
+      if(this->IsInStruct(pos) || this->IsInUnion(pos))
         {
-        // Find the position in the line
-        unsigned long posvar = m_BufferNoComment.find(var,pos-var.size()-2);
-        unsigned long l = this->GetPositionInLine(posvar);
-        unsigned long line = this->GetLineNumber(pos,true);
+        continue;
+        }
 
-        // if the typedef is on a line close to the previous one we check
-        if(line-previousline<2)
+      if(var.length() > 0)
+        {
+        // Check the alignment if specified
+        if(alignment)
           {
-          if(l!=previouspos)
+          // Find the position in the line
+          unsigned long posvar = m_BufferNoComment.find(var,pos-var.size()-2);
+          unsigned long l = this->GetPositionInLine(posvar);
+          unsigned long line = this->GetLineNumber(pos,true);
+
+          // if the typedef is on a line close to the previous one we check
+          if(line-previousline<2)
             {
-            Error error;
-            error.line = this->GetLineNumber(pos,true);
-            error.line2 = error.line;
-            error.number = IVAR_ALIGN;
-            error.description = "Internal variable (" + var + ") is not aligned with the previous one";
-            m_ErrorList.push_back(error);
-            hasError = true;
+            if(l!=previouspos)
+              {
+              Error error;
+              error.line = this->GetLineNumber(pos,true);
+              error.line2 = error.line;
+              error.number = IVAR_ALIGN;
+              error.description = "Internal variable (" + var + ") is not aligned with the previous one";
+              m_ErrorList.push_back(error);
+              hasError = true;
+              }
             }
-          }
-        else
-          {
-          previouspos = l;
-          }
-        previousline = line;
-        } // end alignement
+          else
+            {
+            previouspos = l;
+            }
+          previousline = line;
+          } // end alignement
 
-      if(!regex.find(var))
-        {
-        Error error;
-        error.line = this->GetLineNumber(pos,true);
-        error.line2 = error.line;
-        error.number = IVAR_REGEX;
-        error.description = "Internal variable (" + var + ") doesn't match regular expression";
-        m_ErrorList.push_back(error);
-        hasError = true;
+        if(!regex.find(var))
+          {
+          Error error;
+          error.line = this->GetLineNumber(pos,true);
+          error.line2 = error.line;
+          error.number = IVAR_REGEX;
+          error.description = "Internal variable(" + var + ") doesn't match regular expression";
+          m_ErrorList.push_back(error);
+          hasError = true;
+          }
         }
       }
-    }
-
-  // Second in the protected area
-  long int protectedFirst;
-  long int protectedLast;
-  this->FindProtectedArea(protectedFirst,protectedLast);
-  pos = protectedFirst;
-
-  previousline = 0;
-  previouspos = 0;
-
-  while(pos!= -1)
-    {
-    std::string var = this->FindInternalVariable(pos+1,protectedLast,pos);
-
-    if(var == "")
-      {
-      continue;
-      }
- 
-    if(this->IsInStruct(pos) || this->IsInUnion(pos))
-      {
-      continue;
-      }
-
-    if(var.length() > 0)
-      {
-      // Check the alignment if specified
-      if(alignment)
-        {
-        // Find the position in the line
-        unsigned long posvar = m_BufferNoComment.find(var,pos-var.size()-2);
-        unsigned long l = this->GetPositionInLine(posvar);
-        unsigned long line = this->GetLineNumber(pos,true);
-
-        // if the typedef is on a line close to the previous one we check
-        if(line-previousline<2)
-          {
-          if(l!=previouspos)
-            {
-            Error error;
-            error.line = this->GetLineNumber(pos,true);
-            error.line2 = error.line;
-            error.number = IVAR_ALIGN;
-            error.description = "Internal variable (" + var + ") is not aligned with the previous one";
-            m_ErrorList.push_back(error);
-            hasError = true;
-            }
-          }
-        else
-          {
-          previouspos = l;
-          }
-        previousline = line;
-        } // end alignement
-
-      if(!regex.find(var))
-        {
-        Error error;
-        error.line = this->GetLineNumber(pos,true);
-        error.line2 = error.line;
-        error.number = IVAR_REGEX;
-        error.description = "Internal variable (" + var + ") doesn't match regular expression.";
-        m_ErrorList.push_back(error);
-        hasError = true;
-        }
-      }
-    }
-
-  // Third and last in the private area
-  long int privateFirst;
-  long int privateLast;
-  this->FindPrivateArea(privateFirst,privateLast);
-  pos = privateFirst;
-  previousline = 0;
-  previouspos = 0;
-  while(pos != -1)
-    {
-    std::string var = this->FindInternalVariable(pos+1,privateLast,pos); 
-    if(var == "")
-      {
-      continue;
-      }
-    
-    if(this->IsInStruct(pos) || this->IsInUnion(pos))
-      {
-      continue;
-      }
-
-    if(var.length() > 0)
-      {
-      // Check the alignment if specified
-      if(alignment)
-        {
-        // Find the position in the line
-        unsigned long posvar = m_BufferNoComment.find(var,pos-var.size()-2);
-        unsigned long l = this->GetPositionInLine(posvar);
-        unsigned long line = this->GetLineNumber(pos,true);
-
-        // if the typedef is on a line close to the previous one we check
-        if(line-previousline<2)
-          {
-          if(l!=previouspos)
-            {
-            Error error;
-            error.line = this->GetLineNumber(pos,true);
-            error.line2 = error.line;
-            error.number = IVAR_ALIGN;
-            error.description = "Internal variable (" + var + ") is not aligned with the previous one";
-            m_ErrorList.push_back(error);
-            hasError = true;
-            }
-          }
-        else
-          {
-          previouspos = l;
-          }
-        previousline = line;
-        } // end alignement
-
-      if(!regex.find(var))
-        {
-        Error error;
-        error.line = this->GetLineNumber(pos,true);
-        error.line2 = error.line;
-        error.number = IVAR_REGEX;
-        error.description = "Internal variable(" + var + ") doesn't match regular expression";
-        m_ErrorList.push_back(error);
-        hasError = true;
-        }
-      }
-    }
-
+      classPosBegin = this->GetClassPosition(classPosBegin+1);
+    } // End loop class pos
   return !hasError;
 }
 

@@ -820,7 +820,7 @@ void Parser::FindPublicArea(long &before, long &after, size_t startPos) const
       after = protect;
       }
     }
-
+  
   // If there is nothing after we point to the end of the class
   if(after == MAX_CHAR)
     {
