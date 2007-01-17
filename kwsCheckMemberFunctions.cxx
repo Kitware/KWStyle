@@ -208,7 +208,6 @@ std::string Parser::FindMemberFunction(std::string & buffer, long int start, lon
   long int posSemicolon = buffer.find(";",start);
   while(posSemicolon != -1 && posSemicolon<end)
     {
-
     // We check that we don't have the keyword __attribute__
     std::string line = this->GetLine(this->GetLineNumber(posSemicolon,true)-1);
     if((line.find("_attribute_") != -1)
@@ -218,7 +217,7 @@ std::string Parser::FindMemberFunction(std::string & buffer, long int start, lon
       posSemicolon = buffer.find(";",posSemicolon+1);
       continue;
       }
-
+       
     // We try to find a (
     long int i=posSemicolon-1;
     bool inFunction = true;
@@ -255,7 +254,9 @@ std::string Parser::FindMemberFunction(std::string & buffer, long int start, lon
 
        // Check that this is not a #define (tricky)
        std::string functionLine = this->GetLine(this->GetLineNumber(i,true)-1);
-       if(functionLine.find("#define") == -1)
+       if(functionLine.find("#define") == -1
+         && functionLine.find("_attribute_") == -1
+         && functionLine.find(" operator") == -1)
          {
          return functionName;
          }

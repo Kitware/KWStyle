@@ -764,6 +764,10 @@ void Parser::FindPublicArea(long &before, long &after, size_t startPos) const
   
   if(pub == -1)
     {
+    // ok we don't have any public area
+    before = -1;
+    after = -1;
+    return;
     pub = MAX_CHAR;
     }
 
