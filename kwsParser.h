@@ -26,7 +26,7 @@
 namespace kws
 {
 #define MAX_CHAR 99999999
-#define NUMBER_ERRORS 29
+#define NUMBER_ERRORS 30
 
 typedef enum
   {
@@ -64,7 +64,8 @@ typedef enum
   STATEMENTPERLINE,
   VARIABLEPERLINE,
   BADCHARACTERS,
-  MEMBERFUNCTION_REGEX
+  MEMBERFUNCTION_REGEX,
+  MEMBERFUNCTION_LENGTH
   } ErrorType;
 
 const char ErrorTag[NUMBER_ERRORS][4] = {
@@ -97,6 +98,7 @@ const char ErrorTag[NUMBER_ERRORS][4] = {
    {'V','P','L','\0'},
    {'B','C','H','\0'},   
    {'M','B','F','\0'},
+   {'M','F','L','\0'}
   };
 
 
@@ -204,7 +206,7 @@ public:
   bool CheckVariables(const char* regEx);
   
   /** Check Member Functions implementation */
-  bool CheckMemberFunctions(const char* regEx);
+  bool CheckMemberFunctions(const char* regEx,unsigned long maxLength=0);
 
   /** Check if the strcut parameters of the class are correct */
   bool CheckStruct(const char* regEx,bool alignement = true);

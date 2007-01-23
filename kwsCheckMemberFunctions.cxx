@@ -16,11 +16,19 @@
 namespace kws {
 
 /** Check if the member function implementation of the class are correct */
-bool Parser::CheckMemberFunctions(const char* regEx)
+bool Parser::CheckMemberFunctions(const char* regEx,unsigned long maxLength)
 {
   m_TestsDone[MEMBERFUNCTION_REGEX] = true;
   m_TestsDescription[MEMBERFUNCTION_REGEX] = "Member functions should match regular expression: ";
   m_TestsDescription[MEMBERFUNCTION_REGEX] += regEx;
+
+  if(maxLength>0)
+    {
+    m_TestsDone[MEMBERFUNCTION_LENGTH] = true;
+    m_TestsDescription[MEMBERFUNCTION_LENGTH] = "Member functions must not exceed: ";
+    m_TestsDescription[MEMBERFUNCTION_LENGTH] += maxLength;
+    m_TestsDescription[MEMBERFUNCTION_LENGTH] += " lines";
+    }
 
   // First we need to find the parameters
   bool hasError = false;
@@ -116,16 +124,49 @@ bool Parser::CheckMemberFunctions(const char* regEx)
       // if the member function is a constructor or destructor we ignore
       if(memberFunction != classname
         && memberFunction != destructor
-        && !regex.find(memberFunction)
         )
         {
-        Error error;
-        error.line = this->GetLineNumber(current,true);
-        error.line2 = error.line;
-        error.number = MEMBERFUNCTION_REGEX;
-        error.description = "function (" + memberFunction + ") doesn't match regular expression";
-        m_ErrorList.push_back(error);
-        hasError = true;
+        if(!regex.find(memberFunction))
+          {
+          Error error;
+          error.line = this->GetLineNumber(current,true);
+          error.line2 = error.line;
+          error.number = MEMBERFUNCTION_REGEX;
+          error.description = "function (" + memberFunction + ") doesn't match regular expression";
+          m_ErrorList.push_back(error);
+          hasError = true;
+          }
+
+        // Check the size of the current memberFunction
+        if(maxLength>0 && current!=-1)
+          {
+          long int open = m_BufferNoComment.find("{",current);
+          long int semicolon = m_BufferNoComment.find(";",current);
+          if(semicolon>open)
+            {
+            long int close = this->FindClosingChar('{','}',open,true);
+            long int lopen = this->GetLineNumber(open);
+            long int lclose = this->GetLineNumber(close);
+            if((open>-1) && (close>-1) && (lclose-lopen>(long int)maxLength))
+              {
+              Error error;
+              error.line = this->GetLineNumber(current,true);
+              error.line2 = error.line;
+              error.number = MEMBERFUNCTION_LENGTH;
+              error.description = "function (" + memberFunction + ") has too many lines: ";
+              char* temp = new char[10];
+              sprintf(temp,"%d",lclose-lopen);
+              error.description += temp;
+              error.description += " (";
+              sprintf(temp,"%d",maxLength);
+              error.description += temp;
+              error.description += ")";
+              m_ErrorList.push_back(error);
+              hasError = true;
+              delete [] temp; 
+              }
+            }
+          }
         }
       memberFunction = this->FindMemberFunction(m_BufferNoComment,current+1,this->FindEndOfClass(classpos+1),current);
       }
@@ -183,17 +224,45 @@ bool Parser::CheckMemberFunctions(const char* regEx)
          // if the member function is a constructor or destructor we ignore
          if(functionName != classname
            && functionName != destructor
-           && !regex.find(functionName)
            && functionLine.find("typedef ") == -1
            )
            {
-           Error error;
-           error.line = this->GetLineNumber(i,true);
-           error.line2 = error.line;
-           error.number = MEMBERFUNCTION_REGEX;
-           error.description = "function (" + functionName + ") doesn't match regular expression";
-           m_ErrorList.push_back(error);
-           hasError = true;
+           if(!regex.find(functionName))
+             {
+             Error error;
+             error.line = this->GetLineNumber(i,true);
+             error.line2 = error.line;
+             error.number = MEMBERFUNCTION_REGEX;
+             error.description = "function (" + functionName + ") doesn't match regular expression";
+             m_ErrorList.push_back(error);
+             hasError = true;
+             }
+
+           if(maxLength>0)
+             {
+             long int open = m_BufferNoComment.find("{",i);
+             long int close = this->FindClosingChar('{','}',open,true);
+             long int lopen = this->GetLineNumber(open);
+             long int lclose = this->GetLineNumber(close);
+             if((open>-1) && (close>-1) && (lclose-lopen>(long int)maxLength))
+               {
+               Error error;
+               error.line = this->GetLineNumber(pos3,true);
+               error.line2 = error.line;
+               error.number = MEMBERFUNCTION_LENGTH;
+               error.description = "function (" + functionName + ") has too many lines: ";
+               char* temp = new char[10];
+               sprintf(temp,"%d",lclose-lopen);
+               error.description += temp;
+               error.description += " (";
+               sprintf(temp,"%d",maxLength);
+               error.description += temp;
+               error.description += ")";
+               m_ErrorList.push_back(error);
+               hasError = true;
+               delete [] temp; 
+               }
+             }
            }
          }
         }

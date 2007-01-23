@@ -155,7 +155,16 @@ bool Parser::Check(const char* name, const char* value)
     }
   else if(!strcmp(name,"MemberFunctions"))
     {
-    this->CheckMemberFunctions(value);
+    std::string val = value;
+    std::string v1 = value;
+    std::string v2 = "0";
+    long pos = val.find(",",0);
+    if(pos != -1)
+      {
+      v1 = val.substr(0,pos);
+      v2 = val.substr(pos+1,val.size()-pos-1);
+      }
+    this->CheckMemberFunctions(v1.c_str(),atoi(v2.c_str()));
     return true;
     }
   else if(!strcmp(name,"SemicolonSpace"))
