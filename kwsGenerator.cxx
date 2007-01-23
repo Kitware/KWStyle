@@ -403,16 +403,6 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
       }
     filename += filename2;
     
-    /*
-    long int slash = (*it).GetFilename().find_last_of("/");
-    if(slash == -1)
-      {
-      slash = 0;
-      }
-    std::string nameofclass = (*it).GetFilename().substr(slash+1,((*it).GetFilename().size())-slash-1);  
-    filename += nameofclass;
-    */
-    
     filename += ".html";
 
     file.open(filename.c_str(), std::ios::binary | std::ios::out);
@@ -574,29 +564,6 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
         l.insert(0,"<font color=\"#009933\">");
         }
 
-      space = l.find("/*",0);
-      while(space != -1)  
-        {
-        comment = true;
-        l.insert(space,"<font color=\"#009933\">");
-        space = l.find("/*",space+23);
-        }
-
-      if(comment)
-        {
-        l.insert(l.size(),"</font>");
-        }
-
-      space = l.find("*/",0);
-      
-      while(space != -1)
-        {
-        comment = false;
-        l.insert(space+2,"</font>");
-      
-       space = l.find("*/",space+8);
-       }
-
       // Show the comments in green
       space = l.find("//",0);
       if(space != -1)  
@@ -604,7 +571,30 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
         l.insert(space,"<font color=\"#009933\">");
         l += "<font>";
         }
+      else
+        {
+        space = l.find("/*",0);
+        while(space != -1)  
+          {
+          comment = true;
+          l.insert(space,"<font color=\"#009933\">");
+          space = l.find("/*",space+23);
+          }
 
+        if(comment)
+          {
+          l.insert(l.size(),"</font>");
+          }
+
+        space = l.find("*/",0);
+        
+        while(space != -1)
+          {
+          comment = false;
+          l.insert(space+2,"</font>");
+          space = l.find("*/",space+8);
+          }
+        }
       file << "<td height=\"1\"><font face=\"Courier New, Courier, mono\" size=\"2\">" << l.c_str() << "</font></td>" << std::endl;
       file << "</tr>" << std::endl;
       }
@@ -824,33 +814,35 @@ void Generator::ExportHTML(std::ostream & output)
         l.insert(0,"<font color=\"#009933\">");
         }
 
-      space = l.find("/*",0);
-      while(space != -1)  
-        {
-        comment = true;
-        l.insert(space,"<font color=\"#009933\">");
-        space = l.find("/*",space+23);
-        }
-
-      if(comment)
-        {
-        l.insert(l.size(),"</font>");
-        }
-
-      space = l.find("*/",0);
-      while(space != -1)
-        {
-        comment = false;
-        l.insert(space+2,"</font>");
-        space = l.find("*/",space+8);
-        }
-
       // Show the comments in green
       space = l.find("//",0);
       if(space != -1)  
         {
         l.insert(space,"<font color=\"#009933\">");
         l += "<font>";
+        }
+      else // if we have a line like // */ this is a single line comment
+        {
+        space = l.find("/*",0);
+        while(space != -1)  
+          {
+          comment = true;
+          l.insert(space,"<font color=\"#009933\">");
+          space = l.find("/*",space+23);
+          }
+
+        if(comment)
+          {
+          l.insert(l.size(),"</font>");
+          }
+
+        space = l.find("*/",0);
+        while(space != -1)
+          {
+          comment = false;
+          l.insert(space+2,"</font>");
+          space = l.find("*/",space+8);
+          }
         }
 
       output << "<td height=\"1\"><font face=\"Courier New, Courier, mono\" size=\"2\">" << l.c_str() << "</font></td>" << std::endl;
