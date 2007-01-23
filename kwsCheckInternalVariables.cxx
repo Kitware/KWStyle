@@ -61,10 +61,10 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment,bool checkP
         continue;
         }
 
-      /*if(this->IsInStruct(pos) || this->IsInUnion(pos))
+      if(this->IsInStruct(pos) || this->IsInUnion(pos))
         {
         continue;
-        }*/
+        }
 
       if(var.length() > 0)
         {
