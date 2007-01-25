@@ -4,16 +4,16 @@ SET (CTEST_BINARY_DIRECTORY "/projects/KWStyle/SOViewer-Linux")
 # which ctest command to use for running the dashboard
 SET (CTEST_COMMAND  
 #"/DartClient/CMake/bin/ctest -D Experimental -A ${CTEST_SCRIPT_DIRECTORY}/${CTEST_SCRIPT_NAME}"
-"/projects/KWStyle/CMake/bin/ctest -D ExperimentalStart"
-"/projects/KWStyle/CMake/bin/ctest -D ExperimentalUpdate"
-"/projects/KWStyle/CMake/bin/ctest -D ExperimentalConfigure"
-"/projects/KWStyle/KWStyle-Linux/KWStyle -xml /projects/KWStyle/KWStyle/Web/SOViewer.kws.xml -kwsurl http://66.194.253.24/KWStyleExamples/SOViewer -html /projects/KWStyle/Examples/SOViewer -dart ${CTEST_BINARY_DIRECTORY} -1 1 -R -d ${CTEST_SOURCE_DIRECTORY}"
-"/projects/KWStyle/CMake/bin/ctest -D ExperimentalSubmit"
+"/projects/KWStyle/CMake-Linux/bin/ctest -D ExperimentalStart"
+"/projects/KWStyle/CMake-Linux/bin/ctest -D ExperimentalUpdate"
+"/projects/KWStyle/CMake-Linux/bin/ctest -D ExperimentalConfigure"
+"/projects/KWStyle/KWStyle-Linux/KWStyle -xml /projects/KWStyle/KWStyle/Web/SOViewer.kws.xml -kwsurl http://66.194.253.24/KWStyleExamples/SOViewer -html /projects/KWStyle/Examples/SOViewer -dart ${CTEST_BINARY_DIRECTORY} -1 1 -R -D /projects/KWStyle/KWStyle/Web/SOViewerFiles.txt"
+"/projects/KWStyle/CMake-Linux/bin/ctest -D ExperimentalSubmit"
 )
 
 # what cmake command to use for configuring this dashboard
 SET (CTEST_CMAKE_COMMAND 
-  "/projects/KWStyle/CMake/bin/cmake"
+  "/projects/KWStyle/CMake-Linux/bin/cmake"
   )
 
 # set any extra envionment varibles here
