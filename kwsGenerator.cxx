@@ -134,10 +134,10 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
   file << "  </td>" << std::endl;
 
   // Check the number of tests that have been performed
-  bool tests[NUMBER_ERRORS];
+  int tests[NUMBER_ERRORS];
   for(unsigned int i=0;i<NUMBER_ERRORS;i++)
     {
-    tests[i] = false;
+    tests[i] = -1;
     }
 
   ParserVectorType::const_iterator it = m_Parsers->begin();
@@ -147,7 +147,7 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
       {
       if((*it).HasBeenPerformed(i))
         {
-        tests[i] = true;
+        tests[i] = 0;
         }
       }
     it++;
@@ -155,7 +155,7 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
   unsigned int nTests = 0;
   for(unsigned int i=0;i<NUMBER_ERRORS;i++)
     {
-    if(tests[i])
+    if(tests[i]==0)
       {
       nTests++;
       }
@@ -164,7 +164,7 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
   unsigned int width = 90/nTests;
   for(unsigned int i=0;i<NUMBER_ERRORS;i++)
     {
-    if(!tests[i])
+    if(tests[i]==-1)
       {
       continue;
       }
@@ -174,6 +174,7 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
     }
   file << "</tr>" << std::endl;
 
+  bool gotErrors = false;
   it = m_Parsers->begin();
 
   std::sort(m_Parsers->begin(),m_Parsers->end());
@@ -187,6 +188,8 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
       it++;
       continue;
       }
+
+    gotErrors = true;
 
     // If we have a new directory we show it on a new line
     std::string filenamePath = kwssys::SystemTools::GetFilenamePath((*it).GetFilename());
@@ -241,10 +244,11 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
     unsigned int width = 90/nTests;
     for(unsigned int i=0;i<NUMBER_ERRORS;i++)
       {
-      if(!tests[i])
+      if(tests[i]==-1)
         {
         continue;
         }
+
       // Count the number of errors for this type of error
       unsigned int nerror = 0;
       
@@ -254,6 +258,7 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
         {
         if((*itError).number == i)
           {
+          tests[i]++;
           nerror++;
           }
         itError++;
@@ -288,8 +293,58 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
     it++;
     }
 
+  // If we have error reporting we display a summary
+  if(gotErrors)
+    {
+    file << "<tr>" << std::endl;
+    file << "  <td width=\"10%\"> " << std::endl;
+    file << "    <div align=\"center\"><b>Summary</b></div>" << std::endl;
+    file << "  </td>" << std::endl;
+
+    unsigned int width = 90/nTests;
+    for(unsigned int i=0;i<NUMBER_ERRORS;i++)
+      {
+      // Count the number of errors for this type of error
+      int nerror = tests[i];
+      if(nerror == -1)
+        {
+        continue;
+        }
+
+      file << "  <td width=\"" << width << "%\"";
+      if(nerror == 0)
+        {
+        /*if(!(*it).HasBeenPerformed(i))
+          {
+          file << "bgcolor=\"#cccccc\"";
+          }
+        else
+          {*/
+          file << "bgcolor=\"#00aa00\"";
+          /*}*/
+        }
+      else if(nerror <= (int)m_ErrorThreshold)
+        {
+        file << "bgcolor=\"#ffcc66\"";
+        }
+      else
+        {
+        file << "bgcolor=\"#ff6666\"";
+        }
+      file << ">" << std::endl;
+      file << "    <div align=\"center\"><b>" << nerror << "</b></div>" << std::endl;
+      file << "  </td>" << std::endl;
+      }
+    file << "</tr>" << std::endl; 
+    }
   file << "</table>" << std::endl;
   
+  // If no error we say it
+  if(!gotErrors)
+    {
+    file << "<div align=\"center\"><b>No error reported</b></div>" << std::endl;
+    }
+
   this->CreateFooter(&file);    
   file.close();
 
