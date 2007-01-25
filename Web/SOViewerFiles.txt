@@ -1,0 +1,3 @@
+/projects/KWStyle/SOViewer/Common/*.h
+/projects/KWStyle/SOViewer/Common/*.cxx
+/projects/KWStyle/SOViewer/Common/*.txx
