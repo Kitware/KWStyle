@@ -213,6 +213,31 @@ bool Parser::CheckIndent(IndentType itype,
             }
           }
 
+        // Check if we are inside a macro. If yes we disable the checking of the ident
+        // (This is too complex for macros)
+        if(returnError)
+          {
+          // We are in a macro if we have
+          // '#define foo' and the line finishs with '\'
+          long int begMacro = m_Buffer.find("#define",0);
+          while(begMacro!=-1)
+            {
+            // Find the end of the macro
+            long int endMacro = m_Buffer.find("\r",begMacro);
+            while(endMacro>0 && m_Buffer[endMacro-1]=='\\')
+              {
+              endMacro = m_Buffer.find("\r",endMacro+1);
+              }
+
+            if(endMacro!=-1 && (long int)pos<endMacro && (long int)pos>begMacro)
+              {
+              returnError = false;
+              break;
+              }
+            begMacro = m_Buffer.find("#define",endMacro);
+            }
+          }
+
         if(returnError)
           {
           Error error;
@@ -363,6 +388,31 @@ bool Parser::CheckIndent(IndentType itype,
               break;
               }
             classPos = m_Buffer.find("=",classPos+1);
+            }
+          }
+
+        // Check if we are inside a macro. If yes we disable the checking of the ident
+        // (This is too complex for macros)
+        if(reportError)
+          {
+          // We are in a macro if we have
+          // '#define foo' and the line finishs with '\'
+          long int begMacro = m_Buffer.find("#define",0);
+          while(begMacro!=-1)
+            {
+            // Find the end of the macro
+            long int endMacro = m_Buffer.find("\r",begMacro);
+            while(endMacro>0 && m_Buffer[endMacro-1]=='\\')
+              {
+              endMacro = m_Buffer.find("\r",endMacro+1);
+              }
+
+            if(endMacro!=-1 && (long int)pos<endMacro && (long int)pos>begMacro)
+              {
+              reportError = false;
+              break;
+              }
+            begMacro = m_Buffer.find("#define",endMacro);
             }
           }
 
