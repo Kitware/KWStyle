@@ -314,7 +314,8 @@ std::string Parser::FindMemberFunction(std::string & buffer, long int start, lon
        long int i=pos;
        for(i;i>start;i--)
          {
-         if(buffer[i] != ' ' && buffer[i] != '\r' && buffer[i] != '\n')
+         if(buffer[i] != ' ' && buffer[i] != '\t' 
+            && buffer[i] != '\r' && buffer[i] != '\n' && buffer[i] != '*')
            {
            inWord = true;
            functionName = buffer[i]+functionName;
