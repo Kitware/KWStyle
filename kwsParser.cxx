@@ -189,7 +189,21 @@ bool Parser::Check(const char* name, const char* value)
     }
   else if(!strcmp(name,"StatementPerLine"))
     {
-    this->CheckStatementPerLine(atoi(value));
+    std::string val = value;
+    std::string v1 = value;
+    long pos = val.find(",",0);
+    bool checkInlineFunctions = true;
+    if(pos != -1)
+      {
+      v1 = val.substr(0,pos);
+      std::string v2 = val.substr(pos+1,val.size()-pos-1);
+      if(v2 == "0")
+        {
+        checkInlineFunctions = false;
+        }
+      }
+
+    this->CheckStatementPerLine(atoi(v1.c_str()),checkInlineFunctions);
     return true;
     }
  else if(!strcmp(name,"BadCharacters"))

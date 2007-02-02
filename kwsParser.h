@@ -226,7 +226,8 @@ public:
   bool CheckSemicolonSpace(unsigned long max);
  
   /** Check the number of statements per line */
-  bool CheckStatementPerLine(unsigned long max=1);
+  bool CheckStatementPerLine(unsigned long max=1,
+                             bool checkInlineFunctions=true);
   
   /** Check the number of variables per line */
   bool CheckVariablePerLine(unsigned long max=1);

@@ -17,13 +17,18 @@ namespace kws {
 
 
 /** Check the number of statements per line */
-bool Parser::CheckStatementPerLine(unsigned long max)
+bool Parser::CheckStatementPerLine(unsigned long max,bool checkInlineFunctions)
 {
   m_TestsDone[STATEMENTPERLINE] = true;
   char* val = new char[255];
   sprintf(val,"Statements per line = %d max",max);
   m_TestsDescription[STATEMENTPERLINE] = val;
   delete [] val;
+
+  if(!checkInlineFunctions)
+    {
+    m_TestsDescription[STATEMENTPERLINE] += " (not checking inline functions)";
+    }
 
   bool hasError = false;
   long int posSemicolon = m_BufferNoComment.find(";",0);
@@ -61,7 +66,19 @@ bool Parser::CheckStatementPerLine(unsigned long max)
       newline = true;
       }      
     
-    if(statements > max && (newline || posSemicolon2==-1))
+    bool reportError=true;
+
+    if(!checkInlineFunctions)
+      {
+      if(this->IsInFunction(posSemicolon,m_BufferNoComment.c_str())
+         && this->IsInClass(posSemicolon)
+        )
+        {
+        reportError = false;
+        }
+      }
+
+    if(reportError && statements > max && (newline || posSemicolon2==-1))
       {
       Error error;
       error.line = this->GetLineNumber(posSemicolon,true);
