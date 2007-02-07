@@ -133,9 +133,10 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
   file << "    <div align=\"center\">Filename</div>" << std::endl;
   file << "  </td>" << std::endl;
 
+  unsigned int i = 0;
   // Check the number of tests that have been performed
   int tests[NUMBER_ERRORS];
-  for(unsigned int i=0;i<NUMBER_ERRORS;i++)
+  for(i=0;i<NUMBER_ERRORS;i++)
     {
     tests[i] = -1;
     }
@@ -143,7 +144,7 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
   ParserVectorType::const_iterator it = m_Parsers->begin();
   while(it != m_Parsers->end())
     {
-    for(unsigned int i=0;i<NUMBER_ERRORS;i++)
+    for(i=0;i<NUMBER_ERRORS;i++)
       {
       if((*it).HasBeenPerformed(i))
         {
@@ -153,7 +154,7 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
     it++;
     }
   unsigned int nTests = 0;
-  for(unsigned int i=0;i<NUMBER_ERRORS;i++)
+  for(i=0;i<NUMBER_ERRORS;i++)
     {
     if(tests[i]==0)
       {
@@ -162,7 +163,7 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
     }
 
   unsigned int width = 90/nTests;
-  for(unsigned int i=0;i<NUMBER_ERRORS;i++)
+  for(i=0;i<NUMBER_ERRORS;i++)
     {
     if(tests[i]==-1)
       {
@@ -242,7 +243,7 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
     file << "  </td>" << std::endl;
 
     unsigned int width = 90/nTests;
-    for(unsigned int i=0;i<NUMBER_ERRORS;i++)
+    for(i=0;i<NUMBER_ERRORS;i++)
       {
       if(tests[i]==-1)
         {
@@ -510,7 +511,7 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
 
     bool comment = false;
     unsigned long nLines = (*it).GetNumberOfLines();
-    for(unsigned int i=0;i<nLines;i++)
+    for(i=0;i<nLines;i++)
       {
       // Look in the errors if there is a match for this line
       int error = -1;
