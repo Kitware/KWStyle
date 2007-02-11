@@ -16,6 +16,18 @@
 
 namespace kws {
 
+struct ParserSorting
+{
+  bool operator()(const Parser& a,const Parser& b)
+    {
+    if(a.GetFilename().compare(b.GetFilename()))
+      {
+      return false;
+      }
+    return true;
+    }
+};
+
 /** Constructor */
 Generator::Generator()
 {
@@ -178,7 +190,7 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
   bool gotErrors = false;
   it = m_Parsers->begin();
 
-  std::sort(m_Parsers->begin(),m_Parsers->end());
+  std::sort(m_Parsers->begin(),m_Parsers->end(),ParserSorting());
 
   std::string currentPath = "";
   while(it != m_Parsers->end())
