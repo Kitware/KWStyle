@@ -20,7 +20,7 @@ struct ParserSorting
 {
   bool operator()(const Parser& a,const Parser& b)
     {
-    if(a.GetFilename().compare(b.GetFilename()))
+    if(a.GetFilename().compare(b.GetFilename())>0)
       {
       return false;
       }
