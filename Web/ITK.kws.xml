@@ -3,7 +3,10 @@
 <LineLength>81</LineLength>
 <DeclarationOrder>0,1,2</DeclarationOrder>
 <Typedefs>[A-Z]</Typedefs>
-<InternalVariables>m_[A-Z]</InternalVariables>
+<InternalVariables>
+  <regex>m_[A-Z]</regex>
+  <alignment>m_[A-Z]</alignment>
+</InternalVariables>
 <SemicolonSpace>0</SemicolonSpace>
 <EndOfFileNewLine>1</EndOfFileNewLine>
 <Tabs>1</Tabs>
