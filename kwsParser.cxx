@@ -21,6 +21,7 @@ namespace kws {
 Parser::Parser()
 {
   m_HeaderFilename = "";
+  m_Filename = "";
 
   for(unsigned int i=0;i<NUMBER_ERRORS;i++)
     {
