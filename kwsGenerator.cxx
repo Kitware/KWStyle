@@ -16,11 +16,25 @@
 
 namespace kws {
 
-struct ParserSorting
+struct DirectorySorting
 {
-  bool operator()(const Parser& a,const Parser& b)
+  bool operator()(const std::string& a,const std::string& b)
     {
-    if(a.GetFilename().compare(b.GetFilename())>0)
+    if(a.compare(b)>0)
+      {
+      return false;
+      }
+    return true;
+    }
+};
+
+struct FilenameSorting
+{
+  bool operator()(const std::string& a,const std::string& b)
+    {
+    std::string nameA = kwssys::SystemTools::GetFilenameName(a);
+    std::string nameB = kwssys::SystemTools::GetFilenameName(b);
+    if(nameA.compare(nameB)>0)
       {
       return false;
       }
@@ -188,24 +202,83 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
   file << "</tr>" << std::endl;
 
   bool gotErrors = false;
+
+  // The sorting is tricky.
+  std::vector<std::string> directories;
+  std::vector<std::string> filenames;
+  
   it = m_Parsers->begin();
-
-  std::sort(m_Parsers->begin(),m_Parsers->end(),ParserSorting());
-
-  std::string currentPath = "";
   while(it != m_Parsers->end())
     {
-    
-    if(!showAllErrors && (*it).GetErrors().size() == 0)
+    directories.push_back(kwssys::SystemTools::GetFilenamePath((*it).GetFilename()));
+    filenames.push_back((*it).GetFilename());
+    it++;
+    }
+
+  // We sort first by directory
+  std::sort(directories.begin(),directories.end(),DirectorySorting());
+
+  // Then by filenames
+  std::sort(filenames.begin(),filenames.end(),FilenameSorting());
+
+  // Then merge the two lists
+  std::vector<std::string> sortedFilenames;
+  std::vector<std::string>::const_iterator itDir = directories.begin();
+  std::string currentDir = "";
+  while(itDir != directories.end())
+    {
+    if(strcmp((*itDir).c_str(),currentDir.c_str()))
       {
+      currentDir = *itDir;
+      std::vector<std::string>::const_iterator itFiles = filenames.begin();
+      while(itFiles != filenames.end())
+        {
+        if(!strcmp(kwssys::SystemTools::GetFilenamePath(*itFiles).c_str(),currentDir.c_str()))
+          {
+          sortedFilenames.push_back(*itFiles);
+          }
+        itFiles++;
+        }
+      }
+    itDir++;
+    }
+
+  //std::sort(m_Parsers->begin(),m_Parsers->end(),ParserSorting());
+
+  std::vector<std::string>::const_iterator itSorted = sortedFilenames.begin();
+
+  std::string currentPath = "";
+  while(itSorted != sortedFilenames.end())
+    {
+    Parser parser;
+    // Find the current parser
+    it = m_Parsers->begin();
+    while(it != m_Parsers->end())
+      {
+      if(!strcmp((*it).GetFilename().c_str(),(*itSorted).c_str()))
+        {
+        parser = *it;
+        break;
+        }
       it++;
+      }
+
+    if(parser.GetFilename().size()==0)
+      {
+      std::cout << "CANNOT FIND PARSER!" << std::endl;
+      continue;
+      }
+
+    if(!showAllErrors && parser.GetErrors().size() == 0)
+      {
+      itSorted++;
       continue;
       }
 
     gotErrors = true;
 
     // If we have a new directory we show it on a new line
-    std::string filenamePath = kwssys::SystemTools::GetFilenamePath((*it).GetFilename());
+    std::string filenamePath = kwssys::SystemTools::GetFilenamePath(parser.GetFilename());
     
     if(currentPath != filenamePath)
       {
@@ -218,7 +291,7 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
       }
 
     // Replace '/' by '_' (and strip any colon)
-    std::string filename = (*it).GetFilename();
+    std::string filename = parser.GetFilename();
     if(long int pos = filename.find(":/") != -1)
       {
       filename = filename.substr(pos+2,filename.size()-pos-2);
@@ -242,9 +315,9 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
       filename = filename.substr(slash+1,filename.size()-slash-1);
       }
 
-    slash = (*it).GetFilename().find_last_of("/");
+    slash = parser.GetFilename().find_last_of("/");
 
-    std::string nameofclass = (*it).GetFilename().substr(slash+1,((*it).GetFilename().size())-slash-1);
+    std::string nameofclass = parser.GetFilename().substr(slash+1,(parser.GetFilename().size())-slash-1);
     std::string filenamecorrect = nameofclass;
     filename += ".html";
 
@@ -265,7 +338,7 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
       // Count the number of errors for this type of error
       unsigned int nerror = 0;
       
-      Parser::ErrorVectorType errors = (*it).GetErrors();
+      Parser::ErrorVectorType errors = parser.GetErrors();
       Parser::ErrorVectorType::const_iterator itError = errors.begin();
       while(itError != errors.end())
         {
@@ -303,7 +376,7 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
       }
     file << "</tr>" << std::endl; 
 
-    it++;
+    itSorted++;
     }
 
   // If we have error reporting we display a summary
