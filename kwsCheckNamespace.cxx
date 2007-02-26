@@ -22,10 +22,11 @@ namespace kws {
 bool Parser::CheckNamespace(const char* name,bool doNotCheckMain)
 {
   // If there is a 'int main' keyword in the file we do not check
+  // Or if there is not keyword class
   if(doNotCheckMain)
     {
-    if( (m_BufferNoComment.find("main",0) != -1)
-       || (m_BufferNoComment.find("class",0) == -1)
+    if( (m_BufferNoComment.find("main ",0) != -1)
+       || (m_BufferNoComment.find("class ",0) == -1)    
       )
       {
       return false;
