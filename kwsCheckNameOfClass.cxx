@@ -104,6 +104,12 @@ bool Parser::CheckNameOfClass(const char* name,const char* prefix)
  */
 long int Parser::GetClassPosition(long int position,std::string buffer) const
 {
+  
+  if(position < 0)
+   {
+   position = 0;
+   } 
+ 
   if(buffer.size() == 0)
     {
     buffer = m_BufferNoComment;

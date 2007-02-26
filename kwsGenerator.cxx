@@ -210,7 +210,15 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
   it = m_Parsers->begin();
   while(it != m_Parsers->end())
     {
-    directories.push_back(kwssys::SystemTools::GetFilenamePath((*it).GetFilename()));
+    std::string dir = kwssys::SystemTools::GetFilenamePath((*it).GetFilename());
+    if(dir.size() > 0)
+      {
+      directories.push_back(dir);
+      }
+    else
+      {
+      std::cout << "PROBLEM1" << std::endl;
+      }
     filenames.push_back((*it).GetFilename());
     it++;
     }

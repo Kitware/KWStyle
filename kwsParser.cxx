@@ -954,6 +954,11 @@ void Parser::FindProtectedArea(long &before, long &after, size_t startPos) const
 /** Find the end of the class */
 long int Parser::FindEndOfClass(long int position) const
 {
+  if(position < 0)
+    {
+    position = 0;
+    }
+
   // Try to find the end of the class
   long int endclass = m_BufferNoComment.find("}",position);
   while(endclass != -1)
@@ -1235,8 +1240,14 @@ bool Parser::IsInComments(long int pos) const
     }
 
   long int b0 = m_Buffer.find(m_CommentBegin,0);
-  long int b1 = m_Buffer.find(m_CommentEnd,b0);
+  
+  if(b0 == -1)
+   {
+   return false;
+   }
 
+  long int b1 = m_Buffer.find(m_CommentEnd,b0);
+  
   while(b0 != -1 && b1 != -1 && b1>b0)
     {
     if(pos>=b0 && pos<=(b1+(long int)m_CommentEnd.size()))
