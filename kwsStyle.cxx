@@ -174,6 +174,7 @@ int main(int argc, char **argv)
   AddFeature("VariablePerLine","1",true);
   AddFeature("BadCharacters","true",true);
   AddFeature("MemberFunctions","*",true);
+  //AddFeature("Functions","*",true);
 
   std::string xmlFile = "KWStyle.xml";
   // If we should look the definition from the xml file
@@ -328,7 +329,7 @@ int main(int argc, char **argv)
           {
           f.value = line.substr(p1+1,p-p1-1);
           }
-        
+       
         overwriteFeatures.push_back(f);
         }
 
@@ -580,9 +581,12 @@ int main(int argc, char **argv)
       bool checked = false;
       std::vector<kwsFeature>::iterator itof = overwriteFeatures.begin();
       while(itof != overwriteFeatures.end())
-        {
-        if(
-          ((*it).find((*itof).filename.c_str()) != -1) 
+        {        
+        // Allow for for regex expression within overwrite files
+        kwssys::RegularExpression regex((*itof).filename.c_str());
+
+        if( regex.find((*it).c_str())
+           //(*it).find((*itof).filename.c_str()) != -1) 
            && (!strcmp((*itof).name.c_str(),(*itf).name.c_str())))
           {
           if((*itof).enable)
