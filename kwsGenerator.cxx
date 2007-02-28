@@ -20,7 +20,7 @@ struct DirectorySorting
 {
   bool operator()(const std::string& a,const std::string& b)
     {
-    if(a.compare(b)>0)
+    if(a.compare(b)>=0)
       {
       return false;
       }
@@ -34,7 +34,7 @@ struct FilenameSorting
     {
     std::string nameA = kwssys::SystemTools::GetFilenameName(a);
     std::string nameB = kwssys::SystemTools::GetFilenameName(b);
-    if(nameA.compare(nameB)>0)
+    if(nameA.compare(nameB)>=0)
       {
       return false;
       }
