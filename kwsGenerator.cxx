@@ -206,7 +206,8 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
   // The sorting is tricky.
   std::vector<std::string> directories;
   std::vector<std::string> filenames;
-  
+  std::vector<std::string> singleFilenames;
+
   it = m_Parsers->begin();
   while(it != m_Parsers->end())
     {
@@ -217,7 +218,7 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
       }
     else
       {
-      std::cout << "PROBLEM1" << std::endl;
+      singleFilenames.push_back((*it).GetFilename());
       }
     filenames.push_back((*it).GetFilename());
     it++;
@@ -228,9 +229,19 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
 
   // Then by filenames
   std::sort(filenames.begin(),filenames.end(),FilenameSorting());
+  std::sort(singleFilenames.begin(),singleFilenames.end(),FilenameSorting());
+
+  // Add the singleFilenames first
+  std::vector<std::string> sortedFilenames;
+  std::vector<std::string>::const_iterator itSF = singleFilenames.begin();
+  while(itSF != singleFilenames.end())
+    {
+    sortedFilenames.push_back(*itSF);
+    itSF++;
+    }
+
 
   // Then merge the two lists
-  std::vector<std::string> sortedFilenames;
   std::vector<std::string>::const_iterator itDir = directories.begin();
   std::string currentDir = "";
   while(itDir != directories.end())
@@ -251,7 +262,6 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
     itDir++;
     }
 
-  //std::sort(m_Parsers->begin(),m_Parsers->end(),ParserSorting());
 
   std::vector<std::string>::const_iterator itSorted = sortedFilenames.begin();
 
