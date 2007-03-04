@@ -315,7 +315,7 @@ std::string Parser::FindMemberFunction(std::string & buffer, long int start, lon
        for(i;i>start;i--)
          {
          if(buffer[i] != ' ' && buffer[i] != '\t' 
-            && buffer[i] != '\r' && buffer[i] != '\n' && buffer[i] != '*')
+            && buffer[i] != '\r' && buffer[i] != '\n' && buffer[i] != '*' && buffer[i] != '&')
            {
            inWord = true;
            functionName = buffer[i]+functionName;
@@ -330,7 +330,8 @@ std::string Parser::FindMemberFunction(std::string & buffer, long int start, lon
        std::string functionLine = this->GetLine(this->GetLineNumber(i,true)-1);
        if(functionLine.find("#define") == -1
          && functionLine.find("_attribute_") == -1
-         && functionLine.find(" operator") == -1)
+         && functionLine.find(" operator") == -1
+         && functionLine.find("friend ") == -1)
          {
          return functionName;
          }
