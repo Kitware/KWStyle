@@ -174,7 +174,7 @@ int main(int argc, char **argv)
   AddFeature("VariablePerLine","1",true);
   AddFeature("BadCharacters","true",true);
   AddFeature("MemberFunctions","*",true);
-  //AddFeature("Functions","*",true);
+  AddFeature("Functions","*",true);
 
   std::string xmlFile = "KWStyle.xml";
   // If we should look the definition from the xml file

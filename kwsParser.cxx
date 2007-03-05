@@ -168,6 +168,20 @@ bool Parser::Check(const char* name, const char* value)
     this->CheckMemberFunctions(v1.c_str(),atoi(v2.c_str()));
     return true;
     }
+  else if(!strcmp(name,"Functions"))
+    {
+    std::string val = value;
+    std::string v1 = value;
+    std::string v2 = "0";
+    long pos = val.find(",",0);
+    if(pos != -1)
+      {
+      v1 = val.substr(0,pos);
+      v2 = val.substr(pos+1,val.size()-pos-1);
+      }
+    this->CheckFunctions(v1.c_str(),atoi(v2.c_str()));
+    return true;
+    }
   else if(!strcmp(name,"SemicolonSpace"))
     {
     this->CheckSemicolonSpace(atoi(value));
@@ -1105,6 +1119,7 @@ bool Parser::IsInFunction(long int pos,const char* buffer) const
     {
     buf = buffer;
     }
+
   if((pos == -1) || pos > (long int)buf.size()-1)
     {
     return false;
@@ -1113,7 +1128,6 @@ bool Parser::IsInFunction(long int pos,const char* buffer) const
   // a function is defined as:
   // function() {}; and if() {} is considered as a function
   // here.
- 
   unsigned int close = 1;
   bool check = false;
 
@@ -1152,6 +1166,72 @@ bool Parser::IsInFunction(long int pos,const char* buffer) const
     }
 
   return false;
+}
+
+
+/** Return the position of the last character 
+ *  of the function name/definition */
+long int Parser::FindFunction(long int pos,const char* buffer) const
+{ 
+  std::string buf = m_BufferNoComment;
+  
+  if(buffer)
+    {
+    buf = buffer;
+    }
+
+  if((pos == -1) || pos > (long int)buf.size()-1)
+    {
+    return false;
+    }
+
+  // a function is defined as:
+  // function() {}; and if() {} is considered as a function
+  // here.
+
+  // We go backwards
+  long int end = buf.find('}',pos);
+  
+  while(end > 0)
+    {
+    unsigned int close = 1;
+    int check = -1;
+    long int i = end-1;
+    while(i>0)
+      {
+      if(buf[i] == '}')
+        {
+        close++;
+        }
+      else if(buf[i] == '{')
+        {
+        check = i-1;
+        close--;
+        }
+      else if(buf[i] == ')')
+        {
+        if(check>=0 && close==0)
+          {
+          return check;
+          }
+        }
+      else if(buf[i] == ' '
+              || buf[i] == '\r'
+              || buf[i] == '\n'
+              )
+        {
+        // do nothing
+        }
+      else
+        {
+        check = -1;
+        }
+      i--;
+      }
+    end = buf.find('}',end+1);
+    }
+
+  return -1;
 }
 
 /** Return true if the position pos is inside a struct 

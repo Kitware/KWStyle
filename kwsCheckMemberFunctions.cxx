@@ -306,58 +306,52 @@ std::string Parser::FindMemberFunction(std::string & buffer, long int start, lon
 
     pos = i-1;
      
-
-     // If we have a match we extract the word
-     if(pos>start)
-       {
-       std::string functionName = "";
-       bool inWord = false;
-       long int i=pos;
-       for(i;i>start;i--)
-         {
-         if(buffer[i] != ' ' && buffer[i] != '\t' 
-            && buffer[i] != '\r' && buffer[i] != '\n' && buffer[i] != '*' && buffer[i] != '&')
-           {
-           inWord = true;
-           functionName = buffer[i]+functionName;
-           }
-         else if(inWord)
-           {
-           break;
-           }
-         }
-
-       // Check that this is not a #define (tricky)
-       std::string functionLine = this->GetLine(this->GetLineNumber(i,true)-1);
-       if(functionLine.find("#define") == -1
+    // If we have a match we extract the word
+    if(pos>start)
+      {
+      std::string functionName = "";
+      bool inWord = false;
+      long int i=pos;
+      for(i;i>start;i--)
+        {
+        if(buffer[i] != ' ' && buffer[i] != '\t' 
+           && buffer[i] != '\r' && buffer[i] != '\n' && buffer[i] != '*' && buffer[i] != '&')
+          {
+          inWord = true;
+          functionName = buffer[i]+functionName;
+          }
+        else if(inWord)
+          {
+          break;
+          }
+        }
+      // Check that this is not a #define (tricky)
+      std::string functionLine = this->GetLine(this->GetLineNumber(i,true)-1);
+      if(functionLine.find("#define") == -1
          && functionLine.find("_attribute_") == -1
          && functionLine.find(" operator") == -1
          && functionLine.find("friend ") == -1)
-         {
-
-         // If we have a class definition: Test():Base
-         // we return the correct
-         long int posf = functionName.find("(",0);
-         if(posf != -1)
-           {
-           functionName = functionName.substr(0,posf);
-           }
-
-         posf = functionName.find(":",0);
-         if(posf != -1)
-           {
-           functionName = functionName.substr(0,posf);
-           }
-
-         return functionName;
-         }
-       }
+        {
+        // If we have a class definition: Test():Base
+        // we return the correct
+        long int posf = functionName.find("(",0);
+        if(posf != -1)
+          {
+          functionName = functionName.substr(0,posf);
+          }
+        posf = functionName.find(":",0);
+        if(posf != -1)
+          {
+          functionName = functionName.substr(0,posf);
+          }
+        return functionName;
+        }
+      }
     posSemicolon = buffer.find(";",posSemicolon+1);
     }
 
   pos = -1;  
   return "";
 }
-
 
 } // end namespace kws

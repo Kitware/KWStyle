@@ -26,7 +26,7 @@
 namespace kws
 {
 #define MAX_CHAR 99999999
-#define NUMBER_ERRORS 30
+#define NUMBER_ERRORS 32
 
 typedef enum
   {
@@ -65,7 +65,9 @@ typedef enum
   VARIABLEPERLINE,
   BADCHARACTERS,
   MEMBERFUNCTION_REGEX,
-  MEMBERFUNCTION_LENGTH
+  MEMBERFUNCTION_LENGTH,
+  FUNCTION_REGEX,
+  FUNCTION_LENGTH
   } ErrorType;
 
 const char ErrorTag[NUMBER_ERRORS][4] = {
@@ -98,7 +100,9 @@ const char ErrorTag[NUMBER_ERRORS][4] = {
    {'V','P','L','\0'},
    {'B','C','H','\0'},   
    {'M','B','F','\0'},
-   {'M','F','L','\0'}
+   {'M','F','L','\0'},
+   {'F','R','G','\0'},
+   {'F','L','N','\0'}
   };
 
 
@@ -207,6 +211,9 @@ public:
   
   /** Check Member Functions implementation */
   bool CheckMemberFunctions(const char* regEx,unsigned long maxLength=0);
+
+  /** Check any Functions implementation */
+  bool CheckFunctions(const char* regEx,unsigned long maxLength=0);
 
   /** Check if the strcut parameters of the class are correct */
   bool CheckStruct(const char* regEx,bool alignement = true);
@@ -400,6 +407,10 @@ protected:
 
   /** Return if the dept of the current class */
   long int IsInClass(long int position) const;
+
+  /** Return the position of the last character 
+   *  of the function name/definition/ */
+  long int FindFunction(long int position,const char* buffer=NULL) const;
 
 private:
 

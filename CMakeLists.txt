@@ -62,6 +62,7 @@ kwsCheckBadCharacters.cxx
 kwsCheckStruct.cxx
 kwsCheckVariables.cxx
 kwsCheckMemberFunctions.cxx
+kwsCheckFunctions.cxx
 )
 
 LINK_LIBRARIES(

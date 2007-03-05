@@ -582,7 +582,7 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
    const Parser::ErrorVectorType errors = (*it).GetErrors();
    Parser::ErrorVectorType::const_iterator itError = errors.begin();
    while(itError != errors.end())
-     {
+     {     
      for(unsigned int i=(*itError).line;i<=(*itError).line2;i++)
        {
        ErrorLineType errLine;
@@ -610,7 +610,7 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
          }
        }
      itError++;
-     }
+     }         
 
     bool comment = false;
     unsigned long nLines = (*it).GetNumberOfLines();
