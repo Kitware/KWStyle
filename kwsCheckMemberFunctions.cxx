@@ -303,7 +303,8 @@ std::string Parser::FindMemberFunction(std::string & buffer, long int start, lon
         }
       i--;
       }
-     pos = i-1;
+
+    pos = i-1;
      
 
      // If we have a match we extract the word
@@ -333,6 +334,21 @@ std::string Parser::FindMemberFunction(std::string & buffer, long int start, lon
          && functionLine.find(" operator") == -1
          && functionLine.find("friend ") == -1)
          {
+
+         // If we have a class definition: Test():Base
+         // we return the correct
+         long int posf = functionName.find("(",0);
+         if(posf != -1)
+           {
+           functionName = functionName.substr(0,posf);
+           }
+
+         posf = functionName.find(":",0);
+         if(posf != -1)
+           {
+           functionName = functionName.substr(0,posf);
+           }
+
          return functionName;
          }
        }
