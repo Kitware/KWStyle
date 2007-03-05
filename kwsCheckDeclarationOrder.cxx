@@ -95,7 +95,7 @@ bool Parser::CheckDeclarationOrder(unsigned int posPublic, unsigned int posProte
     ) 
     {
     Error error;
-    error.line =  this->GetLineNumber(protectedFirst,true);
+    error.line =  this->GetLineNumber(publicFirst,true);
     error.line2 = this->GetLineNumber(publicFirst,true);
     error.number = DECL_ORDER;
     error.description = "Public defined before Protected";
@@ -111,7 +111,7 @@ bool Parser::CheckDeclarationOrder(unsigned int posPublic, unsigned int posProte
      {
      Error error;
      error.line =  this->GetLineNumber(protectedFirst,true);
-     error.line2 = this->GetLineNumber(publicFirst,true);
+     error.line2 = this->GetLineNumber(protectedFirst,true);
      error.number = DECL_ORDER;
      error.description = "Protected defined before Public";
      m_ErrorList.push_back(error);
@@ -126,7 +126,7 @@ bool Parser::CheckDeclarationOrder(unsigned int posPublic, unsigned int posProte
     ) 
     {
     Error error;
-    error.line =  this->GetLineNumber(protectedFirst,true);
+    error.line =  this->GetLineNumber(privateFirst,true);
     error.line2 = this->GetLineNumber(privateFirst,true);
     error.number = DECL_ORDER;
     error.description = "Private defined before Protected";
@@ -142,7 +142,7 @@ bool Parser::CheckDeclarationOrder(unsigned int posPublic, unsigned int posProte
      {
      Error error;
      error.line =  this->GetLineNumber(protectedFirst,true);
-     error.line2 = this->GetLineNumber(privateFirst,true);
+     error.line2 = this->GetLineNumber(protectedFirst,true);
      error.number = DECL_ORDER;
      error.description = "Protected defined before Private";
      m_ErrorList.push_back(error);
@@ -157,7 +157,7 @@ bool Parser::CheckDeclarationOrder(unsigned int posPublic, unsigned int posProte
     ) 
     {
     Error error;
-    error.line =  this->GetLineNumber(privateFirst,true);
+    error.line =  this->GetLineNumber(publicFirst,true);
     error.line2 = this->GetLineNumber(publicFirst,true);
     error.number = DECL_ORDER;
     error.description = "Public defined before Private";
@@ -173,7 +173,7 @@ bool Parser::CheckDeclarationOrder(unsigned int posPublic, unsigned int posProte
      {
      Error error;
      error.line =  this->GetLineNumber(privateFirst,true);
-     error.line2 = this->GetLineNumber(publicFirst,true);
+     error.line2 = this->GetLineNumber(privateFirst,true);
      error.number = DECL_ORDER;
      error.description = "Private defined before Public";
      m_ErrorList.push_back(error);
@@ -183,7 +183,7 @@ bool Parser::CheckDeclarationOrder(unsigned int posPublic, unsigned int posProte
    // Print the info
    Info info;
    info.line =  this->GetLineNumber(protectedFirst,true);
-   info.line2 = this->GetLineNumber(publicFirst,true);
+   info.line2 = this->GetLineNumber(protectedFirst,true);
    info.number = DECL_ORDER;
    if(publicFirst == MAX_CHAR)
      {
