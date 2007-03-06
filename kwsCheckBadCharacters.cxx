@@ -34,7 +34,7 @@ bool Parser::CheckBadCharacters(bool checkComments)
   long int currentline = -1;
   while(it!= buffer.end())
     {
-    if(((*it)<0) ||((*it)>127))
+    if((*it)<0) 
       {
       long int linenum = this->GetLineNumber(pos,!checkComments);
       if(linenum != currentline)
