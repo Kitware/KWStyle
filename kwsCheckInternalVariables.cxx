@@ -305,7 +305,9 @@ std::string Parser::FindInternalVariable(long int start, long int end,long int &
     // but not '::'
     while(i>0)
       {
-      if(m_BufferNoComment[i] == ';')
+      if(m_BufferNoComment[i] == ';'
+        || m_BufferNoComment[i] == '}'
+        )
         {
         break;
         }
