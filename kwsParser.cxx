@@ -1354,7 +1354,7 @@ bool Parser::IsInAnyComments(long int pos) const
 
   while(posend != -1)
     {
-    if(pos<posend && pos>posslash)
+    if(pos<=posend && pos>=posslash)
       {
       return true;
       }
@@ -1379,7 +1379,7 @@ bool Parser::IsInAnyComments(long int pos) const
 
   while(posend != -1)
     {
-    if(pos<posend && pos>posstart)
+    if(pos<=posend && pos>=posstart)
       {
       return true;
       }
@@ -1393,10 +1393,7 @@ bool Parser::IsInAnyComments(long int pos) const
       posend = -1;
       }
     }
-
-
-  return false;
-     
+  return false;    
 }
 
 
