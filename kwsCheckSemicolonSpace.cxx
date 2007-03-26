@@ -82,13 +82,17 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
         }
       else if(m_BufferNoComment[i] == ';')
         {
-        Error error;
-        error.line = this->GetLineNumber(i,true);
-        error.line2 = error.line;
-        error.number = SEMICOLON_SPACE;
-        error.description = "Too many semicolons";
-        m_ErrorList.push_back(error);
-        hasError = true;
+        // if we have for ( ;; ) we don't report
+        if(!this->IsBetweenCharsFast('(',')',i))
+          {
+          Error error;
+          error.line = this->GetLineNumber(i,true);
+          error.line2 = error.line;
+          error.number = SEMICOLON_SPACE;
+          error.description = "Too many semicolons";
+          m_ErrorList.push_back(error);
+          hasError = true;
+          }
         }
       else
         {
