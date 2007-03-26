@@ -87,6 +87,9 @@ bool Parser::CheckIndent(IndentType itype,
   unsigned int currentPosition = 0;
   std::string::const_iterator it = m_Buffer.begin();
 
+  // Variable to check if we are in a comment or not
+  bool isCheckingComment = false;
+
   // Create the indentation
   this->InitIndentation();
 
@@ -264,7 +267,8 @@ bool Parser::CheckIndent(IndentType itype,
       firstChar = false;
       }
     else if((it != m_Buffer.end()) && ((*it) == '{') 
-             && !this->IsInComments(pos)
+             //&& !this->IsInComments(pos)
+             && !isCheckingComment
              && !this->IsBetweenQuote(pos,true)
              ) // openning bracket
       {
@@ -287,9 +291,13 @@ bool Parser::CheckIndent(IndentType itype,
     
     if(firstChar) // general case
       {
-      // if we are in a comment
+      // If we are in a comment
       if(this->IsInComments(pos))
         {
+        if(this->IsInAnyComments(pos))
+          {
+          isCheckingComment = true;
+          }
         // We check how much space we have in the middle section
         unsigned int nSpaceMiddle = 0;
         while(m_CommentMiddle[nSpaceMiddle] == type)
@@ -300,8 +308,7 @@ bool Parser::CheckIndent(IndentType itype,
         if((*it) == m_CommentMiddle[nSpaceMiddle])
           {
           currentIndent -= nSpaceMiddle;
-          }
-           
+          }       
         else
           {
           // We check how much space we have in the end section
@@ -314,10 +321,27 @@ bool Parser::CheckIndent(IndentType itype,
           if((*it) == m_CommentEnd[nSpaceEnd])
             {
             currentIndent -= nSpaceEnd;
+            isCheckingComment = false;
             }
           }
         }
+      else
+        {
+        isCheckingComment = false;
+        }
 
+      if(isCheckingComment && !this->IsInAnyComments(pos))
+        {
+        std::cout << "WARNING: There is a problem with the comments on line " << this->GetLineNumber(pos) << std::endl;
+        // We check how much space we have in the end section
+        unsigned int nSpaceEnd = 0;
+        while(m_CommentEnd[nSpaceEnd] == type)
+          {
+          nSpaceEnd++;
+          }       
+        currentIndent -= nSpaceEnd;
+        isCheckingComment = false;
+        }
 
       if((currentIndent != wantedIndent) 
           && !this->IsBetweenCharsFast('<','>',pos,true)
@@ -375,15 +399,17 @@ bool Parser::CheckIndent(IndentType itype,
             classPos = m_Buffer.find("class",classPos+1);
             }
           }
+
         // If the ident is between a '=' and a ';' we ignore
         // This is for lists. THIS IS NOT A STRICT CHECK. Might be missing some.
         if(reportError)
           {
-          long int classPos = m_Buffer.find("=",0);
+          long int classPos = m_BufferNoComment.find("=",0);
           while(classPos!=-1)
             {
-            long int endClass = m_Buffer.find(";",classPos);
-            if(endClass!=-1 && (long int)pos<endClass && (long int)pos>classPos)
+            long int posNoCommments = this->GetPositionWithoutComments(pos);
+            long int endClass = m_BufferNoComment.find(";",classPos);
+            if(endClass!=-1 && (long int)posNoCommments<endClass && (long int)posNoCommments>classPos)
               {
               reportError = false;
               break;
@@ -466,7 +492,8 @@ bool Parser::CheckIndent(IndentType itype,
 
     if((it != m_Buffer.end()) && ((*it) == '}') 
        && !sindent 
-       && !this->IsInComments(pos)
+       //&& !this->IsInComments(pos)
+       && !isCheckingComment
        && !this->IsBetweenQuote(pos,true)) // closing bracket
       {
       bool check = true;
