@@ -46,7 +46,8 @@ bool Parser::CheckIndent(IndentType itype,
                          unsigned long size,
                          bool doNotCheckHeader,
                          bool allowBlockLine,
-                         unsigned int maxLength)
+                         unsigned int maxLength,
+                         bool allowCommaIndent)
 {
   m_TestsDone[INDENT] = true;
   m_TestsDescription[INDENT] = "The Indent should respect: ";
@@ -413,6 +414,30 @@ bool Parser::CheckIndent(IndentType itype,
               break;
               }
             begMacro = m_Buffer.find("#define",endMacro);
+            }
+          }
+
+        // If we allowCommaIndentation:
+        // if(myvalue,
+        //    myvalue2)
+        if(allowCommaIndent && reportError)
+          {
+          // Check the end of the previous line if we have a comma
+          long int j = previousLine.size()-1;
+          while(j>0)
+            {
+            if(previousLine[j] != ' '
+               && previousLine[j] != '\n'
+               && previousLine[j] != '\r')
+              {
+              break;
+              }
+            j--;
+            }
+
+          if(previousLine[j] == ',')
+            {
+            reportError = false;
             }
           }
 

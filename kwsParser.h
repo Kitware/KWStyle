@@ -193,7 +193,9 @@ public:
                    unsigned long size,
                    bool doNotCheckHeader=false,
                    bool allowBlockLine = false,
-                   unsigned int maxLength = 81);
+                   unsigned int maxLength = 81,
+                   bool allowCommaIndent = true
+                   );
 
   /** Check Operator spaces foo=bar or foo = bar, etc... */
   bool CheckOperator(unsigned int foo, unsigned int bar,
