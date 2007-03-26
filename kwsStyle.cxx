@@ -535,7 +535,7 @@ int main(int argc, char **argv)
 
   std::vector<std::string>::const_iterator it = filenames.begin();
 
-  unsigned long errors =0;
+  unsigned long nerrors =0;
 
   while(it != filenames.end())
     {
@@ -667,7 +667,8 @@ int main(int argc, char **argv)
         }
       }
     
-    errors += parser.GetErrors().size();
+    nerrors += parser.GetErrors().size();
+
     m_Parsers.push_back(parser);
     it++;
     } // end filenames
@@ -742,7 +743,7 @@ int main(int argc, char **argv)
     }
 
   // If we have errors we return false
-  if(errors>0)
+  if(nerrors>0)
     {
     return 1;
     }
