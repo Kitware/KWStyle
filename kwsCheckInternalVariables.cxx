@@ -321,8 +321,27 @@ std::string Parser::FindInternalVariable(long int start, long int end,long int &
       i--;
       }
 
-    std::string subphrase = "";
+    bool isenum = false;
+    // If we have a '}' we check that this is not an enum definition
+    if(m_BufferNoComment[i] == '}')
+      {
+      long int j = i;
+      // Find a semicolon after that
+      while(j>0)
+        {
+        if(m_BufferNoComment[j] == ';')
+          {
+          break;
+          }
+        j--;
+        }    
+      if(m_BufferNoComment.substr(j+1,i-j-1).find("enum") != -1)
+        {
+        isenum = true;
+        }
+      }
 
+    std::string subphrase = "";
     if(i>=0)
       {
       subphrase = m_BufferNoComment.substr(i+1,posSemicolon-i-1);
@@ -337,6 +356,7 @@ std::string Parser::FindInternalVariable(long int start, long int end,long int &
       && (subphrase.find("return") == -1)
       && (subphrase.find("\"") == -1)
       && (subphrase.find("<<") == -1)
+      && !isenum
       )
       {
       // Check that we are not inside a function(){}
