@@ -661,8 +661,32 @@ bool Parser::InitIndentation()
       long int posColumnComments = this->GetPositionWithComments(defaultPos);      
       IndentPosition ind;
       ind.position = posColumnComments;
-      ind.current = -1;
-      ind.after = 0; 
+      
+      // The current indent should be -1 unless we are right after the openning
+      // bracket. In that case the current indent should be 0;
+      long int j=defaultPos-1;
+      while(j>0)
+        {
+        if(m_BufferNoComment[j] != ' '
+          && m_BufferNoComment[j] != '\n'
+          && m_BufferNoComment[j] != '\r'
+          )
+          {
+          break;
+          }
+        j--;
+        }
+        
+      if(j == openningBracket)
+        {
+        ind.current = 0;
+        }
+      else
+        {
+        ind.current = -1;
+        }
+
+      ind.after = 0;
       m_IdentPositionVector.push_back(ind);
       // Find the ':' after the default
       long int column = m_BufferNoComment.find(":",defaultPos+1);
