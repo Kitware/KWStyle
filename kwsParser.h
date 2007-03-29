@@ -149,7 +149,9 @@ public:
   /** To be able to use std::sort we provide the < operator */
   bool operator<(const Parser& a) const;
   
-  typedef std::vector<Error> ErrorVectorType;
+  typedef std::vector<Error>                ErrorVectorType;
+  typedef std::pair<int,int>                IfElseEndifPairType;
+  typedef std::vector<IfElseEndifPairType>  IfElseEndifListType;
 
   /** Set the buffer to analyze */
   void SetBuffer(std::string buffer) 
@@ -414,6 +416,10 @@ protected:
    *  of the function name/definition/ */
   long int FindFunction(long int position,const char* buffer=NULL) const;
 
+  /** Compute the list of #if/#else/#endif */
+  void ComputeIfElseEndifList();
+  bool IsInElseForbiddenSection(long int pos);
+
 private:
 
   ErrorVectorType m_ErrorList;
@@ -436,6 +442,8 @@ private:
 
   std::string m_BlackList;
   std::string m_BlackListBuffer;
+
+  IfElseEndifListType m_IfElseEndifList;
 };
 
 } // end namespace kws

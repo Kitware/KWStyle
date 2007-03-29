@@ -90,6 +90,15 @@ bool Parser::CheckIndent(IndentType itype,
   // Variable to check if we are in a comment or not
   bool isCheckingComment = false;
 
+  // In the case we have #if/#else/#endif we want to ignore the #else section
+  // if we have some '{' not closed
+  // #if 
+  //   {
+  // #else
+  //   {
+  // #endif
+  this->ComputeIfElseEndifList();
+
   // Create the indentation
   this->InitIndentation();
 
@@ -147,7 +156,10 @@ bool Parser::CheckIndent(IndentType itype,
   // We start to check
   while(it != m_Buffer.end())
     {
-    if((*it) == type || (*it)=='\r')
+    // If we should skip the line
+    bool skip = this->IsInElseForbiddenSection(pos);
+
+    if((*it) == type || (*it)=='\r' || skip)
       {
       it++;
       pos++;
@@ -567,6 +579,12 @@ bool Parser::InitIndentation()
 
   // Check if the { is the first in the file/function or in a namespace
   long int posClass = m_BufferNoComment.find('{',0);
+
+  while(posClass!= -1 && this->IsInElseForbiddenSection(this->GetPositionWithComments(posClass)))
+    {
+    posClass = m_BufferNoComment.find('{',posClass+1);
+    }
+
   while(posClass != -1)
     {
     // We count the number of { and } before posClass
@@ -576,20 +594,23 @@ bool Parser::InitIndentation()
     long int open = m_BufferNoComment.find('{',0);
     while(open!=-1 && open<posClass)
       {
-      bool isNamespace = false;
-      // Remove the potential namespaces
-      std::vector<int>::const_iterator itN = namespacePos.begin();
-      while(itN != namespacePos.end())
+      if(!this->IsInElseForbiddenSection(this->GetPositionWithComments(open)))
         {
-        if((*itN)==this->GetPositionWithComments(open))
+        bool isNamespace = false;
+        // Remove the potential namespaces
+        std::vector<int>::const_iterator itN = namespacePos.begin();
+        while(itN != namespacePos.end())
           {
-          isNamespace = true;
+          if((*itN)==this->GetPositionWithComments(open))
+            {
+            isNamespace = true;
+            }
+          itN++;
           }
-        itN++;
-        }
-      if(!isNamespace)
-        {
-        nOpen++;
+        if(!isNamespace)
+          {
+          nOpen++;
+          }
         }
       open = m_BufferNoComment.find('{',open+1);
       }
@@ -597,20 +618,23 @@ bool Parser::InitIndentation()
     long int close = m_BufferNoComment.find('}',0);
     while(close!=-1 && close<posClass)
       {
-      bool isNamespace = false;
-      // Remove the potential namespaces
-      std::vector<int>::const_iterator itN = namespacePos.begin();
-      while(itN != namespacePos.end())
+      if(!this->IsInElseForbiddenSection(this->GetPositionWithComments(close)))
         {
-        if((*itN)==this->GetPositionWithComments(close))
+        bool isNamespace = false;
+        // Remove the potential namespaces
+        std::vector<int>::const_iterator itN = namespacePos.begin();
+        while(itN != namespacePos.end())
           {
-          isNamespace = true;
+          if((*itN)==this->GetPositionWithComments(close))
+            {
+            isNamespace = true;
+            }
+          itN++;
           }
-        itN++;
-        }
-      if(!isNamespace)
-        {
-        nClose++;
+        if(!isNamespace)
+          {
+          nClose++;
+          }
         }
       close = m_BufferNoComment.find('}',close+1);
       }
@@ -890,5 +914,28 @@ void Parser::AddIndent(const char* name,long int current,long int after)
     posPrev = m_Buffer.find(name,posPrev+1);
     }
 }
+
+/** Return true if the current position with comments is in the
+ *  #else section of the forbiden part.
+ *  In case we have something like:
+ *  #if
+ *  {
+ *  #else
+ *  {
+ *  #endif */
+bool Parser::IsInElseForbiddenSection(long int pos)
+{
+  IfElseEndifListType::const_iterator itLS = m_IfElseEndifList.begin();
+  while(itLS != m_IfElseEndifList.end())
+    {
+    if((long int)pos>(*itLS).first && (long int)pos<(*itLS).second)
+      {
+      return true;
+      }
+    itLS++;
+    }
+  return false;
+}
+
 
 } // end namespace kws

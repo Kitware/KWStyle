@@ -1884,14 +1884,38 @@ long int Parser::FindClosingChar(char openChar, char closeChar,
 
   long int open = 1;
   for(size_t i=pos+1;i<stream.length();i++)
-    { 
-    if(stream[i] == openChar)
+    {
+    if(stream[i] == openChar || stream[i] == closeChar)
       {
-      open++;
-      }
-    else if(stream[i] == closeChar)
-      {
-      open--;
+      bool skip = false;
+      // We want to check that we are not in the #if/#else/#endif thing
+      IfElseEndifListType::const_iterator itLS = m_IfElseEndifList.begin();
+      while(itLS != m_IfElseEndifList.end())
+        {
+        unsigned long j = i;
+        if(noComment)
+          {
+          j = this->GetPositionWithoutComments(i);
+          }
+        if((long int)j>(*itLS).first && (long int)j<(*itLS).second)
+          {
+          skip = true;
+          break;
+          }
+        itLS++;
+        }
+    
+      if(!skip)
+        {
+        if(stream[i] == openChar)
+          {
+          open++;
+          }
+        else if(stream[i] == closeChar)
+          {
+          open--;
+          }
+        }
       }
     if(open == 0)
       {
@@ -1899,6 +1923,70 @@ long int Parser::FindClosingChar(char openChar, char closeChar,
       }
     }
   return -1; // closing char not found
+}
+
+
+/** Compute the list of #if/#else/#endif 
+ *  In the case we have #if/#else/#endif we want to ignore the #else section
+ *  if we have some '{' not closed
+ *  #if 
+ *   {
+ *  #else
+ *   {
+ * #endif */
+void Parser::ComputeIfElseEndifList()
+{
+  m_IfElseEndifList.clear();
+  long int posSharpElse = m_BufferNoComment.find("#else",0);
+  while(posSharpElse != -1)
+    {
+    long int posSharpEndif = m_BufferNoComment.find("#endif",posSharpElse);
+    if(posSharpEndif != -1)
+      {
+      // Search for the corresponding if
+      long int posSharpIf = m_BufferNoComment.find("#if",0);
+      while(posSharpIf != -1)
+        {
+        long int posSharpIf2 = m_BufferNoComment.find("#if",posSharpIf+1);
+        if(posSharpIf2>posSharpElse || posSharpIf2==-1)
+          {
+          break;
+          }
+        posSharpIf = posSharpIf2;
+        }
+
+      if(posSharpIf != -1)
+        {
+        // We check if the total number of '{' is equal to the total number of '}'
+        // in the #if/#else/#endif section
+        int nOpen = 0;
+        int nClose = 0;
+
+        long int posOpen = m_BufferNoComment.find("{",posSharpIf);
+        while(posOpen != -1 && posOpen<posSharpEndif)  
+          {
+          nOpen++;
+          posOpen = m_BufferNoComment.find("{",posOpen+1);
+          }
+
+        long int posClose = m_BufferNoComment.find("}",posSharpIf);
+        while(posClose != -1 && posOpen<posSharpEndif)  
+          {
+          nClose++;
+          posClose = m_BufferNoComment.find("}",posClose+1);
+          }
+        
+        if(nOpen != nClose)
+          {
+          IfElseEndifPairType p;
+          p.first = this->GetPositionWithComments(posSharpElse-1);
+          p.second = this->GetPositionWithComments(posSharpEndif);
+          m_IfElseEndifList.push_back(p);
+          }
+        }     
+      }
+    posSharpElse = m_BufferNoComment.find("#else",posSharpElse+1);
+    }
 }
 
 /** Find the opening char given the position of the closing char */
