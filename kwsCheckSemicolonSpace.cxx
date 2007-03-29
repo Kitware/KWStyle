@@ -57,6 +57,11 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
           delete [] val;
           m_ErrorList.push_back(error);
           hasError = true;
+
+          if(m_FixFile)
+            {
+            this->ReplaceCharInFixedBuffer(this->GetPositionWithComments(posSemicolon-space),space,"");
+            }
           }
         }
       else
@@ -92,6 +97,11 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
           error.description = "Too many semicolons";
           m_ErrorList.push_back(error);
           hasError = true;
+
+          if(m_FixFile)
+            {
+            this->ReplaceCharInFixedBuffer(this->GetPositionWithComments(i),1,"");
+            }
           }
         }
       else
@@ -263,7 +273,6 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
           }
         }
 
-      
       if(error)
         {
         Error error;

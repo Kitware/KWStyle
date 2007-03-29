@@ -22,12 +22,15 @@ Parser::Parser()
 {
   m_HeaderFilename = "";
   m_Filename = "";
+  m_FixFile = false;
+  m_FixedPositions.clear();
 
   for(unsigned int i=0;i<NUMBER_ERRORS;i++)
     {
     m_TestsDone[i] = false;
     m_TestsDescription[i] += "NA";
     }
+
 }
 
 /** Destructor */
@@ -2017,5 +2020,62 @@ long int Parser::FindOpeningChar(char closeChar, char openChar, long int pos,boo
   return -1; // opening char not found
 }
 
+/** Generate the fixed file */
+void Parser::GenerateFixedFile()
+{
+  if(!this->m_FixFile)
+    {
+    return;
+    }
+
+  if(m_ErrorList.size() == 0)
+    {
+    std::cout << "No error. Not generating corrected file." << std::endl;
+    return;
+    }
+
+  std::string filename = kwssys::SystemTools::GetFilenameWithoutExtension(m_Filename.c_str());
+  filename += ".fixed";
+  filename += kwssys::SystemTools::GetFilenameExtension(m_Filename.c_str());
+
+  std::cout << "Generating corrected file: " << filename.c_str() << std::endl;
+
+  std::ofstream file;
+  file.open(filename.c_str(), std::ios::binary | std::ios::out);
+  if(!file.is_open())
+    {
+    std::cout << "Cannot open file for writing: " <<  std::endl;
+    return;
+    }
+
+  file << this->m_FixedBuffer;
+  
+  file.close();
+}
+
+/** Functions to deal with the fixed buffer */
+void Parser::ReplaceCharInFixedBuffer(long int pos,long int size,char* replacingString)
+{
+  std::vector<PairType>::const_iterator it = m_FixedPositions.begin();
+  while(it != m_FixedPositions.end())
+    {
+    if((*it).first<pos)
+      {
+      pos += (*it).second;
+      }
+    it++;
+    }
+  m_FixedBuffer.replace(pos,size,replacingString);
+
+  // Keep track of the current position history
+  long int sizeNewChar = strlen(replacingString);
+  if(sizeNewChar != size)
+    {
+    PairType p;
+    p.first = pos;
+    p.second = sizeNewChar-size;
+    m_FixedPositions.push_back(p);
+    }
+}
 
 } // end namespace kws

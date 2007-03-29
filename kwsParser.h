@@ -158,6 +158,7 @@ public:
     {
     m_Buffer = buffer;
     this->ConvertBufferToWindowsFileType(m_Buffer);
+    m_FixedBuffer = m_Buffer;
     this->RemoveComments();
     }
  
@@ -295,6 +296,10 @@ public:
 
   /** Given the name of the check to perform and the default value perform the check */
   bool Check(const char* name, const char* value);
+  
+  /** Should KWStyle produce a fix version of the parsed file */
+  void SetFixFile(bool fix) {m_FixFile = fix;}
+  void GenerateFixedFile();
 
 protected:
 
@@ -420,6 +425,9 @@ protected:
   void ComputeIfElseEndifList();
   bool IsInElseForbiddenSection(long int pos);
 
+  /** Functions to deal with the fixed buffer */
+  void ReplaceCharInFixedBuffer(long int pos,long int size,char* replacingString);
+            
 private:
 
   ErrorVectorType m_ErrorList;
@@ -429,6 +437,7 @@ private:
 
   std::string m_Buffer;
   std::string m_BufferNoComment;
+  std::string m_FixedBuffer;
   std::vector<long int> m_Positions;
   typedef std::pair<long int, long int> PairType;
   std::vector<PairType> m_CommentPositions;
@@ -437,6 +446,8 @@ private:
   std::string m_CommentBegin;
   std::string m_CommentMiddle;
   std::string m_CommentEnd;
+  bool        m_FixFile;
+  std::vector<PairType> m_FixedPositions;
 
   std::vector<IndentPosition> m_IdentPositionVector;
 

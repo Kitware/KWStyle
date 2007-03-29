@@ -142,6 +142,8 @@ int main(int argc, char **argv)
   command.SetOption("kwsurl","kwsurl",false,"Specify the base url of the KWStyle HTML report");
   command.AddOptionField("kwsurl","url",MetaCommand::STRING,true);
 
+  command.SetOption("fixFile","fix",false,"Write out a fixed version of the parsed file");
+
   command.AddField("infile","input filename",MetaCommand::STRING,true);
 
   // Parsing
@@ -193,6 +195,7 @@ int main(int argc, char **argv)
   std::string filesToCheck = "";
   std::string directoryToCheck = "";
   std::string fileToCheck = "";
+  std::string fixedFile = "";
 
   if(xmlFile.size()>0)
     {
@@ -348,7 +351,6 @@ int main(int argc, char **argv)
     {
     inputFilename = fileToCheck;
     }
-
 
   if(command.GetOptionWasSet("recursive"))
     {
@@ -574,6 +576,12 @@ int main(int argc, char **argv)
     parser.SetFilename((*it).c_str());
     parser.SetBuffer(buffer);
 
+    // Ask the parser to generate a corrected version of the file
+    if(command.GetOptionWasSet("fixFile"))
+      {
+      parser.SetFixFile(true);
+      }
+
     std::vector<kwsFeature>::iterator itf = features.begin();
     while(itf != features.end())
       {
@@ -668,6 +676,8 @@ int main(int argc, char **argv)
       }
     
     nerrors += parser.GetErrors().size();
+
+    parser.GenerateFixedFile();
 
     m_Parsers.push_back(parser);
     it++;
