@@ -360,6 +360,7 @@ std::string Parser::FindInternalVariable(long int start, long int end,long int &
       && (subphrase.find("friend") == -1)
       && (subphrase.find("class") == -1)
       && (subphrase.find("return") == -1)
+      && (subphrase.find("extern") == -1)
       && (subphrase.find("\"") == -1)
       && (subphrase.find("<<") == -1)
       && !isenum

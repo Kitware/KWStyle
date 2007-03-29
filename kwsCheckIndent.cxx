@@ -411,7 +411,7 @@ bool Parser::CheckIndent(IndentType itype,
             classPos = m_Buffer.find("class",classPos+1);
             }
           }
-
+       
         // If the ident is between a '=' and a ';' we ignore
         // This is for lists. THIS IS NOT A STRICT CHECK. Might be missing some.
         if(reportError)
@@ -426,7 +426,45 @@ bool Parser::CheckIndent(IndentType itype,
               reportError = false;
               break;
               }
-            classPos = m_Buffer.find("=",classPos+1);
+            classPos = m_BufferNoComment.find("=",classPos+1);
+            }
+          }
+
+        // If the ident is between a ':' and a '{' we ignore
+        // This is for the constructor.
+        if(reportError)
+          {
+          long int classPos = m_BufferNoComment.find(":",0);
+          while(classPos!=-1)
+            {
+            long int posNoCommments = this->GetPositionWithoutComments(pos);
+            long int endConstructor = m_BufferNoComment.find("{",classPos);
+
+            if(endConstructor!=-1 && (long int)posNoCommments<endConstructor && (long int)posNoCommments>classPos)
+              {
+              reportError = false;
+              break;
+              }
+            classPos = m_BufferNoComment.find(":",classPos+1);
+            }
+          }
+
+        // If the ident is between 'return' and ';' we ignore
+        // Ideally we should have a strict check
+        if(reportError)
+          {
+          long int classPos = m_BufferNoComment.find("return",0);
+          while(classPos!=-1)
+            {
+            long int posNoCommments = this->GetPositionWithoutComments(pos);
+            long int endConstructor = m_BufferNoComment.find(";",classPos);
+
+            if(endConstructor!=-1 && (long int)posNoCommments<endConstructor && (long int)posNoCommments>classPos)
+              {
+              reportError = false;
+              break;
+              }
+            classPos = m_BufferNoComment.find("return",classPos+1);
             }
           }
 
@@ -732,6 +770,22 @@ bool Parser::InitIndentation()
 
     // Do the default case
     long int defaultPos = m_BufferNoComment.find("default",openningBracket);
+    
+    // We need to make sure that there is no "switch" statement nested
+    long int nestedSwitch = m_BufferNoComment.find("switch",posSwitch+1);
+    while(nestedSwitch != -1)
+      {
+      if(nestedSwitch < defaultPos)
+        {
+        defaultPos = m_BufferNoComment.find("default",defaultPos+1);
+        }
+      else
+        {
+        break;
+        }
+      nestedSwitch = m_BufferNoComment.find("switch",nestedSwitch+1);
+      }
+
     if(defaultPos != -1)
       {
       long int posColumnComments = this->GetPositionWithComments(defaultPos);      
@@ -752,7 +806,7 @@ bool Parser::InitIndentation()
           }
         j--;
         }
-        
+              
       if(j == openningBracket)
         {
         ind.current = 0;
