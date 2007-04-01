@@ -329,10 +329,13 @@ std::string Parser::FindInternalVariable(long int start, long int end,long int &
 
     bool isenum = false;
     // If we have a '}' we check that this is not an enum definition
+    // or a typedef
     if(m_BufferNoComment[i] == '}')
       {
-      long int j = i;
-      // Find a semicolon after that
+
+      // Find the opening char
+      long int j = this->FindOpeningChar('}','{',i,true);
+      // Find a semicolon before that
       while(j>0)
         {
         if(m_BufferNoComment[j] == ';')
@@ -340,12 +343,18 @@ std::string Parser::FindInternalVariable(long int start, long int end,long int &
           break;
           }
         j--;
-        }    
+        }
+
       if(m_BufferNoComment.substr(j+1,i-j-1).find("enum") != -1)
         {
         isenum = true;
         }
-      }
+      else if(m_BufferNoComment.substr(j+1,i-j-1).find("typedef") != -1)
+        {
+        isenum = true;
+        }
+
+     }
 
     std::string subphrase = "";
     if(i>=0)
