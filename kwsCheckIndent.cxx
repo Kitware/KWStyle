@@ -319,8 +319,11 @@ bool Parser::CheckIndent(IndentType itype,
 
         if((*it) == m_CommentMiddle[nSpaceMiddle])
           {
-          currentIndent -= nSpaceMiddle;
-          }       
+          if(currentIndent>0)
+            {
+            currentIndent -= nSpaceMiddle;
+            }
+          }        
         else
           {
           // We check how much space we have in the end section
