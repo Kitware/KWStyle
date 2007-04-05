@@ -3,7 +3,6 @@ SET (CTEST_BINARY_DIRECTORY "/projects/KWStyle/CMake-Linux")
 
 # which ctest command to use for running the dashboard
 SET (CTEST_COMMAND  
-#"/DartClient/CMake/bin/ctest -D Nightly -A ${CTEST_SCRIPT_DIRECTORY}/${CTEST_SCRIPT_NAME}"
 "/projects/KWStyle/CMake/bin/ctest -D NightlyStart"
 "/projects/KWStyle/CMake/bin/ctest -D NightlyUpdate"
 "/projects/KWStyle/CMake/bin/ctest -D NightlyConfigure"
