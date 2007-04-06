@@ -967,7 +967,6 @@ void Parser::FindProtectedArea(long &before, long &after, size_t startPos) const
     }
 }
 
-
 /** Find the end of the class */
 long int Parser::FindEndOfClass(long int position) const
 {
@@ -1002,7 +1001,7 @@ long int Parser::FindEndOfClass(long int position) const
       long int openingChar = this->FindOpeningChar('}','{',endclass,true);
       // check if we have the class name somewhere
       long int classPos = m_BufferNoComment.find("class",0);
-      while(classPos != -1)
+      while(classPos != -1 && classPos<position)
         {
         if(classPos != -1 && openingChar!= -1)
           {
@@ -1995,6 +1994,11 @@ void Parser::ComputeIfElseEndifList()
 /** Find the opening char given the position of the closing char */
 long int Parser::FindOpeningChar(char closeChar, char openChar, long int pos,bool noComment) const
 {  
+  if(pos<0)
+    {
+    return -1;
+    }
+
   std::string stream = m_Buffer.c_str();
   if(noComment)
     {
