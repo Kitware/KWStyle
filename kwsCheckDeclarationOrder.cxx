@@ -47,42 +47,45 @@ bool Parser::CheckDeclarationOrder(unsigned int posPublic, unsigned int posProte
   long int publicLast;
   this->FindPublicArea(publicFirst,publicLast);
   
-  long int class_beg = this->GetClassPosition(publicFirst);
   long int class_end = this->FindEndOfClass(publicFirst);
-  
+  long int class_beg = this->FindOpeningChar('}','{',class_end,true);
+
+  // Find the first public declaration
   while(publicFirst!=-1 && publicFirst!=MAX_CHAR && (publicFirst<class_beg || publicFirst>class_end))
     {
     this->FindPublicArea(publicFirst,publicLast,publicFirst+1);
-    class_beg = this->GetClassPosition(publicFirst);
     class_end = this->FindEndOfClass(publicFirst);
+    class_beg = this->FindOpeningChar('}','{',class_end,true);
     }
   
+  // Currently checking only one class per file (do a loop in the future)
+  long int currentclass = class_beg;
+
   long int protectedFirst;
   long int protectedLast;
   this->FindProtectedArea(protectedFirst,protectedLast);
 
-  class_beg = this->GetClassPosition(protectedFirst);
   class_end = this->FindEndOfClass(protectedFirst);
-  
-  while(protectedFirst!=-1 && protectedFirst!=MAX_CHAR && (protectedFirst<class_beg || protectedFirst>class_end))
+  class_beg = this->FindOpeningChar('}','{',class_end,true);
+  while(protectedFirst!=-1 && protectedFirst!=MAX_CHAR &&class_beg != currentclass)
     {
     this->FindProtectedArea(protectedFirst,protectedLast,protectedFirst+1);
-    class_beg = this->GetClassPosition(protectedFirst);
     class_end = this->FindEndOfClass(protectedFirst);
+    class_beg = this->FindOpeningChar('}','{',class_end,true);
     }
-
+  
   long int privateFirst;
   long int privateLast;
   this->FindPrivateArea(privateFirst,privateLast);
 
-  class_beg = this->GetClassPosition(privateFirst);
   class_end = this->FindEndOfClass(privateFirst);
-  
-  while(privateFirst!=-1 && privateFirst!=MAX_CHAR && (privateFirst<class_beg || privateFirst>class_end))
+  class_beg = this->FindOpeningChar('}','{',class_end,true);
+
+  while(privateFirst!=-1 && privateFirst!=MAX_CHAR && class_beg != currentclass)
     {
-    this->FindPrivateArea(privateFirst,privateLast,privateFirst+1);
-    class_beg = this->GetClassPosition(privateFirst);
+    this->FindPrivateArea(privateFirst,privateLast,privateFirst+1);    
     class_end = this->FindEndOfClass(privateFirst);
+    class_beg = this->FindOpeningChar('}','{',class_end,true);
     }
  
   bool hasError = false;
