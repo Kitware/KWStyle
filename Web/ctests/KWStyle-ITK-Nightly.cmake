@@ -10,7 +10,7 @@ SET (CTEST_COMMAND
 "/projects/KWStyle/CMake-Linux/bin/ctest -D NightlyUpdate"
 "/projects/KWStyle/CMake-Linux/bin/ctest -D NightlyConfigure"
 "/projects/KWStyle/KWStyle-Linux/KWStyle -lesshtml -o ${KWSTYLE_DIRECTORY}/ITKOverwrite.txt -xml ${CTEST_BINARY_DIRECTORY}/ITK.kws.xml -html /projects/KWStyle/Examples/Insight/Nightly -kwsurl http://66.194.253.24/KWStyleExamples/Insight/Nightly -dart ${CTEST_BINARY_DIRECTORY} -1 1 -D ${KWSTYLE_DIRECTORY}/ITKNightlyFiles.txt" 
-"/projects/KWStyle/CMake-Linux/bin/ctest -D NightlySubmit"
+"/projects/KWStyle/CMake-Linux/bin/ctest -D NightlySubmit -A ${CTEST_SCRIPT_DIRECTORY}/${CTEST_SCRIPT_NAME}"
 )
 
 # what cmake command to use for configuring this dashboard
