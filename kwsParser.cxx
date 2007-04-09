@@ -508,14 +508,14 @@ std::string Parser::GetErrorTag(unsigned long number) const
   return ErrorTag[number];
 }
 
-/** Return the information vector as a string */
-std::string Parser::GetInfo()
+/** Return the last warnings as a string */
+std::string Parser::GetLastWarnings()
 {
   std::string output = "";
-  std::vector<Info>::const_iterator it = m_InfoList.begin();
-  while(it != m_InfoList.end())
+  std::vector<Warning>::const_iterator it = m_WarningList.begin();
+  while(it != m_WarningList.end())
     {
-    output += "Info #";
+    output += "Warning #";
     char* val = new char[10];
     sprintf(val,"%d",(*it).number);
     output += val;

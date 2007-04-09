@@ -182,7 +182,7 @@ bool Parser::CheckDeclarationOrder(unsigned int posPublic, unsigned int posProte
      m_ErrorList.push_back(error);
      hasError = true;
      }
-
+/*
    // Print the info
    Info info;
    info.line =  this->GetLineNumber(protectedFirst,true);
@@ -203,7 +203,7 @@ bool Parser::CheckDeclarationOrder(unsigned int posPublic, unsigned int posProte
      info.description = "This class doesn't have any private method";
      m_InfoList.push_back(info);
      }
-   
+  */ 
   return !hasError;
 }
 

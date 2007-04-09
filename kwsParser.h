@@ -116,11 +116,11 @@ typedef struct
 
 typedef struct
   {
-  unsigned long line; // main line of the error
-  unsigned long line2; // second line of error if the error is covering several lines
+  unsigned long line; // main line of the warning
+  unsigned long line2; // second line of warning if the warning is covering several lines
   unsigned long number;
   std::string description; 
-  } Info;
+  } Warning;
 
 typedef struct
   {
@@ -150,6 +150,7 @@ public:
   bool operator<(const Parser& a) const;
   
   typedef std::vector<Error>                ErrorVectorType;
+  typedef std::vector<Warning>              WarningVectorType;
   typedef std::pair<int,int>                IfElseEndifPairType;
   typedef std::vector<IfElseEndifPairType>  IfElseEndifListType;
 
@@ -165,14 +166,17 @@ public:
   /** Return the error tag as string given the error number */
   std::string GetErrorTag(unsigned long number) const;
 
-  /** Return the erro vector */
+  /** Return the error vector */
   const ErrorVectorType & GetErrors() const {return m_ErrorList;}
 
   /** Return the last error message */
   std::string GetLastErrors();
 
-  /** Return the information vector */
-  std::string GetInfo();
+  /** Return the warning vector */
+  std::string GetLastWarnings();
+
+  /** Return the warning vector */
+  const WarningVectorType & GetWarnings() const {return m_WarningList;}
 
   /** Check if the file contains tabs */
   bool CheckTabs();
@@ -276,7 +280,7 @@ public:
   void ClearErrors() {m_ErrorList.clear();}
   
   /** Clear the info list */
-  void ClearInfo() {m_InfoList.clear();}
+  void ClearInfo() {m_WarningList.clear();}
 
   /** Set the filename of the file we are checking */
   void SetFilename(const char* filename) {m_Filename = filename;}
@@ -430,8 +434,8 @@ protected:
             
 private:
 
-  ErrorVectorType m_ErrorList;
-  std::vector<Info> m_InfoList;
+  ErrorVectorType   m_ErrorList;
+  WarningVectorType m_WarningList;
   bool m_TestsDone[NUMBER_ERRORS];
   std::string m_TestsDescription[NUMBER_ERRORS];
 

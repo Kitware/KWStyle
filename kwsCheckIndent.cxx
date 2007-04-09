@@ -347,7 +347,13 @@ bool Parser::CheckIndent(IndentType itype,
 
       if(isCheckingComment && !this->IsInAnyComments(pos))
         {
-        std::cout << "WARNING: There is a problem with the comments on line " << this->GetLineNumber(pos) << std::endl;
+        Warning warning;
+        warning.line = this->GetLineNumber(pos);
+        warning.line2 = this->GetLineNumber(pos);
+        warning.description = "There is a problem with the comments";
+        warning.number = INDENT;
+        m_WarningList.push_back(warning);
+
         // We check how much space we have in the end section
         unsigned int nSpaceEnd = 0;
         while(m_CommentEnd[nSpaceEnd] == type)

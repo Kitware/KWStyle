@@ -626,6 +626,7 @@ int main(int argc, char **argv)
       )
       {
       std::cout << parser.GetLastErrors().c_str() << std::endl;
+      std::cout << parser.GetLastWarnings().c_str() << std::endl;
       }
 
     if(command.GetOptionWasSet("vim"))
@@ -651,6 +652,14 @@ int main(int argc, char **argv)
                   << (*eit).description << std::endl;
         eit++;
         }
+      const kws::Parser::WarningVectorType warnings = parser.GetWarnings();
+      kws::Parser::WarningVectorType::const_iterator wit = warnings.begin();
+      while(wit != warnings.end())
+        {
+        std::cout << (*it).c_str() << "(" << (*wit).line << ") : warning " << (*wit).number << ":"  
+                  << (*wit).description << std::endl;
+        wit++;
+        }
       }
      else if(command.GetOptionWasSet("gcc"))
       {
@@ -663,7 +672,14 @@ int main(int argc, char **argv)
                   << (*eit).description << std::endl;
         eit++;
         }
- 
+      const kws::Parser::WarningVectorType warnings = parser.GetWarnings();
+      kws::Parser::WarningVectorType::const_iterator wit = warnings.begin();
+      while(wit != warnings.end())
+        {
+        std::cout << (*it).c_str() << ":" << (*wit).line << ": warning: " 
+                  << (*wit).description << std::endl;
+        wit++;
+        }
       }
             
     if(command.GetOptionWasSet("cvs"))
