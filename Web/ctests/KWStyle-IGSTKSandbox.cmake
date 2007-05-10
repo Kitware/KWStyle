@@ -8,7 +8,7 @@ SET (CTEST_COMMAND
 "/projects/KWStyle/CMake-Linux/bin/ctest -D NightlyStart"
 "/projects/KWStyle/CMake-Linux/bin/ctest -D NightlyUpdate"
 "/projects/KWStyle/CMake-Linux/bin/ctest -D NightlyConfigure"
-"/projects/KWStyle/KWStyle-Linux/KWStyle -lesshtml -o ${KWSTYLE_DIRECTORY}/IGSTKOverwrite.txt -xml ${CTEST_BINARY_DIRECTORY}/IGSTK.kws.xml -kwsurl http://66.194.253.24/KWStyleExamples/IGSTKSandbox -html /projects/KWStyle/Examples/IGSTKSandbox -dart ${CTEST_BINARY_DIRECTORY} -1 1 -D ${KWSTYLE_DIRECTORY}/IGSTKFiles.txt" 
+"/projects/KWStyle/KWStyle-Linux/KWStyle -lesshtml -o ${KWSTYLE_DIRECTORY}/IGSTKOverwrite.txt -xml ${CTEST_BINARY_DIRECTORY}/IGSTK.kws.xml -kwsurl http://66.194.253.24/KWStyleExamples/IGSTKSandbox -html /projects/KWStyle/Examples/IGSTKSandbox -dart ${CTEST_BINARY_DIRECTORY} -1 1 -D ${CTEST_BINARY_DIRECTORY}/IGSTKFiles.txt" 
 "/projects/KWStyle/CMake-Linux/bin/ctest -D NightlySubmit"
 )
 
