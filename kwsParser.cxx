@@ -1188,15 +1188,47 @@ long int Parser::FindFunction(long int pos,const char* buffer) const
     }
 
   // a function is defined as:
-  // function() {}; and if() {} is considered as a function
+  // function() [const] {}; and if() {} is considered as a function
   // here.
 
   // We go backwards
-  long int end = buf.find('}',pos);
-  
+  long int end = buf.find('}',pos);        
   while(end > 0)
     {
-    unsigned int close = 1;
+    long int beg = this->FindOpeningChar('}','{',end,true);
+    
+    // check that before the beg we have
+    bool nospecialchar=true;
+    long int i = beg-1;
+    while(i>0)
+      {
+      if(buf[i] == ')')
+        {
+        break;
+        }
+      else if(
+        buf[i] != ' ' && buf[i] != '\r'
+        && buf[i] != '\n'
+        )
+        {
+        nospecialchar = false;
+        }
+      i--;
+      }
+
+    if(nospecialchar)
+      {
+      return beg;
+      }
+    else if(i>0)// check if we have a const
+      {
+      if(buf.substr(i,beg-i).find("const") != -1)
+        {
+        return beg;
+        }
+      }
+
+    /*unsigned int close = 1;
     int check = -1;
     long int i = end-1;
     while(i>0)
@@ -1229,7 +1261,7 @@ long int Parser::FindFunction(long int pos,const char* buffer) const
         check = -1;
         }
       i--;
-      }
+      }*/
     end = buf.find('}',end+1);
     }
 

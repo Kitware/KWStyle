@@ -421,6 +421,9 @@ int main(int argc, char **argv)
       posr = pos;
       }
 
+    // Define a parser to find if we are between quotes
+    kws::Parser helperParser;
+
     do    
       {
       std::string dirname = "";
@@ -441,7 +444,11 @@ int main(int argc, char **argv)
         }
 
       long int space = dirname.find(" ");
-      
+      while(space != -1 && helperParser.IsBetweenQuote(space,false,dirname))
+        {
+        space = dirname.find(" ",space+1);
+        }
+
       // if we should remove the file
       if(dirname.find("-f",0) != -1)
         {
@@ -461,8 +468,13 @@ int main(int argc, char **argv)
           glob.RecurseOn();
           gotrecurse = true;
           }
-
+      
         long int space = dirname.find(" ");
+        while(space != -1 && helperParser.IsBetweenQuote(space,false,dirname))
+          {
+          space = dirname.find(" ",space+1);
+          }
+
         if(space != -1)
           {
           dirname = dirname.substr(0,space);

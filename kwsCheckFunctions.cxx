@@ -116,11 +116,18 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
       long int bf = m_BufferNoComment.find('{',pos);
       long int bfcomments = GetPositionWithComments(bf);
       long int bfl = this->GetLineNumber(bfcomments);
-      pos = this->FindClosingChar('{','}',bf,true);
-      long int poscomments = GetPositionWithComments(pos);
+      long int pos2 = this->FindClosingChar('{','}',bf,true);
+      long int poscomments = GetPositionWithComments(pos2);
       long int efl = this->GetLineNumber(poscomments);
-
-      pos = this->FindFunction(pos+1);
+      
+      pos = this->FindFunction(pos2+1);
+            
+      // we cannot go backward
+      if(pos2 > pos)
+        {
+        long int bf = m_BufferNoComment.find('{',pos2);
+        pos = this->FindFunction(bf);
+        }
      
       if(!regex.find(functionName))
         {

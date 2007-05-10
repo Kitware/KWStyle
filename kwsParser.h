@@ -305,6 +305,9 @@ public:
   void SetFixFile(bool fix) {m_FixFile = fix;}
   void GenerateFixedFile();
 
+  /**  return true if the position pos is between " " */
+  bool IsBetweenQuote(long int pos,bool withComments=false,std::string buffer="") const;
+
 protected:
 
   /** Convert the file with \r\n instead of \n */ 
@@ -364,8 +367,6 @@ protected:
   bool IsBetweenCharsFast(const char begin, const char end, long int pos,bool withComments=false,std::string buffer="") const;
   bool IsBetweenChars(const char begin, const char end, long int pos,bool withComments=false,std::string buffer="") const;
 
-  /**  return true if the position pos is between " " */
-  bool IsBetweenQuote(long int pos,bool withComments=false,std::string buffer="") const;
   bool IsValidQuote(std::string & stream,long int pos) const;
 
   /** Removes ass CtrlN characters from the buffer. */
