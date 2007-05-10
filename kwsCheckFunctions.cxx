@@ -98,10 +98,17 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
       }
 
     if(functionName.size() == 0)
-      { 
+      {
       long int bf = m_BufferNoComment.find('{',pos);
-      pos = this->FindClosingChar('{','}',bf,true);
-      pos = this->FindFunction(pos+1);
+      long int pos2 = this->FindClosingChar('{','}',bf,true);
+      pos = this->FindFunction(pos2+1);
+
+      // we cannot go backward
+      if(pos2 > pos)
+        {
+        long int bf = m_BufferNoComment.find('{',pos2);
+        pos = this->FindFunction(bf);
+        }
       continue;
       }
     else if(functionName.size()>0)
@@ -112,8 +119,9 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
       pos = this->FindClosingChar('{','}',bf,true);
       long int poscomments = GetPositionWithComments(pos);
       long int efl = this->GetLineNumber(poscomments);
-      pos = this->FindFunction(pos+1);
 
+      pos = this->FindFunction(pos+1);
+     
       if(!regex.find(functionName))
         {
         Error error;
