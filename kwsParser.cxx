@@ -1184,7 +1184,7 @@ long int Parser::FindFunction(long int pos,const char* buffer) const
 
   if((pos == -1) || pos > (long int)buf.size()-1)
     {
-    return false;
+    return -1;
     }
 
   // a function is defined as:

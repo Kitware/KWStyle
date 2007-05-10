@@ -46,8 +46,18 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
     long int posf = pos;
     // We extract the name of the function
     std::string functionName = "";
-    bool inWord = false;
+    // Find the ) and the openning (
     long int i=pos;
+    for(i;i>0;i--)
+      {
+       if(m_BufferNoComment[i]== ')')
+         {
+         i = this->FindOpeningChar(')','(',i,true);
+         i--;
+         break;
+         }
+      }
+    bool inWord = false;
     for(i;i>0;i--)
       {
       if(m_BufferNoComment[i] != ' ' && m_BufferNoComment[i] != '\t' 
@@ -62,13 +72,18 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
         break;
         }
       }
-      
+
     // Check that this is not a #define (tricky)
     std::string functionLine = this->GetLine(this->GetLineNumber(i,true)-1);
     if(functionLine.find("#define") == -1
        && functionLine.find("_attribute_") == -1
        && functionLine.find(" operator") == -1
-       && functionLine.find("friend ") == -1)
+       && functionLine.find("friend ") == -1
+       && functionName.find("if") == -1
+       && functionName.find("while") == -1
+       && functionName.find("for") == -1
+       && functionName.find("main") == -1
+       )
       {
       long int posf = functionName.find("::",0);
       long int posp = functionName.find("(",posf);
@@ -82,18 +97,27 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
       functionName = "";
       }
 
-    if(functionName.size()>0)
+    if(functionName.size() == 0)
+      { 
+      long int bf = m_BufferNoComment.find('{',pos);
+      pos = this->FindClosingChar('{','}',bf,true);
+      pos = this->FindFunction(pos+1);
+      continue;
+      }
+    else if(functionName.size()>0)
       {
       long int bf = m_BufferNoComment.find('{',pos);
-      long int bfl = this->GetLineNumber(bf);
-      pos = this->FindClosingChar('{','}',bf);
-      long int efl = this->GetLineNumber(pos);
+      long int bfcomments = GetPositionWithComments(bf);
+      long int bfl = this->GetLineNumber(bfcomments);
+      pos = this->FindClosingChar('{','}',bf,true);
+      long int poscomments = GetPositionWithComments(pos);
+      long int efl = this->GetLineNumber(poscomments);
       pos = this->FindFunction(pos+1);
 
       if(!regex.find(functionName))
         {
         Error error;
-        error.line = this->GetLineNumber(posf,true);
+        error.line = bfl;
         error.line2 = error.line;
         error.number = FUNCTION_REGEX;
         error.description = "function (" + functionName + ") doesn't match regular expression: " + regEx;
@@ -106,8 +130,8 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
         if((bfl>-1) && (efl>-1) && (efl-bfl>(long int)maxLength))
           {
           Error error;
-          error.line = this->GetLineNumber(bfl,true);
-          error.line2 = this->GetLineNumber(efl,true);
+          error.line = bfl;
+          error.line2 = efl;
           error.number = FUNCTION_LENGTH;
           error.description = "function (" + functionName + ") has too many lines: ";
           char* temp = new char[10];
@@ -124,6 +148,7 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
         }
       }
     }
+
   return !hasError;
 }
 

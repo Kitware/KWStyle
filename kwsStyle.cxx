@@ -596,7 +596,7 @@ int main(int argc, char **argv)
         if( regex.find((*it).c_str())
            //(*it).find((*itof).filename.c_str()) != -1) 
            && (!strcmp((*itof).name.c_str(),(*itf).name.c_str())))
-          {
+          {        
           if((*itof).enable)
             {
             parser.Check((*itof).name.c_str(),(*itof).value.c_str());
