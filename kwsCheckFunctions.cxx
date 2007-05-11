@@ -82,6 +82,7 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
        && functionName.find("if") == -1
        && functionName.find("while") == -1
        && functionName.find("for") == -1
+       && functionName.find("switch") == -1
        && functionName.find("main") == -1
        )
       {
