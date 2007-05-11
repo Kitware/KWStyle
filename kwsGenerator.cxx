@@ -1262,4 +1262,41 @@ bool Generator::GenerateDart(const char* dir,int maxError,bool group,std::string
   return true;
  }
 
+/** Generate a simple XML report of the errors */
+bool Generator::ExportXML(const char* filename)
+{
+  std::ofstream file;
+
+  file.open(filename, std::ios::binary | std::ios::out);
+  if(!file.is_open())
+    {
+    std::cout << "Cannot open file for writing: " <<  std::endl;
+    return false;
+    }
+
+
+  ParserVectorType::const_iterator it = m_Parsers->begin();
+  while(it != m_Parsers->end())
+    {
+    bool first = true;
+    const Parser::ErrorVectorType errors = (*it).GetErrors();
+    Parser::ErrorVectorType::const_iterator itError = errors.begin();
+    while(itError != errors.end())
+      {
+      file << "<Error>" << std::endl;
+      file << " <SourceLineNumber1>" << (*itError).line << "</SourceLineNumber1>" << std::endl;
+      file << " <SourceLineNumber2>" << (*itError).line2 << "</SourceLineNumber2>" << std::endl;
+      file << " <ErrorNumber>" << (*itError).number << "</ErrorNumber>" << std::endl;
+      file << "</Error>" << std::endl;
+      itError++;
+      }
+    it++;
+    }
+
+  file.close();
+
+  return true;
+}
+
+
 } // end namespace kws

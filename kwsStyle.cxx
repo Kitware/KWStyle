@@ -127,6 +127,8 @@ int main(int argc, char **argv)
   command.SetOption("exporthtml","exporthtml",false,"Export the HTML report online");
   command.SetOption("xml","xml",false,"Read a XML configure file");
   command.AddOptionField("xml","filename",MetaCommand::STRING,false);
+  command.SetOption("exportxml","exportxml",false,"Write output the report as a simple XML");
+  command.AddOptionField("exportxml","filename",MetaCommand::STRING,false);
 
   command.SetOption("overwrite","o",false,"Overwrite rules file");
   command.AddOptionField("overwrite","filename",MetaCommand::STRING,false);
@@ -755,6 +757,14 @@ int main(int argc, char **argv)
       }
     generator.SetParser(&m_Parsers);
     generator.ExportHTML(std::cout);
+    }
+
+  if(command.GetOptionWasSet("exportxml"))
+    {
+    std::string outputxmlFile = command.GetValueAsString("exportxml","filename");
+    kws::Generator generator;
+    generator.SetParser(&m_Parsers);
+    generator.ExportXML(outputxmlFile.c_str());
     }
 
   // If we should generate dart files

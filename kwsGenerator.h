@@ -87,6 +87,9 @@ public:
                     bool group = false,std::string url="",
                     double time=0);
 
+  /** Generate a simple XML report of the errors */
+  bool ExportXML(const char* filename);
+
   /** Set the configuration file */
   void ReadConfigurationFile(const char* configFile);
 
