@@ -12,7 +12,7 @@
 
 =========================================================================*/
 #include <iostream>
-#include "itkTestMain.h" 
+#include "kwsTestMain.h" 
 
 
 void RegisterTests()
@@ -22,4 +22,5 @@ void RegisterTests()
   REGISTER_TEST(kwsVariablePerLineTest);
   REGISTER_TEST(kwsSwitchCaseTest);
   REGISTER_TEST(kwsBadCharactersTest);
+  REGISTER_TEST(kwsRunKWStyleTest);
 }

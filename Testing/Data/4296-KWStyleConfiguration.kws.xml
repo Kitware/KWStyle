@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Description>
+<ProjectLogo>Logo.gif</ProjectLogo> 
+<KWStyleLogo>LogoKWStyle.jpg</KWStyleLogo> 
+
+<ErrorThreshold>5</ErrorThreshold>
+
+<LineLength>120</LineLength>
+
+<DeclarationOrder>
+   <public>0</public>
+   <protected>1</protected>
+   <private>2</private>
+</DeclarationOrder>
+
+<InternalVariables>[sm]_[a-z]
+   <regex>[sm]_[a-z]</regex>
+   <alignment>0</alignment>
+</InternalVariables>
+
+<MemberFunctions>^[a-z][^_]*$</MemberFunctions>
+
+<Tabs>1</Tabs>
+
+<Spaces>3</Spaces>
+
+<Comments>
+   <begin>/**</begin>
+   <middle>* </middle>
+   <end> */  </end>
+   <emptyLineBeforeClass>false</emptyLineBeforeClass>
+   <checkWrongComment>false</checkWrongComment>
+   <checkMissingComment>false</checkMissingComment>
+</Comments>
+
+<EmptyLines>4</EmptyLines>
+
+<VariablePerLine>1</VariablePerLine>
+
+<BadCharacters>true</BadCharacters>
+
+<StatementPerLine>1</StatementPerLine>
+
+</Description>
