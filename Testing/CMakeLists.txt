@@ -9,13 +9,17 @@ SET(
  kwsVariablePerLineTest.cxx
  kwsSwitchCaseTest.cxx
  kwsBadCharactersTest.cxx
- kwsRunKWStyleTest.cxx
 )
 
 FOREACH(TestFiles ${KWStyleTests_SRCS})   
   GET_FILENAME_COMPONENT(TestProgram ${TestFiles} NAME_WE)   
   ADD_TEST(${TestProgram} ${KWSTYLE_TESTS} ${TestProgram}) 
 ENDFOREACH(TestFiles)
+
+SET(KWStyleTests_SRCS
+ ${KWStyleTests_SRCS}
+ kwsRunKWStyleTest.cxx
+ )
 
 ADD_EXECUTABLE( KWStyleTests KWStyleTests.cxx ${KWStyleTests_SRCS})
 TARGET_LINK_LIBRARIES(KWStyleTests KWStyleLib)
