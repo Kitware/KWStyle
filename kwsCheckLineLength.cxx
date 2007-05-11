@@ -77,7 +77,7 @@ bool Parser::CheckLineLength(unsigned long max,bool checkHeader)
       {
       m_Positions.push_back(cc);
       line_end = cc;
-      size_t line_length = line_end - line_start;
+      size_t line_length = line_end - line_start-1;
       if(line_length > max && cc>fileSize)
         {
         Error error;
