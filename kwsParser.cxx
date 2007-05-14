@@ -1222,7 +1222,9 @@ long int Parser::FindFunction(long int pos,const char* buffer) const
       }
     else if(i>0)// check if we have a const
       {
-      if(buf.substr(i,beg-i).find("const") != -1)
+      if(buf.substr(i,beg-i).find("]") == -1 &&
+         buf.substr(i,beg-i).find("const") != -1
+        )
         {
         return beg;
         }

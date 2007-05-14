@@ -43,6 +43,7 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
 
   // List all the function in the file
   long int pos = this->FindFunction(0);
+  
 
   while(pos != -1)
     {
@@ -51,15 +52,16 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
     std::string functionName = "";
     // Find the ) and the openning (
     long int i=pos;
-    for(i;i>0;i--)
+    for(;i>0;i--)
       {
-       if(m_BufferNoComment[i]== ')')
-         {
-         i = this->FindOpeningChar(')','(',i,true);
-         i--;
-         break;
-         }
+      if(m_BufferNoComment[i] == ')')
+        {
+        i = this->FindOpeningChar(')','(',i,true);
+        i--;
+        break;
+        }
       }
+
     bool inWord = false;
     for(i;i>0;i--)
       {
@@ -100,6 +102,7 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
       {
       functionName = "";
       }
+
 
     if(functionName.size() == 0)
       {
