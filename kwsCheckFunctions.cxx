@@ -29,8 +29,11 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
     {
     m_TestsDone[FUNCTION_LENGTH] = true;
     m_TestsDescription[FUNCTION_LENGTH] = "Functions must not exceed: ";
-    m_TestsDescription[FUNCTION_LENGTH] += maxLength;
+    char* temp = new char[10];
+    sprintf(temp,"%d",maxLength);        
+    m_TestsDescription[FUNCTION_LENGTH] += temp;
     m_TestsDescription[FUNCTION_LENGTH] += " lines";
+    delete [] temp;
     }
 
   // First we need to find the parameters
