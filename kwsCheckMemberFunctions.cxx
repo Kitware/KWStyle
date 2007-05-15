@@ -101,7 +101,7 @@ bool Parser::CheckMemberFunctions(const char* regEx,unsigned long maxLength)
     {
     long int current;
     std::string memberFunction = this->FindMemberFunction(m_BufferNoComment,classpos,this->FindEndOfClass(classpos+1),current);
-    
+  
     std::string classname = this->FindPreviousWord(classpos);
         
     if(m_BufferNoComment[classpos-1] != ' ' 
@@ -132,7 +132,7 @@ bool Parser::CheckMemberFunctions(const char* regEx,unsigned long maxLength)
           error.line = this->GetLineNumber(current,true);
           error.line2 = error.line;
           error.number = MEMBERFUNCTION_REGEX;
-          error.description = "function (" + memberFunction + ") doesn't match regular expression";
+          error.description = "member function (" + memberFunction + ") doesn't match regular expression";
           m_ErrorList.push_back(error);
           hasError = true;
           }
@@ -296,10 +296,15 @@ std::string Parser::FindMemberFunction(std::string & buffer, long int start, lon
     bool inFunction = true;
     while(i>=start && inFunction)
       {
-      if(buffer[i] == '(' && !this->IsInFunction(i,buffer.c_str()))
+      if(buffer[i] == ')')
         {
-        inFunction = false;
-        break;
+        long int close = this->FindClosingChar(')','(',i,true);  
+        if(close>0 && !this->IsInFunction(close,buffer.c_str()))
+          {
+          i = close;
+          inFunction = false;
+          break;
+          }
         }
       i--;
       }
