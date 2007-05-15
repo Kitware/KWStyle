@@ -27,12 +27,12 @@ bool Parser::CheckVariablePerLine(unsigned long max)
 
   // For the moment only standard types are defined.
   // We might be able to do more with finding typedefs
-  #define ntypes 11
+  #define ntypes 12
   const char* types[ntypes] = {"int","unsigned int",
    "char","unsigned char",
    "short","unsigned short",
    "long","unsigned long",
-   "float","double","void"};
+   "float","double","void","size_t"};
 
   bool hasError = false;
   for(unsigned int i = 0;i<ntypes;i++)
@@ -107,8 +107,22 @@ bool Parser::CheckVariablePerLine(unsigned long max)
                 }
               openCurly--;
               }
-              
-            if(!betweenBraces)
+            
+            // Check if we are not at the end of the line
+            bool endofline = true;
+            int eof = pos+1; 
+            while(eof < line.size())          
+              {
+              if(line[eof] != ' ' && line[eof] != '\n' 
+                 && line[eof] != '\r' && line[eof] != '\t')
+                {
+                endofline = false;
+                break;
+                }
+              eof++;
+              }
+
+            if(!betweenBraces && !endofline)
               {
               vars++;
               }
