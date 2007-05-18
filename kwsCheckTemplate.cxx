@@ -100,7 +100,7 @@ bool Parser::CheckTemplate(const char* regEx)
         {
         inWord = false;
 
-        if(!afterEqual && !regex.find(currentWord) && level==0)
+        if(currentWord.size()>0 && !afterEqual && !regex.find(currentWord) && level==0)
           {
           Error error;
           error.line = this->GetLineNumber(i,true);
