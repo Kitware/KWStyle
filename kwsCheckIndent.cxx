@@ -17,7 +17,7 @@ namespace kws {
 
 #define ALIGN_LEFT -99999
 
-/** Extract the current line from pos to  \n */
+/** Extract the current line from pos to \n */
 std::string Parser::ExtractLine(long pos)
 {
   long int p = m_Buffer.find("\n",pos);
@@ -211,6 +211,25 @@ bool Parser::CheckIndent(IndentType itype,
           )
           {
           returnError = false;
+          }
+
+        // Check for special characters
+        if(previousLine[previousLine.size()-1] != ';')
+          {
+          // Check if we have a << at the beginning of the current line
+          long int posSpecialChar = currentLine.find("<<");
+          if(posSpecialChar != -1)
+            {
+            returnError = false;
+            for(int i=0;i<posSpecialChar;i++)
+              {
+              if(currentLine[i] != '\r' && currentLine[i] != '\n' && currentLine[i] != ' ' && currentLine[i] != '\t')
+                {
+                returnError = true;
+                break;
+                }
+              }
+            }   
           }
 
         // We check that any definitions of public:, private: and protected:
