@@ -65,15 +65,11 @@ kwsCheckMemberFunctions.cxx
 kwsCheckFunctions.cxx
 )
 
-LINK_LIBRARIES(
-kwssys
-)
-
 SUBDIRS(Utilities)
 
 ADD_LIBRARY(KWStyleLib ${KWStyle_SRCS} ${KWStyle_HDRS})
 ADD_EXECUTABLE(KWStyle kwsStyle.cxx)
-TARGET_LINK_LIBRARIES(KWStyle KWStyleLib)
+TARGET_LINK_LIBRARIES(KWStyle KWStyleLib kwssys)
 
 # Move the executable to the top binary tree
 GET_TARGET_PROPERTY(EXECUTABLE_PATH KWStyle LOCATION)
