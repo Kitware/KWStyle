@@ -111,7 +111,7 @@ bool Parser::CheckVariablePerLine(unsigned long max)
             // Check if we are not at the end of the line
             bool endofline = true;
             int eof = pos+1; 
-            while(eof < line.size())          
+            while(eof < (int)line.size())          
               {
               if(line[eof] != ' ' && line[eof] != '\n' 
                  && line[eof] != '\r' && line[eof] != '\t')
