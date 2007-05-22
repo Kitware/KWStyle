@@ -101,7 +101,7 @@ bool Parser::CheckMemberFunctions(const char* regEx,unsigned long maxLength)
     {
     long int current;
     std::string memberFunction = this->FindMemberFunction(m_BufferNoComment,classpos,this->FindEndOfClass(classpos+1),current);
-  
+
     std::string classname = this->FindPreviousWord(classpos);
         
     if(m_BufferNoComment[classpos-1] != ' ' 
@@ -312,7 +312,7 @@ std::string Parser::FindMemberFunction(std::string & buffer, long int start, lon
     pos = i-1;
      
     // If we have a match we extract the word
-    if(pos>start)
+    if(pos>start && pos<end)
       {
       std::string functionName = "";
       bool inWord = false;
