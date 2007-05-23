@@ -124,6 +124,7 @@ int Compare(const char* baseline, const char* testfile)
     long int posErrorBase = baselineBuffer.find("<Error>");
     if(posErrorBase == -1)
       {
+      std::cout << "Error not found" << std::endl;
       return 1;
       }
     long int posErrorEndBase = baselineBuffer.find("</Error>",posError);
@@ -140,6 +141,10 @@ int Compare(const char* baseline, const char* testfile)
 
     if(l1 != l1Base || l2 != l2Base || errorNumber!=errorNumberBase)
       {
+      std::cout << "Errors differ:" << std::endl;
+      std::cout << "l1 = " << l1 << " v.s. "  << l1Base << std::endl;
+      std::cout << "l2 = " << l2 << " v.s. "  << l2Base << std::endl;
+      std::cout << "errorNumber = " << errorNumber << " v.s. "  << errorNumberBase << std::endl;
       return 1;
       }
 
@@ -151,6 +156,7 @@ int Compare(const char* baseline, const char* testfile)
   long int posErrorBase = baselineBuffer.find("<Error>",previousPos);
   if(posErrorBase != -1)
     {
+    std::cout << "The baseline as more errors than the test" << std::endl;
     return 1;
     }
 
