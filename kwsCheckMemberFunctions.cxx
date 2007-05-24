@@ -349,7 +349,13 @@ std::string Parser::FindMemberFunction(std::string & buffer, long int start, lon
           {
           functionName = functionName.substr(0,posf);
           }
-        return functionName;
+        
+        // If the function name is void we skip because it means 
+        // this is a member variable function (see bug 5086)
+        if(functionName != "void")
+          {
+          return functionName;
+          }
         }
       }
     posSemicolon = buffer.find(";",posSemicolon+1);

@@ -350,7 +350,7 @@ protected:
   /** Find the previous word given a position */
   std::string FindPreviousWord(long int pos,bool withComments=false,std::string buffer="") const;
 
-  /** Find the next word given a position */
+  /** Find the next word given a position. This function works only without comments.*/
   std::string FindNextWord(long int pos) const;
 
   /** Find the closing bracket given the position of the opening bracket. */
@@ -371,6 +371,9 @@ protected:
 
   /** Removes ass CtrlN characters from the buffer. */
   void RemoveCtrlN(std::string & buffer) const;
+
+  /** Find the correct area given its name */
+  long int FindArea(const char* name,long int startPos) const;
 
   /** Find public area in source code. */
   void FindPublicArea(long &before, long &after, size_t startPos=0) const;

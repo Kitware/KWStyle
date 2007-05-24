@@ -353,7 +353,6 @@ std::string Parser::FindInternalVariable(long int start, long int end,long int &
         {
         isenum = true;
         }
-
      }
 
     std::string subphrase = "";

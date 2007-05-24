@@ -799,9 +799,9 @@ void Parser::FindPublicArea(long &before, long &after, size_t startPos) const
   after = 0;
 
   // First look if public is before protected and private
-  long pub = m_BufferNoComment.find("public:", startPos);
-  long priv = m_BufferNoComment.find("private:", startPos);
-  long protect = m_BufferNoComment.find("protected:", startPos);
+  long pub = this->FindArea("public", startPos);
+  long priv = this->FindArea("private", startPos);
+  long protect = this->FindArea("protected", startPos);
   
   if(pub == -1)
     {
@@ -880,6 +880,22 @@ void Parser::FindPublicArea(long &before, long &after, size_t startPos) const
       }
     }
 }
+ 
+/** Find the correct area given its name 
+ *  This looks for public: or public    : */
+long int Parser::FindArea(const char* name,long int startPos) const
+{
+  long pos = m_BufferNoComment.find(name, startPos);
+  while(pos != -1)
+    {
+    if(m_BufferNoComment[pos+strlen(name)+1]==':' || this->FindNextWord(pos) == ":")
+      {
+      return pos;
+      }
+    pos = m_BufferNoComment.find(name, pos+1);
+    }
+  return -1;
+}
 
 
 /** Find protected area in source code. */
@@ -889,9 +905,9 @@ void Parser::FindProtectedArea(long &before, long &after, size_t startPos) const
   after = 0;
 
   // First look if public is before protected and private
-  long pub = m_BufferNoComment.find("public:", startPos);
-  long priv = m_BufferNoComment.find("private:", startPos);
-  long protect = m_BufferNoComment.find("protected:", startPos);
+  long pub = this->FindArea("public", startPos);
+  long priv = this->FindArea("private", startPos);
+  long protect = this->FindArea("protected", startPos);
 
   if(priv == -1)
     {
@@ -1034,9 +1050,9 @@ void Parser::FindPrivateArea(long &before, long &after, size_t startPos) const
   after = 0;
 
   // First look if public is before protected and private
-  long pub = m_BufferNoComment.find("public:", startPos);
-  long priv = m_BufferNoComment.find("private:", startPos);
-  long protect = m_BufferNoComment.find("protected:", startPos);
+  long pub = this->FindArea("public", startPos);
+  long priv = this->FindArea("private", startPos);
+  long protect = this->FindArea("protected", startPos);
   
   if(priv == -1)
     {
