@@ -888,7 +888,7 @@ long int Parser::FindArea(const char* name,long int startPos) const
   long pos = m_BufferNoComment.find(name, startPos);
   while(pos != -1)
     {
-    if(m_BufferNoComment[pos+strlen(name)+1]==':' || this->FindNextWord(pos) == ":")
+    if(m_BufferNoComment[pos+strlen(name)]==':' || this->FindNextWord(pos) == ":")
       {
       return pos;
       }
