@@ -104,7 +104,7 @@ int Compare(const char* baseline, const char* testfile)
   // Go through the testfile and check if we have the same errors than the
   // baseline
   long int posError = testfileBuffer.find("<Error>");
-  long int previousPos = 0;
+  long int posErrorBase = testfileBuffer.find("<Error>");;
 
   while(posError != -1)
     {
@@ -121,14 +121,13 @@ int Compare(const char* baseline, const char* testfile)
     unsigned int errorNumber = atoi(subError.substr(errorNumbera+13,errorNumberb-errorNumbera-13).c_str());
 
     // Check the baseline
-    long int posErrorBase = baselineBuffer.find("<Error>");
     if(posErrorBase == -1)
       {
       std::cout << "Error not found" << std::endl;
       return 1;
       }
-    long int posErrorEndBase = baselineBuffer.find("</Error>",posError);
-    std::string subErrorBase = baselineBuffer.substr(posError,posErrorEnd-posError);
+    long int posErrorEndBase = baselineBuffer.find("</Error>",posErrorBase);
+    std::string subErrorBase = baselineBuffer.substr(posErrorBase,posErrorEndBase-posErrorBase);
     long int line1aBase = subErrorBase.find("<SourceLineNumber1>");
     long int line1bBase = subErrorBase.find("</SourceLineNumber1>");
     long int line2aBase = subErrorBase.find("<SourceLineNumber2>");
@@ -148,12 +147,11 @@ int Compare(const char* baseline, const char* testfile)
       return 1;
       }
 
-    previousPos = posError+1;
     posError = testfileBuffer.find("<Error>",posError+1);
+    posErrorBase = baselineBuffer.find("<Error>",posErrorBase+1);
     }
   
   // Check that we don't have any other errors in the baseline
-  long int posErrorBase = baselineBuffer.find("<Error>",previousPos);
   if(posErrorBase != -1)
     {
     std::cout << "The baseline as more errors than the test" << std::endl;
