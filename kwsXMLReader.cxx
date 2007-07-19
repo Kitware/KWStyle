@@ -75,6 +75,26 @@ std::string XMLReader::GetTag()
     m_CurrentPos+=2;
     return "NA";
     }
+
+  comment_start = m_Buffer.find("<!--",m_CurrentPos);
+  if(begin_tag_start == comment_start)
+    {
+    long int comment_end = m_Buffer.find("-->",comment_start);
+    if(comment_end!=-1)
+      {
+      m_CurrentPos=comment_end+3;
+      }
+    else
+      {
+      std::cout << "ERROR: Cannot find closing comments in configuration file" << std::endl;
+      m_CurrentPos+=2;
+      }
+    return "NA";
+    }
+
+
+
+
   long int begin_tag_end =  m_Buffer.find(">",begin_tag_start+1);
   m_Tag = m_Buffer.substr(begin_tag_start+1,begin_tag_end-begin_tag_start-1);
 
