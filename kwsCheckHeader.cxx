@@ -52,6 +52,13 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL,bool useCVS
       }
     }
 
+  // Remove quotes if any on linux
+  #ifndef WIN32
+    if(headerFilename[0] == '"')
+      {
+      headerFilename = headerFilename.substr(1,headerFilename.size()-2);
+      }
+  #endif
 
   // Check if we have a directory or header
   kwssys::Directory directory;

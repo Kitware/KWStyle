@@ -482,6 +482,14 @@ int main(int argc, char **argv)
           dirname = dirname.substr(0,space);
           }
      
+        // Remove quotes if any on linux
+        #ifndef WIN32
+          if(dirname[0] == '"')
+            {
+            dirname = dirname.substr(1,dirname.size()-2);
+            }
+        #endif
+
         std::string globoption = dirname.c_str();
         glob.FindFiles(globoption.c_str());
         std::vector<std::string> globfiles = glob.GetFiles();
