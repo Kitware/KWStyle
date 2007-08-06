@@ -239,6 +239,8 @@ bool Parser::CheckIndent(IndentType itype,
         if(sindent->name == "public:" 
           || sindent->name == "protected:" 
           || sindent->name == "private:"
+          || sindent->name == "signals:"
+          || sindent->name == "public slots:"
           )
           {
           int inClass = this->IsInClass(this->GetPositionWithoutComments(pos));
@@ -967,6 +969,8 @@ bool Parser::InitIndentation()
   this->AddIndent("public:",-1,0);
   this->AddIndent("private:",-1,0);
   this->AddIndent("protected:",-1,0);
+  this->AddIndent("signals:",-1,0);
+  this->AddIndent("public slots:",-1,0);
 
   // some words should be always align left
   this->AddIndent("#include",ALIGN_LEFT,0);
