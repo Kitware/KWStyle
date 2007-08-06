@@ -75,7 +75,7 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL,bool useCVS
       std::string file = directory.GetFile(i);
       std::string fullpath = dirname+file;
       
-      if(file!=".." && file!="." && file!="CVS")
+      if(file!=".." && file!="." && file!="CVS"&& file!= ".svn")
         {
         fileNames.push_back(dirname+file);
         }
