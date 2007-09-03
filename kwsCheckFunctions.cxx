@@ -43,8 +43,6 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
 
   // List all the function in the file
   long int pos = this->FindFunction(0);
-  
-
   while(pos != -1)
     {
     long int posf = pos;
@@ -80,6 +78,7 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
 
     // Check that this is not a #define (tricky)
     std::string functionLine = this->GetLine(this->GetLineNumber(i,true)-1);
+
     if(functionLine.find("#define") == -1
        && functionLine.find("_attribute_") == -1
        && functionLine.find(" operator") == -1
@@ -103,6 +102,7 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
       functionName = "";
       }
 
+    //std::cout << "Function Name = " << functionName.c_str() << std::endl;
 
     if(functionName.size() == 0)
       {
@@ -111,11 +111,11 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
       pos = this->FindFunction(pos2+1);
 
       // we cannot go backward
-      if(pos2 > pos)
+      /*if(pos2 > pos)
         {
         long int bf = m_BufferNoComment.find('{',pos2);
         pos = this->FindFunction(bf);
-        }
+        }*/
       continue;
       }
     else if(functionName.size()>0)
@@ -128,7 +128,7 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
       long int efl = this->GetLineNumber(poscomments);
       
       pos = this->FindFunction(pos2+1);
-            
+
       // we cannot go backward
       if(pos2 > pos)
         {

@@ -38,7 +38,10 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
        if(m_BufferNoComment[i] == ' ')
         {
         space++;
-        if(space > max)
+        }
+       else
+        {
+        if(m_BufferNoComment[i] != '\n' && space > max)
           {
           Error error;
           error.line = this->GetLineNumber(posSemicolon,true);
@@ -62,10 +65,7 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
             {
             this->ReplaceCharInFixedBuffer(this->GetPositionWithComments(posSemicolon-space),space,"");
             }
-          }
-        }
-      else
-        {
+          } // space > max
         break;
         }
       i--;

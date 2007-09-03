@@ -1212,7 +1212,7 @@ long int Parser::FindFunction(long int pos,const char* buffer) const
   while(end > 0)
     {
     long int beg = this->FindOpeningChar('}','{',end,true);
-    
+
     // check that before the beg we have
     bool nospecialchar=true;
     long int i = beg-1;
@@ -1245,41 +1245,6 @@ long int Parser::FindFunction(long int pos,const char* buffer) const
         return beg;
         }
       }
-
-    /*unsigned int close = 1;
-    int check = -1;
-    long int i = end-1;
-    while(i>0)
-      {
-      if(buf[i] == '}')
-        {
-        close++;
-        }
-      else if(buf[i] == '{')
-        {
-        check = i-1;
-        close--;
-        }
-      else if(buf[i] == ')')
-        {
-        if(check>=0 && close==0)
-          {
-          return check;
-          }
-        }
-      else if(buf[i] == ' '
-              || buf[i] == '\r'
-              || buf[i] == '\n'
-              )
-        {
-        // do nothing
-        }
-      else
-        {
-        check = -1;
-        }
-      i--;
-      }*/
     end = buf.find('}',end+1);
     }
 
