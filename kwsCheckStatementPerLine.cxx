@@ -41,16 +41,37 @@ bool Parser::CheckStatementPerLine(unsigned long max,bool checkInlineFunctions)
     {
     // If we are on the same line
     unsigned long lineNumber = this->GetLineNumber(posSemicolon,true); 
-    line = this->GetLine(lineNumber-1);
-
+   
     if(lineNumber != currentLine)
       {
       currentLine = lineNumber;
       statements = 0;
       }
+ 
+    line = this->GetLine(lineNumber-1);
 
-    if((!this->IsBetweenChars('(',')',this->GetPositionInLine(posSemicolon),false,line))
-      && (!this->IsBetweenQuote(this->GetPositionInLine(posSemicolon),false,line))
+    // We need more than the current line to determine if we are between parenthesis
+    // This is arbitrary but should work in most cases. Maybe the best will be to find the
+    // previous semicolon but it might take a long time
+    long int nb = posSemicolon-100; // 100 characters befor
+    if(nb < 0)
+      {
+      nb = 0;
+      }
+
+    long int ne = posSemicolon+100; // 100 characters after
+    if(ne > (long int)m_BufferNoComment.size())
+      {
+      ne = m_BufferNoComment.size();
+      }
+
+    long int posInLine2 = posSemicolon-nb;
+
+    std::string line2 = m_BufferNoComment.substr(nb,ne-nb);
+
+    if((!this->IsBetweenChars('(',')',posInLine2,false,line2))
+      && (!this->IsBetweenQuote(posInLine2,false,line2))
+      && line.find("case:") != -1// we allow switch/case to be in one line
       )
       {
       statements++;

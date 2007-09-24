@@ -88,13 +88,19 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
        && functionName.find("for") == -1
        && functionName.find("switch") == -1
        && functionName.find("main") == -1
+       && functionName.find("~") == -1 // skip destructor for now...
        )
       {
+         
       long int posf = functionName.find("::",0);
       long int posp = functionName.find("(",posf);
       if(posp != -1 && posf != -1 && posp>posf)
         {
         functionName = functionName.substr(posf+2,posp-posf-2);
+        }
+      else if(posf != -1)
+        {
+        functionName = functionName.substr(posf+2,functionName.size()-posf-2);
         }
       }
     else
