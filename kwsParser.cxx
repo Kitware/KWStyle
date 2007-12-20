@@ -1178,7 +1178,7 @@ bool Parser::IsInFunction(long int pos,const char* buffer) const
       }
     else
       {
-      check = false;
+      //check = false;
       }
     i--;
     }
