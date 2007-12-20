@@ -1987,7 +1987,7 @@ void Parser::ComputeIfElseEndifList()
           }
 
         long int posClose = m_BufferNoComment.find("}",posSharpIf);
-        while(posClose != -1 && posOpen<posSharpEndif)  
+        while(posClose != -1 && posClose<posSharpEndif)  
           {
           nClose++;
           posClose = m_BufferNoComment.find("}",posClose+1);
