@@ -210,7 +210,9 @@ bool Parser::FindOperator(const char* op,unsigned int before,
       {
       // we make sure that the keyword operator is not defined right before
       if(operatorPos != m_BufferNoComment.find("operator",operatorPos-11)+8
-        && (doNotCheckInsideParenthesis && !this->IsBetweenCharsFast('(',')',operatorPos,false)) 
+        && (doNotCheckInsideParenthesis && !this->IsBetweenCharsFast('(',')',operatorPos,false)
+        && !this->IsBetweenQuote(operatorPos,false)
+        ) 
         )
         {
         Error error;
