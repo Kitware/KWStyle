@@ -71,7 +71,7 @@ bool Parser::CheckStatementPerLine(unsigned long max,bool checkInlineFunctions)
 
     if((!this->IsBetweenChars('(',')',posInLine2,false,line2))
       && (!this->IsBetweenQuote(posInLine2,false,line2))
-      && line.find("case:") != -1// we allow switch/case to be in one line
+      && line.find("case:") == -1// we allow switch/case to be in one line
       )
       {
       statements++;
