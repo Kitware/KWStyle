@@ -134,12 +134,16 @@ int main(int argc, char **argv)
   command.AddOptionField("overwrite","filename",MetaCommand::STRING,false);
 
   command.SetOption("dirfile","D",false,"Specify a file listing all the directories");
+  command.SetOption("basedirectory","B",false,"Specify the base directory of the file");
+  command.AddOptionField("basedirectory","filename",MetaCommand::STRING,false);
+    
   command.SetOption("blacklist","b",false,"Specify a black list of words");
   command.AddOptionField("blacklist","filename",MetaCommand::STRING,false);
   command.SetOption("dart","dart",false,"Write out files to be send to the dart server");
   command.AddOptionField("dart","filename",MetaCommand::STRING,true);
   command.AddOptionField("dart","maxerror",MetaCommand::INT,false,"-1");
   command.AddOptionField("dart","group",MetaCommand::INT,false,"0");
+
 
   command.SetOption("kwsurl","kwsurl",false,"Specify the base url of the KWStyle HTML report");
   command.AddOptionField("kwsurl","url",MetaCommand::STRING,true);
@@ -794,8 +798,14 @@ int main(int argc, char **argv)
       {
       url = command.GetValueAsString("kwsurl","url");
       }
-
-    generator.GenerateDart(dart.c_str(),maxerror,grouperrors,url,time0);
+    
+    std::string baseDirectory = "";
+    
+    if(command.GetOptionWasSet("basedirectory"))
+      {
+      baseDirectory = command.GetValueAsString("basedirectory","filename");
+      }
+    generator.GenerateDart(dart.c_str(),maxerror,grouperrors,url,time0,baseDirectory.c_str());
     }
 
   // If we have errors we return false

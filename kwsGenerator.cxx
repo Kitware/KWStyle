@@ -1016,7 +1016,9 @@ void Generator::ExportHTML(std::ostream & output)
 }
 
 /** Generate dart files */
-bool Generator::GenerateDart(const char* dir,int maxError,bool group,std::string url,double time)
+bool Generator::GenerateDart(const char* dir,int maxError,
+                             bool group,std::string url,
+                             double time,std::string basedirectory)
 {
   std::cout << "Generating Dart...";
  
@@ -1077,8 +1079,6 @@ bool Generator::GenerateDart(const char* dir,int maxError,bool group,std::string
     }
 
   // Generate the header
-  //file << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl;
-  //file << "<Site BuildName=\"Linux-gcc-3.3\" BuildStamp=\"20060207-0100-Nightly\" Name=\"voltaire.caddlab.unc\" Generator=\"ctest2.3-20050829\">" << std::endl;
   char* buffer = new char[255];
   configfile.getline(buffer,255);
   file << buffer << std::endl;
@@ -1097,6 +1097,12 @@ bool Generator::GenerateDart(const char* dir,int maxError,bool group,std::string
   ParserVectorType::const_iterator it = m_Parsers->begin();
   while(it != m_Parsers->end())
     {
+    std::string sourcefile = (*it).GetFilename();
+    if(basedirectory.size()>0)
+      {
+      sourcefile = sourcefile.substr(basedirectory.size());
+      }
+    
     bool first = true;
     const Parser::ErrorVectorType errors = (*it).GetErrors();
     Parser::ErrorVectorType::const_iterator itError = errors.begin();
@@ -1107,7 +1113,7 @@ bool Generator::GenerateDart(const char* dir,int maxError,bool group,std::string
         file << "<Error>" << std::endl;
         file << "          <BuildLogLine>1</BuildLogLine>" << std::endl;
         file << "          <SourceFile>";
-        file << (*it).GetFilename();
+        file << sourcefile.c_str();
         file << "</SourceFile>" << std::endl;
         file << "          <SourceLineNumber>";
         file << (*itError).line;
