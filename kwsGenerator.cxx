@@ -13,6 +13,7 @@
 =========================================================================*/
 #include "kwsGenerator.h"
 #include "kwsXMLReader.h"
+#include <cstring>
 
 namespace kws {
 

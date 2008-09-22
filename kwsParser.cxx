@@ -14,6 +14,7 @@
 #include "kwsParser.h"
 
 #include <kwssys/ios/sstream>
+#include <cstring>
 
 namespace kws {
 

@@ -12,6 +12,7 @@
 
 =========================================================================*/
 #include "kwsParser.h"
+#include <cstring>
 
 namespace kws {
 

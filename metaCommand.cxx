@@ -18,6 +18,7 @@
 
 #include <stdio.h>
 #include <string>
+#include <cstring>
 
 #if (METAIO_USE_NAMESPACE)
 namespace METAIO_NAMESPACE {
@@ -37,7 +38,7 @@ MetaCommand::MetaCommand()
 }
 
 
-/** Extract the date from the $Date: 2006-07-26 15:56:21 $ cvs command */
+/** Extract the date from the $Date: 2008-09-22 16:15:37 $ cvs command */
 METAIO_STL::string MetaCommand::ExtractDateFromCVS(METAIO_STL::string date)
 {
   METAIO_STL::string newdate;
