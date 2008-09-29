@@ -1085,11 +1085,11 @@ bool Generator::GenerateDart(const char* dir,int maxError,
   file << buffer << std::endl;
   configfile.getline(buffer,255);
 
-  std::string currentLine = line;
+  std::string currentLine = buffer;
   while(line.find(">") == -1)
    { 
    configfile.getline(buffer,255);
-   currentLine = line;
+   currentLine = buffer;
    file << buffer << std::endl;
    }
 
