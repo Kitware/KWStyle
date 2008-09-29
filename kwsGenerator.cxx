@@ -1086,7 +1086,7 @@ bool Generator::GenerateDart(const char* dir,int maxError,
   configfile.getline(buffer,255);
 
   std::string currentLine = buffer;
-  while(line.find(">") == -1)
+  while(currentLine.find(">") == -1)
    { 
    configfile.getline(buffer,255);
    currentLine = buffer;
