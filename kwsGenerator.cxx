@@ -1098,8 +1098,11 @@ bool Generator::GenerateDart(const char* dir,int maxError,
 
   file << "<Build>" << std::endl;
   file << "      <StartDateTime>";
-  file << kwssys::SystemTools::GetCurrentDateTime("%b %d %I:%M:%S %z");
+  file << kwssys::SystemTools::GetCurrentDateTime("%b %d %H:%M:%S %z");
   file << "</StartDateTime>" << std::endl;
+  file << "      <StartBuildTime>";
+  file << static_cast<unsigned int>(kwssys::SystemTools::GetTime());
+  file << "</StartBuildTime>" << std::endl;
   file << "<BuildCommand>KWStyle</BuildCommand>" << std::endl;
 
   int nErrors = 0;
