@@ -9,7 +9,7 @@ SET (CTEST_COMMAND
 "/projects/KWStyle/CMake-Linux/bin/ctest -D NightlyStart"
 "/projects/KWStyle/CMake-Linux/bin/ctest -D NightlyUpdate"
 "/projects/KWStyle/CMake-Linux/bin/ctest -D NightlyConfigure"
-"/projects/KWStyle/KWStyle-Linux/KWStyle -lesshtml -o ${CTEST_SOURCE_DIRECTORY}/Utilities/KWStyle/ITKOverwrite.txt -xml ${CTEST_BINARY_DIRECTORY}/ITK.kws.xml -html /projects/KWStyle/Examples/Insight/Review -kwsurl http://66.194.253.24/KWStyleExamples/Insight/Review -dart ${CTEST_BINARY_DIRECTORY} -1 1 -D ${CTEST_BINARY_DIRECTORY}/ITKReviewFiles.txt" 
+"/projects/KWStyle/KWStyle-Linux/KWStyle -lesshtml -o ${CTEST_SOURCE_DIRECTORY}/Utilities/KWStyle/ITKOverwrite.txt -xml ${CTEST_BINARY_DIRECTORY}/Utilities/KWStyle/ITK.kws.xml -html /projects/KWStyle/Examples/Insight/Review -kwsurl http://66.194.253.24/KWStyleExamples/Insight/Review -dart ${CTEST_BINARY_DIRECTORY} -1 1 -D ${CTEST_BINARY_DIRECTORY}/Utilities/Review/ITKReviewFiles.txt" 
 "/projects/KWStyle/CMake-Linux/bin/ctest -D NightlySubmit"
 )
 
