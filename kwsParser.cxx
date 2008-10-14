@@ -2006,11 +2006,6 @@ void Parser::ComputeIfElseEndifList()
 
       if(posSharpIf != -1)
         {
-        
-        std::cout << "if : "  << this->GetLineNumber(posSharpIf,true) << std::endl;
-        std::cout << "else : "  << this->GetLineNumber(posSharpElse,true) << std::endl;
-        std::cout << "endif : "  << this->GetLineNumber(posSharpEndif,true) << std::endl;
-        
         // We check if the total number of '{' is equal to the total number of '}'
         // in the #if/#else/#endif section
         int nOpen = 0;
