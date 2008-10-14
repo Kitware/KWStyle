@@ -1958,7 +1958,38 @@ void Parser::ComputeIfElseEndifList()
   long int posSharpElse = m_BufferNoComment.find("#else",0);
   while(posSharpElse != -1)
     {
+    
+    // Find the corresponding #endif
     long int posSharpEndif = m_BufferNoComment.find("#endif",posSharpElse);
+    while(posSharpEndif != -1)
+      {
+      // Look if we have any #if between the #else and #endif
+      // Count the number of #if and #endif
+      int nIf = 0;
+      long int posIf = m_BufferNoComment.find("#if",posSharpElse);
+      while(posIf<posSharpEndif && posIf!=-1)
+        {
+        posIf = m_BufferNoComment.find("#if",posIf+1);
+        nIf++;
+        }
+        
+      int nEndIf = 0;
+      long int posEndif = m_BufferNoComment.find("#endif",posSharpElse);
+      while(posEndif<posSharpEndif && posEndif!=-1)
+        {
+        posEndif = m_BufferNoComment.find("#endif",posEndif+1);
+        nEndIf++;
+        }
+       
+      if(nEndIf == nIf)
+        {
+        break;
+        }
+        
+      // Then continue to search*/
+      posSharpEndif = m_BufferNoComment.find("#endif",posSharpEndif+1); 
+      }
+    
     if(posSharpEndif != -1)
       {
       // Search for the corresponding if
@@ -1975,6 +2006,11 @@ void Parser::ComputeIfElseEndifList()
 
       if(posSharpIf != -1)
         {
+        
+        std::cout << "if : "  << this->GetLineNumber(posSharpIf,true) << std::endl;
+        std::cout << "else : "  << this->GetLineNumber(posSharpElse,true) << std::endl;
+        std::cout << "endif : "  << this->GetLineNumber(posSharpEndif,true) << std::endl;
+        
         // We check if the total number of '{' is equal to the total number of '}'
         // in the #if/#else/#endif section
         int nOpen = 0;
