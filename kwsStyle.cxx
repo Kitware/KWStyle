@@ -24,6 +24,7 @@
 #include <sstream>
 #include "kwsXMLReader.h"
 #include <vector>
+#include "KWStyleConfigure.h"
 
 #if defined(WIN32) && !defined(__CYGWIN__)
   #include <direct.h> // mkdir needs it
@@ -102,7 +103,8 @@ int main(int argc, char **argv)
   double time0 = kwssys::SystemTools::GetTime();
 
   MetaCommand command;
-
+  command.SetVersion(KWSTYLE_VERSION_STRING);
+  
   // Check if -cvs is defined and put MetaCommand in quiet mode
   for(int j=0;j<argc;j++)
     {

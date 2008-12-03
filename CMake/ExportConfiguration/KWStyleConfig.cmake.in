@@ -1,0 +1,35 @@
+#-----------------------------------------------------------------------------
+#
+# KWStyleConfig.cmake - CMake configuration file for external projects.
+#
+# This file is configured by KWStyle and used by the UseKWStyle.cmake
+# module to load KWStyle's settings for an external project.
+# The KWStyle version number.
+SET(KWStyle_MAJOR_VERSION "@KWStyle_MAJOR_VERSION@")
+SET(KWStyle_MINOR_VERSION "@KWStyle_MINOR_VERSION@")
+SET(KWStyle_PATCH_VERSION "@KWStyle_PATCH_VERSION@")
+
+# The libraries.
+SET(KWStyle_LIBRARIES "@KWStyle_LIBRARIES@")
+
+# The CMake macros dir.
+SET(KWStyle_CMAKE_DIR "@KWStyle_CMAKE_DIR_CONFIG@")
+
+# The configuration options.
+SET(KWStyle_BUILD_TESTING "@KWStyle_BUILD_TESTING@")
+
+# The "use" file.
+SET(KWStyle_USE_FILE "@KWStyle_USE_FILE_CONFIG@")
+
+# The build settings file.
+SET(KWStyle_BUILD_SETTINGS_FILE "@KWStyle_BUILD_SETTINGS_FILE_CONFIG@")
+
+# The library directories.
+SET(KWStyle_LIBRARY_DIRS "@KWStyle_LIBRARY_DIRS@")
+
+# The runtime directories.
+SET(KWStyle_EXECUTABLE_DIRS "@KWStyle_EXECUTABLE_DIRS@")
+
+# The include directories.
+SET(KWStyle_INCLUDE_DIRS "@KWStyle_INCLUDE_DIRS_CONFIG@")
+
