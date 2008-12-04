@@ -28,9 +28,9 @@ TARGET_LINK_LIBRARIES(KWStyleTests KWStyleLib kwssys)
 MACRO(ADD_TEST_FROM_BUG_TRACKER BUG_NUMBER FILENAME)
   ADD_TEST(Test${BUG_NUMBER} ${KWSTYLE_TESTS}
   --compare ${KWStyle_SOURCE_DIR}/Testing/Data/${BUG_NUMBER}-output.xml
-            ${EXECUTABLE_OUTPUT_PATH}/${BUG_NUMBER}-output.xml
-  kwsRunKWStyleTest ${EXECUTABLE_OUTPUT_PATH}/KWStyle -xml ${KWStyle_SOURCE_DIR}/Testing/Data/${BUG_NUMBER}-KWStyleConfiguration.kws.xml
-  -exportxml ${EXECUTABLE_OUTPUT_PATH}/${BUG_NUMBER}-output.xml
+            ${KWStyle_BINARY_DIR}/${BUG_NUMBER}-output.xml
+  kwsRunKWStyleTest ${KWStyle_BINARY_DIR}/KWStyle -xml ${KWStyle_SOURCE_DIR}/Testing/Data/${BUG_NUMBER}-KWStyleConfiguration.kws.xml
+  -exportxml ${KWStyle_BINARY_DIR}/${BUG_NUMBER}-output.xml
   ${KWStyle_SOURCE_DIR}/Testing/Data/${BUG_NUMBER}-${FILENAME})
 
 ENDMACRO(ADD_TEST_FROM_BUG_TRACKER BUG_NUMBER FILENAME)
