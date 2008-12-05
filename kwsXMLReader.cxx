@@ -12,7 +12,7 @@
 
 =========================================================================*/
 #include "kwsXMLReader.h"
-#include <cstring>
+#include <string.h>
 
 namespace kws{
 

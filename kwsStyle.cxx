@@ -20,7 +20,7 @@
 #include <kwssys/SystemTools.hxx>
 #include <kwssys/Glob.hxx>
 #include <cmath>
-#include <cstring>
+#include <string.h>
 #include <sstream>
 #include "kwsXMLReader.h"
 #include <vector>

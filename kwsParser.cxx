@@ -13,8 +13,8 @@
 =========================================================================*/
 #include "kwsParser.h"
 
+#include <string.h>
 #include <kwssys/ios/sstream>
-#include <cstring>
 
 namespace kws {
 
