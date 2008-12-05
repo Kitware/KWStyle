@@ -13,6 +13,7 @@
 =========================================================================*/
 #include "kwsParser.h"
 
+#include <stdlib.h> // atoi
 #include <string.h>
 #include <kwssys/ios/sstream>
 

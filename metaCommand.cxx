@@ -17,6 +17,7 @@
 #include "metaCommand.h"
 
 #include <stdio.h>
+#include <stdlib.h> // atoi
 #include <string.h>
 #include <string>
 
@@ -38,7 +39,7 @@ MetaCommand::MetaCommand()
 }
 
 
-/** Extract the date from the $Date: 2008-12-05 16:51:09 $ cvs command */
+/** Extract the date from the $Date: 2008-12-05 21:46:02 $ cvs command */
 METAIO_STL::string MetaCommand::ExtractDateFromCVS(METAIO_STL::string date)
 {
   METAIO_STL::string newdate;
