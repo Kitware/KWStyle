@@ -28,8 +28,8 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include <cstring>
-#include <cstdlib>
+#include <string.h> // strcmp
+#include <stdlib.h> // atoi
 #include "kwssys/SystemTools.hxx"
 
 #define ITK_TEST_DIMENSION_MAX 6
