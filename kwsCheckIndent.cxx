@@ -972,7 +972,8 @@ bool Parser::InitIndentation()
   this->AddIndent("signals:",-1,0);
   this->AddIndent("public slots:",-1,0);
   this->AddIndent("private slots:",-1,0);
-
+  this->AddIndent("protected slots:",-1,0);
+  
   // some words should be always align left
   this->AddIndent("#include",ALIGN_LEFT,0);
   this->AddIndent("#if",ALIGN_LEFT,0);
