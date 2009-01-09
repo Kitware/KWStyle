@@ -106,13 +106,13 @@ int main(int argc, char **argv)
   command.SetVersion(KWSTYLE_VERSION_STRING);
   
   // Check if -cvs is defined and put MetaCommand in quiet mode
-  for(int j=0;j<argc;j++)
+  /*for(int j=0;j<argc;j++)
     {
     if(!strcmp(argv[j],"-cvs"))
       {
       command.SetVerbose(false);
       }
-    }  
+    }*/  
 
   command.SetOption("directory","d",false,"Specify a directory");
   command.SetOption("recursive","R",false,"Associated with -d recurse through directories");
@@ -531,7 +531,7 @@ int main(int argc, char **argv)
   // if the -cvs command is used
   // WARNING this option should be last because its position is used
   // to determine the filenames.
-  if(command.GetOptionWasSet("cvs"))
+  /*if(command.GetOptionWasSet("cvs"))
     {
     filenames.clear();
     int cvspos = 0;
@@ -560,7 +560,7 @@ int main(int argc, char **argv)
         filenames.push_back(filename);
         }
       }
-    }
+    }*/
 
   std::vector<std::string>::const_iterator it = filenames.begin();
 
@@ -583,6 +583,11 @@ int main(int argc, char **argv)
     if(!file.is_open())
       {
       std::cout << "Cannot open file: " << (*it).c_str() << std::endl;
+      // When removing a file with CVS we should return 0 otherwise it fails
+      if(command.GetOptionWasSet("cvs"))
+        {
+        return 0;
+        }
       return 1;
       }
 
