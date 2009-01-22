@@ -1,5 +1,5 @@
 SET (CTEST_SOURCE_DIRECTORY "/home/Dashboards/KWStyleBuilds/Insight")
-SET (CTEST_BINARY_DIRECTORY "/projects/KWStyle/KWStyleBuilds/Insight-Linux")
+SET (CTEST_BINARY_DIRECTORY "/home/Dashboards/KWStyleBuilds/Insight-KWStyle")
 
 SET (KWSTYLE_DIRECTORY "${CTEST_SOURCE_DIRECTORY}/Utilities/KWStyle")
 
