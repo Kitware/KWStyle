@@ -603,6 +603,23 @@ bool Parser::CheckIndent(IndentType itype,
  return !hasError;
 }
 
+
+/** Check if the current position is a valid switch statement */
+bool Parser::CheckValidSwitchStatement(unsigned int posSwitch)
+{
+  if(m_BufferNoComment[posSwitch-1]!='\n' 
+     && m_BufferNoComment[posSwitch-1]!=' '
+     && posSwitch-1 != 0
+     && (int)m_BufferNoComment.size() > posSwitch+7
+     && m_BufferNoComment[posSwitch+7] != ' '
+     && m_BufferNoComment[posSwitch+7] != '(')
+   {
+   return false;
+   }
+  return true;
+}
+            
+
 /** Init the indentation */
 bool Parser::InitIndentation()
 {
@@ -787,6 +804,13 @@ bool Parser::InitIndentation()
   long int posSwitch = m_BufferNoComment.find("switch",0);
   while(posSwitch != -1)
     {
+    // Check that it is a valid switch statement
+    if(!this->CheckValidSwitchStatement(posSwitch))
+     {
+     posSwitch = m_BufferNoComment.find("switch",posSwitch+1);
+     continue;
+     }
+    
     // If this is the first case we find the openning { in order to 
     // find the closing } of the switch statement
     long int openningBracket = m_BufferNoComment.find("{",posSwitch);
@@ -805,6 +829,12 @@ bool Parser::InitIndentation()
     long int nestedSwitch = m_BufferNoComment.find("switch",posSwitch+1);
     while(nestedSwitch != -1)
       {
+      if(!this->CheckValidSwitchStatement(nestedSwitch))
+        {
+        nestedSwitch = m_BufferNoComment.find("switch",nestedSwitch+1);
+        continue;
+        }
+        
       if(nestedSwitch < defaultPos)
         {
         defaultPos = m_BufferNoComment.find("default",defaultPos+1);

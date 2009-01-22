@@ -435,6 +435,9 @@ protected:
 
   /** Functions to deal with the fixed buffer */
   void ReplaceCharInFixedBuffer(long int pos,long int size,char* replacingString);
+  
+  /** Check if the current position is a valid switch statement */
+  bool CheckValidSwitchStatement(unsigned int posSwitch);
             
 private:
 
