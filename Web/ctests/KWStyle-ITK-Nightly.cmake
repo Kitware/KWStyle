@@ -8,7 +8,7 @@ SET (CTEST_COMMAND
 "ctest -D NightlyStart"
 "ctest -D NightlyUpdate"
 "ctest -D NightlyConfigure"
-"/home/Dashboards/KWStyle-Build/KWStyle -lesshtml -o ${CTEST_SOURCE_DIRECTORY}/Utilities/KWStyle/ITKOverwrite.txt -xml ${CTEST_BINARY_DIRECTORY}/Utilities/KWStyle/ITK.kws.xml -dart ${CTEST_BINARY_DIRECTORY} -1 1 -D ${CTEST_BINARY_DIRECTORY}/Utilities/KWStyle/ITKFiles.txt" 
+"/home/kitware/Dashboards/KWStyle-Build/KWStyle -lesshtml -o ${CTEST_SOURCE_DIRECTORY}/Utilities/KWStyle/ITKOverwrite.txt -xml ${CTEST_BINARY_DIRECTORY}/Utilities/KWStyle/ITK.kws.xml -dart ${CTEST_BINARY_DIRECTORY} -1 1 -D ${CTEST_BINARY_DIRECTORY}/Utilities/KWStyle/ITKFiles.txt" 
 "ctest -D NightlySubmit -A ${CTEST_SCRIPT_DIRECTORY}/${CTEST_SCRIPT_NAME}"
 )
 
