@@ -824,6 +824,10 @@ bool Parser::InitIndentation()
 
     // Do the default case
     long int defaultPos = m_BufferNoComment.find("default",openningBracket);
+    if(defaultPos > closingBracket)
+      {
+      defaultPos = -1;
+      }
     
     // We need to make sure that there is no "switch" statement nested
     long int nestedSwitch = m_BufferNoComment.find("switch",posSwitch+1);
