@@ -387,20 +387,19 @@ protected:
   /** Return the position of the template if the class has a template otherwise -1. */
   long int IsTemplated(const std::string & buffer, long int pos) const;
 
-  /**  return true if the position pos is inside a comment */
+  /**  Return true if the position pos is inside a comment */
   bool IsInComments(long int pos) const;
   
-  /**  return true if the position pos is inside a function */
+  /**  Return true if the position pos is inside a function */
   bool IsInFunction(long int pos,const char* buffer=NULL) const;
 
-  /**  return true if the position pos is inside a struct */
+  /**  Return true if the position pos is inside a struct */
   bool IsInStruct(long int pos,const char* buffer=NULL) const;
   
-  /**  return true if the position pos is inside a union */
+  /**  Return true if the position pos is inside a union */
   bool IsInUnion(long int pos,const char* buffer=NULL) const;
 
-  /**  return true if the position pos is inside a comment defined as the compiler
-   *   i.e // or /* */
+  /**  Return true if the position pos is inside a comment defined by the compiler */
   bool IsInAnyComments(long int pos) const;
 
   /** Given the position without comments return the position with the comments */
