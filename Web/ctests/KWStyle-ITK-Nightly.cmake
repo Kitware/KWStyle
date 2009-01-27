@@ -9,7 +9,7 @@ SET (CTEST_COMMAND
 "/home/kitware/Dashboards/CMake-build/bin/ctest -D NightlyUpdate"
 "/home/kitware/Dashboards/CMake-build/bin/ctest -D NightlyConfigure"
 "/home/kitware/Dashboards/KWStyle-Build/KWStyle -lesshtml -o ${CTEST_SOURCE_DIRECTORY}/Utilities/KWStyle/ITKOverwrite.txt -xml ${CTEST_BINARY_DIRECTORY}/Utilities/KWStyle/ITK.kws.xml -dart ${CTEST_BINARY_DIRECTORY} -1 1 -D ${CTEST_BINARY_DIRECTORY}/Utilities/KWStyle/ITKFiles.txt"
-"/home/kitware/Dashboards/CMake-build/bin/ctest -D NightlySubmit -A ${CTEST_SCRIPT_DIRECTORY}/${CTEST_SCRIPT_NAME}"
+"ctest -D NightlySubmit -A ${CTEST_SCRIPT_DIRECTORY}/${CTEST_SCRIPT_NAME}"
 )
 
 
@@ -19,5 +19,6 @@ MAKE_MAKE_PROGRAM:FILEPATH=make
 SITE:STRING=dash21.kitware
 BUILDNAME:STRING=KWStyle
 ITK_USE_KWSTYLE:BOOL=ON
+KWSTYLE_EXECUTABLE:FILEPATH=/home/kitware/Dashboards/KWStyle-build/bin/KWStyle
 ")
 
