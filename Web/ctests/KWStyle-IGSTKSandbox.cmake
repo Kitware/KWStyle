@@ -21,6 +21,6 @@ ITK_DIR:PATH=/home/kitware/Dashboards/Insight-Build
 VTK_DIR:PATH=/home/kitware/Dashboards/VTK-Build
 IGSTK_DIR:PATH=/home/kitware/Dashboards/KWStyleBuilds/IGSTK-Linux
 IGSTK_USE_KWSTYLE:BOOL=ON
-KWSTYLE_EXECUTABLE:FILEPATH=/home/kitware/Dashboards/KWStyle-build/bin/KWStyle
+KWSTYLE_EXECUTABLE:FILEPATH=/home/kitware/Dashboards/KWStyle-Build/bin/KWStyle
 ")
 
