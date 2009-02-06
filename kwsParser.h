@@ -14,6 +14,9 @@
 #ifndef __kwsParser_h
 #define __kwsParser_h
 
+// Put kwssys/Configure.h first for proper compiler warning suppression:
+#include <kwssys/Configure.h>
+
 #include <iostream>
 #include <fstream>
 #include <stdio.h>

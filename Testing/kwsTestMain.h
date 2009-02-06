@@ -19,6 +19,9 @@
 
 =========================================================================*/
 
+// Put kwssys/Configure.h first for proper compiler warning suppression:
+#include <kwssys/Configure.h>
+
 // This file is used to create TestDriver executables
 // These executables are able to register a function pointer to a string name
 // in a lookup table.   By including this file, it creates a main function

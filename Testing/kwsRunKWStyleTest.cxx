@@ -14,9 +14,9 @@
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
-#if defined(_MSC_VER)
-#pragma warning ( disable : 4786 )
-#endif
+
+// Put kwssys/Configure.h first for proper compiler warning suppression:
+#include <kwssys/Configure.h>
 
 #include <iostream>
 #include <kwssys/Process.h>
