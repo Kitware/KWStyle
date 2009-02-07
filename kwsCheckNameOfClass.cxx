@@ -117,7 +117,6 @@ long int Parser::GetClassPosition(long int position,std::string buffer) const
 
   long int pos = buffer.find("class",position);
 
-  long int errorpos = 0;
   std::string nameOfClass = "";
   while(pos!=-1)
     {

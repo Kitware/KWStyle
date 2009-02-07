@@ -21,7 +21,7 @@ bool Parser::CheckStatementPerLine(unsigned long max,bool checkInlineFunctions)
 {
   m_TestsDone[STATEMENTPERLINE] = true;
   char* val = new char[255];
-  sprintf(val,"Statements per line = %d max",max);
+  sprintf(val,"Statements per line = %ld max",max);
   m_TestsDescription[STATEMENTPERLINE] = val;
   delete [] val;
 
@@ -42,7 +42,7 @@ bool Parser::CheckStatementPerLine(unsigned long max,bool checkInlineFunctions)
     // If we are on the same line
     unsigned long lineNumber = this->GetLineNumber(posSemicolon,true); 
    
-    if(lineNumber != currentLine)
+    if(lineNumber != static_cast<unsigned long>(currentLine))
       {
       currentLine = lineNumber;
       statements = 0;
@@ -71,7 +71,7 @@ bool Parser::CheckStatementPerLine(unsigned long max,bool checkInlineFunctions)
 
     if((!this->IsBetweenChars('(',')',posInLine2,false,line2))
       && (!this->IsBetweenQuote(posInLine2,false,line2))
-      && line.find("case:") == -1// we allow switch/case to be in one line
+      && line.find("case:") == std::string::npos // we allow switch/case to be in one line
       )
       {
       statements++;
@@ -107,12 +107,12 @@ bool Parser::CheckStatementPerLine(unsigned long max,bool checkInlineFunctions)
       error.number = STATEMENTPERLINE;
       error.description = "Number of statements per line exceed: ";
       char* val = new char[10];
-      sprintf(val,"%d",statements);
+      sprintf(val,"%ld",statements);
       error.description += val;
       error.description += " (max=";
       delete [] val;
       val = new char[10];
-      sprintf(val,"%d",max);
+      sprintf(val,"%ld",max);
       error.description += val;
       error.description += ")";
       delete [] val;

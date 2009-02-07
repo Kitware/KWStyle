@@ -21,14 +21,11 @@ bool Parser::CheckLineLength(unsigned long max,bool checkHeader)
 {
   m_TestsDone[LINE_LENGTH] = true;
   char* val = new char[255];
-  sprintf(val,"Line Length = %d max chars",max);
+  sprintf(val,"Line Length = %ld max chars",max);
   m_TestsDescription[LINE_LENGTH] = val;
   delete [] val;
 
   m_Positions.clear();
-  unsigned long total = m_Buffer.size();
-  unsigned long i = 0;
-  unsigned long j = 1;
   bool hasError = false;
 
   unsigned long fileSize = 0;
@@ -86,12 +83,12 @@ bool Parser::CheckLineLength(unsigned long max,bool checkHeader)
         error.number = LINE_LENGTH;
         error.description = "Line length exceed ";
         char* val = new char[10];
-        sprintf(val,"%d",line_length);
+        sprintf(val,"%ld",line_length);
         error.description += val;
         error.description += " (max=";
         delete [] val;
         val = new char[10];
-        sprintf(val,"%d",max);
+        sprintf(val,"%ld",max);
         error.description += val;
         error.description += ")";
         delete [] val;

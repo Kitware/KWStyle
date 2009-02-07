@@ -325,7 +325,7 @@ int main(int argc, char **argv)
         p1 = p;
         p = line.find(" ",p+1);
         std::string enablestring = line.substr(p1+1,p-p1-1);
-        if(enablestring.find("Enable") != -1)
+        if(enablestring.find("Enable") != std::string::npos)
           {
           f.enable = true;
           }
@@ -345,7 +345,7 @@ int main(int argc, char **argv)
         overwriteFeatures.push_back(f);
         }
 
-      if(pos != fileSize)
+      if(static_cast<unsigned long>(pos) != fileSize)
         {
         pos = buffer.find("\n",start);
         }
@@ -423,9 +423,9 @@ int main(int argc, char **argv)
     delete [] buf;
    
     long int start = 0;
-    long int pos = buffer.find("\n",start);
-    long int posr = buffer.find("\r",start);
-    if(posr == -1)
+    std::string::size_type pos = buffer.find("\n",start);
+    std::string::size_type posr = buffer.find("\r",start);
+    if(posr == std::string::npos)
       {
       posr = pos;
       }
@@ -437,7 +437,7 @@ int main(int argc, char **argv)
       {
       std::string dirname = "";
 
-      if(pos == -1)
+      if(pos == std::string::npos)
         {
         dirname = buffer.substr(start,buffer.length()-start);
         pos = fileSize; // we stop
@@ -459,7 +459,7 @@ int main(int argc, char **argv)
         }
 
       // if we should remove the file
-      if(dirname.find("-f",0) != -1)
+      if(dirname.find("-f",0) != std::string::npos)
         {
         std::string fileToRemove = dirname.substr(3,dirname.size()-3);
         RemoveFile(fileToRemove.c_str(),filenames);
@@ -472,7 +472,7 @@ int main(int argc, char **argv)
         {
         bool gotrecurse = false;
         kwssys::Glob glob;
-        if(dirname.find("[R]",0) != -1)
+        if(dirname.find("[R]",0) != std::string::npos)
           {
           glob.RecurseOn();
           gotrecurse = true;
@@ -510,12 +510,12 @@ int main(int argc, char **argv)
         {
         pos = buffer.find("\n",start);
         posr = buffer.find("\r",start);
-        if(posr == -1)
+        if(posr == std::string::npos)
           {
           posr = pos;
           }
         }
-      } while(pos<(long int)fileSize);
+      } while(pos<fileSize);
  
     file.close();
     }

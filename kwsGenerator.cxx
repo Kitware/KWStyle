@@ -312,11 +312,11 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
 
     // Replace '/' by '_' (and strip any colon)
     std::string filename = parser.GetFilename();
-    if(long int pos = filename.find(":/") != -1)
+    if(long int pos = filename.find(":/") != std::string::npos)
       {
       filename = filename.substr(pos+2,filename.size()-pos-2);
       }
-    if(long int pos = filename.find(":\\") != -1)
+    if(long int pos = filename.find(":\\") != std::string::npos)
       {
       filename = filename.substr(pos+2,filename.size()-pos-2);
       }
@@ -540,11 +540,11 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
     std::string filename = dir;
     filename += "/";
     std::string filename2 = (*it).GetFilename();
-    if(long int pos = filename2.find(":/") != -1)
+    if(long int pos = filename2.find(":/") != std::string::npos)
       {
       filename2 = filename2.substr(pos+2,filename2.size()-pos-2);
       }
-    if(long int pos = filename2.find(":\\") != -1)
+    if(long int pos = filename2.find(":\\") != std::string::npos)
       {
       filename2 = filename2.substr(pos+2,filename2.size()-pos-2);
       }
@@ -594,7 +594,7 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
        std::vector<ErrorLineType>::iterator errorLineIt = errorLines.begin();
        while(errorLineIt != errorLines.end())
          {
-         if((*errorLineIt).first == i)
+         if((*errorLineIt).first == static_cast<int>(i))
            {
            break;
            }
@@ -625,7 +625,7 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
       std::vector<ErrorLineType>::const_iterator errorLineIt = errorLines.begin();
       while(errorLineIt != errorLines.end())
         {
-        if((*errorLineIt).first == i+1)
+        if((*errorLineIt).first == static_cast<int>(i+1))
           {
           std::vector<int>::const_iterator err = (*errorLineIt).second.begin();
           while(err != (*errorLineIt).second.end())
@@ -665,7 +665,7 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
       std::string l = (*it).GetLine(i);
 
       // If the error is of type INDENT we show the problem as *
-      if(errorTag.find("IND") != -1)
+      if(errorTag.find("IND") != std::string::npos)
         {
         unsigned int k = 0;
         while((l[k] == ' ') || (l[k] == '\n'))
@@ -679,7 +679,7 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
         }
 
       // If the error is of type extra spaces we show the problem as *
-      if(errorTag.find("ESP") != -1)
+      if(errorTag.find("ESP") != std::string::npos)
         {
         int k = l.size()-1;
         while(k>0 && (l[k] == ' '))
@@ -926,7 +926,7 @@ void Generator::ExportHTML(std::ostream & output)
       std::string l = (*it).GetLine(i);
 
       // If the error is of type INDENT we show the problem as _
-      if(errorTag.find("IND") != -1)
+      if(errorTag.find("IND") != std::string::npos)
         {
         unsigned int k = 0;
         while((l[k] == ' ') || (l[k] == '\n'))
@@ -1088,7 +1088,7 @@ bool Generator::GenerateDart(const char* dir,int maxError,
   file << buffer << std::endl;
 
   std::string currentLine = buffer;
-  while(currentLine.find(">") == -1)
+  while(currentLine.find(">") == std::string::npos)
    { 
    configfile.getline(buffer,255);
    currentLine = buffer;
@@ -1157,11 +1157,11 @@ bool Generator::GenerateDart(const char* dir,int maxError,
           */
 
           std::string htmlfile = (*it).GetFilename();
-          if(long int pos = htmlfile.find(":/") != -1)
+          if(long int pos = htmlfile.find(":/") != std::string::npos)
             {
             htmlfile = htmlfile.substr(pos+2,htmlfile.size()-pos-2);
             }
-          if(long int pos = htmlfile.find(":\\") != -1)
+          if(long int pos = htmlfile.find(":\\") != std::string::npos)
             {
             htmlfile = htmlfile.substr(pos+2,htmlfile.size()-pos-2);
             }
@@ -1212,7 +1212,7 @@ bool Generator::GenerateDart(const char* dir,int maxError,
 
       desc += " ["+(*it).GetTestDescription((*itError).number)+"] (";
       char* val = new char[255];
-      sprintf(val,"%d",(*itError).line);
+      sprintf(val,"%ld",(*itError).line);
       desc += val;
       desc += ")\n";
       delete [] val; 
@@ -1297,7 +1297,6 @@ bool Generator::ExportXML(const char* filename)
   ParserVectorType::const_iterator it = m_Parsers->begin();
   while(it != m_Parsers->end())
     {
-    bool first = true;
     const Parser::ErrorVectorType errors = (*it).GetErrors();
     Parser::ErrorVectorType::const_iterator itError = errors.begin();
     while(itError != errors.end())

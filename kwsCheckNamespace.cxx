@@ -25,8 +25,8 @@ bool Parser::CheckNamespace(const char* name,bool doNotCheckMain)
   // Or if there is not keyword class
   if(doNotCheckMain)
     {
-    if( (m_BufferNoComment.find("main ",0) != -1)
-       || (m_BufferNoComment.find("class ",0) == -1)    
+    if( (m_BufferNoComment.find("main ",0) != std::string::npos)
+       || (m_BufferNoComment.find("class ",0) == std::string::npos)
       )
       {
       return false;

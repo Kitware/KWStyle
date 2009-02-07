@@ -30,7 +30,7 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
     m_TestsDone[FUNCTION_LENGTH] = true;
     m_TestsDescription[FUNCTION_LENGTH] = "Functions must not exceed: ";
     char* temp = new char[10];
-    sprintf(temp,"%d",maxLength);        
+    sprintf(temp,"%ld",maxLength);        
     m_TestsDescription[FUNCTION_LENGTH] += temp;
     m_TestsDescription[FUNCTION_LENGTH] += " lines";
     delete [] temp;
@@ -45,7 +45,6 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
   long int pos = this->FindFunction(0);
   while(pos != -1)
     {
-    long int posf = pos;
     // We extract the name of the function
     std::string functionName = "";
     // Find the ) and the openning (
@@ -61,7 +60,7 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
       }
 
     bool inWord = false;
-    for(i;i>0;i--)
+    for(;i>0;i--)
       {
       if(m_BufferNoComment[i] != ' ' && m_BufferNoComment[i] != '\t' 
          && m_BufferNoComment[i] != '\r' && m_BufferNoComment[i] != '\n' 
@@ -79,19 +78,18 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
     // Check that this is not a #define (tricky)
     std::string functionLine = this->GetLine(this->GetLineNumber(i,true)-1);
 
-    if(functionLine.find("#define") == -1
-       && functionLine.find("_attribute_") == -1
-       && functionLine.find(" operator") == -1
-       && functionLine.find("friend ") == -1
-       && functionName.find("if") == -1
-       && functionName.find("while") == -1
-       && functionName.find("for") == -1
-       && functionName.find("switch") == -1
-       && functionName.find("main") == -1
-       && functionName.find("~") == -1 // skip destructor for now...
+    if(functionLine.find("#define") == std::string::npos
+       && functionLine.find("_attribute_") == std::string::npos
+       && functionLine.find(" operator") == std::string::npos
+       && functionLine.find("friend ") == std::string::npos
+       && functionName.find("if") == std::string::npos
+       && functionName.find("while") == std::string::npos
+       && functionName.find("for") == std::string::npos
+       && functionName.find("switch") == std::string::npos
+       && functionName.find("main") == std::string::npos
+       && functionName.find("~") == std::string::npos // skip destructor for now...
        )
       {
-         
       long int posf = functionName.find("::",0);
       long int posp = functionName.find("(",posf);
       if(posp != -1 && posf != -1 && posp>posf)
@@ -163,10 +161,10 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
           error.number = FUNCTION_LENGTH;
           error.description = "function (" + functionName + ") has too many lines: ";
           char* temp = new char[10];
-          sprintf(temp,"%d",efl-bfl);
+          sprintf(temp,"%ld",efl-bfl);
           error.description += temp;
           error.description += " (";
-          sprintf(temp,"%d",maxLength);
+          sprintf(temp,"%ld",maxLength);
           error.description += temp;
           error.description += ")";
           m_ErrorList.push_back(error);

@@ -60,7 +60,7 @@ bool Parser::CheckEndOfFileNewLine()
       info.number = EOF_NEW_LINE;
       info.description = "Number of empty lines at the end of files: ";
       char* val = new char[10];
-      sprintf(val,"%d",numberOfEmptyLines);
+      sprintf(val,"%ld",numberOfEmptyLines);
       info.description += val;
       delete [] val;
       m_ErrorList.push_back(info);

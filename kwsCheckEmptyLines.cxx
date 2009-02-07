@@ -21,7 +21,7 @@ bool Parser::CheckEmptyLines(unsigned long max, bool checkEndOfFile)
 {
   m_TestsDone[EMPTYLINES] = true;
   char* val = new char[255];
-  sprintf(val,"Empty lines = %d max lines",max);
+  sprintf(val,"Empty lines = %ld max lines",max);
   m_TestsDescription[EMPTYLINES] = val;
   delete [] val;
 
@@ -51,7 +51,7 @@ bool Parser::CheckEmptyLines(unsigned long max, bool checkEndOfFile)
       // Check if we are at the end of the file
       if(!checkEndOfFile)
         {
-        if(m_Buffer.find_first_not_of("\r\n ",i) == -1)
+        if(m_Buffer.find_first_not_of("\r\n ",i) == std::string::npos)
           {
           valid = false;
           }
@@ -65,12 +65,12 @@ bool Parser::CheckEmptyLines(unsigned long max, bool checkEndOfFile)
         error.number = EMPTYLINES;
         error.description = "Empty lines exceed ";
         char* val = new char[10];
-        sprintf(val,"%d",empty);
+        sprintf(val,"%ld",empty);
         error.description += val;
         error.description += " (max=";
         delete [] val;
         val = new char[10];
-        sprintf(val,"%d",max);
+        sprintf(val,"%ld",max);
         error.description += val;
         error.description += ")";
         delete [] val;

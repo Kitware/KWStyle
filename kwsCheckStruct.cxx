@@ -77,7 +77,7 @@ bool Parser::CheckStruct(const char* regEx,bool alignment)
           // if the typedef is on a line close to the previous one we check
           if(line-previousline<2)
             {
-            if(l!=previouspos)
+            if(l!=static_cast<unsigned long>(previouspos))
               {
               Error error;
               error.line = this->GetLineNumber(pos,true);

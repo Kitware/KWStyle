@@ -52,7 +52,7 @@ bool Parser::CheckIndent(IndentType itype,
   m_TestsDone[INDENT] = true;
   m_TestsDescription[INDENT] = "The Indent should respect: ";
   char* val = new char[10];
-  sprintf(val,"%d ",size);
+  sprintf(val,"%ld ",size);
   m_TestsDescription[INDENT] += val;
   if(itype == (IndentType)TABS)
     {
@@ -84,7 +84,6 @@ bool Parser::CheckIndent(IndentType itype,
   
   bool hasError = false;
   unsigned long pos = 0;
-  unsigned int currentPosition = 0;
   std::string::const_iterator it = m_Buffer.begin();
 
   // Variable to check if we are in a comment or not
@@ -288,7 +287,7 @@ bool Parser::CheckIndent(IndentType itype,
           error.description += " (should be ";
           delete [] val;
           val = new char[10];
-          sprintf(val,"%d",wanted);
+          sprintf(val,"%ld",wanted);
           error.description += val;
           error.description += ")";
           delete [] val;
@@ -610,7 +609,7 @@ bool Parser::CheckValidSwitchStatement(unsigned int posSwitch)
   if(m_BufferNoComment[posSwitch-1]!='\n' 
      && m_BufferNoComment[posSwitch-1]!=' '
      && posSwitch-1 != 0
-     && (int)m_BufferNoComment.size() > posSwitch+7
+     && m_BufferNoComment.size() > posSwitch+7
      && m_BufferNoComment[posSwitch+7] != ' '
      && m_BufferNoComment[posSwitch+7] != '(')
    {

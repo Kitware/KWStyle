@@ -21,7 +21,7 @@ bool Parser::CheckVariablePerLine(unsigned long max)
 {
   m_TestsDone[VARIABLEPERLINE] = true;
   char* val = new char[255];
-  sprintf(val,"Variables per line = %d max",max);
+  sprintf(val,"Variables per line = %ld max",max);
   m_TestsDescription[VARIABLEPERLINE] = val;
   delete [] val;
 
@@ -57,7 +57,6 @@ bool Parser::CheckVariablePerLine(unsigned long max)
 
       if(firstWord)
         {
-        bool ignore = false;
         std::string line = this->GetLine(this->GetLineNumber(posType,true)-1);
         
         // Check if we have any comments
@@ -82,7 +81,7 @@ bool Parser::CheckVariablePerLine(unsigned long max)
           }
 
         // If we have any '(' in the line we stop
-        if(line.find('(') == -1)
+        if(line.find('(') == std::string::npos)
           {
           // This is a very simple check we count the number of comas
           unsigned int vars = 1;
@@ -142,7 +141,7 @@ bool Parser::CheckVariablePerLine(unsigned long max)
             error.description += " (max=";
             delete [] val;
             val = new char[10];
-            sprintf(val,"%d",max);
+            sprintf(val,"%ld",max);
             error.description += val;
             error.description += ")";
             delete [] val;

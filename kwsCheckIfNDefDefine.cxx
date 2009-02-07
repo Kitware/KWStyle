@@ -21,7 +21,7 @@ namespace kws {
 bool Parser::CheckIfNDefDefine(const char* match)
 {
   // Check only if we are not a .cxx or .cc or .c file
-  if(m_Filename.find(".c") != -1)
+  if(m_Filename.find(".c") != std::string::npos)
     {
     return false;
     }

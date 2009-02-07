@@ -488,12 +488,12 @@ std::string Parser::GetLastErrors()
     {
     output += "Error #";
     char* val = new char[10];
-    sprintf(val,"%d",(*it).number);
+    sprintf(val,"%ld",(*it).number);
     output += val;
     delete [] val;
     output += " (";
     val = new char[10];
-    sprintf(val,"%d",(*it).line);
+    sprintf(val,"%ld",(*it).line);
     output += val;
     delete [] val;
     output += ") ";
@@ -519,12 +519,12 @@ std::string Parser::GetLastWarnings()
     {
     output += "Warning #";
     char* val = new char[10];
-    sprintf(val,"%d",(*it).number);
+    sprintf(val,"%ld",(*it).number);
     output += val;
     delete [] val;
     output += " (";
     val = new char[10];
-    sprintf(val,"%d",(*it).line);
+    sprintf(val,"%ld",(*it).line);
     output += val;
     delete [] val;
     output += ") ";
@@ -1240,8 +1240,8 @@ long int Parser::FindFunction(long int pos,const char* buffer) const
       }
     else if(i>0)// check if we have a const
       {
-      if(buf.substr(i,beg-i).find("]") == -1 &&
-         buf.substr(i,beg-i).find("const") != -1
+      if(buf.substr(i,beg-i).find("]") == std::string::npos &&
+         buf.substr(i,beg-i).find("const") != std::string::npos
         )
         {
         return beg;

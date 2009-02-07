@@ -155,10 +155,10 @@ bool Parser::CheckMemberFunctions(const char* regEx,unsigned long maxLength)
               error.number = MEMBERFUNCTION_LENGTH;
               error.description = "function (" + memberFunction + ") has too many lines: ";
               char* temp = new char[10];
-              sprintf(temp,"%d",lclose-lopen);
+              sprintf(temp,"%ld",lclose-lopen);
               error.description += temp;
               error.description += " (";
-              sprintf(temp,"%d",maxLength);
+              sprintf(temp,"%ld",maxLength);
               error.description += temp;
               error.description += ")";
               m_ErrorList.push_back(error);
@@ -224,7 +224,7 @@ bool Parser::CheckMemberFunctions(const char* regEx,unsigned long maxLength)
          // if the member function is a constructor or destructor we ignore
          if(functionName != classname
            && functionName != destructor
-           && functionLine.find("typedef ") == -1
+           && functionLine.find("typedef ") == std::string::npos
            )
            {
            if(!regex.find(functionName))
@@ -252,10 +252,10 @@ bool Parser::CheckMemberFunctions(const char* regEx,unsigned long maxLength)
                error.number = MEMBERFUNCTION_LENGTH;
                error.description = "function (" + functionName + ") has too many lines: ";
                char* temp = new char[10];
-               sprintf(temp,"%d",lclose-lopen);
+               sprintf(temp,"%ld",lclose-lopen);
                error.description += temp;
                error.description += " (";
-               sprintf(temp,"%d",maxLength);
+               sprintf(temp,"%ld",maxLength);
                error.description += temp;
                error.description += ")";
                m_ErrorList.push_back(error);
@@ -283,8 +283,8 @@ std::string Parser::FindMemberFunction(std::string & buffer, long int start, lon
     {
     // We check that we don't have the keyword __attribute__
     std::string line = this->GetLine(this->GetLineNumber(posSemicolon,true)-1);
-    if((line.find("_attribute_") != -1)
-      || (line.find(" operator") != -1)
+    if((line.find("_attribute_") != std::string::npos)
+      || (line.find(" operator") != std::string::npos)
       )
       {
       posSemicolon = buffer.find(";",posSemicolon+1);
@@ -317,7 +317,7 @@ std::string Parser::FindMemberFunction(std::string & buffer, long int start, lon
       std::string functionName = "";
       bool inWord = false;
       long int i=pos;
-      for(i;i>start;i--)
+      for(;i>start;i--)
         {
         if(buffer[i] != ' ' && buffer[i] != '\t' 
            && buffer[i] != '\r' && buffer[i] != '\n' && buffer[i] != '*' && buffer[i] != '&')
@@ -332,10 +332,10 @@ std::string Parser::FindMemberFunction(std::string & buffer, long int start, lon
         }
       // Check that this is not a #define (tricky)
       std::string functionLine = this->GetLine(this->GetLineNumber(i,true)-1);
-      if(functionLine.find("#define") == -1
-         && functionLine.find("_attribute_") == -1
-         && functionLine.find(" operator") == -1
-         && functionLine.find("friend ") == -1)
+      if(functionLine.find("#define") == std::string::npos
+         && functionLine.find("_attribute_") == std::string::npos
+         && functionLine.find(" operator") == std::string::npos
+         && functionLine.find("friend ") == std::string::npos)
         {
         // If we have a class definition: Test():Base
         // we return the correct

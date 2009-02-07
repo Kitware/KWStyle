@@ -40,10 +40,9 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL,bool useCVS
   // if there is no space in the name (i.e on linux) we remove the
   // '"' if any. 
   std::string headerFilename = filename;
-  if(headerFilename.find(' ')==-1)
+  if(headerFilename.find(' ') == std::string::npos)
     {
     headerFilename = "";
-    unsigned long k=0;
     for(unsigned long j=0;j<strlen(filename);j++)
       {
       if(filename[j] != '\"')
@@ -160,7 +159,7 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL,bool useCVS
           long int pos3 = buffer.find("<NA>\n",posh);
 
           // We skip the line
-          if(pos3 == posh)
+          if(pos3 == static_cast<long int>(posh))
             {
             while(((*ith) != '\n') && (ith != buffer.end()))
               {
@@ -175,7 +174,7 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL,bool useCVS
             continue;
             }
           // if we have the tag we skip the word
-          else if(pos2 == posh)
+          else if(pos2 == static_cast<long int>(posh))
             {
             while(((*ith) != ' ') && (ith != buffer.end()))
               {

@@ -90,7 +90,7 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment,bool checkP
           // if the typedef is on a line close to the previous one we check
           if(line-previousline<2)
             {
-            if(l!=previouspos)
+            if(l!=static_cast<unsigned long>(previouspos))
               {
               Error error;
               error.line = this->GetLineNumber(pos,true);
@@ -159,7 +159,7 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment,bool checkP
           // if the typedef is on a line close to the previous one we check
           if(line-previousline<2)
             {
-            if(l!=previouspos)
+            if(l!=static_cast<unsigned long>(previouspos))
               {
               Error error;
               error.line = this->GetLineNumber(pos,true);
@@ -225,7 +225,7 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment,bool checkP
           // if the typedef is on a line close to the previous one we check
           if(line-previousline<2)
             {
-            if(l!=previouspos)
+            if(l!=static_cast<unsigned long>(previouspos))
               {
               Error error;
               error.line = this->GetLineNumber(pos,true);
@@ -345,11 +345,11 @@ std::string Parser::FindInternalVariable(long int start, long int end,long int &
         j--;
         }
 
-      if(m_BufferNoComment.substr(j+1,i-j-1).find("enum") != -1)
+      if(m_BufferNoComment.substr(j+1,i-j-1).find("enum") != std::string::npos)
         {
         isenum = true;
         }
-      else if(m_BufferNoComment.substr(j+1,i-j-1).find("typedef") != -1)
+      else if(m_BufferNoComment.substr(j+1,i-j-1).find("typedef") != std::string::npos)
         {
         isenum = true;
         }
@@ -361,16 +361,16 @@ std::string Parser::FindInternalVariable(long int start, long int end,long int &
       subphrase = m_BufferNoComment.substr(i+1,posSemicolon-i-1);
       }
 
-    if( (subphrase.find("=") == -1)
-      && (subphrase.find("(") == -1)
-      && (subphrase.find("typedef") == -1)
-      && (subphrase.find("}") == -1)
-      && (subphrase.find("friend") == -1)
-      && (subphrase.find("class") == -1)
-      && (subphrase.find("return") == -1)
-      && (subphrase.find("extern") == -1)
-      && (subphrase.find("\"") == -1)
-      && (subphrase.find("<<") == -1)
+    if( (subphrase.find("=") == std::string::npos)
+      && (subphrase.find("(") == std::string::npos)
+      && (subphrase.find("typedef") == std::string::npos)
+      && (subphrase.find("}") == std::string::npos)
+      && (subphrase.find("friend") == std::string::npos)
+      && (subphrase.find("class") == std::string::npos)
+      && (subphrase.find("return") == std::string::npos)
+      && (subphrase.find("extern") == std::string::npos)
+      && (subphrase.find("\"") == std::string::npos)
+      && (subphrase.find("<<") == std::string::npos)
       && !isenum
       )
       {

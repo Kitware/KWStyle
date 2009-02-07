@@ -199,7 +199,7 @@ bool Parser::CheckComments(const char* begin,const char* middle,const char* end,
          if(poscombeg!=-1 && (poscom-poscombeg>0))
            {
            std::string sub = m_Buffer.substr(poscombeg,poscom-poscombeg);
-           if(sub.find("\\class") == -1)
+           if(sub.find("\\class") == std::string::npos)
              {
              Error error;
              error.line = this->GetLineNumber(poswithcom,false);

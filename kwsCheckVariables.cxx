@@ -151,7 +151,7 @@ bool Parser::CheckVariables(const char* regEx)
       else
         {
         std::string line = this->GetLine(this->GetLineNumber(posVar,true)-1);
-        if(line.find("Macro") != -1)
+        if(line.find("Macro") != std::string::npos)
           {
           showError = false;
           }
@@ -244,15 +244,15 @@ std::string Parser::FindVariable(std::string & buffer, long int start, long int 
       subphrase = buffer.substr(i+1,posSemicolon-i-1);
       }
 
-    if( (subphrase.find("=") == -1)
-      && (subphrase.find("(") == -1)
-      && (subphrase.find("typedef") == -1)
-      && (subphrase.find("}") == -1)
-      && (subphrase.find("friend") == -1)
-      && (subphrase.find("class") == -1)
-      && (subphrase.find("return") == -1)
-      && (subphrase.find("\"") == -1)
-      && (subphrase.find("<<") == -1)
+    if( (subphrase.find("=") == std::string::npos)
+      && (subphrase.find("(") == std::string::npos)
+      && (subphrase.find("typedef") == std::string::npos)
+      && (subphrase.find("}") == std::string::npos)
+      && (subphrase.find("friend") == std::string::npos)
+      && (subphrase.find("class") == std::string::npos)
+      && (subphrase.find("return") == std::string::npos)
+      && (subphrase.find("\"") == std::string::npos)
+      && (subphrase.find("<<") == std::string::npos)
       )
       {
       // Check that we are not inside a function(){}

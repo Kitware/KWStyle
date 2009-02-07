@@ -22,7 +22,7 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
 {
   m_TestsDone[SEMICOLON_SPACE] = true;
   char* val = new char[255];
-  sprintf(val,"Semicolons = %d max spaces",max);
+  sprintf(val,"Semicolons = %ld max spaces",max);
   m_TestsDescription[SEMICOLON_SPACE] = val;
   delete [] val;
 
@@ -49,12 +49,12 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
           error.number = SEMICOLON_SPACE;
           error.description = "Number of spaces before semicolon exceed: ";
           char* val = new char[10];
-          sprintf(val,"%d",space);
+          sprintf(val,"%ld",space);
           error.description += val;
           error.description += " (max=";
           delete [] val;
           val = new char[10];
-          sprintf(val,"%d",max);
+          sprintf(val,"%ld",max);
           error.description += val;
           error.description += ")";
           delete [] val;
@@ -224,7 +224,7 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
         i--;
         }
       std::string substring = m_BufferNoComment.substr(i,openingChar-i);
-      if(substring.find("static") != -1)
+      if(substring.find("static") != std::string::npos)
         {
         error = false;
         }
