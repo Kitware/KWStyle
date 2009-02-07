@@ -2106,7 +2106,7 @@ void Parser::GenerateFixedFile()
 }
 
 /** Functions to deal with the fixed buffer */
-void Parser::ReplaceCharInFixedBuffer(long int pos,long int size,char* replacingString)
+void Parser::ReplaceCharInFixedBuffer(long int pos,long int size,const char* replacingString)
 {
   std::vector<PairType>::const_iterator it = m_FixedPositions.begin();
   while(it != m_FixedPositions.end())
