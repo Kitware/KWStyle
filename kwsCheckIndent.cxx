@@ -678,7 +678,9 @@ bool Parser::InitIndentation()
     long int open = m_BufferNoComment.find('{',0);
     while(open!=-1 && open<posClass)
       {
-      if(!this->IsInElseForbiddenSection(this->GetPositionWithComments(open)))
+      if(!this->IsInElseForbiddenSection(this->GetPositionWithComments(open))
+        && !this->IsBetweenQuote(open)
+        )
         {
         bool isNamespace = false;
         // Remove the potential namespaces
@@ -702,7 +704,9 @@ bool Parser::InitIndentation()
     long int close = m_BufferNoComment.find('}',0);
     while(close!=-1 && close<posClass)
       {
-      if(!this->IsInElseForbiddenSection(this->GetPositionWithComments(close)))
+      if(!this->IsInElseForbiddenSection(this->GetPositionWithComments(close))
+        && !this->IsBetweenQuote(close)
+        )
         {
         bool isNamespace = false;
         // Remove the potential namespaces
@@ -749,7 +753,11 @@ bool Parser::InitIndentation()
       ind.current = 0;
       ind.after = 1;
       m_IdentPositionVector.push_back(ind);
-      ind.position = this->FindClosingChar('{','}',posClassComments);      
+      ind.position = this->FindClosingChar('{','}',posClassComments);
+      while(this->IsBetweenQuote(ind.position,true))
+        {
+        ind.position = this->FindClosingChar('{','}',ind.position+1);
+        }
       ind.current = -1;
       ind.after = -1;
       m_IdentPositionVector.push_back(ind);
