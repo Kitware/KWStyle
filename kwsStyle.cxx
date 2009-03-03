@@ -290,8 +290,8 @@ int main(int argc, char **argv)
     buffer.resize(fileSize);
     delete [] buf;
    
-    long int start = 0;
-    long int pos = buffer.find("\n",start);
+    size_t start = 0;
+    size_t pos = buffer.find("\n",start);
     do    
       {
       std::string line = "";
@@ -311,12 +311,12 @@ int main(int argc, char **argv)
         break;
         }
 
-      long int p = line.find(" ");
+      size_t p = line.find(" ");
       if(p != -1)
         {
         kwsFeature f;
         f.filename = line.substr(0,p);
-        long int p1 = p;
+        size_t p1 = p;
         p = line.find(" ",p+1);
         if(p!=-1)
           {
@@ -349,7 +349,7 @@ int main(int argc, char **argv)
         {
         pos = buffer.find("\n",start);
         }
-      } while(pos<(long int)fileSize);
+      } while(pos<(size_t)fileSize);
  
     file.close();
     }
@@ -422,7 +422,7 @@ int main(int argc, char **argv)
     buffer.resize(fileSize);
     delete [] buf;
    
-    long int start = 0;
+    size_t start = 0;
     std::string::size_type pos = buffer.find("\n",start);
     std::string::size_type posr = buffer.find("\r",start);
     if(posr == std::string::npos)
@@ -452,7 +452,7 @@ int main(int argc, char **argv)
         break;
         }
 
-      long int space = dirname.find(" ");
+      size_t space = dirname.find(" ");
       while(space != -1 && helperParser.IsBetweenQuote(space,false,dirname))
         {
         space = dirname.find(" ",space+1);
@@ -478,7 +478,7 @@ int main(int argc, char **argv)
           gotrecurse = true;
           }
       
-        long int space = dirname.find(" ");
+        size_t space = dirname.find(" ");
         while(space != -1 && helperParser.IsBetweenQuote(space,false,dirname))
           {
           space = dirname.find(" ",space+1);

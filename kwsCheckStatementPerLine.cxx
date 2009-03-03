@@ -31,8 +31,8 @@ bool Parser::CheckStatementPerLine(unsigned long max,bool checkInlineFunctions)
     }
 
   bool hasError = false;
-  long int posSemicolon = m_BufferNoComment.find(";",0);
-  long int currentLine = -1;
+  size_t posSemicolon = m_BufferNoComment.find(";",0);
+  size_t currentLine = -1;
   unsigned long statements = 0;
   bool newline = false;
   std::string line = "";
@@ -53,19 +53,19 @@ bool Parser::CheckStatementPerLine(unsigned long max,bool checkInlineFunctions)
     // We need more than the current line to determine if we are between parenthesis
     // This is arbitrary but should work in most cases. Maybe the best will be to find the
     // previous semicolon but it might take a long time
-    long int nb = posSemicolon-100; // 100 characters befor
+    size_t nb = posSemicolon-100; // 100 characters befor
     if(nb < 0)
       {
       nb = 0;
       }
 
-    long int ne = posSemicolon+100; // 100 characters after
-    if(ne > (long int)m_BufferNoComment.size())
+    size_t ne = posSemicolon+100; // 100 characters after
+    if(ne > (size_t)m_BufferNoComment.size())
       {
       ne = m_BufferNoComment.size();
       }
 
-    long int posInLine2 = posSemicolon-nb;
+    size_t posInLine2 = posSemicolon-nb;
 
     std::string line2 = m_BufferNoComment.substr(nb,ne-nb);
 
@@ -77,7 +77,7 @@ bool Parser::CheckStatementPerLine(unsigned long max,bool checkInlineFunctions)
       statements++;
       }
 
-    long int posSemicolon2 = m_BufferNoComment.find(";",posSemicolon+1);
+    size_t posSemicolon2 = m_BufferNoComment.find(";",posSemicolon+1);
     if(this->GetLineNumber(posSemicolon2,true) == currentLine)
       {
       newline = false;

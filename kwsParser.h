@@ -309,7 +309,7 @@ public:
   void GenerateFixedFile();
 
   /**  return true if the position pos is between " " */
-  bool IsBetweenQuote(long int pos,bool withComments=false,std::string buffer="") const;
+  bool IsBetweenQuote(size_t pos,bool withComments=false,std::string buffer="") const;
 
 protected:
 
@@ -324,22 +324,22 @@ protected:
 
   /** Get the class position within the file. This function checks that this is the 
    *  classname */
-  long int GetClassPosition(long int position,std::string buffer="") const;
+  size_t GetClassPosition(size_t position,std::string buffer="") const;
 
   /** Return the position in the line given the position in the text */ 
   unsigned long GetPositionInLine(long pos);
 
   /** Find an ivar in the source code */
-  std::string FindInternalVariable(long int start, long int end,long int& pos);
+  std::string FindInternalVariable(size_t start, size_t end,size_t& pos);
   
   /** Find an ivar in the source code */
-  std::string FindVariable(std::string & buffer,long int start, long int end,long int& pos);
+  std::string FindVariable(std::string & buffer,size_t start, size_t end,size_t& pos);
   
   /** Find a member function in the source code */
-  std::string FindMemberFunction(std::string & buffer,long int start, long int end,long int& pos);
+  std::string FindMemberFunction(std::string & buffer,size_t start, size_t end,size_t& pos);
  
   /** Find a typedef in the source code */
-  std::string FindTypedef(long int start, long int end,long int& pos,long int & beg,long int & typedefpos);
+  std::string FindTypedef(size_t start, size_t end,size_t& pos,size_t & beg,size_t & typedefpos);
 
   /** Reduces multiple spaces in buffer to one. */
   void ReduceMultipleSpaces(std::string & buffer);
@@ -348,95 +348,95 @@ protected:
   void RemoveChar(std::string & buffer, char val) const;
 
   /** Find the line number in the commented text given the character description */
-  long int GetLineNumber(long int pos,bool withoutComments=false) const;
+  size_t GetLineNumber(size_t pos,bool withoutComments=false) const;
 
   /** Find the previous word given a position */
-  std::string FindPreviousWord(long int pos,bool withComments=false,std::string buffer="") const;
+  std::string FindPreviousWord(size_t pos,bool withComments=false,std::string buffer="") const;
 
   /** Find the next word given a position. This function works only without comments.*/
-  std::string FindNextWord(long int pos) const;
+  std::string FindNextWord(size_t pos) const;
 
   /** Find the closing bracket given the position of the opening bracket. */
-  long int FindClosingChar(char openChar, char closeChar, long int pos,bool noComment=false,std::string buffer="") const;
+  size_t FindClosingChar(char openChar, char closeChar, size_t pos,bool noComment=false,std::string buffer="") const;
 
   /** Find the opening bracket given the position of the closing bracket. */
-  long int FindOpeningChar(char closeChar, char openChar, long int pos,bool noComment=false) const;
+  size_t FindOpeningChar(char closeChar, char openChar, size_t pos,bool noComment=false) const;
 
   /** Find the constructor in the file. */
   long FindConstructor(const std::string & buffer, const std::string & className, bool headerfile=true, size_t startPos=0) const;
 
   /** Return true if the position pos is between <>.
    *  The Fast version just check for <test> and not for <test<>,test<>>*/
-  bool IsBetweenCharsFast(const char begin, const char end, long int pos,bool withComments=false,std::string buffer="") const;
-  bool IsBetweenChars(const char begin, const char end, long int pos,bool withComments=false,std::string buffer="") const;
+  bool IsBetweenCharsFast(const char begin, const char end, size_t pos,bool withComments=false,std::string buffer="") const;
+  bool IsBetweenChars(const char begin, const char end, size_t pos,bool withComments=false,std::string buffer="") const;
 
-  bool IsValidQuote(std::string & stream,long int pos) const;
+  bool IsValidQuote(std::string & stream,size_t pos) const;
 
   /** Removes ass CtrlN characters from the buffer. */
   void RemoveCtrlN(std::string & buffer) const;
 
   /** Find the correct area given its name */
-  long int FindArea(const char* name,long int startPos) const;
+  size_t FindArea(const char* name,size_t startPos) const;
 
   /** Find public area in source code. */
-  void FindPublicArea(long &before, long &after, size_t startPos=0) const;
+  void FindPublicArea(size_t &before, size_t &after, size_t startPos=0) const;
 
   /** Find protected area in source code. */
-  void FindProtectedArea(long &before, long &after, size_t startPos=0) const;
+  void FindProtectedArea(size_t &before, size_t &after, size_t startPos=0) const;
 
   /** Find private area in source code. */
-  void FindPrivateArea(long &before, long &after, size_t startPos=0) const;
+  void FindPrivateArea(size_t &before, size_t &after, size_t startPos=0) const;
 
   /** Return the position of the template if the class has a template otherwise -1. */
-  long int IsTemplated(const std::string & buffer, long int pos) const;
+  size_t IsTemplated(const std::string & buffer, size_t pos) const;
 
   /**  Return true if the position pos is inside a comment */
-  bool IsInComments(long int pos) const;
+  bool IsInComments(size_t pos) const;
   
   /**  Return true if the position pos is inside a function */
-  bool IsInFunction(long int pos,const char* buffer=NULL) const;
+  bool IsInFunction(size_t pos,const char* buffer=NULL) const;
 
   /**  Return true if the position pos is inside a struct */
-  bool IsInStruct(long int pos,const char* buffer=NULL) const;
+  bool IsInStruct(size_t pos,const char* buffer=NULL) const;
   
   /**  Return true if the position pos is inside a union */
-  bool IsInUnion(long int pos,const char* buffer=NULL) const;
+  bool IsInUnion(size_t pos,const char* buffer=NULL) const;
 
   /**  Return true if the position pos is inside a comment defined by the compiler */
-  bool IsInAnyComments(long int pos) const;
+  bool IsInAnyComments(size_t pos) const;
 
   /** Given the position without comments return the position with the comments */
-  long int GetPositionWithComments(long int pos) const;
-  long int GetPositionWithoutComments(long int pos) const;
+  size_t GetPositionWithComments(size_t pos) const;
+  size_t GetPositionWithoutComments(size_t pos) const;
 
   /** Init the indentation step for CheckIndent() */
   bool InitIndentation();
 
   /** Extract the current line from pos to  \n */
-  std::string ExtractLine(long pos);
+  std::string ExtractLine(size_t pos);
 
   /** Return the current ident */
-  long int GetCurrentIdent(std::string line,char type);
+  size_t GetCurrentIdent(std::string line,char type);
 
   /** Helper function to add words to the special indent vector */
-  void AddIndent(const char* name,long int current,long int after);
+  void AddIndent(const char* name,size_t current,size_t after);
 
   /** Find the end of the class */
-  long int FindEndOfClass(long int position) const;
+  size_t FindEndOfClass(size_t position) const;
 
   /** Return if the dept of the current class */
-  long int IsInClass(long int position) const;
+  size_t IsInClass(size_t position) const;
 
   /** Return the position of the last character 
    *  of the function name/definition/ */
-  long int FindFunction(long int position,const char* buffer=NULL) const;
+  size_t FindFunction(size_t position,const char* buffer=NULL) const;
 
   /** Compute the list of #if/#else/#endif */
   void ComputeIfElseEndifList();
-  bool IsInElseForbiddenSection(long int pos);
+  bool IsInElseForbiddenSection(size_t pos);
 
   /** Functions to deal with the fixed buffer */
-  void ReplaceCharInFixedBuffer(long int pos,long int size,const char* replacingString);
+  void ReplaceCharInFixedBuffer(size_t pos,size_t size,const char* replacingString);
 
   /** Check if the current position is a valid switch statement */
   bool CheckValidSwitchStatement(unsigned int posSwitch);
@@ -451,8 +451,8 @@ private:
   std::string m_Buffer;
   std::string m_BufferNoComment;
   std::string m_FixedBuffer;
-  std::vector<long int> m_Positions;
-  typedef std::pair<long int, long int> PairType;
+  std::vector<size_t> m_Positions;
+  typedef std::pair<size_t, size_t> PairType;
   std::vector<PairType> m_CommentPositions;
   std::string m_Filename;
   std::string m_HeaderFilename;

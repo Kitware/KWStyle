@@ -41,7 +41,7 @@ bool Parser::CheckNamespace(const char* name,bool doNotCheckMain)
 
   std::string nameSpace = "";
 
-  long int pos = m_BufferNoComment.find("namespace",0);
+  size_t pos = m_BufferNoComment.find("namespace",0);
 
   if(pos == -1)
     {
@@ -97,8 +97,8 @@ bool Parser::CheckNamespace(const char* name,bool doNotCheckMain)
     if(ok)
       {
       // extract the namespace
-      long int bracket = buffer.find("{",pos);
-      long int closing = FindClosingBracket(buffer,bracket);
+      size_t bracket = buffer.find("{",pos);
+      size_t closing = FindClosingBracket(buffer,bracket);
 
       // Find the number of } after closing
       int num = 0;

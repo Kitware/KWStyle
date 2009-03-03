@@ -31,12 +31,12 @@ bool Parser::CheckBadCharacters(bool checkComments)
   
   unsigned long pos = 0;
   std::string::const_iterator it = buffer.begin();
-  long int currentline = -1;
+  size_t currentline = -1;
   while(it!= buffer.end())
     {
     if((*it)<0) 
       {
-      long int linenum = this->GetLineNumber(pos,!checkComments);
+      size_t linenum = this->GetLineNumber(pos,!checkComments);
       if(linenum != currentline)
         {
         currentline = linenum;

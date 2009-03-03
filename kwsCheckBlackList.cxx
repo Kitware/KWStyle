@@ -52,11 +52,11 @@ bool Parser::CheckBlackList(const char* filename)
     }
 
   // Go through the list of words
-  long int start = 0;
-  long int space = m_BlackListBuffer.find(" ",start);
-  long int eol = m_BlackListBuffer.find("\n",start);
+  size_t start = 0;
+  size_t space = m_BlackListBuffer.find(" ",start);
+  size_t eol = m_BlackListBuffer.find("\n",start);
 
-  long int end = space;
+  size_t end = space;
   if(eol != -1 && eol < space)
     {
     end = eol-1;
@@ -90,7 +90,7 @@ bool Parser::CheckBlackList(const char* filename)
       continue;
       }
 
-    long int pos = m_BufferNoComment.find(blackword,0);
+    size_t pos = m_BufferNoComment.find(blackword,0);
     while(pos != -1)
       {
       Error error;

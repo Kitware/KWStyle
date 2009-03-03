@@ -90,8 +90,8 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
        && functionName.find("~") == std::string::npos // skip destructor for now...
        )
       {
-      long int posf = functionName.find("::",0);
-      long int posp = functionName.find("(",posf);
+      size_t posf = functionName.find("::",0);
+      size_t posp = functionName.find("(",posf);
       if(posp != -1 && posf != -1 && posp>posf)
         {
         functionName = functionName.substr(posf+2,posp-posf-2);
@@ -110,7 +110,7 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
 
     if(functionName.size() == 0)
       {
-      long int bf = m_BufferNoComment.find('{',pos);
+      size_t bf = m_BufferNoComment.find('{',pos);
       long int pos2 = this->FindClosingChar('{','}',bf,true);
       pos = this->FindFunction(pos2+1);
 
@@ -124,7 +124,7 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
       }
     else if(functionName.size()>0)
       {
-      long int bf = m_BufferNoComment.find('{',pos);
+      size_t bf = m_BufferNoComment.find('{',pos);
       long int bfcomments = GetPositionWithComments(bf);
       long int bfl = this->GetLineNumber(bfcomments);
       long int pos2 = this->FindClosingChar('{','}',bf,true);
@@ -136,7 +136,7 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
       // we cannot go backward
       if(pos2 > pos)
         {
-        long int bf = m_BufferNoComment.find('{',pos2);
+        size_t bf = m_BufferNoComment.find('{',pos2);
         pos = this->FindFunction(bf);
         }
      

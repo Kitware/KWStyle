@@ -39,7 +39,7 @@ MetaCommand::MetaCommand()
 }
 
 
-/** Extract the date from the $Date: 2008-12-05 21:46:02 $ cvs command */
+/** Extract the date from the $Date: 2009-03-03 19:15:43 $ cvs command */
 METAIO_STL::string MetaCommand::ExtractDateFromCVS(METAIO_STL::string date)
 {
   METAIO_STL::string newdate;
@@ -676,12 +676,12 @@ METAIO_STL::string MetaCommand::GetXML(const char* buffer,
 
   METAIO_STL::string buf = buffer;
 
-  long int posb = buf.find(begin,pos);
+  size_t posb = buf.find(begin,pos);
   if(posb == -1)
     {
     return "";
     }
-  long int pose = buf.find(end,posb);
+  size_t pose = buf.find(end,posb);
   if(pose == -1)
     {
     return "";
@@ -980,7 +980,7 @@ bool MetaCommand::ExportGAD(bool dynamic)
         file << "  <parameter name=\"SourceDataPath\" value=\"" << (*itFields).value << "\"/>" << METAIO_STREAM::endl;
 
         METAIO_STL::string datapath = (*itFields).value;
-        long int slash = datapath.find_last_of("/");
+        size_t slash = datapath.find_last_of("/");
         if(slash>0)
           {
           datapath = datapath.substr(slash+1,datapath.size()-slash-1);
@@ -1118,7 +1118,7 @@ bool MetaCommand::ExportGAD(bool dynamic)
         file << "  <parameter name=\"Direction\" value=\"Out\"/>" << METAIO_STREAM::endl;
         file << "  <parameter name=\"Protocol\" value=\"gsiftp\"/>" << METAIO_STREAM::endl;
         METAIO_STL::string datapath = (*itFields).value;
-        long int slash = datapath.find_last_of("/");
+        size_t slash = datapath.find_last_of("/");
         if(slash>0)
           {
           datapath = datapath.substr(slash+1,datapath.size()-slash-1);
@@ -1154,7 +1154,7 @@ bool MetaCommand::Parse(int argc, char* argv[])
 {  
   m_ExecutableName = argv[0];
 
-  long int slash = m_ExecutableName.find_last_of("/");
+  size_t slash = m_ExecutableName.find_last_of("/");
   if(slash>0)
     {
     m_ExecutableName = m_ExecutableName.substr(slash+1,m_ExecutableName.size()-slash-1);

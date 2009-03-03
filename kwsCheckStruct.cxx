@@ -37,12 +37,12 @@ bool Parser::CheckStruct(const char* regEx,bool alignment)
 
   // find the struct
 
-  long int posStruct = m_BufferNoComment.find("struct",0);
+  size_t posStruct = m_BufferNoComment.find("struct",0);
 
   while(posStruct != -1)
     {
-    long int begin = posStruct;
-    while(posStruct<(long int)m_BufferNoComment.size())
+    size_t begin = posStruct;
+    while(posStruct<(size_t)m_BufferNoComment.size())
       {
       if(m_BufferNoComment[posStruct] == '{')
         {
@@ -50,12 +50,12 @@ bool Parser::CheckStruct(const char* regEx,bool alignment)
         }
       posStruct++;
       }
-    long int end = this->FindClosingChar('{','}',posStruct,true);
+    size_t end = this->FindClosingChar('{','}',posStruct,true);
 
-    long int previousline = 0;
-    long int previouspos = 0;
+    size_t previousline = 0;
+    size_t previouspos = 0;
     
-    long int pos = begin;
+    size_t pos = begin;
     while(pos!= -1)
       {
       std::string var = this->FindInternalVariable(pos+1,end+1,pos);

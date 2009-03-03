@@ -27,7 +27,7 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
   delete [] val;
 
   bool hasError = false;
-  long int posSemicolon = m_BufferNoComment.find(";",0);
+  size_t posSemicolon = m_BufferNoComment.find(";",0);
   while(posSemicolon != -1)
     {
     // We try to find the word before that
@@ -119,7 +119,7 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
   while(posSemicolon != -1)
     {
     // check if we have a } before
-    long int pos = posSemicolon;
+    size_t pos = posSemicolon;
     pos--;
     while(pos>0 && 
       (m_BufferNoComment[pos] == ' ' 
@@ -133,9 +133,9 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
       {
       bool error = true;
       // We check that this is not a class
-      long int openingChar = this->FindOpeningChar('}','{',pos,true);
+      size_t openingChar = this->FindOpeningChar('}','{',pos,true);
 
-      long int classPos = m_BufferNoComment.find("class");
+      size_t classPos = m_BufferNoComment.find("class");
       while(classPos != -1)
         {
         if(classPos != -1 && openingChar!= -1)
@@ -157,7 +157,7 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
         }
 
       // We check that this is not a enum
-      long int enumPos = m_BufferNoComment.find("enum");
+      size_t enumPos = m_BufferNoComment.find("enum");
       while(enumPos != -1)
         {
         if(enumPos != -1 && openingChar!= -1)
@@ -185,7 +185,7 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
         }
 
       // We check that this is not a struct
-      long int structPos = m_BufferNoComment.find("struct");
+      size_t structPos = m_BufferNoComment.find("struct");
       while(structPos != -1)
         {
         if(structPos != -1 && openingChar!= -1)
@@ -213,7 +213,7 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
         }
 
       // We check that this is not a static variable
-      long int i = pos--;
+      size_t i = pos--;
       while(i>0)
         {
         if(m_BufferNoComment[i]==';' 
@@ -235,8 +235,8 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
         {
         if(m_BufferNoComment[i]=='}')
           {
-          long int openingChar = this->FindOpeningChar('}','{',i,true);
-          long int j = openingChar-1;
+          size_t openingChar = this->FindOpeningChar('}','{',i,true);
+          size_t j = openingChar-1;
           while(j>0 && (m_BufferNoComment[j]==' ' 
             || m_BufferNoComment[j]=='\n' 
             || m_BufferNoComment[j]=='\r')

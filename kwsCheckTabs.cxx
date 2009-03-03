@@ -25,8 +25,8 @@ bool Parser::CheckTabs()
   delete [] val;
 
   bool hasError = false;
-  long int pos = m_Buffer.find('\t',0);    
-  long int line = 0;
+  size_t pos = m_Buffer.find('\t',0);    
+  size_t line = 0;
 
   // Show only one tab per line
   while(pos != -1)

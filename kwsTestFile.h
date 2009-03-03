@@ -40,7 +40,7 @@ private:
   //! Parse the buffer starting from position init for the xml tag "tag", 
   //! return its content as string value and set init to the position 
   //! directly after the end of the parsed tag.
-  static std::string ReadTag(std::string buffer, const std::string &tag, long int & init) {  ;}
+  static std::string ReadTag(std::string buffer, const std::string &tag, size_t & init) {  ;}
 
 protected:
 

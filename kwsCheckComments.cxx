@@ -40,11 +40,11 @@ bool Parser::CheckComments(const char* begin,const char* middle,const char* end,
     while(it != m_CommentPositions.end())
       {
       std::string previousWord = "";
-      long int i = (*it).first;
-      while((i<(long int)m_Buffer.size()) && i<(*it).second)
+      size_t i = (*it).first;
+      while((i<(size_t)m_Buffer.size()) && i<(*it).second)
         {    
         // we go to the next space
-        while((i<(long int)m_Buffer.size()) && ((m_Buffer[i] != ' ') && (m_Buffer[i] != '\r') && (m_Buffer[i] != '\r')) && i<(*it).second)
+        while((i<(size_t)m_Buffer.size()) && ((m_Buffer[i] != ' ') && (m_Buffer[i] != '\r') && (m_Buffer[i] != '\r')) && i<(*it).second)
           {
           i++;
           }
@@ -52,7 +52,7 @@ bool Parser::CheckComments(const char* begin,const char* middle,const char* end,
         bool first = false;
         std::string word = "";
         
-        while((i<(long int)m_Buffer.size()) && i<(*it).second && inWord)
+        while((i<(size_t)m_Buffer.size()) && i<(*it).second && inWord)
           {
           if(m_Buffer[i] != ' ' && m_Buffer[i] != '\r' && m_Buffer[i] != '\n')
             {
@@ -112,10 +112,10 @@ bool Parser::CheckComments(const char* begin,const char* middle,const char* end,
       m_TestsDescription[MISSINGCOMMENT] += " (not allowing empty line)";
       }
 
-   long int pos = this->GetClassPosition(0);
+   size_t pos = this->GetClassPosition(0);
    while(pos  != -1)
      {
-     long int poswithcom = this->GetPositionWithComments(pos);
+     size_t poswithcom = this->GetPositionWithComments(pos);
 
      // Find the last comment (remove spaces if any)
      std::string commentEnd = "";
@@ -127,8 +127,8 @@ bool Parser::CheckComments(const char* begin,const char* middle,const char* end,
          }
        }
 
-     long int poscom = m_Buffer.find(commentEnd,0);
-     long int poscomtemp = poscom;
+     size_t poscom = m_Buffer.find(commentEnd,0);
+     size_t poscomtemp = poscom;
      while(poscomtemp!=-1 && poscomtemp<poswithcom)
        {
        poscom = poscomtemp;
@@ -152,7 +152,7 @@ bool Parser::CheckComments(const char* begin,const char* middle,const char* end,
        // We check if we have m_CommentEnd before an empty line
        bool emptyLine = false;
        bool gotchar = true;
-       for(long int i=poscom;i<poswithcom;i++)
+       for(size_t i=poscom;i<poswithcom;i++)
          {
          if(m_Buffer[i] == '\n')
            {
@@ -188,8 +188,8 @@ bool Parser::CheckComments(const char* begin,const char* middle,const char* end,
        else  // we check that the word \class exists
          {
          // Find the last 
-         long int poscombeg = m_Buffer.find(m_CommentBegin,0);
-         long int poscombegt = poscombeg;
+         size_t poscombeg = m_Buffer.find(m_CommentBegin,0);
+         size_t poscombegt = poscombeg;
          while(poscombegt!=-1 && poscombegt<poscom)
            {
            poscombeg = poscombegt;

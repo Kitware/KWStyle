@@ -18,9 +18,9 @@ namespace kws {
 #define ALIGN_LEFT -99999
 
 /** Extract the current line from pos to \n */
-std::string Parser::ExtractLine(long pos)
+std::string Parser::ExtractLine(size_t pos)
 {
-  long int p = m_Buffer.find("\n",pos);
+  size_t p = m_Buffer.find("\n",pos);
   if(p>pos)
     {
     return m_Buffer.substr(pos,p-pos-1);
@@ -29,9 +29,9 @@ std::string Parser::ExtractLine(long pos)
 }
 
 /** Return the current ident */
-long int Parser::GetCurrentIdent(std::string line,char type)
+size_t Parser::GetCurrentIdent(std::string line,char type)
 {
-  long int indent = 0;
+  size_t indent = 0;
   std::string::const_iterator it = line.begin();
   while(it != line.end() && (*it)== type)
     {
@@ -124,7 +124,7 @@ bool Parser::CheckIndent(IndentType itype,
       {
       // we look at the first '*/' in the file which indicated the end of the current header
       // This assume that there is an header at some point  
-      long int endHeader = m_Buffer.find("*/",0);
+      size_t endHeader = m_Buffer.find("*/",0);
       if(endHeader>0)
         {
         fileSize = endHeader;
@@ -192,7 +192,7 @@ bool Parser::CheckIndent(IndentType itype,
     // We check if we have the right indent
     if(sindent)
       {
-      long int wanted = wantedIndent+size*sindent->current;
+      size_t wanted = wantedIndent+size*sindent->current;
       if(sindent->current == ALIGN_LEFT)
         {
         wanted = 0;
@@ -216,11 +216,11 @@ bool Parser::CheckIndent(IndentType itype,
         if(previousLine[previousLine.size()-1] != ';')
           {
           // Check if we have a << at the beginning of the current line
-          long int posSpecialChar = currentLine.find("<<");
+          size_t posSpecialChar = currentLine.find("<<");
           if(posSpecialChar != -1)
             {
             returnError = false;
-            for(int i=0;i<posSpecialChar;i++)
+            for(size_t i=0;i<posSpecialChar;i++)
               {
               if(currentLine[i] != '\r' && currentLine[i] != '\n' && currentLine[i] != ' ' && currentLine[i] != '\t')
                 {
@@ -255,17 +255,17 @@ bool Parser::CheckIndent(IndentType itype,
           {
           // We are in a macro if we have
           // '#define foo' and the line finishs with '\'
-          long int begMacro = m_Buffer.find("#define",0);
+          size_t begMacro = m_Buffer.find("#define",0);
           while(begMacro!=-1)
             {
             // Find the end of the macro
-            long int endMacro = m_Buffer.find("\r",begMacro);
+            size_t endMacro = m_Buffer.find("\r",begMacro);
             while(endMacro>0 && m_Buffer[endMacro-1]=='\\')
               {
               endMacro = m_Buffer.find("\r",endMacro+1);
               }
 
-            if(endMacro!=-1 && (long int)pos<endMacro && (long int)pos>begMacro)
+            if(endMacro!=-1 && (size_t)pos<endMacro && (size_t)pos>begMacro)
               {
               returnError = false;
               break;
@@ -306,7 +306,7 @@ bool Parser::CheckIndent(IndentType itype,
       {
       bool check = true;
       // Check if { is after //
-      long int doubleslash = m_Buffer.find_last_of("//",pos);
+      size_t doubleslash = m_Buffer.find_last_of("//",pos);
       if(doubleslash != -1)
         {
         if(this->GetLineNumber(doubleslash) == this->GetLineNumber(pos))
@@ -393,7 +393,7 @@ bool Parser::CheckIndent(IndentType itype,
         {
         // If we are inside an enum we do not check indent
         bool isInsideEnum = false;
-        long int bracket = m_Buffer.find_last_of('{',pos);
+        size_t bracket = m_Buffer.find_last_of('{',pos);
         if(bracket != -1)
           {
           unsigned int l = this->FindPreviousWord(bracket-1,true).size();
@@ -419,7 +419,7 @@ bool Parser::CheckIndent(IndentType itype,
         // Check if the line start with '<<' if this is the case we ignore it
         else if((*it) == '<' && (*(it+1) == '<'))
           {
-          long int posInf = previousLine.find("<<");
+          size_t posInf = previousLine.find("<<");
           if((posInf != -1) && (posInf == currentIndent+1))
             {
             reportError = false;
@@ -428,11 +428,11 @@ bool Parser::CheckIndent(IndentType itype,
         // We don't care about everything between the class and '{'
         else
           {
-          long int classPos = m_Buffer.find("class",0);
+          size_t classPos = m_Buffer.find("class",0);
           while(classPos!=-1)
             {
-            long int endClass = m_Buffer.find("{",classPos);
-            if(endClass!=-1 && (long int)pos<endClass && (long int)pos>classPos)
+            size_t endClass = m_Buffer.find("{",classPos);
+            if(endClass!=-1 && (size_t)pos<endClass && (size_t)pos>classPos)
               {
               reportError = false;
               break;
@@ -445,12 +445,12 @@ bool Parser::CheckIndent(IndentType itype,
         // This is for lists. THIS IS NOT A STRICT CHECK. Might be missing some.
         if(reportError)
           {
-          long int classPos = m_BufferNoComment.find("=",0);
+          size_t classPos = m_BufferNoComment.find("=",0);
           while(classPos!=-1)
             {
-            long int posNoCommments = this->GetPositionWithoutComments(pos);
-            long int endClass = m_BufferNoComment.find(";",classPos);
-            if(endClass!=-1 && (long int)posNoCommments<endClass && (long int)posNoCommments>classPos)
+            size_t posNoCommments = this->GetPositionWithoutComments(pos);
+            size_t endClass = m_BufferNoComment.find(";",classPos);
+            if(endClass!=-1 && (size_t)posNoCommments<endClass && (size_t)posNoCommments>classPos)
               {
               reportError = false;
               break;
@@ -463,13 +463,13 @@ bool Parser::CheckIndent(IndentType itype,
         // This is for the constructor.
         if(reportError)
           {
-          long int classPos = m_BufferNoComment.find(":",0);
+          size_t classPos = m_BufferNoComment.find(":",0);
           while(classPos!=-1)
             {
-            long int posNoCommments = this->GetPositionWithoutComments(pos);
-            long int endConstructor = m_BufferNoComment.find("{",classPos);
+            size_t posNoCommments = this->GetPositionWithoutComments(pos);
+            size_t endConstructor = m_BufferNoComment.find("{",classPos);
 
-            if(endConstructor!=-1 && (long int)posNoCommments<endConstructor && (long int)posNoCommments>classPos)
+            if(endConstructor!=-1 && (size_t)posNoCommments<endConstructor && (size_t)posNoCommments>classPos)
               {
               reportError = false;
               break;
@@ -482,13 +482,13 @@ bool Parser::CheckIndent(IndentType itype,
         // Ideally we should have a strict check
         if(reportError)
           {
-          long int classPos = m_BufferNoComment.find("return",0);
+          size_t classPos = m_BufferNoComment.find("return",0);
           while(classPos!=-1)
             {
-            long int posNoCommments = this->GetPositionWithoutComments(pos);
-            long int endConstructor = m_BufferNoComment.find(";",classPos);
+            size_t posNoCommments = this->GetPositionWithoutComments(pos);
+            size_t endConstructor = m_BufferNoComment.find(";",classPos);
 
-            if(endConstructor!=-1 && (long int)posNoCommments<endConstructor && (long int)posNoCommments>classPos)
+            if(endConstructor!=-1 && (size_t)posNoCommments<endConstructor && (size_t)posNoCommments>classPos)
               {
               reportError = false;
               break;
@@ -503,17 +503,17 @@ bool Parser::CheckIndent(IndentType itype,
           {
           // We are in a macro if we have
           // '#define foo' and the line finishs with '\'
-          long int begMacro = m_Buffer.find("#define",0);
+          size_t begMacro = m_Buffer.find("#define",0);
           while(begMacro!=-1)
             {
             // Find the end of the macro
-            long int endMacro = m_Buffer.find("\r",begMacro);
+            size_t endMacro = m_Buffer.find("\r",begMacro);
             while(endMacro>0 && m_Buffer[endMacro-1]=='\\')
               {
               endMacro = m_Buffer.find("\r",endMacro+1);
               }
 
-            if(endMacro!=-1 && (long int)pos<endMacro && (long int)pos>begMacro)
+            if(endMacro!=-1 && (size_t)pos<endMacro && (size_t)pos>begMacro)
               {
               reportError = false;
               break;
@@ -528,7 +528,7 @@ bool Parser::CheckIndent(IndentType itype,
         if(allowCommaIndent && reportError)
           {
           // Check the end of the previous line if we have a comma
-          long int j = previousLine.size()-1;
+          size_t j = previousLine.size()-1;
           while(j>0)
             {
             if(previousLine[j] != ' '
@@ -577,7 +577,7 @@ bool Parser::CheckIndent(IndentType itype,
       {
       bool check = true;
       // Check if { is after //
-      long int doubleslash = m_Buffer.find_last_of("//",pos);
+      size_t doubleslash = m_Buffer.find_last_of("//",pos);
       if(doubleslash != -1)
         {
         if(this->GetLineNumber(doubleslash) == this->GetLineNumber(pos))
@@ -625,18 +625,18 @@ bool Parser::InitIndentation()
   m_IdentPositionVector.clear();
 
   // namespace
-  std::vector<long int> namespacevec;
+  std::vector<size_t> namespacevec;
 
-  long int posNamespace = m_BufferNoComment.find("namespace",0);
+  size_t posNamespace = m_BufferNoComment.find("namespace",0);
   while(posNamespace!=-1)
     {
-    long int posNamespace1 = m_BufferNoComment.find("{",posNamespace);
+    size_t posNamespace1 = m_BufferNoComment.find("{",posNamespace);
     if(posNamespace1 != -1)
       {
-      long int posNamespace2 = m_BufferNoComment.find(";",posNamespace);
+      size_t posNamespace2 = m_BufferNoComment.find(";",posNamespace);
       if((posNamespace2 == -1) || (posNamespace2 > posNamespace1))
         {
-        long int posNamespaceComments = this->GetPositionWithComments(posNamespace1);      
+        size_t posNamespaceComments = this->GetPositionWithComments(posNamespace1);      
         IndentPosition ind;
         ind.position = posNamespaceComments;
         ind.current = 0;
@@ -662,7 +662,7 @@ bool Parser::InitIndentation()
     }
 
   // Check if the { is the first in the file/function or in a namespace
-  long int posClass = m_BufferNoComment.find('{',0);
+  size_t posClass = m_BufferNoComment.find('{',0);
 
   while(posClass!= -1 && this->IsInElseForbiddenSection(this->GetPositionWithComments(posClass)))
     {
@@ -675,7 +675,7 @@ bool Parser::InitIndentation()
     int nOpen = 0;
     int nClose = 0;  
 
-    long int open = m_BufferNoComment.find('{',0);
+    size_t open = m_BufferNoComment.find('{',0);
     while(open!=-1 && open<posClass)
       {
       if(!this->IsInElseForbiddenSection(this->GetPositionWithComments(open))
@@ -701,7 +701,7 @@ bool Parser::InitIndentation()
       open = m_BufferNoComment.find('{',open+1);
       }
 
-    long int close = m_BufferNoComment.find('}',0);
+    size_t close = m_BufferNoComment.find('}',0);
     while(close!=-1 && close<posClass)
       {
       if(!this->IsInElseForbiddenSection(this->GetPositionWithComments(close))
@@ -732,7 +732,7 @@ bool Parser::InitIndentation()
     if(nClose == nOpen)
       {
       // Check if this is not the namespace previously defined
-      std::vector<long int>::iterator itname = namespacevec.begin();
+      std::vector<size_t>::iterator itname = namespacevec.begin();
       while(itname != namespacevec.end())
         {
         if((*itname) == this->GetPositionWithComments(posClass))
@@ -747,7 +747,7 @@ bool Parser::InitIndentation()
     if((nClose == nOpen) && !defined)
       {
       // translate the position in the buffer position;
-      long int posClassComments = this->GetPositionWithComments(posClass); 
+      size_t posClassComments = this->GetPositionWithComments(posClass); 
       IndentPosition ind;
       ind.position = posClassComments;
       ind.current = 0;
@@ -766,7 +766,7 @@ bool Parser::InitIndentation()
     }
 
   // int main()
-  long int posMain = m_BufferNoComment.find("main",0);
+  size_t posMain = m_BufferNoComment.find("main",0);
   while(posMain != -1)
     {
     // Check if the next char is '('
@@ -787,11 +787,11 @@ bool Parser::InitIndentation()
       }
     if(valid)
       {
-      long int bracket = m_BufferNoComment.find('{',posMain+4);
+      size_t bracket = m_BufferNoComment.find('{',posMain+4);
       if(bracket != -1)
         {
         // translate the position in the buffer position;
-        long int posMainComments = this->GetPositionWithComments(bracket);      
+        size_t posMainComments = this->GetPositionWithComments(bracket);      
         IndentPosition ind;
         ind.position = posMainComments;
         ind.current = 0;
@@ -808,7 +808,7 @@ bool Parser::InitIndentation()
 
   // switch/case statement
   // for the moment break; restore the indentation
-  long int posSwitch = m_BufferNoComment.find("switch",0);
+  size_t posSwitch = m_BufferNoComment.find("switch",0);
   while(posSwitch != -1)
     {
     // Check that it is a valid switch statement
@@ -820,9 +820,9 @@ bool Parser::InitIndentation()
     
     // If this is the first case we find the openning { in order to 
     // find the closing } of the switch statement
-    long int openningBracket = m_BufferNoComment.find("{",posSwitch);
-    long int closingBracket = this->FindClosingChar('{','}',openningBracket,true);        
-    long int posColumnComments = this->GetPositionWithComments(closingBracket);      
+    size_t openningBracket = m_BufferNoComment.find("{",posSwitch);
+    size_t closingBracket = this->FindClosingChar('{','}',openningBracket,true);        
+    size_t posColumnComments = this->GetPositionWithComments(closingBracket);      
     IndentPosition ind;
     ind.position = posColumnComments;
     ind.current = -1;
@@ -830,14 +830,14 @@ bool Parser::InitIndentation()
     m_IdentPositionVector.push_back(ind);
 
     // Do the default case
-    long int defaultPos = m_BufferNoComment.find("default",openningBracket);
+    size_t defaultPos = m_BufferNoComment.find("default",openningBracket);
     if(defaultPos > closingBracket)
       {
       defaultPos = -1;
       }
     
     // We need to make sure that there is no "switch" statement nested
-    long int nestedSwitch = m_BufferNoComment.find("switch",posSwitch+1);
+    size_t nestedSwitch = m_BufferNoComment.find("switch",posSwitch+1);
     while(nestedSwitch != -1)
       {
       if(!this->CheckValidSwitchStatement(nestedSwitch))
@@ -859,13 +859,13 @@ bool Parser::InitIndentation()
 
     if(defaultPos != -1)
       {
-      long int posColumnComments = this->GetPositionWithComments(defaultPos);      
+      size_t posColumnComments = this->GetPositionWithComments(defaultPos);      
       IndentPosition ind;
       ind.position = posColumnComments;
       
       // The current indent should be -1 unless we are right after the openning
       // bracket. In that case the current indent should be 0;
-      long int j=defaultPos-1;
+      size_t j=defaultPos-1;
       while(j>0)
         {
         if(m_BufferNoComment[j] != ' '
@@ -890,13 +890,13 @@ bool Parser::InitIndentation()
       ind.after = 0;
       m_IdentPositionVector.push_back(ind);
       // Find the ':' after the default
-      long int column = m_BufferNoComment.find(":",defaultPos+1);
+      size_t column = m_BufferNoComment.find(":",defaultPos+1);
       column = this->GetPositionWithComments(column);      
       
       // Sometimes there is a { right after the : we skip it if this is
       // the case
-      long int ic = column+1;
-      while(ic<(long int)m_Buffer.size() 
+      size_t ic = column+1;
+      while(ic<(size_t)m_Buffer.size() 
             && (m_Buffer[ic] == ' ' 
             || m_Buffer[ic] == '\r' 
             || m_Buffer[ic] == '\n'))
@@ -917,23 +917,23 @@ bool Parser::InitIndentation()
         }
       }
 
-    long int posCase = m_BufferNoComment.find("case",openningBracket);
+    size_t posCase = m_BufferNoComment.find("case",openningBracket);
     bool firstCase = true;
-    long int previousCase = openningBracket;
+    size_t previousCase = openningBracket;
 
     while(posCase!= -1 && posCase<closingBracket)
       {
       // Check if we don't have any switch statement inside
-      long int insideSwitch = m_BufferNoComment.find("switch",previousCase);
+      size_t insideSwitch = m_BufferNoComment.find("switch",previousCase);
       if(insideSwitch>openningBracket && insideSwitch<posCase)
         {
         // jump to the end of the inside switch/case
-        long int insideBracket = m_BufferNoComment.find("{",insideSwitch);
+        size_t insideBracket = m_BufferNoComment.find("{",insideSwitch);
         posCase = this->FindClosingChar('{','}',insideBracket,true);        
         }
       else
         {
-        long int posColumnComments = this->GetPositionWithComments(posCase);      
+        size_t posColumnComments = this->GetPositionWithComments(posCase);      
         IndentPosition ind;
         ind.position = posColumnComments;
         if(firstCase)
@@ -948,9 +948,9 @@ bool Parser::InitIndentation()
           
         m_IdentPositionVector.push_back(ind);
         
-        long int column = m_BufferNoComment.find(':',posCase+3);
+        size_t column = m_BufferNoComment.find(':',posCase+3);
         // Make sure that we are not checing '::'
-        while(column+1<(long int)m_BufferNoComment.size()
+        while(column+1<(size_t)m_BufferNoComment.size()
           && m_BufferNoComment[column+1]==':')
           {
           column = m_BufferNoComment.find(':',column+2);
@@ -959,7 +959,7 @@ bool Parser::InitIndentation()
         if(column != -1)
           {
           // translate the position in the buffer position;
-          long int posColumnComments = this->GetPositionWithComments(column);      
+          size_t posColumnComments = this->GetPositionWithComments(column);      
           IndentPosition ind;
           ind.position = posColumnComments;
           if(firstCase)
@@ -976,8 +976,8 @@ bool Parser::InitIndentation()
 
           // Sometimes there is a { right after the : we skip it if this is
           // the case
-          long int ic = posColumnComments+1;
-          while(ic<(long int)m_Buffer.size() 
+          size_t ic = posColumnComments+1;
+          while(ic<(size_t)m_Buffer.size() 
             && (m_Buffer[ic] == ' ' 
             || m_Buffer[ic] == '\r' 
             || m_Buffer[ic] == '\n'))
@@ -1029,9 +1029,9 @@ bool Parser::InitIndentation()
   return true;
 }
 
-void Parser::AddIndent(const char* name,long int current,long int after)
+void Parser::AddIndent(const char* name,size_t current,size_t after)
 {
-  long int posPrev = m_Buffer.find(name,0);
+  size_t posPrev = m_Buffer.find(name,0);
   while(posPrev!=-1)
     {
     IndentPosition ind;
@@ -1052,12 +1052,12 @@ void Parser::AddIndent(const char* name,long int current,long int after)
  *  #else
  *  {
  *  #endif */
-bool Parser::IsInElseForbiddenSection(long int pos)
+bool Parser::IsInElseForbiddenSection(size_t pos)
 {
   IfElseEndifListType::const_iterator itLS = m_IfElseEndifList.begin();
   while(itLS != m_IfElseEndifList.end())
     {
-    if((long int)pos>(*itLS).first && (long int)pos<(*itLS).second)
+    if(pos>(size_t)(*itLS).first && pos<(size_t)(*itLS).second)
       {
       return true;
       }

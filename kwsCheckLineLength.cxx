@@ -53,7 +53,7 @@ bool Parser::CheckLineLength(unsigned long max,bool checkHeader)
       {
       // we look at the first '*/' in the file which indicated the end of the current header
       // This assume that there is an header at some point  
-      long int endHeader = m_Buffer.find("*/",0);
+      size_t endHeader = m_Buffer.find("*/",0);
       if(endHeader>0)
         {
         fileSize = endHeader;
