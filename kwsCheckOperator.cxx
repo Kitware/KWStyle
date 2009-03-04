@@ -85,7 +85,7 @@ bool Parser::CheckOperator(unsigned int before, unsigned int after,
       {
       // Check number of space before
       unsigned int bef = 0;
-      size_t i = operatorPos-1;
+      long int i = operatorPos-1;
       while((i>0) && (m_BufferNoComment[i] == ' '))
         {
         bef++;
@@ -95,7 +95,7 @@ bool Parser::CheckOperator(unsigned int before, unsigned int after,
       // Check number of space after
       unsigned int aft = 0;
       i = operatorPos+1;
-      while((i<(size_t)m_BufferNoComment.size()) && (m_BufferNoComment[i] == ' '))
+      while((i<(long int)m_BufferNoComment.size()) && (m_BufferNoComment[i] == ' '))
         {
         aft++;
         i++;
@@ -144,14 +144,14 @@ bool Parser::FindOperator(const char* op,unsigned int before,
                           )
 {
   bool hasErrors = false;
-  size_t pos = 0;
+  long int pos = 0;
   std::string::size_type operatorPos = m_BufferNoComment.find(op,pos);
   while(operatorPos != std::string::npos) 
     {
     bool showError=true;
     // Check number of space before
     unsigned int bef = 0;
-    size_t i = operatorPos-1;
+    long int i = operatorPos-1;
     while((i>0) && ((m_BufferNoComment[i] == ' ')
        || (m_BufferNoComment[i] == '\r')
        || (m_BufferNoComment[i] == '\n'))
@@ -180,7 +180,7 @@ bool Parser::FindOperator(const char* op,unsigned int before,
     // Check number of space after
     unsigned int aft = 0;
     i = operatorPos+strlen(op);
-    while((i<(size_t)m_BufferNoComment.size())
+    while((i<(long int)m_BufferNoComment.size())
            && ((m_BufferNoComment[i] == ' ')
            || (m_BufferNoComment[i] == '\r')
            || (m_BufferNoComment[i] == '\n')

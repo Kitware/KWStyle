@@ -32,19 +32,19 @@ bool Parser::CheckVariablePerLine(unsigned long max)
    "char","unsigned char",
    "short","unsigned short",
    "long","unsigned long",
-   "float","double","void","size_t"};
+   "float","double","void","long int"};
 
   bool hasError = false;
   for(unsigned int i = 0;i<ntypes;i++)
     {
     std::string typeToFind = types[i];
     typeToFind += " ";
-    size_t posType = m_BufferNoComment.find(typeToFind,0);
-    while(posType != -1)
+    long int posType = m_BufferNoComment.find(typeToFind,0);
+    while(posType != std::string::npos)
       {
       // Check that this is the first word
       bool firstWord = false;
-      size_t pos=posType;
+      long int pos=posType;
       pos--;
       while((pos>0) && (m_BufferNoComment[pos]==' '))
         {
@@ -90,13 +90,13 @@ bool Parser::CheckVariablePerLine(unsigned long max)
             {
             // Check that we are not initializing an array
             bool betweenBraces = false;           
-            size_t openCurly = pos-1;
+            long int openCurly = pos-1;
             while(openCurly>0)
               {
               // Ok we have the opening
               if(line[openCurly] == '{')
                 {
-                size_t posClosing = this->FindClosingChar('{','}',openCurly,false,line);
+                long int posClosing = this->FindClosingChar('{','}',openCurly,false,line);
                 if(posClosing == -1
                   || pos<posClosing)
                   {

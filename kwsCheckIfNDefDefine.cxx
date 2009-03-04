@@ -32,14 +32,14 @@ bool Parser::CheckIfNDefDefine(const char* match)
   m_TestsDescription[NDEFINE] = val;
   // Replace < and >
   std::string l = match;
-  size_t inf = l.find("<",0);
+  long int inf = l.find("<",0);
   while(inf != -1)
     {
     l.replace(inf,1,"&lt;");
     inf = l.find("<",0);
     }
 
-  size_t sup = l.find(">",0);
+  long int sup = l.find(">",0);
   while(sup != -1)
     {
     l.replace(sup,1,"&gt;");
@@ -57,14 +57,14 @@ bool Parser::CheckIfNDefDefine(const char* match)
   bool doesMatch = true;
 
   // Find the #ifndef word in the file
-  size_t pos = m_BufferNoComment.find("#ifndef",0);
+  long int pos = m_BufferNoComment.find("#ifndef",0);
   if(pos == -1)
     {
     notDefined = true;
     }
   else
     {
-    for(size_t i=0;i<pos;i++)
+    for(long int i=0;i<pos;i++)
       {
       if((m_BufferNoComment[i] != ' ')
         && (m_BufferNoComment[i] != '\r')
@@ -76,7 +76,7 @@ bool Parser::CheckIfNDefDefine(const char* match)
       }
     }
 
-  size_t definepos = pos;
+  long int definepos = pos;
 
   if(notDefined)
     {
@@ -100,7 +100,7 @@ bool Parser::CheckIfNDefDefine(const char* match)
       {
       pos++;
       }
-    size_t begin = pos;
+    long int begin = pos;
     while((m_BufferNoComment[pos] != ' ') 
       &&(m_BufferNoComment[pos] != '\r')
       &&(m_BufferNoComment[pos] != '\n')
@@ -108,11 +108,11 @@ bool Parser::CheckIfNDefDefine(const char* match)
       {
       pos++;
       }
-    size_t end = pos;
+    long int end = pos;
     std::string ifndef = m_BufferNoComment.substr(begin,end-begin);
 
     // Find the word after #define
-    size_t posDef = m_BufferNoComment.find("#define",end);
+    long int posDef = m_BufferNoComment.find("#define",end);
 
     if(posDef == -1)
       {
@@ -154,15 +154,15 @@ bool Parser::CheckIfNDefDefine(const char* match)
         return false;
         }
 
-      size_t point = m_Filename.find_last_of(".");
-      size_t slash = m_Filename.find_last_of("/");
+      long int point = m_Filename.find_last_of(".");
+      long int slash = m_Filename.find_last_of("/");
 
       std::string nameofclass = m_Filename.substr(slash+1,point-slash-1);
       std::string extension = m_Filename.substr(point+1,m_Filename.size()-point-1);
 
       // construct the string
       std::string toMatch = match;
-      size_t posnofc = toMatch.find("[NameOfClass]");
+      long int posnofc = toMatch.find("[NameOfClass]");
       if(posnofc != -1)
         {
         toMatch.replace(posnofc,13,nameofclass);

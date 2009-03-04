@@ -52,22 +52,36 @@ bool Parser::CheckBlackList(const char* filename)
     }
 
   // Go through the list of words
-  size_t start = 0;
-  size_t space = m_BlackListBuffer.find(" ",start);
-  size_t eol = m_BlackListBuffer.find("\n",start);
+  std::string::size_type start = 0;
+  std::string::size_type space = m_BlackListBuffer.find(" ",start);
+  std::string::size_type eol = m_BlackListBuffer.find("\n",start);
 
-  size_t end = space;
-  if(eol != -1 && eol < space)
+  std::string::size_type end = space;
+  if(eol != std::string::npos && eol < space)
     {
-    end = eol-1;
+    if(eol == 0)
+      {
+      end = std::string::npos;
+      }
+    else
+      {
+      end = eol-1;
+      }
     }
 
-  if(end == -1 && eol != -1)
+  if(end == std::string::npos && eol != std::string::npos)
     {
-    end = eol-1;
+    if(eol == 0)
+      {
+      end = std::string::npos;
+      }
+    else
+      {
+      end = eol-1;
+      }
     }
 
-  while(end != -1 && end>start)
+  while(end != std::string::npos && end>start)
     {
     std::string blackword = m_BlackListBuffer.substr(start,end-start);
     start = end+1;
@@ -76,13 +90,27 @@ bool Parser::CheckBlackList(const char* filename)
     eol = m_BlackListBuffer.find("\n",start);
 
     end = space;
-    if(eol != -1 && eol < space)
+    if(eol != std::string::npos && eol < space)
       {
-      end = eol-1;
+      if(eol == 0)
+        {
+        end = std::string::npos;
+        }
+      else
+        {
+        end = eol-1;
+        }
       }
-    if(end == -1 && eol != -1)
+    if(end == std::string::npos && eol != std::string::npos)
       {
-      end = eol-1;
+      if(eol == 0)
+        {
+        end = std::string::npos;
+        }
+      else
+        {
+        end = eol-1;
+        }
       }
 
     if(blackword.length() <= 1)
@@ -90,8 +118,8 @@ bool Parser::CheckBlackList(const char* filename)
       continue;
       }
 
-    size_t pos = m_BufferNoComment.find(blackword,0);
-    while(pos != -1)
+    std::string::size_type pos = m_BufferNoComment.find(blackword,0);
+    while(pos != std::string::npos)
       {
       Error error;
       error.line = this->GetLineNumber(pos,true);

@@ -312,16 +312,16 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
 
     // Replace '/' by '_' (and strip any colon)
     std::string filename = parser.GetFilename();
-    if(size_t pos = filename.find(":/") != std::string::npos)
+    if(long int pos = filename.find(":/") != std::string::npos)
       {
       filename = filename.substr(pos+2,filename.size()-pos-2);
       }
-    if(size_t pos = filename.find(":\\") != std::string::npos)
+    if(long int pos = filename.find(":\\") != std::string::npos)
       {
       filename = filename.substr(pos+2,filename.size()-pos-2);
       }
 
-    size_t slash = filename.find_last_of("/");
+    long int slash = filename.find_last_of("/");
     unsigned int i=0;
     while(slash != -1 && i<m_MaxDirectoryDepth) 
       {
@@ -540,16 +540,16 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
     std::string filename = dir;
     filename += "/";
     std::string filename2 = (*it).GetFilename();
-    if(size_t pos = filename2.find(":/") != std::string::npos)
+    if(long int pos = filename2.find(":/") != std::string::npos)
       {
       filename2 = filename2.substr(pos+2,filename2.size()-pos-2);
       }
-    if(size_t pos = filename2.find(":\\") != std::string::npos)
+    if(long int pos = filename2.find(":\\") != std::string::npos)
       {
       filename2 = filename2.substr(pos+2,filename2.size()-pos-2);
       }
 
-    size_t slash = filename2.find_last_of("/");
+    long int slash = filename2.find_last_of("/");
     unsigned int i = 0;
     while(slash != -1 && i<m_MaxDirectoryDepth) 
       {
@@ -690,21 +690,21 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
         }
 
       // Remove the first \n
-      size_t p = l.find('\n');
+      long int p = l.find('\n');
       if(p != -1)
         {
         l.replace(p,1,"");
         }
       
       // Replace < and >
-      size_t inf = l.find("<",0);
+      long int inf = l.find("<",0);
       while(inf != -1)
         {
         l.replace(inf,1,"&lt;");
         inf = l.find("<",0);
         }
 
-      size_t sup = l.find(">",0);
+      long int sup = l.find(">",0);
       while(sup != -1)
         {
         l.replace(sup,1,"&gt;");
@@ -712,7 +712,7 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
         }
 
       // Replace the space by &nbsp;
-      size_t space = l.find(' ',0);
+      long int space = l.find(' ',0);
       while(space != -1)  
         {
         l.replace(space,1,"&nbsp;");
@@ -793,7 +793,7 @@ bool Generator::CreateHeader(std::ostream * file,const char* title)
 
  // remove the last extension
  std::string tit = title;
- size_t pos = tit.find_last_of(".");
+ long int pos = tit.find_last_of(".");
  if(pos!=-1)
    {
    tit = tit.substr(0,pos);
@@ -867,7 +867,7 @@ void Generator::ExportHTML(std::ostream & output)
 
     // Extract the filename
     std::string filename = "";
-    size_t slash = (*it).GetFilename().find_last_of("/");
+    long int slash = (*it).GetFilename().find_last_of("/");
     if(slash == -1)
       {
       slash = 0;
@@ -940,21 +940,21 @@ void Generator::ExportHTML(std::ostream & output)
         }
 
       // Remove the first \n
-      size_t p = l.find('\n');
+      long int p = l.find('\n');
       if(p != -1)
         {
         l.replace(p,1,"");
         }
       
       // Replace < and >
-      size_t inf = l.find("<",0);
+      long int inf = l.find("<",0);
       while(inf != -1)
         {
         l.replace(inf,1,"&lt;");
         inf = l.find("<",0);
         }
 
-      size_t sup = l.find(">",0);
+      long int sup = l.find(">",0);
       while(sup != -1)
         {
         l.replace(sup,1,"&gt;");
@@ -962,7 +962,7 @@ void Generator::ExportHTML(std::ostream & output)
         }
 
       // Replace the space by &nbsp;
-      size_t space = l.find(' ',0);
+      long int space = l.find(' ',0);
       while(space != -1)  
         {
         l.replace(space,1,"&nbsp;");
@@ -1135,10 +1135,10 @@ bool Generator::GenerateDart(const char* dir,int maxError,
         if(url != "")
           {
           // We had a link to the dashboard
-          /*size_t posslash = (*it).GetFilename().find_last_of("/");
-          size_t posbackslash = (*it).GetFilename().find_last_of("\\");
+          /*long int posslash = (*it).GetFilename().find_last_of("/");
+          long int posbackslash = (*it).GetFilename().find_last_of("\\");
           
-          size_t pos = 0;
+          long int pos = 0;
           if(posslash != -1 && posslash>posbackslash)
             {
             pos = posslash;  
@@ -1157,16 +1157,16 @@ bool Generator::GenerateDart(const char* dir,int maxError,
           */
 
           std::string htmlfile = (*it).GetFilename();
-          if(size_t pos = htmlfile.find(":/") != std::string::npos)
+          if(long int pos = htmlfile.find(":/") != std::string::npos)
             {
             htmlfile = htmlfile.substr(pos+2,htmlfile.size()-pos-2);
             }
-          if(size_t pos = htmlfile.find(":\\") != std::string::npos)
+          if(long int pos = htmlfile.find(":\\") != std::string::npos)
             {
             htmlfile = htmlfile.substr(pos+2,htmlfile.size()-pos-2);
             }
 
-          size_t slash = htmlfile.find_last_of("/");
+          long int slash = htmlfile.find_last_of("/");
           unsigned int i = 0;
           while(slash != -1 && i<m_MaxDirectoryDepth) 
             {
@@ -1191,7 +1191,7 @@ bool Generator::GenerateDart(const char* dir,int maxError,
       file << (*it).GetErrorTag((*itError).number);
       file << " : ";
       std::string desc = (*itError).description;
-      size_t pos = desc.find("&",0);
+      long int pos = desc.find("&",0);
       while(pos != -1)
         {
         desc.replace(pos,1,"&amp;");

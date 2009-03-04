@@ -43,12 +43,12 @@ bool Parser::CheckDeclarationOrder(unsigned int posPublic, unsigned int posProte
 
   delete [] val;
 
-  size_t publicFirst;
-  size_t publicLast;
+  long int publicFirst;
+  long int publicLast;
   this->FindPublicArea(publicFirst,publicLast);
   
-  size_t class_end = this->FindEndOfClass(publicFirst);
-  size_t class_beg = this->FindOpeningChar('}','{',class_end,true);
+  long int class_end = this->FindEndOfClass(publicFirst);
+  long int class_beg = this->FindOpeningChar('}','{',class_end,true);
 
   // Find the first public declaration
   while(publicFirst!=-1 && publicFirst!=MAX_CHAR && (publicFirst<class_beg || publicFirst>class_end))
@@ -59,10 +59,10 @@ bool Parser::CheckDeclarationOrder(unsigned int posPublic, unsigned int posProte
     }
   
   // Currently checking only one class per file (do a loop in the future)
-  size_t currentclass = class_beg;
+  long int currentclass = class_beg;
 
-  size_t protectedFirst;
-  size_t protectedLast;
+  long int protectedFirst;
+  long int protectedLast;
   this->FindProtectedArea(protectedFirst,protectedLast);
 
   class_end = this->FindEndOfClass(protectedFirst);
@@ -74,8 +74,8 @@ bool Parser::CheckDeclarationOrder(unsigned int posPublic, unsigned int posProte
     class_beg = this->FindOpeningChar('}','{',class_end,true);
     }
   
-  size_t privateFirst;
-  size_t privateLast;
+  long int privateFirst;
+  long int privateLast;
   this->FindPrivateArea(privateFirst,privateLast);
 
   class_end = this->FindEndOfClass(privateFirst);

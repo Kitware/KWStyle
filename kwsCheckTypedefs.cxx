@@ -37,13 +37,13 @@ bool Parser::CheckTypedefs(const char* regEx, bool alignment,unsigned int maxLen
 
   kwssys::RegularExpression regex(regEx);
 
-  size_t previousline = 0;
-  size_t previouspos = 0;
-  size_t pos = 0;
+  long int previousline = 0;
+  long int previouspos = 0;
+  long int pos = 0;
   while(pos!= -1)
     {
-    size_t beg = 0;
-    size_t typedefpos = 0;
+    long int beg = 0;
+    long int typedefpos = 0;
     std::string var = this->FindTypedef(pos+1,m_BufferNoComment.size(),pos,beg,typedefpos);
     
     if(var == "")
@@ -76,8 +76,8 @@ bool Parser::CheckTypedefs(const char* regEx, bool alignment,unsigned int maxLen
             }
 
           // Check if the alignement is possible due to the length of the line
-          size_t size = currentLine.size()-l;
-          if(previouspos+size>(size_t)maxLength)
+          long int size = currentLine.size()-l;
+          if(previouspos+size>(long int)maxLength)
             {
             previouspos = l;
             reportError = false;
@@ -94,7 +94,7 @@ bool Parser::CheckTypedefs(const char* regEx, bool alignment,unsigned int maxLen
             }
           optimalCurrentLinePos++;
           // Second find the size of the previous typedefs;
-          size_t sizeTypedef = previousLine.size()-previouspos;
+          long int sizeTypedef = previousLine.size()-previouspos;
           // if the size is too big we don't report
           if(optimalCurrentLinePos+sizeTypedef>maxLength)
             {
@@ -145,9 +145,9 @@ bool Parser::CheckTypedefs(const char* regEx, bool alignment,unsigned int maxLen
 
 
 /** Find a typedef in the source code */
-std::string Parser::FindTypedef(size_t start, size_t end,size_t & pos,size_t & beg,size_t & typdefpos)
+std::string Parser::FindTypedef(long int start, long int end,long int & pos,long int & beg,long int & typdefpos)
 {
-  size_t posTypedef  = m_BufferNoComment.find("typedef",start);
+  long int posTypedef  = m_BufferNoComment.find("typedef",start);
   if(posTypedef == -1)
     {
     pos = -1;
@@ -155,7 +155,7 @@ std::string Parser::FindTypedef(size_t start, size_t end,size_t & pos,size_t & b
     }
 
   typdefpos = posTypedef;
-  size_t posSemicolon = m_BufferNoComment.find(";",posTypedef);
+  long int posSemicolon = m_BufferNoComment.find(";",posTypedef);
 
   // Check if we have any () in the subword then we don't check the typdef
   std::string sub = m_BufferNoComment.substr(posTypedef,posSemicolon-posTypedef);

@@ -45,14 +45,14 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment,bool checkP
   while(classPosBegin != -1)
     {
     // First we check in the public area
-    size_t publicFirst;
-    size_t publicLast;
+    long int publicFirst;
+    long int publicLast;
     this->FindPublicArea(publicFirst,publicLast,classPosBegin);
 
-    size_t previousline = 0;
-    size_t previouspos = 0;
+    long int previousline = 0;
+    long int previouspos = 0;
     
-    size_t pos = publicFirst;
+    long int pos = publicFirst;
     while(pos!= -1)
       {
       std::string var = this->FindInternalVariable(pos+1,publicLast,pos);
@@ -124,8 +124,8 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment,bool checkP
       }
 
     // Second in the protected area
-    size_t protectedFirst;
-    size_t protectedLast;
+    long int protectedFirst;
+    long int protectedLast;
     this->FindProtectedArea(protectedFirst,protectedLast);
     pos = protectedFirst;
 
@@ -193,8 +193,8 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment,bool checkP
       }
 
     // Third and last in the private area
-    size_t privateFirst;
-    size_t privateLast;
+    long int privateFirst;
+    long int privateLast;
     this->FindPrivateArea(privateFirst,privateLast);
     pos = privateFirst;
     previousline = 0;
@@ -263,9 +263,9 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment,bool checkP
 }
 
 /** Find the first ivar in the source code */
-std::string Parser::FindInternalVariable(size_t start, size_t end,size_t & pos)
+std::string Parser::FindInternalVariable(long int start, long int end,long int & pos)
 {
-  size_t posSemicolon = m_BufferNoComment.find(";",start);
+  long int posSemicolon = m_BufferNoComment.find(";",start);
   while(posSemicolon != -1 && posSemicolon<end)
     {
     // We try to find the word before that
@@ -334,7 +334,7 @@ std::string Parser::FindInternalVariable(size_t start, size_t end,size_t & pos)
       {
 
       // Find the opening char
-      size_t j = this->FindOpeningChar('}','{',i,true);
+      long int j = this->FindOpeningChar('}','{',i,true);
       // Find a semicolon before that
       while(j>0)
         {

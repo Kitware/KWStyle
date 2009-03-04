@@ -73,7 +73,7 @@ bool Parser::CheckMemberFunctions(const char* regEx,unsigned long maxLength)
       this->ConvertBufferToWindowsFileType(buffer);
       buffer = this->RemoveComments(buffer.c_str());
       
-      size_t classpos = this->GetClassPosition(0,buffer);
+      long int classpos = this->GetClassPosition(0,buffer);
       while(classpos!=-1)
         {
         std::string classname = this->FindPreviousWord(classpos,false,buffer);
@@ -81,7 +81,7 @@ bool Parser::CheckMemberFunctions(const char* regEx,unsigned long maxLength)
           && m_BufferNoComment[classpos-1] != '\n')
           {
           classname = "";
-          size_t i=classpos-1;
+          long int i=classpos-1;
           while(i>0 && buffer[i] != ' ')
             {
             classname = buffer[i]+classname;
@@ -96,10 +96,10 @@ bool Parser::CheckMemberFunctions(const char* regEx,unsigned long maxLength)
 
   // Check the current file for any classes
   // And check the name of the current files
-  size_t classpos = this->GetClassPosition(0);
+  long int classpos = this->GetClassPosition(0);
   while(classpos!=-1)
     {
-    size_t current;
+    long int current;
     std::string memberFunction = this->FindMemberFunction(m_BufferNoComment,classpos,this->FindEndOfClass(classpos+1),current);
 
     std::string classname = this->FindPreviousWord(classpos);
@@ -109,7 +109,7 @@ bool Parser::CheckMemberFunctions(const char* regEx,unsigned long maxLength)
       )
       {
       classname = "";
-      size_t i=classpos-1;
+      long int i=classpos-1;
       while(i>0 && m_BufferNoComment[i] != ' ')
         {
         classname = m_BufferNoComment[i]+classname;
@@ -140,14 +140,14 @@ bool Parser::CheckMemberFunctions(const char* regEx,unsigned long maxLength)
         // Check the size of the current memberFunction
         if(maxLength>0 && current!=-1)
           {
-          size_t open = m_BufferNoComment.find("{",current);
-          size_t semicolon = m_BufferNoComment.find(";",current);
+          long int open = m_BufferNoComment.find("{",current);
+          long int semicolon = m_BufferNoComment.find(";",current);
           if(semicolon>open)
             {
-            size_t close = this->FindClosingChar('{','}',open,true);
-            size_t lopen = this->GetLineNumber(open);
-            size_t lclose = this->GetLineNumber(close);
-            if((open>-1) && (close>-1) && (lclose-lopen>(size_t)maxLength))
+            long int close = this->FindClosingChar('{','}',open,true);
+            long int lopen = this->GetLineNumber(open);
+            long int lclose = this->GetLineNumber(close);
+            if((open>-1) && (close>-1) && (lclose-lopen>(long int)maxLength))
               {
               Error error;
               error.line = this->GetLineNumber(current,true);
@@ -181,16 +181,16 @@ bool Parser::CheckMemberFunctions(const char* regEx,unsigned long maxLength)
     std::string classname = (*it);
 
     // Search all the classname::
-    size_t pos = m_BufferNoComment.find(classname,0);
+    long int pos = m_BufferNoComment.find(classname,0);
     while(pos != -1)
       {
       // look for ::
-      size_t pos2 = m_BufferNoComment.find("::",pos);
+      long int pos2 = m_BufferNoComment.find("::",pos);
       bool valid = false;
       if(pos2>0)
         {
         valid = true;
-        for(size_t i=pos+classname.size();i<pos2;i++)
+        for(long int i=pos+classname.size();i<pos2;i++)
           {
           if(m_BufferNoComment[i] != ' ' && m_BufferNoComment[i] != '\n' && m_BufferNoComment[i] != '\r')
             {
@@ -212,7 +212,7 @@ bool Parser::CheckMemberFunctions(const char* regEx,unsigned long maxLength)
           i++;
           }
        
-       size_t pos3 = m_BufferNoComment.find("(",i);
+       long int pos3 = m_BufferNoComment.find("(",i);
        if(pos3 != -1)
          {
          std::string functionName = m_BufferNoComment.substr(i,pos3-i);
@@ -240,11 +240,11 @@ bool Parser::CheckMemberFunctions(const char* regEx,unsigned long maxLength)
 
            if(maxLength>0)
              {
-             size_t open = m_BufferNoComment.find("{",i);
-             size_t close = this->FindClosingChar('{','}',open,true);
-             size_t lopen = this->GetLineNumber(open);
-             size_t lclose = this->GetLineNumber(close);
-             if((open>-1) && (close>-1) && (lclose-lopen>(size_t)maxLength))
+             long int open = m_BufferNoComment.find("{",i);
+             long int close = this->FindClosingChar('{','}',open,true);
+             long int lopen = this->GetLineNumber(open);
+             long int lclose = this->GetLineNumber(close);
+             if((open>-1) && (close>-1) && (lclose-lopen>(long int)maxLength))
                {
                Error error;
                error.line = this->GetLineNumber(pos3,true);
@@ -276,9 +276,9 @@ bool Parser::CheckMemberFunctions(const char* regEx,unsigned long maxLength)
 
 /** Find the first member function in the source code 
  *  Member functions are defined as int myfunction(); */
-std::string Parser::FindMemberFunction(std::string & buffer, size_t start, size_t end,size_t& pos)
+std::string Parser::FindMemberFunction(std::string & buffer, long int start, long int end,long int& pos)
 {
-  size_t posSemicolon = buffer.find(";",start);
+  long int posSemicolon = buffer.find(";",start);
   while(posSemicolon != -1 && posSemicolon<end)
     {
     // We check that we don't have the keyword __attribute__
@@ -292,13 +292,13 @@ std::string Parser::FindMemberFunction(std::string & buffer, size_t start, size_
       }
        
     // We try to find a (
-    size_t i=posSemicolon-1;
+    long int i=posSemicolon-1;
     bool inFunction = true;
     while(i>=start && inFunction)
       {
       if(buffer[i] == ')')
         {
-        size_t close = this->FindClosingChar(')','(',i,true);  
+        long int close = this->FindClosingChar(')','(',i,true);  
         if(close>0 && !this->IsInFunction(close,buffer.c_str()))
           {
           i = close;
@@ -316,7 +316,7 @@ std::string Parser::FindMemberFunction(std::string & buffer, size_t start, size_
       {
       std::string functionName = "";
       bool inWord = false;
-      size_t i=pos;
+      long int i=pos;
       for(;i>start;i--)
         {
         if(buffer[i] != ' ' && buffer[i] != '\t' 
@@ -339,7 +339,7 @@ std::string Parser::FindMemberFunction(std::string & buffer, size_t start, size_
         {
         // If we have a class definition: Test():Base
         // we return the correct
-        size_t posf = functionName.find("(",0);
+        long int posf = functionName.find("(",0);
         if(posf != -1)
           {
           functionName = functionName.substr(0,posf);

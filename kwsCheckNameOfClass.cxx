@@ -32,7 +32,7 @@ bool Parser::CheckNameOfClass(const char* name,const char* prefix)
   bool gotMatch = false;
   bool gotAtLeastOne = false;
 
-  size_t classpos = this->GetClassPosition(0);
+  long int classpos = this->GetClassPosition(0);
   std::string nameOfClass = "";
   while(classpos!=-1)
     {
@@ -44,8 +44,8 @@ bool Parser::CheckNameOfClass(const char* name,const char* prefix)
       return false;
       }
 
-    size_t point = m_Filename.find_last_of(".");
-    size_t slash = m_Filename.find_last_of("/");
+    long int point = m_Filename.find_last_of(".");
+    long int slash = m_Filename.find_last_of("/");
 
     if(slash == -1)
       {
@@ -57,7 +57,7 @@ bool Parser::CheckNameOfClass(const char* name,const char* prefix)
 
     // construct the string
     std::string toMatch = name;
-    size_t p = toMatch.find("[NameOfClass]");
+    long int p = toMatch.find("[NameOfClass]");
     if(p != -1)
       {
       toMatch.replace(p,13,nameofclass);
@@ -102,7 +102,7 @@ bool Parser::CheckNameOfClass(const char* name,const char* prefix)
  *  The return position is a position right after the name of the class (meaning before a : or a { 
  *  Returns -1 if not found
  */
-size_t Parser::GetClassPosition(size_t position,std::string buffer) const
+long int Parser::GetClassPosition(long int position,std::string buffer) const
 {
   
   if(position < 0)
@@ -115,7 +115,7 @@ size_t Parser::GetClassPosition(size_t position,std::string buffer) const
     buffer = m_BufferNoComment;
     }
 
-  size_t pos = buffer.find("class",position);
+  long int pos = buffer.find("class",position);
 
   std::string nameOfClass = "";
   while(pos!=-1)
@@ -131,7 +131,7 @@ size_t Parser::GetClassPosition(size_t position,std::string buffer) const
           valid = false;
           }
         }
-      if(pos<(size_t)buffer.size()-2)
+      if(pos<(long int)buffer.size()-2)
         {
         if(buffer[pos+5] != ' ' && buffer[pos+5] != '/' && buffer[pos+5] != '\r')
           {
@@ -139,10 +139,10 @@ size_t Parser::GetClassPosition(size_t position,std::string buffer) const
           } 
         }
       
-      size_t i = pos+4;
+      long int i = pos+4;
       // We should get a { before a ;
-      size_t brac = buffer.find('{',pos);
-      size_t sem = buffer.find(';',pos);
+      long int brac = buffer.find('{',pos);
+      long int sem = buffer.find(';',pos);
 
       if(sem<=brac)
         {
@@ -151,7 +151,7 @@ size_t Parser::GetClassPosition(size_t position,std::string buffer) const
       else
         {
         while((buffer[i] != '{')
-          && (i<(size_t)buffer.size())
+          && (i<(long int)buffer.size())
           )
           {
           if(buffer[i] == ';')
