@@ -1902,7 +1902,7 @@ long int Parser::FindClosingChar(char openChar, char closeChar,
     }
 
   long int open = 1;
-  for(long int i=pos+1;i<stream.length();i++)
+  for(long int i=pos+1;i<(long int)stream.length();i++)
     {
     if(stream[i] == openChar || stream[i] == closeChar)
       {
