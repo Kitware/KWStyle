@@ -751,7 +751,7 @@ int main(int argc, char **argv)
     bool showNoErrors = false;
     if(lessHTML.size()>0)
       {
-      if(lessHTML[0] = '1')
+      if(lessHTML[0] == '1')
         {
         showNoErrors = true;
         }
