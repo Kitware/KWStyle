@@ -423,8 +423,8 @@ int main(int argc, char **argv)
     delete [] buf;
    
     long int start = 0;
-    std::string::size_type pos = buffer.find("\n",start);
-    std::string::size_type posr = buffer.find("\r",start);
+    size_t pos = buffer.find("\n",start);
+    size_t posr = buffer.find("\r",start);
     if(posr == std::string::npos)
       {
       posr = pos;

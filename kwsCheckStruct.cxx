@@ -36,13 +36,12 @@ bool Parser::CheckStruct(const char* regEx,bool alignment)
   kwssys::RegularExpression regex(regEx);
 
   // find the struct
+  size_t posStruct = m_BufferNoComment.find("struct",0);
 
-  long int posStruct = m_BufferNoComment.find("struct",0);
-
-  while(posStruct != -1)
+  while(posStruct != std::string::npos)
     {
-    long int begin = posStruct;
-    while(posStruct<(long int)m_BufferNoComment.size())
+    size_t begin = posStruct;
+    while(posStruct<m_BufferNoComment.size())
       {
       if(m_BufferNoComment[posStruct] == '{')
         {
@@ -50,13 +49,13 @@ bool Parser::CheckStruct(const char* regEx,bool alignment)
         }
       posStruct++;
       }
-    long int end = this->FindClosingChar('{','}',posStruct,true);
+    size_t end = this->FindClosingChar('{','}',posStruct,true);
 
-    long int previousline = 0;
-    long int previouspos = 0;
+    size_t previousline = 0;
+    size_t previouspos = 0;
     
-    long int pos = begin;
-    while(pos!= -1)
+    size_t pos = begin;
+    while(pos!= std::string::npos)
       {
       std::string var = this->FindInternalVariable(pos+1,end+1,pos);
       if(var == "")
@@ -70,14 +69,14 @@ bool Parser::CheckStruct(const char* regEx,bool alignment)
         if(alignment)
           {
           // Find the position in the line
-          unsigned long posvar = m_BufferNoComment.find(var,pos-var.size()-2);
-          unsigned long l = this->GetPositionInLine(posvar);
-          unsigned long line = this->GetLineNumber(pos,true);
+          size_t posvar = m_BufferNoComment.find(var,pos-var.size()-2);
+          size_t l = this->GetPositionInLine(posvar);
+          size_t line = this->GetLineNumber(pos,true);
 
           // if the typedef is on a line close to the previous one we check
           if(line-previousline<2)
             {
-            if(l!=static_cast<unsigned long>(previouspos))
+            if(l!=previouspos)
               {
               Error error;
               error.line = this->GetLineNumber(pos,true);

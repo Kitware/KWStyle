@@ -52,11 +52,11 @@ bool Parser::CheckBlackList(const char* filename)
     }
 
   // Go through the list of words
-  std::string::size_type start = 0;
-  std::string::size_type space = m_BlackListBuffer.find(" ",start);
-  std::string::size_type eol = m_BlackListBuffer.find("\n",start);
+  size_t start = 0;
+  size_t space = m_BlackListBuffer.find(" ",start);
+  size_t eol = m_BlackListBuffer.find("\n",start);
 
-  std::string::size_type end = space;
+  size_t end = space;
   if(eol != std::string::npos && eol < space)
     {
     if(eol == 0)
@@ -118,7 +118,7 @@ bool Parser::CheckBlackList(const char* filename)
       continue;
       }
 
-    std::string::size_type pos = m_BufferNoComment.find(blackword,0);
+    size_t pos = m_BufferNoComment.find(blackword,0);
     while(pos != std::string::npos)
       {
       Error error;

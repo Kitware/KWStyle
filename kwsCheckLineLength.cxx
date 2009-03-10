@@ -28,7 +28,7 @@ bool Parser::CheckLineLength(unsigned long max,bool checkHeader)
   m_Positions.clear();
   bool hasError = false;
 
-  unsigned long fileSize = 0;
+  size_t fileSize = 0;
   
   // If we do not want to check the header
   if(!checkHeader)
@@ -53,17 +53,17 @@ bool Parser::CheckLineLength(unsigned long max,bool checkHeader)
       {
       // we look at the first '*/' in the file which indicated the end of the current header
       // This assume that there is an header at some point  
-      long int endHeader = m_Buffer.find("*/",0);
-      if(endHeader>0)
+      size_t endHeader = m_Buffer.find("*/",0);
+      if(endHeader != std::string::npos)
         {
         fileSize = endHeader;
         }
       }
     }
 
-  long int cc;
+  size_t cc;
   const char* inch = m_Buffer.c_str();
-  long int inStrSize = m_Buffer.size();
+  size_t inStrSize = m_Buffer.size();
   long int line_start = 0;
   long int line_end = 0;
   long int line_count = 1;
@@ -75,7 +75,7 @@ bool Parser::CheckLineLength(unsigned long max,bool checkHeader)
       m_Positions.push_back(cc);
       line_end = cc;
       long int line_length = line_end - line_start-1;
-      if(line_length > (long int)max && cc>(long int)fileSize)
+      if(line_length > (long int)max && cc>fileSize)
         {
         Error error;
         error.line = line_count;

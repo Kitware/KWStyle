@@ -65,7 +65,7 @@ bool Parser::CheckOperator(unsigned int before, unsigned int after,
   // We check the = operator but we want to make sure that it is not part
   // of the previous defined operator
   bool doNotCheck = false;
-  std::string::size_type operatorPos = m_BufferNoComment.find("=",0);
+  size_t operatorPos = m_BufferNoComment.find("=",0);
 
   if( (doNotCheckInsideParenthesis && this->IsBetweenCharsFast('(',')',operatorPos,false)) 
     || (operatorPos == m_BufferNoComment.find("!=",0)+1)
@@ -114,7 +114,7 @@ bool Parser::CheckOperator(unsigned int before, unsigned int after,
       }
 
     doNotCheck = false;
-    std::string::size_type tmpoperatorPos = m_BufferNoComment.find("=",operatorPos+1);
+    size_t tmpoperatorPos = m_BufferNoComment.find("=",operatorPos+1);
 
     if( (doNotCheckInsideParenthesis && this->IsBetweenCharsFast('(',')',tmpoperatorPos,false)) 
     ||  (tmpoperatorPos == m_BufferNoComment.find("!=",operatorPos+1)+1)
@@ -145,7 +145,7 @@ bool Parser::FindOperator(const char* op,unsigned int before,
 {
   bool hasErrors = false;
   long int pos = 0;
-  std::string::size_type operatorPos = m_BufferNoComment.find(op,pos);
+  size_t operatorPos = m_BufferNoComment.find(op,pos);
   while(operatorPos != std::string::npos) 
     {
     bool showError=true;

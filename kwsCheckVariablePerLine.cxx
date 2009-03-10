@@ -39,7 +39,7 @@ bool Parser::CheckVariablePerLine(unsigned long max)
     {
     std::string typeToFind = types[i];
     typeToFind += " ";
-    long int posType = m_BufferNoComment.find(typeToFind,0);
+    size_t posType = m_BufferNoComment.find(typeToFind,0);
     while(posType != std::string::npos)
       {
       // Check that this is the first word

@@ -17,7 +17,7 @@ namespace kws {
 
 
 /** Check the order of the declaration */
-bool Parser::CheckDeclarationOrder(unsigned int posPublic, unsigned int posProtected, unsigned int posPrivate)
+bool Parser::CheckDeclarationOrder(size_t posPublic, size_t posProtected, size_t posPrivate)
 {
   m_TestsDone[DECL_ORDER] = true;
   char* val = new char[255];
@@ -43,15 +43,15 @@ bool Parser::CheckDeclarationOrder(unsigned int posPublic, unsigned int posProte
 
   delete [] val;
 
-  long int publicFirst;
-  long int publicLast;
+  size_t publicFirst;
+  size_t publicLast;
   this->FindPublicArea(publicFirst,publicLast);
   
-  long int class_end = this->FindEndOfClass(publicFirst);
-  long int class_beg = this->FindOpeningChar('}','{',class_end,true);
+  size_t class_end = this->FindEndOfClass(publicFirst);
+  size_t class_beg = this->FindOpeningChar('}','{',class_end,true);
 
   // Find the first public declaration
-  while(publicFirst!=-1 && publicFirst!=MAX_CHAR && (publicFirst<class_beg || publicFirst>class_end))
+  while(publicFirst!=std::string::npos && publicFirst!=MAX_CHAR && (publicFirst<class_beg || publicFirst>class_end))
     {
     this->FindPublicArea(publicFirst,publicLast,publicFirst+1);
     class_end = this->FindEndOfClass(publicFirst);
@@ -59,10 +59,10 @@ bool Parser::CheckDeclarationOrder(unsigned int posPublic, unsigned int posProte
     }
   
   // Currently checking only one class per file (do a loop in the future)
-  long int currentclass = class_beg;
+  size_t currentclass = class_beg;
 
-  long int protectedFirst;
-  long int protectedLast;
+  size_t protectedFirst;
+  size_t protectedLast;
   this->FindProtectedArea(protectedFirst,protectedLast);
 
   class_end = this->FindEndOfClass(protectedFirst);
@@ -74,14 +74,14 @@ bool Parser::CheckDeclarationOrder(unsigned int posPublic, unsigned int posProte
     class_beg = this->FindOpeningChar('}','{',class_end,true);
     }
   
-  long int privateFirst;
-  long int privateLast;
+  size_t privateFirst;
+  size_t privateLast;
   this->FindPrivateArea(privateFirst,privateLast);
 
   class_end = this->FindEndOfClass(privateFirst);
   class_beg = this->FindOpeningChar('}','{',class_end,true);
 
-  while(privateFirst!=-1 && privateFirst!=MAX_CHAR && class_beg != currentclass)
+  while(privateFirst!=std::string::npos && privateFirst!=MAX_CHAR && class_beg != currentclass)
     {
     this->FindPrivateArea(privateFirst,privateLast,privateFirst+1);    
     class_end = this->FindEndOfClass(privateFirst);
@@ -182,28 +182,7 @@ bool Parser::CheckDeclarationOrder(unsigned int posPublic, unsigned int posProte
      m_ErrorList.push_back(error);
      hasError = true;
      }
-/*
-   // Print the info
-   Info info;
-   info.line =  this->GetLineNumber(protectedFirst,true);
-   info.line2 = this->GetLineNumber(protectedFirst,true);
-   info.number = DECL_ORDER;
-   if(publicFirst == MAX_CHAR)
-     {
-     info.description = "This class doesn't have any public method";
-     m_InfoList.push_back(info);
-     }
-   if(protectedFirst == MAX_CHAR)
-     {
-     info.description = "This class doesn't have any protected method";
-     m_InfoList.push_back(info);
-     }
-   if(privateFirst == MAX_CHAR)
-     {
-     info.description = "This class doesn't have any private method";
-     m_InfoList.push_back(info);
-     }
-  */ 
+     
   return !hasError;
 }
 

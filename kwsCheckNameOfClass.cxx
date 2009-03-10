@@ -100,12 +100,11 @@ bool Parser::CheckNameOfClass(const char* name,const char* prefix)
 /** Returns the position of a class within the file.
  *  This function checks that we are in the class definition and not somewhere else 
  *  The return position is a position right after the name of the class (meaning before a : or a { 
- *  Returns -1 if not found
+ *  Returns std::string::npos if not found
  */
-long int Parser::GetClassPosition(long int position,std::string buffer) const
+size_t Parser::GetClassPosition(size_t position,std::string buffer) const
 {
-  
-  if(position < 0)
+  if(position == std::string::npos)
    {
    position = 0;
    } 
@@ -115,10 +114,10 @@ long int Parser::GetClassPosition(long int position,std::string buffer) const
     buffer = m_BufferNoComment;
     }
 
-  long int pos = buffer.find("class",position);
+  size_t pos = buffer.find("class",position);
 
   std::string nameOfClass = "";
-  while(pos!=-1)
+  while(pos!=std::string::npos)
     {
     if(!this->IsBetweenCharsFast('<','>',pos,false,buffer))
       {
@@ -131,7 +130,7 @@ long int Parser::GetClassPosition(long int position,std::string buffer) const
           valid = false;
           }
         }
-      if(pos<(long int)buffer.size()-2)
+      if(pos<buffer.size()-2)
         {
         if(buffer[pos+5] != ' ' && buffer[pos+5] != '/' && buffer[pos+5] != '\r')
           {
@@ -139,10 +138,10 @@ long int Parser::GetClassPosition(long int position,std::string buffer) const
           } 
         }
       
-      long int i = pos+4;
+      size_t i = pos+4;
       // We should get a { before a ;
-      long int brac = buffer.find('{',pos);
-      long int sem = buffer.find(';',pos);
+      size_t brac = buffer.find('{',pos);
+      size_t sem = buffer.find(';',pos);
 
       if(sem<=brac)
         {
@@ -151,7 +150,7 @@ long int Parser::GetClassPosition(long int position,std::string buffer) const
       else
         {
         while((buffer[i] != '{')
-          && (i<(long int)buffer.size())
+          && (i<buffer.size())
           )
           {
           if(buffer[i] == ';')
@@ -175,7 +174,7 @@ long int Parser::GetClassPosition(long int position,std::string buffer) const
     pos = buffer.find("class",pos+1);
     }
 
-  return -1;
+  return std::string::npos;
 }
 
 } // end namespace kws

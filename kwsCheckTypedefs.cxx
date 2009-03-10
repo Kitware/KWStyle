@@ -37,13 +37,13 @@ bool Parser::CheckTypedefs(const char* regEx, bool alignment,unsigned int maxLen
 
   kwssys::RegularExpression regex(regEx);
 
-  long int previousline = 0;
-  long int previouspos = 0;
-  long int pos = 0;
-  while(pos!= -1)
+  size_t previousline = 0;
+  size_t previouspos = 0;
+  size_t pos = 0;
+  while(pos!= std::string::npos)
     {
-    long int beg = 0;
-    long int typedefpos = 0;
+    size_t beg = 0;
+    size_t typedefpos = 0;
     std::string var = this->FindTypedef(pos+1,m_BufferNoComment.size(),pos,beg,typedefpos);
     
     if(var == "")
@@ -54,14 +54,14 @@ bool Parser::CheckTypedefs(const char* regEx, bool alignment,unsigned int maxLen
     if(alignment)
       {
       // Find the position in the line
-      unsigned long l = this->GetPositionInLine(beg);
-      unsigned long line = this->GetLineNumber(beg,true);
-      unsigned long typdefline = this->GetLineNumber(typedefpos,true);
+      size_t l = this->GetPositionInLine(beg);
+      size_t line = this->GetLineNumber(beg,true);
+      size_t typdefline = this->GetLineNumber(typedefpos,true);
 
       // if the typedef is on a line close to the previous one we check
       if(typdefline-previousline<2)
         {
-        if(l!=static_cast<unsigned long>(previouspos))
+        if(l!=previouspos)
           {
           bool reportError = true;
           // We check that the previous line is not ending with a semicolon
@@ -76,8 +76,8 @@ bool Parser::CheckTypedefs(const char* regEx, bool alignment,unsigned int maxLen
             }
 
           // Check if the alignement is possible due to the length of the line
-          long int size = currentLine.size()-l;
-          if(previouspos+size>(long int)maxLength)
+          size_t size = currentLine.size()-l;
+          if(previouspos+size>maxLength)
             {
             previouspos = l;
             reportError = false;
@@ -87,21 +87,20 @@ bool Parser::CheckTypedefs(const char* regEx, bool alignment,unsigned int maxLen
           // typedef igstk::VascularNetworkObject   VascularNetworkObjectType;
           // typedef VascularNetworkObjectType::VesselObjectType VesselObjectType;
           // First find the optimal position (one space) for the current line
-          unsigned long optimalCurrentLinePos = l;
+          size_t optimalCurrentLinePos = l;
           while(optimalCurrentLinePos>1 && currentLine[optimalCurrentLinePos-1] == ' ')
             {
             optimalCurrentLinePos--;
             }
           optimalCurrentLinePos++;
           // Second find the size of the previous typedefs;
-          long int sizeTypedef = previousLine.size()-previouspos;
+          size_t sizeTypedef = previousLine.size()-previouspos;
           // if the size is too big we don't report
           if(optimalCurrentLinePos+sizeTypedef>maxLength)
             {
             previouspos = l;
             reportError = false;
             }
-
 
           if(reportError)
             {
@@ -145,17 +144,17 @@ bool Parser::CheckTypedefs(const char* regEx, bool alignment,unsigned int maxLen
 
 
 /** Find a typedef in the source code */
-std::string Parser::FindTypedef(long int start, long int end,long int & pos,long int & beg,long int & typdefpos)
+std::string Parser::FindTypedef(size_t start, size_t end,size_t & pos,size_t & beg,size_t & typdefpos)
 {
-  long int posTypedef  = m_BufferNoComment.find("typedef",start);
-  if(posTypedef == -1)
+  size_t posTypedef  = m_BufferNoComment.find("typedef",start);
+  if(posTypedef == std::string::npos)
     {
-    pos = -1;
+    pos = std::string::npos;
     return "";
     }
 
   typdefpos = posTypedef;
-  long int posSemicolon = m_BufferNoComment.find(";",posTypedef);
+  size_t posSemicolon = m_BufferNoComment.find(";",posTypedef);
 
   // Check if we have any () in the subword then we don't check the typdef
   std::string sub = m_BufferNoComment.substr(posTypedef,posSemicolon-posTypedef);
@@ -170,10 +169,10 @@ std::string Parser::FindTypedef(long int start, long int end,long int & pos,long
     }
 
   std::string typedefname = "";
-  if(posSemicolon != -1 && posSemicolon<end)
+  if(posSemicolon != std::string::npos && posSemicolon<end)
     {
     // We try to find the word before that
-    unsigned long i=posSemicolon-1;
+    size_t i=posSemicolon-1;
     bool inWord = true;
     bool first = false;
     while(i>=0 && inWord)

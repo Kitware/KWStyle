@@ -31,18 +31,18 @@ bool Parser::CheckStatementPerLine(unsigned long max,bool checkInlineFunctions)
     }
 
   bool hasError = false;
-  long int posSemicolon = m_BufferNoComment.find(";",0);
-  long int currentLine = -1;
+  size_t posSemicolon = m_BufferNoComment.find(";",0);
+  long int currentLine = 0;
   unsigned long statements = 0;
   bool newline = false;
   std::string line = "";
     
-  while(posSemicolon != -1)
+  while(posSemicolon != std::string::npos)
     {
     // If we are on the same line
-    unsigned long lineNumber = this->GetLineNumber(posSemicolon,true); 
+    long int lineNumber = this->GetLineNumber(posSemicolon,true); 
    
-    if(lineNumber != static_cast<unsigned long>(currentLine))
+    if(lineNumber != currentLine)
       {
       currentLine = lineNumber;
       statements = 0;
@@ -59,13 +59,13 @@ bool Parser::CheckStatementPerLine(unsigned long max,bool checkInlineFunctions)
       nb = 0;
       }
 
-    long int ne = posSemicolon+100; // 100 characters after
-    if(ne > (long int)m_BufferNoComment.size())
+    size_t ne = posSemicolon+100; // 100 characters after
+    if(ne > m_BufferNoComment.size())
       {
       ne = m_BufferNoComment.size();
       }
 
-    long int posInLine2 = posSemicolon-nb;
+    size_t posInLine2 = posSemicolon-nb;
 
     std::string line2 = m_BufferNoComment.substr(nb,ne-nb);
 
@@ -77,7 +77,7 @@ bool Parser::CheckStatementPerLine(unsigned long max,bool checkInlineFunctions)
       statements++;
       }
 
-    long int posSemicolon2 = m_BufferNoComment.find(";",posSemicolon+1);
+    size_t posSemicolon2 = m_BufferNoComment.find(";",posSemicolon+1);
     if(this->GetLineNumber(posSemicolon2,true) == currentLine)
       {
       newline = false;

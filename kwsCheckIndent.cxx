@@ -18,9 +18,9 @@ namespace kws {
 #define ALIGN_LEFT -99999
 
 /** Extract the current line from pos to \n */
-std::string Parser::ExtractLine(long int pos)
+std::string Parser::ExtractLine(size_t pos)
 {
-  long int p = m_Buffer.find("\n",pos);
+  size_t p = m_Buffer.find("\n",pos);
   if(p>pos)
     {
     return m_Buffer.substr(pos,p-pos-1);
@@ -29,9 +29,9 @@ std::string Parser::ExtractLine(long int pos)
 }
 
 /** Return the current ident */
-long int Parser::GetCurrentIdent(std::string line,char type)
+int Parser::GetCurrentIdent(std::string line,char type)
 {
-  long int indent = 0;
+  int indent = 0;
   std::string::const_iterator it = line.begin();
   while(it != line.end() && (*it)== type)
     {
@@ -625,18 +625,18 @@ bool Parser::InitIndentation()
   m_IdentPositionVector.clear();
 
   // namespace
-  std::vector<long int> namespacevec;
+  std::vector<size_t> namespacevec;
 
-  long int posNamespace = m_BufferNoComment.find("namespace",0);
-  while(posNamespace!=-1)
+  size_t posNamespace = m_BufferNoComment.find("namespace",0);
+  while(posNamespace!=std::string::npos)
     {
-    long int posNamespace1 = m_BufferNoComment.find("{",posNamespace);
-    if(posNamespace1 != -1)
+    size_t posNamespace1 = m_BufferNoComment.find("{",posNamespace);
+    if(posNamespace1 != std::string::npos)
       {
-      long int posNamespace2 = m_BufferNoComment.find(";",posNamespace);
-      if((posNamespace2 == -1) || (posNamespace2 > posNamespace1))
+      size_t posNamespace2 = m_BufferNoComment.find(";",posNamespace);
+      if((posNamespace2 == std::string::npos) || (posNamespace2 > posNamespace1))
         {
-        long int posNamespaceComments = this->GetPositionWithComments(posNamespace1);      
+        size_t posNamespaceComments = this->GetPositionWithComments(posNamespace1);      
         IndentPosition ind;
         ind.position = posNamespaceComments;
         ind.current = 0;
@@ -653,7 +653,7 @@ bool Parser::InitIndentation()
     }
 
   // Create a list of position specific for namespaces
-  std::vector<int> namespacePos;
+  std::vector<size_t> namespacePos;
   std::vector<IndentPosition>::iterator itIdentPos = m_IdentPositionVector.begin();
   while(itIdentPos != m_IdentPositionVector.end())
     {
@@ -662,21 +662,21 @@ bool Parser::InitIndentation()
     }
 
   // Check if the { is the first in the file/function or in a namespace
-  long int posClass = m_BufferNoComment.find('{',0);
+  size_t posClass = m_BufferNoComment.find('{',0);
 
-  while(posClass!= -1 && this->IsInElseForbiddenSection(this->GetPositionWithComments(posClass)))
+  while(posClass!= std::string::npos && this->IsInElseForbiddenSection(this->GetPositionWithComments(posClass)))
     {
     posClass = m_BufferNoComment.find('{',posClass+1);
     }
 
-  while(posClass != -1)
+  while(posClass != std::string::npos)
     {
     // We count the number of { and } before posClass
     int nOpen = 0;
     int nClose = 0;  
 
-    long int open = m_BufferNoComment.find('{',0);
-    while(open!=-1 && open<posClass)
+    size_t open = m_BufferNoComment.find('{',0);
+    while(open!=std::string::npos && open<posClass)
       {
       if(!this->IsInElseForbiddenSection(this->GetPositionWithComments(open))
         && !this->IsBetweenQuote(open)
@@ -684,7 +684,7 @@ bool Parser::InitIndentation()
         {
         bool isNamespace = false;
         // Remove the potential namespaces
-        std::vector<int>::const_iterator itN = namespacePos.begin();
+        std::vector<size_t>::const_iterator itN = namespacePos.begin();
         while(itN != namespacePos.end())
           {
           if((*itN)==this->GetPositionWithComments(open))
@@ -701,8 +701,8 @@ bool Parser::InitIndentation()
       open = m_BufferNoComment.find('{',open+1);
       }
 
-    long int close = m_BufferNoComment.find('}',0);
-    while(close!=-1 && close<posClass)
+    size_t close = m_BufferNoComment.find('}',0);
+    while(close!=std::string::npos && close<posClass)
       {
       if(!this->IsInElseForbiddenSection(this->GetPositionWithComments(close))
         && !this->IsBetweenQuote(close)
@@ -710,7 +710,7 @@ bool Parser::InitIndentation()
         {
         bool isNamespace = false;
         // Remove the potential namespaces
-        std::vector<int>::const_iterator itN = namespacePos.begin();
+        std::vector<size_t>::const_iterator itN = namespacePos.begin();
         while(itN != namespacePos.end())
           {
           if((*itN)==this->GetPositionWithComments(close))
@@ -732,7 +732,7 @@ bool Parser::InitIndentation()
     if(nClose == nOpen)
       {
       // Check if this is not the namespace previously defined
-      std::vector<long int>::iterator itname = namespacevec.begin();
+      std::vector<size_t>::iterator itname = namespacevec.begin();
       while(itname != namespacevec.end())
         {
         if((*itname) == this->GetPositionWithComments(posClass))
@@ -747,7 +747,7 @@ bool Parser::InitIndentation()
     if((nClose == nOpen) && !defined)
       {
       // translate the position in the buffer position;
-      long int posClassComments = this->GetPositionWithComments(posClass); 
+      size_t posClassComments = this->GetPositionWithComments(posClass); 
       IndentPosition ind;
       ind.position = posClassComments;
       ind.current = 0;
@@ -766,8 +766,8 @@ bool Parser::InitIndentation()
     }
 
   // int main()
-  long int posMain = m_BufferNoComment.find("main",0);
-  while(posMain != -1)
+  size_t posMain = m_BufferNoComment.find("main",0);
+  while(posMain != std::string::npos)
     {
     // Check if the next char is '('
     bool valid = true;
@@ -787,11 +787,11 @@ bool Parser::InitIndentation()
       }
     if(valid)
       {
-      long int bracket = m_BufferNoComment.find('{',posMain+4);
-      if(bracket != -1)
+      size_t bracket = m_BufferNoComment.find('{',posMain+4);
+      if(bracket != std::string::npos)
         {
         // translate the position in the buffer position;
-        long int posMainComments = this->GetPositionWithComments(bracket);      
+        size_t posMainComments = this->GetPositionWithComments(bracket);      
         IndentPosition ind;
         ind.position = posMainComments;
         ind.current = 0;
@@ -808,8 +808,8 @@ bool Parser::InitIndentation()
 
   // switch/case statement
   // for the moment break; restore the indentation
-  long int posSwitch = m_BufferNoComment.find("switch",0);
-  while(posSwitch != -1)
+  size_t posSwitch = m_BufferNoComment.find("switch",0);
+  while(posSwitch != std::string::npos)
     {
     // Check that it is a valid switch statement
     if(!this->CheckValidSwitchStatement(posSwitch))
@@ -820,9 +820,9 @@ bool Parser::InitIndentation()
     
     // If this is the first case we find the openning { in order to 
     // find the closing } of the switch statement
-    long int openningBracket = m_BufferNoComment.find("{",posSwitch);
-    long int closingBracket = this->FindClosingChar('{','}',openningBracket,true);        
-    long int posColumnComments = this->GetPositionWithComments(closingBracket);      
+    size_t openningBracket = m_BufferNoComment.find("{",posSwitch);
+    size_t closingBracket = this->FindClosingChar('{','}',openningBracket,true);        
+    size_t posColumnComments = this->GetPositionWithComments(closingBracket);      
     IndentPosition ind;
     ind.position = posColumnComments;
     ind.current = -1;
@@ -830,15 +830,15 @@ bool Parser::InitIndentation()
     m_IdentPositionVector.push_back(ind);
 
     // Do the default case
-    long int defaultPos = m_BufferNoComment.find("default",openningBracket);
+    size_t defaultPos = m_BufferNoComment.find("default",openningBracket);
     if(defaultPos > closingBracket)
       {
-      defaultPos = -1;
+      defaultPos = std::string::npos;
       }
     
     // We need to make sure that there is no "switch" statement nested
-    long int nestedSwitch = m_BufferNoComment.find("switch",posSwitch+1);
-    while(nestedSwitch != -1)
+    size_t nestedSwitch = m_BufferNoComment.find("switch",posSwitch+1);
+    while(nestedSwitch != std::string::npos)
       {
       if(!this->CheckValidSwitchStatement(nestedSwitch))
         {
@@ -857,16 +857,16 @@ bool Parser::InitIndentation()
       nestedSwitch = m_BufferNoComment.find("switch",nestedSwitch+1);
       }
 
-    if(defaultPos != -1)
+    if(defaultPos != std::string::npos)
       {
-      long int posColumnComments = this->GetPositionWithComments(defaultPos);      
+      size_t posColumnComments = this->GetPositionWithComments(defaultPos);      
       IndentPosition ind;
       ind.position = posColumnComments;
       
       // The current indent should be -1 unless we are right after the openning
       // bracket. In that case the current indent should be 0;
-      long int j=defaultPos-1;
-      while(j>0)
+      size_t j=defaultPos-1;
+      while(j!=std::string::npos)
         {
         if(m_BufferNoComment[j] != ' '
           && m_BufferNoComment[j] != '\n'
@@ -890,13 +890,13 @@ bool Parser::InitIndentation()
       ind.after = 0;
       m_IdentPositionVector.push_back(ind);
       // Find the ':' after the default
-      long int column = m_BufferNoComment.find(":",defaultPos+1);
+      size_t column = m_BufferNoComment.find(":",defaultPos+1);
       column = this->GetPositionWithComments(column);      
       
       // Sometimes there is a { right after the : we skip it if this is
       // the case
-      long int ic = column+1;
-      while(ic<(long int)m_Buffer.size() 
+      size_t ic = column+1;
+      while(ic<m_Buffer.size() 
             && (m_Buffer[ic] == ' ' 
             || m_Buffer[ic] == '\r' 
             || m_Buffer[ic] == '\n'))
@@ -917,23 +917,23 @@ bool Parser::InitIndentation()
         }
       }
 
-    long int posCase = m_BufferNoComment.find("case",openningBracket);
+    size_t posCase = m_BufferNoComment.find("case",openningBracket);
     bool firstCase = true;
-    long int previousCase = openningBracket;
+    size_t previousCase = openningBracket;
 
-    while(posCase!= -1 && posCase<closingBracket)
+    while(posCase!= std::string::npos && posCase<closingBracket)
       {
       // Check if we don't have any switch statement inside
-      long int insideSwitch = m_BufferNoComment.find("switch",previousCase);
+      size_t insideSwitch = m_BufferNoComment.find("switch",previousCase);
       if(insideSwitch>openningBracket && insideSwitch<posCase)
         {
         // jump to the end of the inside switch/case
-        long int insideBracket = m_BufferNoComment.find("{",insideSwitch);
+        size_t insideBracket = m_BufferNoComment.find("{",insideSwitch);
         posCase = this->FindClosingChar('{','}',insideBracket,true);        
         }
       else
         {
-        long int posColumnComments = this->GetPositionWithComments(posCase);      
+        size_t posColumnComments = this->GetPositionWithComments(posCase);      
         IndentPosition ind;
         ind.position = posColumnComments;
         if(firstCase)
@@ -948,18 +948,18 @@ bool Parser::InitIndentation()
           
         m_IdentPositionVector.push_back(ind);
         
-        long int column = m_BufferNoComment.find(':',posCase+3);
+        size_t column = m_BufferNoComment.find(':',posCase+3);
         // Make sure that we are not checing '::'
-        while(column+1<(long int)m_BufferNoComment.size()
+        while(column+1<m_BufferNoComment.size()
           && m_BufferNoComment[column+1]==':')
           {
           column = m_BufferNoComment.find(':',column+2);
           }
 
-        if(column != -1)
+        if(column != std::string::npos)
           {
           // translate the position in the buffer position;
-          long int posColumnComments = this->GetPositionWithComments(column);      
+          size_t posColumnComments = this->GetPositionWithComments(column);      
           IndentPosition ind;
           ind.position = posColumnComments;
           if(firstCase)
@@ -976,8 +976,8 @@ bool Parser::InitIndentation()
 
           // Sometimes there is a { right after the : we skip it if this is
           // the case
-          long int ic = posColumnComments+1;
-          while(ic<(long int)m_Buffer.size() 
+          size_t ic = posColumnComments+1;
+          while(ic<m_Buffer.size() 
             && (m_Buffer[ic] == ' ' 
             || m_Buffer[ic] == '\r' 
             || m_Buffer[ic] == '\n'))
@@ -1029,10 +1029,10 @@ bool Parser::InitIndentation()
   return true;
 }
 
-void Parser::AddIndent(const char* name,long int current,long int after)
+void Parser::AddIndent(const char* name,int current,int after)
 {
-  long int posPrev = m_Buffer.find(name,0);
-  while(posPrev!=-1)
+  size_t posPrev = m_Buffer.find(name,0);
+  while(posPrev!=std::string::npos)
     {
     IndentPosition ind;
     ind.position = posPrev;
@@ -1052,12 +1052,12 @@ void Parser::AddIndent(const char* name,long int current,long int after)
  *  #else
  *  {
  *  #endif */
-bool Parser::IsInElseForbiddenSection(long int pos)
+bool Parser::IsInElseForbiddenSection(size_t pos)
 {
   IfElseEndifListType::const_iterator itLS = m_IfElseEndifList.begin();
   while(itLS != m_IfElseEndifList.end())
     {
-    if(pos>(long int)(*itLS).first && pos<(long int)(*itLS).second)
+    if(pos>(*itLS).first && pos<(*itLS).second)
       {
       return true;
       }

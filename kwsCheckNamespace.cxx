@@ -41,9 +41,9 @@ bool Parser::CheckNamespace(const char* name,bool doNotCheckMain)
 
   std::string nameSpace = "";
 
-  long int pos = m_BufferNoComment.find("namespace",0);
+  size_t pos = m_BufferNoComment.find("namespace",0);
 
-  if(pos == -1)
+  if(pos == std::string::npos)
     {
     Error error;
     error.line = this->GetLineNumber(0,true);
@@ -81,7 +81,7 @@ bool Parser::CheckNamespace(const char* name,bool doNotCheckMain)
 
   /*
   // Now search if we have other namespaces
-  while(pos!= -1 && ok)
+  while(pos!= std::string::npos && ok)
     {
     pos = buffer.find("namespace",pos+1);
     // check that the word is not using namespace

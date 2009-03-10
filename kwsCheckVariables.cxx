@@ -22,7 +22,6 @@ bool Parser::CheckVariables(const char* regEx)
   m_TestsDescription[VARS] = "ivars implentation should match regular expression: ";
   m_TestsDescription[VARS] += regEx;
 
-
   // First we need to find the parameters
   bool hasError = false;
 
@@ -49,7 +48,7 @@ bool Parser::CheckVariables(const char* regEx)
     }
 
   file.seekg(0,std::ios::end);
-  unsigned long fileSize = file.tellg();
+  size_t fileSize = file.tellg();
   file.seekg(0,std::ios::beg);
 
   char* buf = new char[fileSize+1];
@@ -65,16 +64,16 @@ bool Parser::CheckVariables(const char* regEx)
   buffer = this->RemoveComments(buffer.c_str());
   
   // Construct the list of variables to check
-  typedef std::pair<std::string,int> PairType;
+  typedef std::pair<std::string,long int> PairType;
   std::vector<PairType> ivars;
-  long int pos = 0;
-  while(pos != -1)
+  size_t pos = 0;
+  while(pos != std::string::npos)
     {
     std::string var = this->FindVariable(buffer,pos+1,buffer.size(),pos);
     if(var.size()>0)
       {
       std::string correct = "";
-      for(unsigned long i=0;i<var.size();i++)
+      for(size_t i=0;i<var.size();i++)
         {
         if(var[i] != '*')
           {
@@ -93,9 +92,9 @@ bool Parser::CheckVariables(const char* regEx)
   while(it != ivars.end())
     {
     std::string v = (*it).first;
-    int p =(*it).second;
-    long posVar = m_BufferNoComment.find(v);
-    while(posVar != -1)
+    long int p =(*it).second;
+    size_t posVar = m_BufferNoComment.find(v);
+    while(posVar != std::string::npos)
       {
       // Extract the complete insert of the variable
       if(!this->IsBetweenQuote(posVar)
@@ -120,7 +119,7 @@ bool Parser::CheckVariables(const char* regEx)
         )
         {
 
-      unsigned long i = posVar-1;
+      size_t i = posVar-1;
       while(i>0)
         {
         if(m_BufferNoComment[i]==' '
@@ -177,17 +176,17 @@ bool Parser::CheckVariables(const char* regEx)
 }
 
 /** Find the first ivar in the source code */
-std::string Parser::FindVariable(std::string & buffer, long int start, long int end,long int & pos)
+std::string Parser::FindVariable(std::string & buffer, size_t start, size_t end,size_t & pos)
 {
-  long int posSemicolon = buffer.find(";",start);
-  while(posSemicolon != -1 && posSemicolon<end)
+  size_t posSemicolon = buffer.find(";",start);
+  while(posSemicolon != std::string::npos && posSemicolon<end)
     {
     // We try to find the word before that
-    unsigned long i=posSemicolon-1;
+    size_t i = posSemicolon-1;
     bool inWord = true;
     bool first = false;
     std::string ivar = "";
-    while(i>=0 && inWord)
+    while(i!=std::string::npos && inWord)
       {
       if(buffer[i] != ' ')
         {
@@ -221,7 +220,7 @@ std::string Parser::FindVariable(std::string & buffer, long int start, long int 
     // We extract the complete definition.
     // This means that we look for a '{' or '}' or '{' or ':'
     // but not '::'
-    while(i>0)
+    while(i != std::string::npos)
       {
       if(buffer[i] == ';')
         {
@@ -239,7 +238,7 @@ std::string Parser::FindVariable(std::string & buffer, long int start, long int 
 
     std::string subphrase = "";
 
-    if(i>=0)
+    if(i != std::string::npos)
       {
       subphrase = buffer.substr(i+1,posSemicolon-i-1);
       }
@@ -267,7 +266,7 @@ std::string Parser::FindVariable(std::string & buffer, long int start, long int 
     posSemicolon = buffer.find(";",posSemicolon+1);
     }
 
-  pos = -1;
+  pos = std::string::npos;
   return "";
 }
 

@@ -41,19 +41,19 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment,bool checkP
   kwssys::RegularExpression regex(regEx);
 
   // We loop through the classes
-  int classPosBegin = this->GetClassPosition(0);
-  while(classPosBegin != -1)
+  size_t classPosBegin = this->GetClassPosition(0);
+  while(classPosBegin != std::string::npos)
     {
     // First we check in the public area
-    long int publicFirst;
-    long int publicLast;
+    size_t publicFirst;
+    size_t publicLast;
     this->FindPublicArea(publicFirst,publicLast,classPosBegin);
 
-    long int previousline = 0;
-    long int previouspos = 0;
+    size_t previousline = 0;
+    size_t previouspos = 0;
     
-    long int pos = publicFirst;
-    while(pos!= -1)
+    size_t pos = publicFirst;
+    while(pos!= std::string::npos)
       {
       std::string var = this->FindInternalVariable(pos+1,publicLast,pos);
       if(var == "")
@@ -90,7 +90,7 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment,bool checkP
           // if the typedef is on a line close to the previous one we check
           if(line-previousline<2)
             {
-            if(l!=static_cast<unsigned long>(previouspos))
+            if(l!=previouspos)
               {
               Error error;
               error.line = this->GetLineNumber(pos,true);
@@ -124,15 +124,15 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment,bool checkP
       }
 
     // Second in the protected area
-    long int protectedFirst;
-    long int protectedLast;
+    size_t protectedFirst;
+    size_t protectedLast;
     this->FindProtectedArea(protectedFirst,protectedLast);
     pos = protectedFirst;
 
     previousline = 0;
     previouspos = 0;
 
-    while(pos!= -1)
+    while(pos!=std::string::npos)
       {
       std::string var = this->FindInternalVariable(pos+1,protectedLast,pos);
 
@@ -152,14 +152,14 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment,bool checkP
         if(alignment)
           {
           // Find the position in the line
-          unsigned long posvar = m_BufferNoComment.find(var,pos-var.size()-2);
-          unsigned long l = this->GetPositionInLine(posvar);
-          unsigned long line = this->GetLineNumber(pos,true);
+          size_t posvar = m_BufferNoComment.find(var,pos-var.size()-2);
+          size_t l = this->GetPositionInLine(posvar);
+          size_t line = this->GetLineNumber(pos,true);
 
           // if the typedef is on a line close to the previous one we check
           if(line-previousline<2)
             {
-            if(l!=static_cast<unsigned long>(previouspos))
+            if(l!=previouspos)
               {
               Error error;
               error.line = this->GetLineNumber(pos,true);
@@ -193,13 +193,13 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment,bool checkP
       }
 
     // Third and last in the private area
-    long int privateFirst;
-    long int privateLast;
+    size_t privateFirst;
+    size_t privateLast;
     this->FindPrivateArea(privateFirst,privateLast);
     pos = privateFirst;
     previousline = 0;
     previouspos = 0;
-    while(pos != -1)
+    while(pos != std::string::npos)
       {
       std::string var = this->FindInternalVariable(pos+1,privateLast,pos); 
       if(var == "")
@@ -218,14 +218,14 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment,bool checkP
         if(alignment)
           {
           // Find the position in the line
-          unsigned long posvar = m_BufferNoComment.find(var,pos-var.size()-2);
-          unsigned long l = this->GetPositionInLine(posvar);
-          unsigned long line = this->GetLineNumber(pos,true);
+          size_t posvar = m_BufferNoComment.find(var,pos-var.size()-2);
+          size_t l = this->GetPositionInLine(posvar);
+          size_t line = this->GetLineNumber(pos,true);
 
           // if the typedef is on a line close to the previous one we check
           if(line-previousline<2)
             {
-            if(l!=static_cast<unsigned long>(previouspos))
+            if(l!=previouspos)
               {
               Error error;
               error.line = this->GetLineNumber(pos,true);
@@ -257,23 +257,26 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment,bool checkP
           }
         }
       }
-      classPosBegin = this->GetClassPosition(classPosBegin+1);
+    
+    classPosBegin = this->GetClassPosition(classPosBegin+1);
+    
     } // End loop class pos
+    
   return !hasError;
 }
 
 /** Find the first ivar in the source code */
-std::string Parser::FindInternalVariable(long int start, long int end,long int & pos)
+std::string Parser::FindInternalVariable(size_t start, size_t end,size_t & pos)
 {
-  long int posSemicolon = m_BufferNoComment.find(";",start);
-  while(posSemicolon != -1 && posSemicolon<end)
+  size_t posSemicolon = m_BufferNoComment.find(";",start);
+  while(posSemicolon != std::string::npos && posSemicolon<end)
     {
     // We try to find the word before that
-    unsigned long i=posSemicolon-1;
+    size_t i=posSemicolon-1;
     bool inWord = true;
     bool first = false;
     std::string ivar = "";
-    while(i>=0 && inWord)
+    while(i != std::string::npos && inWord)
       {
       if((m_BufferNoComment[i] != ' ')
          && (m_BufferNoComment[i] != '\t')
@@ -309,7 +312,7 @@ std::string Parser::FindInternalVariable(long int start, long int end,long int &
     // We extract the complete definition.
     // This means that we look for a '{' or '}' or '{' or ':'
     // but not '::'
-    while(i>0)
+    while(i != std::string::npos)
       {
       if(m_BufferNoComment[i] == ';'
         || m_BufferNoComment[i] == '}'
@@ -334,7 +337,7 @@ std::string Parser::FindInternalVariable(long int start, long int end,long int &
       {
 
       // Find the opening char
-      long int j = this->FindOpeningChar('}','{',i,true);
+      size_t j = this->FindOpeningChar('}','{',i,true);
       // Find a semicolon before that
       while(j>0)
         {
@@ -379,7 +382,7 @@ std::string Parser::FindInternalVariable(long int start, long int end,long int &
         {
         // We check if any * is present and strip
         // the work
-        long posstar = ivar.find_last_of("*");
+        size_t posstar = ivar.find_last_of("*");
         if(posstar != -1)
           {
           ivar = ivar.substr(posstar+1,ivar.size()-posstar-1);
@@ -390,7 +393,7 @@ std::string Parser::FindInternalVariable(long int start, long int end,long int &
     posSemicolon = m_BufferNoComment.find(";",posSemicolon+1);
     }
 
-  pos = -1;
+  pos = std::string::npos;
   return "";
 }
 
