@@ -235,7 +235,7 @@ public:
                      unsigned int maxLength = 81);
 
   /** Check the order of the declaration */
-  bool CheckDeclarationOrder(unsigned int posPublic, unsigned int posProtected, unsigned int posPrivate);
+  bool CheckDeclarationOrder(size_t posPublic, size_t posProtected,size_t posPrivate);
 
   /** Check for extra spaces */
   bool CheckExtraSpaces(unsigned long max,bool checkEmptyLines=false);
