@@ -39,7 +39,7 @@ MetaCommand::MetaCommand()
 }
 
 
-/** Extract the date from the $Date: 2009-03-03 19:15:43 $ cvs command */
+/** Extract the date from the $Date: 2009-03-12 11:40:28 $ cvs command */
 METAIO_STL::string MetaCommand::ExtractDateFromCVS(METAIO_STL::string date)
 {
   METAIO_STL::string newdate;
@@ -677,12 +677,12 @@ METAIO_STL::string MetaCommand::GetXML(const char* buffer,
   METAIO_STL::string buf = buffer;
 
   size_t posb = buf.find(begin,pos);
-  if(posb == -1)
+  if(posb == std::string::npos)
     {
     return "";
     }
   size_t pose = buf.find(end,posb);
-  if(pose == -1)
+  if(pose == std::string::npos)
     {
     return "";
     }
