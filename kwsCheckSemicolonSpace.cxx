@@ -212,6 +212,34 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
         error = false;
         }
 
+      // We check that this is not a union
+      long int unionPos = m_BufferNoComment.find("union");
+      while(unionPos != -1)
+        {
+        if(unionPos != -1 && openingChar!= -1)
+          {
+          for(unsigned long i=unionPos;i<(unsigned long)openingChar+1;i++)
+            {
+            if(m_BufferNoComment[i] == '{')
+              {
+              unionPos = i;
+              break;
+              }
+            }
+          if(openingChar == unionPos)
+            {
+            error = false;
+            }
+          }
+        unionPos = m_BufferNoComment.find("union",unionPos+1);
+        }
+
+      word = this->FindPreviousWord(openingChar);
+      if(word == "union")
+        {
+        error = false;
+        }
+
       // We check that this is not a static variable
       long int i = pos--;
       while(i>0)
