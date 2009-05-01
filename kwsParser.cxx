@@ -1271,6 +1271,17 @@ bool Parser::IsInStruct(size_t pos,const char* buffer) const
   size_t b = buf.find("struct",0);
   while(b!=std::string::npos)
     {
+    // The next character should be either a space or a {
+    if(b+1==buf.size())
+      {
+      return false;
+      }
+    
+    if(buf[b+1]!=' ' && buf[b+1]!='{')
+      {
+      return false;
+      }
+    
     while(b<buf.size())
       {
       if(buf[b] == '{')
