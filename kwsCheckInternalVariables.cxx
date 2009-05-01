@@ -213,7 +213,7 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment,bool checkP
         }
 
       if(var.length() > 0)
-        {
+        {  
         // Check the alignment if specified
         if(alignment)
           {
