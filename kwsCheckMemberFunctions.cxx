@@ -97,7 +97,7 @@ bool Parser::CheckMemberFunctions(const char* regEx,unsigned long maxLength)
   // Check the current file for any classes
   // And check the name of the current files
   size_t classpos = this->GetClassPosition(0);
-  while(classpos!=-1)
+  while(classpos!=std::string::npos)
     {
     size_t current;
     std::string memberFunction = 
@@ -121,7 +121,7 @@ bool Parser::CheckMemberFunctions(const char* regEx,unsigned long maxLength)
     std::string destructor = "~";
     destructor += classname;
 
-    while(current!=-1)
+    while(current!=std::string::npos)
       {
       // if the member function is a constructor or destructor we ignore
       if(memberFunction != classname
@@ -140,7 +140,7 @@ bool Parser::CheckMemberFunctions(const char* regEx,unsigned long maxLength)
           }
 
         // Check the size of the current memberFunction
-        if(maxLength>0 && current!=-1)
+        if(maxLength>0 && current!=std::string::npos)
           {
           size_t open = m_BufferNoComment.find("{",current);
           size_t semicolon = m_BufferNoComment.find(";",current);

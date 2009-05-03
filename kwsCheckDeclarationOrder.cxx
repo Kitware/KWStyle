@@ -67,7 +67,7 @@ bool Parser::CheckDeclarationOrder(size_t posPublic, size_t posProtected, size_t
 
   class_end = this->FindEndOfClass(protectedFirst);
   class_beg = this->FindOpeningChar('}','{',class_end,true);
-  while(protectedFirst!=-1 && protectedFirst!=MAX_CHAR &&class_beg != currentclass)
+  while(protectedFirst!=std::string::npos && protectedFirst!=MAX_CHAR &&class_beg != currentclass)
     {
     this->FindProtectedArea(protectedFirst,protectedLast,protectedFirst+1);
     class_end = this->FindEndOfClass(protectedFirst);

@@ -99,7 +99,7 @@ bool Parser::CheckStatementPerLine(unsigned long max,bool checkInlineFunctions)
         }
       }
 
-    if(reportError && statements > max && (newline || posSemicolon2==-1))
+    if(reportError && statements > max && (newline || posSemicolon2==std::string::npos))
       {
       Error error;
       error.line = this->GetLineNumber(posSemicolon,true);

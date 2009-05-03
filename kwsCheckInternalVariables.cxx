@@ -383,7 +383,7 @@ std::string Parser::FindInternalVariable(size_t start, size_t end,size_t & pos)
         // We check if any * is present and strip
         // the work
         size_t posstar = ivar.find_last_of("*");
-        if(posstar != -1)
+        if(posstar != std::string::npos)
           {
           ivar = ivar.substr(posstar+1,ivar.size()-posstar-1);
           }
