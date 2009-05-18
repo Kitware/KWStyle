@@ -37,7 +37,10 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
       {
        if(m_BufferNoComment[i] == ' ')
         {
-        space++;
+        if(!IsBetweenQuote(i)) 
+          {
+          space++;
+          }
         }
        else
         {
