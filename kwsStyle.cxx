@@ -276,7 +276,7 @@ int main(int argc, char **argv)
     file.open(overwrite.c_str(), std::ios::binary | std::ios::in);
     if(!file.is_open())
       {
-      std::cout << "Cannot open file: " << overwrite.c_str() << std::endl;
+      std::cout << "Cannot open overwrite file: " << overwrite.c_str() << std::endl;
       return 0;
       }
     file.seekg(0,std::ios::end);
@@ -626,14 +626,21 @@ int main(int argc, char **argv)
         kwssys::RegularExpression regex((*itof).filename.c_str());
 
         if( regex.find((*it).c_str())
-           //(*it).find((*itof).filename.c_str()) != -1) 
            && (!strcmp((*itof).name.c_str(),(*itf).name.c_str())))
-          {        
+          { 
           if((*itof).enable)
             {
             parser.Check((*itof).name.c_str(),(*itof).value.c_str());
             }
-          checked = true;
+
+          if((*itof).name == "LineLength" && !((*itof).enable))
+            {
+            std::cout << "Cannot disable LineLength check. It computes internal parameters" << std::endl;
+            }  
+          else
+            {  
+            checked = true;
+            }
           }
         itof++;
         }
