@@ -101,6 +101,17 @@ bool Parser::CheckIndent(IndentType itype,
   // Create the indentation
   this->InitIndentation();
 
+  // Print the initial indentation
+  /*std::vector<IndentPosition>::const_iterator itIndent = m_IdentPositionVector.begin();
+  while(itIndent != m_IdentPositionVector.end())
+    {
+    std::cout << this->GetLineNumber((*itIndent).position) << std::endl;
+    std::cout << (*itIndent).current << std::endl;
+    std::cout << (*itIndent).after << std::endl;
+    std::cout << (*itIndent).name.c_str() << std::endl;
+    itIndent++;
+    }*/
+
   // If we do not want to check the header
   if(doNotCheckHeader)
     {
@@ -301,7 +312,7 @@ bool Parser::CheckIndent(IndentType itype,
     else if((it != m_Buffer.end()) && ((*it) == '{') 
              //&& !this->IsInComments(pos)
              && !isCheckingComment
-             && !this->IsBetweenQuote(pos,true)
+             && !this->IsBetweenQuote(this->GetPositionWithoutComments(pos),false)
              ) // openning bracket
       {
       bool check = true;
@@ -573,7 +584,8 @@ bool Parser::CheckIndent(IndentType itype,
        && !sindent 
        //&& !this->IsInComments(pos)
        && !isCheckingComment
-       && !this->IsBetweenQuote(pos,true)) // closing bracket
+       && !this->IsBetweenQuote(this->GetPositionWithoutComments(pos),false)
+      ) // closing bracket
       {
       bool check = true;
       // Check if { is after //
@@ -754,7 +766,7 @@ bool Parser::InitIndentation()
       ind.after = 1;
       m_IdentPositionVector.push_back(ind);
       ind.position = this->FindClosingChar('{','}',posClassComments);
-      while(this->IsBetweenQuote(ind.position,true))
+      while(this->IsBetweenQuote(this->GetPositionWithoutComments(ind.position),false))
         {
         ind.position = this->FindClosingChar('{','}',ind.position+1);
         }
