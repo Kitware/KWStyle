@@ -606,12 +606,12 @@ bool Parser::CheckIndent(IndentType itype,
 /** Check if the current position is a valid switch statement */
 bool Parser::CheckValidSwitchStatement(unsigned int posSwitch)
 {
-  if(m_BufferNoComment[posSwitch-1]!='\n' 
+  if((m_BufferNoComment[posSwitch-1]!='\n' 
      && m_BufferNoComment[posSwitch-1]!=' '
-     && posSwitch-1 != 0
-     && m_BufferNoComment.size() > posSwitch+7
-     && m_BufferNoComment[posSwitch+7] != ' '
-     && m_BufferNoComment[posSwitch+7] != '(')
+     && posSwitch-1 != 0) ||
+     (m_BufferNoComment.size() > posSwitch+6
+      && m_BufferNoComment[posSwitch+6] != ' '
+      && m_BufferNoComment[posSwitch+6] != '('))
    {
    return false;
    }
