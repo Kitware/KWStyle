@@ -307,7 +307,7 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
       if(error)
         {
         Error error;
-        error.line = this->GetLineNumber(pos,true);
+        error.line = this->GetLineNumber(posSemicolon,true);
         error.line2 = error.line;
         error.number = SEMICOLON_SPACE;
         error.description = "Unnecessary semicolon";
