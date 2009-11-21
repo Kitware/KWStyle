@@ -379,7 +379,9 @@ bool Parser::CheckIndent(IndentType itype,
         isCheckingComment = false;
         }
 
-      if(isCheckingComment && !this->IsInAnyComments(pos))
+      bool inComment = this->IsInAnyComments(pos);
+
+      if(isCheckingComment && !inComment)
         {
         Warning warning;
         warning.line = this->GetLineNumber(pos);
@@ -398,11 +400,21 @@ bool Parser::CheckIndent(IndentType itype,
         isCheckingComment = false;
         }
 
-      if((currentIndent != wantedIndent) 
+      unsigned int poswithoutcomment = this->GetPositionWithoutComments(pos);
+      
+      if((currentIndent != wantedIndent)
+        && ((inComment
           && !this->IsBetweenCharsFast('<','>',pos,true)
           && !this->IsBetweenCharsFast('(',')',pos,true)
           && !this->IsBetweenChars('(',')',pos,true) 
-          && !this->IsBetweenChars('<','>',pos,true) 
+          && !this->IsBetweenChars('<','>',pos,true))
+          ||
+          (
+          !inComment
+          && !this->IsBetweenCharsFast('<','>',poswithoutcomment,false)
+          && !this->IsBetweenCharsFast('(',')',poswithoutcomment,false)
+          && !this->IsBetweenChars('(',')',poswithoutcomment,false) 
+          && !this->IsBetweenChars('<','>',poswithoutcomment,false)))  
           )
         {
         // If we are inside an enum we do not check indent
