@@ -312,7 +312,10 @@ bool Parser::CheckIndent(IndentType itype,
     else if((it != m_Buffer.end()) && ((*it) == '{') 
              //&& !this->IsInComments(pos)
              && !isCheckingComment
-             && !this->IsBetweenQuote(this->GetPositionWithoutComments(pos),false)
+             //&& !this->IsBetweenQuote(pos,true)
+             && !(
+            (!this->IsInAnyComments(pos) && this->IsBetweenQuote(this->GetPositionWithoutComments(pos),false))
+            || (this->IsInAnyComments(pos) && this->IsBetweenQuote(pos,true)))
              ) // openning bracket
       {
       bool check = true;
@@ -584,7 +587,10 @@ bool Parser::CheckIndent(IndentType itype,
        && !sindent 
        //&& !this->IsInComments(pos)
        && !isCheckingComment
-       && !this->IsBetweenQuote(this->GetPositionWithoutComments(pos),false)
+       //&& !this->IsBetweenQuote(pos,true)
+       && !(
+       (!this->IsInAnyComments(pos) && this->IsBetweenQuote(this->GetPositionWithoutComments(pos),false))
+       || (this->IsInAnyComments(pos) && this->IsBetweenQuote(pos,true)))
       ) // closing bracket
       {
       bool check = true;
@@ -766,7 +772,7 @@ bool Parser::InitIndentation()
       ind.after = 1;
       m_IdentPositionVector.push_back(ind);
       ind.position = this->FindClosingChar('{','}',posClassComments);
-      while(this->IsBetweenQuote(this->GetPositionWithoutComments(ind.position),false))
+      while(this->IsBetweenQuote(ind.position,true))
         {
         ind.position = this->FindClosingChar('{','}',ind.position+1);
         }
