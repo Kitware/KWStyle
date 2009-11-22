@@ -319,8 +319,8 @@ bool Parser::CheckIndent(IndentType itype,
              ) // openning bracket
       {
       bool check = true;
-      // Check if { is after //
-      long int doubleslash = m_Buffer.find_last_of("//",pos);
+      // Check if { is after // [THIS CHECK IS NOT USEFULL ANYMORE]
+      long int doubleslash = m_Buffer.rfind("//",pos);
       if(doubleslash != -1)
         {
         if(this->GetLineNumber(doubleslash) == this->GetLineNumber(pos))
@@ -607,14 +607,14 @@ bool Parser::CheckIndent(IndentType itype,
       {
       bool check = true;
       // Check if { is after //
-      long int doubleslash = m_Buffer.find_last_of("//",pos);
+      long int doubleslash = m_Buffer.rfind("//",pos);
       if(doubleslash != -1)
         {
         if(this->GetLineNumber(doubleslash) == this->GetLineNumber(pos))
           {
           check = false;
           }
-        }
+        }        
       if(check)
         {
         wantedIndent -= size;
