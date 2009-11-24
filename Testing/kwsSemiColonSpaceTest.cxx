@@ -164,6 +164,26 @@ int kwsSemiColonSpaceTest(int, char* [] )
     }
   std::cout << "[PASSED]" << std::endl;
 
+  // Test for good syntax
+  buffer = "std::string str( \"();;\" );";
+  //buffer += "}\n";
+  parser.ClearErrors();
+  parser.SetBuffer(buffer);
+  parser.Check("SemicolonSpace","0");
+
+  std::cout << "Test for good syntax: ";
+  errors = parser.GetErrors();
+  if(errors.size() > 0)
+    {
+    for(unsigned int i=0;i<errors.size();i++)
+      {
+      std::cout << errors[i].description << std::endl;
+      }
+    std::cout << "[FAILED]" << std::endl;
+    return EXIT_FAILURE;
+    }
+  std::cout << "[PASSED]" << std::endl;
+  
   std::cout << "[DONE]" << std::endl;
   
   return 0;

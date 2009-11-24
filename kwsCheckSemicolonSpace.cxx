@@ -91,7 +91,9 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
       else if(m_BufferNoComment[i] == ';')
         {
         // if we have for ( ;; ) we don't report
-        if(!this->IsBetweenCharsFast('(',')',i))
+        // or ";;"
+        if(!this->IsBetweenCharsFast('(',')',i)
+           && !this->IsBetweenQuote(i))
           {
           Error error;
           error.line = this->GetLineNumber(i,true);
