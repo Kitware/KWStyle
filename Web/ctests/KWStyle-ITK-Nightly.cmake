@@ -12,7 +12,6 @@ SET (CTEST_COMMAND
 "/home/kitware/Dashboards/cmake-2.8.0-rc5/bin/ctest -D NightlySubmit -A ${CTEST_SCRIPT_DIRECTORY}/${CTEST_SCRIPT_NAME}"
 )
 
-
 SET (CTEST_INITIAL_CACHE 
 "CMAKE_GENERATOR:INTERNAL=Unix Makefiles
 MAKE_MAKE_PROGRAM:FILEPATH=make
@@ -21,4 +20,3 @@ BUILDNAME:STRING=KWStyle
 ITK_USE_KWSTYLE:BOOL=ON
 KWSTYLE_EXECUTABLE:FILEPATH=/home/kitware/Dashboards/KWStyle-Build/bin/KWStyle
 ")
-
