@@ -8,7 +8,7 @@ SET (CTEST_COMMAND
 "/home/kitware/Dashboards/cmake-2.8.0-rc5/bin/ctest -D NightlyStart"
 "/home/kitware/Dashboards/cmake-2.8.0-rc5/bin/ctest -D NightlyUpdate"
 "/home/kitware/Dashboards/cmake-2.8.0-rc5/bin/ctest -D NightlyConfigure"
-"/home/kitware/Dashboards/KWStyle-Build/KWStyle -lesshtml -o ${CTEST_SOURCE_DIRECTORY}/Utilities/KWStyle/ITKOverwrite.txt -xml ${CTEST_BINARY_DIRECTORY}/Utilities/KWStyle/ITK.kws.xml -dart ${CTEST_BINARY_DIRECTORY} -1 1 -D ${CTEST_BINARY_DIRECTORY}/Utilities/KWStyle/ITKFiles.txt"
+"/home/kitware/Dashboards/KWStyle-Build/KWStyle -lesshtml -o ${CTEST_SOURCE_DIRECTORY}/Utilities/KWStyle/ITKOverwrite.txt -xml ${CTEST_BINARY_DIRECTORY}/Utilities/KWStyle/ITK.kws.xml -dart ${CTEST_BINARY_DIRECTORY} -1 1 -D ${CTEST_BINARY_DIRECTORY}/Utilities/KWStyle/ITKReviewFiles.txt"
 "/home/kitware/Dashboards/cmake-2.8.0-rc5/bin/ctest -D NightlySubmit -A ${CTEST_SCRIPT_DIRECTORY}/${CTEST_SCRIPT_NAME}"
 )
 
