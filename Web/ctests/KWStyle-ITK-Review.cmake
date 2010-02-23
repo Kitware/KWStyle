@@ -1,3 +1,7 @@
+
+set(CTEST_SITE "dash21.kitware")
+set(CTEST_BUILD_NAME "KWStyle-Review")
+
 SET (CTEST_SOURCE_DIRECTORY "/home/kitware/Dashboards/KWStyleBuilds/Insight")
 SET (CTEST_BINARY_DIRECTORY "/home/kitware/Dashboards/KWStyleBuilds/Insight-KWStyle")
 
