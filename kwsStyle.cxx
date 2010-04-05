@@ -230,13 +230,13 @@ int main(int argc, char **argv)
       blacklist = reader.GetValue("BlackList");
       overwrite = reader.GetValue("OverwriteFile");
       verbose = reader.GetValue("Verbose");
-      if(verbose[0] != '1')
+      if(verbose.size()>0 && verbose[0] != '1')
         {
         verbose = "";
         }
 
       recursive = reader.GetValue("Recursive");
-      if(recursive[0] != '1')
+      if(recursive.size()>0 && recursive[0] != '1')
         {
         recursive = "";
         }
@@ -490,7 +490,7 @@ int main(int argc, char **argv)
           }
      
         // Remove quotes if any
-        if(dirname[0] == '"')
+        if(dirname.size()>0 && dirname[0] == '"')
           {
           dirname = dirname.substr(1,dirname.size()-2);
           }
