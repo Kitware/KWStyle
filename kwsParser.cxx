@@ -1663,6 +1663,7 @@ std::string Parser::RemoveComments(const char* buffer)
   // the file.
   outBuffer.reserve(inStrSize+1);
 
+  bool inString  = false;
   bool inComment = false;
   bool copyChar;
   bool cppComment = false;
@@ -1673,51 +1674,63 @@ std::string Parser::RemoveComments(const char* buffer)
   for ( cc = 0; cc < inStrSize; ++ cc )
     {
     copyChar = true;
-    if ( !inComment )
+
+    // it is important to know if we are in a string---if we are then
+    // we don't care about comment-ish symbols
+    //
+    // we are starting or ending a string if we find a " without a
+    // preceeding '\'
+    bool isStringBarrier = (*inch == '"') && (cc == 0 || *(inch-1) != '\\');
+    inString = isStringBarrier ? !inString : inString;
+
+    if (!inString)
       {
-      if ( *inch == '/' )
+      if ( !inComment )
         {
-        if ( cc < inStrSize-1 )
+        if ( *inch == '/' )
           {
-          if ( *(inch+1) == '*' )
+          if ( cc < inStrSize-1 )
             {
-            inComment = true;
-            beginOfComment = cc;
-            }
-          else if ( *(inch+1) == '/' )
-            {
-            inComment = true;
-            beginOfComment = cc;
-            cppComment = true;
+            if ( *(inch+1) == '*' )
+              {
+              inComment = true;
+              beginOfComment = cc;
+              }
+            else if ( *(inch+1) == '/' )
+              {
+              inComment = true;
+              beginOfComment = cc;
+              cppComment = true;
+              }
             }
           }
         }
-      }
-    else
-      {
-      if ( cppComment && *inch == '\n' )
+      else
         {
-        endOfComment = cc;
-        inComment = false;
-        copyChar = true;
-        cppComment = false;
-        PairType pair(beginOfComment, endOfComment);
-        if(!buffer)
+        if ( cppComment && *inch == '\n' )
           {
-          m_CommentPositions.push_back(pair);
-          }
-        }
-      if ( *inch == '/' )
-        {
-        if ( cc != std::string::npos && *(inch-1) == '*' )
-          {
-          endOfComment = cc+1;
+          endOfComment = cc;
           inComment = false;
-          copyChar = false;
+          copyChar = true;
+          cppComment = false;
           PairType pair(beginOfComment, endOfComment);
           if(!buffer)
             {
             m_CommentPositions.push_back(pair);
+            }
+          }
+        if ( *inch == '/' )
+          {
+          if ( cc != std::string::npos && *(inch-1) == '*' )
+            {
+            endOfComment = cc+1;
+            inComment = false;
+            copyChar = false;
+            PairType pair(beginOfComment, endOfComment);
+            if(!buffer)
+              {
+              m_CommentPositions.push_back(pair);
+              }
             }
           }
         }
