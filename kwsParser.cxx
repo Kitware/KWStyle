@@ -16,6 +16,9 @@
 #include <stdlib.h> // atoi
 #include <string.h>
 #include <kwssys/ios/sstream>
+#include <boost/xpressive/xpressive.hpp>
+
+using namespace boost::xpressive;
 
 namespace kws {
 
@@ -537,27 +540,10 @@ std::string Parser::GetLastWarnings()
 
 void Parser::ConvertBufferToWindowsFileType(std::string & buffer)
 {
-  long int cc;
-  const char* inch = buffer.c_str();
-  std::vector<char> outBuffer;
-  long int inStrSize = buffer.size();
-  // Reserve enough space for most files
-  outBuffer.reserve(inStrSize+1000);
-
-  for ( cc = 0; cc < inStrSize; ++ cc )
-    {
-    if ( *inch == '\n' )
-      {
-      if ( cc == 0 || *(inch-1) != '\r' )
-        {
-        outBuffer.push_back('\r');
-        }
-      }
-    outBuffer.push_back(*inch);
-    inch ++;
-    }
-  outBuffer.push_back(0);
-  buffer = &*outBuffer.begin();
+  // replace logical newlines with windows newlines
+  sregex unixNewline = sregex::compile("\r?\n|\r");
+  std::string windowsNewline("\r\n");
+  buffer = regex_replace(buffer, unixNewline, windowsNewline);
 }
 
 /** Return the number of lines */
