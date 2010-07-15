@@ -13,36 +13,33 @@
 =========================================================================*/
 #include "kwsParser.h"
 
+#include <boost/xpressive/xpressive.hpp>
+using namespace boost::xpressive;
+
 namespace kws {
 
 /** Check if the file contains tabs */
 bool Parser::CheckTabs()
 {
   m_TestsDone[TABS] = true;
-  char* val = new char[255];
-  sprintf(val,"The file should not have any tabs");
-  m_TestsDescription[TABS] = val;
-  delete [] val;
+  m_TestsDescription[TABS] = "The file should not have any tabs";
 
   bool hasError = false;
-  size_t pos = m_Buffer.find('\t',0);    
-  long int line = 0;
 
-  // Show only one tab per line
-  while(pos != std::string::npos)
+  sregex lineWithTabRegex = sregex::compile("^[^\\r\\n]*?(\\t)[^\\r\\n]*$");
+  sregex_iterator currentTabIterator(m_Buffer.begin(), m_Buffer.end(), lineWithTabRegex);
+  sregex_iterator end;
+
+  for (; currentTabIterator != end; ++currentTabIterator)
     {
-    if(this->GetLineNumber(pos,false) != line)
-      {
-      line = this->GetLineNumber(pos,false);
-      Error error;
-      error.line = line; 
-      error.line2 = error.line;
-      error.number = TABS;
-      error.description = "Tabs identified";
-      m_ErrorList.push_back(error);
-      }
-    pos = m_Buffer.find('\t',pos+1);
-    hasError = true;  
+    Error error;
+    smatch const &currentMatch = *currentTabIterator;
+    error.line   = this->GetLineNumber(currentMatch.position(1), false); 
+    error.line2  = error.line;
+    error.number = TABS;
+    error.description = "Tabs identified";
+    m_ErrorList.push_back(error);    
+    hasError = true;
     }
 
   return !hasError;
