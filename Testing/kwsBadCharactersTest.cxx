@@ -52,6 +52,7 @@ int kwsBadCharactersTest(int, char* [] )
   parser.ClearErrors();
   parser.SetBuffer(buffer);
   parser.Check("LineLength","999");
+  // the point is that now we don't check in comments
   parser.Check("BadCharacters","false");
 
   std::cout << "Test for good syntax: ";

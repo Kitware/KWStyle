@@ -13,6 +13,9 @@
 =========================================================================*/
 #include "kwsParser.h"
 
+#include <boost/xpressive/xpressive.hpp>
+using namespace boost::xpressive;
+
 namespace kws {
 
 /** Check if the current file as bad characters like δόφί*/
@@ -27,33 +30,28 @@ bool Parser::CheckBadCharacters(bool checkComments)
     buffer = m_Buffer;
     }
   
-  bool hasErrors = false;
-  
-  unsigned long pos = 0;
-  std::string::const_iterator it = buffer.begin();
-  long int currentline = -1;
-  while(it!= buffer.end())
+  bool hasError = false;
+
+  // space characters along with printable characters (space through
+  // ~) are fine; others are "bad"
+  sregex lineWithBadCharRegex = sregex::compile("^[^\\r\\n]*?([^\\s[:print:]])[^\\r\\n]*$");
+  sregex_iterator currentBadCharIterator(buffer.begin(), buffer.end(), lineWithBadCharRegex);
+  sregex_iterator end;
+
+  std::cerr << buffer << std::endl;
+  for (; currentBadCharIterator != end; ++currentBadCharIterator)
     {
-    if((*it)<0) 
-      {
-      long int linenum = this->GetLineNumber(pos,!checkComments);
-      if(linenum != currentline)
-        {
-        currentline = linenum;
-        Error error;
-        error.line = linenum;
-        error.line2 = error.line;
-        error.number = BADCHARACTERS;
-        error.description = "Bad character";
-        m_ErrorList.push_back(error);
-        hasErrors = true;
-        }
-      }
-    pos++;
-    it++;
+    Error error;
+    smatch const &currentMatch = *currentBadCharIterator;
+    error.line   = this->GetLineNumber(currentMatch.position(1), !checkComments); 
+    error.line2  = error.line;
+    error.number = BADCHARACTERS;
+    error.description = "Bad character";
+    m_ErrorList.push_back(error);    
+    hasError = true;
     }
 
-  return !hasErrors;
+  return !hasError;
 }
 
 } // end namespace kws
