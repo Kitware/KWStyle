@@ -272,7 +272,7 @@ std::string Parser::FindInternalVariable(size_t start, size_t end,size_t & pos)
   while(posSemicolon != std::string::npos && posSemicolon<end)
     {
     // We try to find the word before that
-    size_t i=posSemicolon-1;
+    long i=posSemicolon-1;
     bool inWord = true;
     bool first = false;
     std::string ivar = "";

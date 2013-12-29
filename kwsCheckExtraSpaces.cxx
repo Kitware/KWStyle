@@ -55,7 +55,7 @@ bool Parser::CheckExtraSpaces(unsigned long max,bool checkEmptyLines)
      if(checking)
      {
       // We try to find the word before that
-      unsigned long i=posEndOfLine-1;
+      long i=posEndOfLine-1;
       unsigned long space = 0;
       while(i>=0)
         {
