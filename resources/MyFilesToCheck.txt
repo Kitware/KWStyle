@@ -1,0 +1,6 @@
+/projects/KWStyle/Source/main.cxx
+/projects/KWStyle/Source/test1.cxx
+/projects/KWStyle/Source/test1.h
+/projects/KWStyle/Source/test2.cxx
+/projects/KWStyle/Source/test2.h
+/projects/KWStyle/Testing/*.h* [R]

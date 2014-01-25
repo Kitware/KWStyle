@@ -1,0 +1,337 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><!-- InstanceBegin template="/Templates/kwstyle.dwt" codeOutsideHTMLIsLocked="false" -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta name="Keywords" content="kitware, visualization, visualization technology, large datasets, paraview, information visualization, informatics, paraview consulting" />
+
+<!-- #BeginEditable "doctitle" -->
+<meta name="Description" content="KWStyle is an open-source style checker for code source written in C/C++" />
+<title>KWStyle - The Source Style Checker</title>
+<!-- #EndEditable -->
+
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript"></script>
+<link href="../kitware.css" rel="stylesheet" type="text/css" />
+<script src="../SpryAssets/SpryMenuBar.js" type="text/javascript"></script>
+<link href="../SpryAssets/SpryMenuBarHorizontal.css" rel="stylesheet" type="text/css" />
+<link href="../SpryAssets/SpryTabbedPanels.css" rel="stylesheet" type="text/css" />
+<!-- InstanceBeginEditable name="tabjs" --><!-- InstanceEndEditable -->
+<!--[If lte IE 6]>
+<script type="text/javascript" src="../js/jquery.pngFix.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("div:not('#bannerPara'):not('div#rotator')").pngFix();
+    });
+</script>
+<style>
+div#bannerPara{
+  background: url(../img/bannerorg.jpg) no-repeat;
+  position:relative;
+  left:12px;
+}
+div#nav{
+  right: 27px;
+}
+div#search{
+  left: 635px;
+}
+</style>
+<![endif]-->
+<script type="text/javascript">
+<!--
+function MM_preloadImages() { //v3.0
+  var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
+    var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
+    if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
+}
+
+function MM_swapImgRestore() { //v3.0
+  var i,x,a=document.MM_sr; for(i=0;a&&i<a.length&&(x=a[i])&&x.oSrc;i++) x.src=x.oSrc;
+}
+
+function MM_findObj(n, d) { //v4.01
+  var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
+    d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
+  if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
+  for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);
+  if(!x && d.getElementById) x=d.getElementById(n); return x;
+}
+
+function MM_swapImage() { //v3.0
+  var i,j=0,x,a=MM_swapImage.arguments; document.MM_sr=new Array; for(i=0;i<(a.length-2);i+=3)
+   if ((x=MM_findObj(a[i]))!=null){document.MM_sr[j++]=x; if(!x.oSrc) x.oSrc=x.src; x.src=a[i+2];}
+}
+//-->
+</script>
+</head>
+<body>
+
+<div id="bg">
+<div id="frame">
+   <div id="bannerPara">
+     <div id="search">
+<form method="post" action = "http://www.kitware.com/cgi-bin/htsearch">
+<input name="words" type="text" class="searchfield"
+onfocus="this.value=''" value="Search" size="25"
+  >
+
+</form>
+
+
+<!--
+                <form method="post" action="/cgi-bin/htsearch">
+<font size="-1">
+Match: <select name="method">
+<option value="and">All
+<option value="or">Any
+<option value="boolean">Boolean
+</select>
+Format: <select name="format">
+<option value="builtin-long">Long
+<option value="builtin-short">Short
+</select>
+Sort by: <select name="sort">
+<option value="score">Score
+<option value="time">Time
+<option value="title">Title
+<option value="revscore">Reverse Score
+<option value="revtime">Reverse Time
+<option value="revtitle">Reverse Title
+</select>
+</font>
+<input type="hidden" name="config" value="htdig_vtk">
+<input type="hidden" name="restrict" value="">
+<input type="hidden" name="exclude" value="">
+<br>
+Search:
+<input type="text" size="30" name="words" value="">
+<input type="submit" value="Search">
+</form>
+-->
+     </div>
+    <div id="nav">
+      <ul id="MenuBar1" class="MenuBarHorizontal">
+        <li><a href="../project/project.html">PROJECT</a>
+          <ul>
+            <li><a href="../project/about.html">About</a></li>
+            <li><a href="../project/parti.html">Participants</a></li>
+            <li><a href="../project/license.html">License</a></li>
+            <li><a href="../project/contactus.html">Contact Us</a></li>
+
+          </ul>
+          </li>
+        <li><a href="resources.html">RESOURCES</a>
+          <ul>
+           <li><a href="http://github.com/Kitware/KWStyle"> Download</a></li>
+           <li><a href="../resources/features.html"> Features</a></li>
+           <li><a href="../resources/documentation.html"> Documentation</a></li>
+           <li><a href="http://my.cdash.org/index.php?project=KWStyle"> Dashboard</a></li>
+           <li><a href="http://www.itk.org/Wiki/ITK/Release_4/Coding_Style/KWStyle"> Wiki</a></li>
+		  </ul>
+          </li>
+        <li><a href="../help/help.html">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HELP</a>
+        <ul>
+               <li><a href="http://www.kitware.com/products/support.html">Support&nbsp;</a></li>
+
+        <li><a href="http://www.kitware.com/products/consulting.html">Consulting&nbsp;</a></li>
+       </ul></li>
+
+        <li><a href="http://www.kitware.com/opensource/opensource.html">OPEN SOURCE</a>
+          <ul style="width:104px">
+            <li style="width:104px"><a href="http://www.vtk.org" title="Offsite Link">VTK &nbsp;<img src="../img/arrow2.png" alt="" width="10" height="11" border="0" /></a></li>
+            <li style="width:104px"><a href="http://www.itk.org" title="Offsite Link">ITK &nbsp;<img src="../img/arrow2.png" alt="" width="10" height="11" border="0" /></a></li>
+            <li style="width:104px"><a href="http://www.cmake.org" title="Offsite Link">CMake &nbsp;<img src="../img/arrow2.png" alt="" width="10" height="11" border="0" /></a></li>
+              <li style="width:104px"><a href="http://www.kiwiviewer.org" title="Offsite Link">KiwiViewer &nbsp;<img src="../img/arrow2.png" alt="" width="10" height="11" border="0" /></a></li>
+            <li style="width:104px"><a href="http://www.cdash.org" title="Offsite Link">CDash &nbsp;<img src="../img/arrow2.png" alt="" width="10" height="11" border="0" /></a></li>
+            <li style="width:104px"><a href="http://www.paraview.org" title="Offsite Link">ParaView &nbsp;<img src="../img/arrow2.png" alt="" width="10" height="11" border="0" /></a></li>
+            <li style="width:104px"><a href="http://www.midasplatform.org/" title="Offsite Link">MIDAS &nbsp;<img src="../img/arrow2.png" alt="" width="10" height="11" border="0" /></a></li>
+             <li style="width:104px"><a href="http://www.igstk.org" title="Offsite Link">IGSTK &nbsp;<img src="../img/arrow2.png" alt="" width="10" height="11" border="0" /></a></li>
+             <li style="width:104px"><a href="http://www.batchmake.org" title="Offsite Link">BatchMake &nbsp;<img src="../img/arrow2.png" alt="" width="10" height="11" border="0" /></a></li>
+            </ul>
+          </li>
+      </ul>
+      </div>
+    <div id="cdashlogo"><a href="http://kitware.github.io/KWStyle"><img src="img/logo.png" title="KWStyle Home" width="372" height="95" border="0" id="kwstyle" onmouseover="MM_swapImage('kwstyle','','img/logo100.png',1)" onmouseout="MM_swapImgRestore()" /></a></div>
+    <div id="logo2"><a href="http://www.kitware.com"><img src="../img/logo2out.png" title="Kitware Home" width="75" height="35" border="0" id="kitsmall5" onmouseover="MM_swapImage('kitsmall5','','../img/logo2over.png',1)" onmouseout="MM_swapImgRestore()" /></a></div>
+  </div>
+  <div id="ContentBg">
+    <div id="Content"><!-- InstanceBeginEditable name="pagecontent" -->
+      <div id="ContentTxtProdWide"><div id="titletext">Documentation</div>
+
+
+        <br>
+        <strong>1. Compiling KWStyle</strong><br>
+    <br>
+    KWStyle is available under BSD-like license and can be downloaded <a href="http://github.com/Kitware/KWStyle">here.</a><br>
+    In order to compile KWStyle you need run <a href="http://www.cmake.org">CMake</a> on the source directory, then compile KWStyle with your favorite compiler. KWStyle is currently tested on Visual Studios and gcc compiler.<br>
+        <br>
+        <strong>2. Running KWStyle</strong><br>
+        <br>
+        KWStyle is running as a command line executable:</p>
+      <p>./KWStyle <em>MyFile.cxxx<br>
+        <br>
+        </em>You can also specify all the command arguments in the KWStyle.xml file (or by using -xml).<br>
+        In that case you can run KWStyle using:<br>
+        <br>
+        ./KWStyle <em>auto</em>        </p>
+      <p>Different options are available to control the behavior of the testing:</p>
+      <table width="100%" border="0">
+        <tr bgcolor="#CCCCCC">
+          <td width="50%"><div align="center"><strong>Name</strong></div></td>
+          <td width="10%"><div align="center"><strong>Argument</strong></div></td>
+          <td width="10%"><div align="center"><strong>Example</strong></div></td>
+          <td width="10%"><div align="center"><strong>XML Tag</strong></div></td>
+          <td width="10%"><div align="center"><strong>Download</strong></div></td>
+        </tr>
+        <tr bgcolor="#E0E0E0">
+          <td bgcolor="#E0E0E0">Verbose</td>
+          <td>-v</td>
+          <td>KWStyle -v MyFile.cxx </td>
+          <td><div align="center">&lt;Verbose&gt;1&lt;/Verbose&gt;</div></td>
+          <td><div align="center"></div></td>
+        </tr>
+        <tr bgcolor="#CCCCCC">
+          <td bgcolor="#CCCCCC">Specify a configuration file </td>
+          <td>-xml [XMLDescriptionFile.xml] </td>
+          <td>KWStyle -xml MyConfiguration.kws.xml</td>
+          <td><div align="center"></div></td>
+          <td><div align="center">[<a href="MyConfiguration.kws.xml">MyConfiguration.kws.xml</a>]</div></td>
+        </tr>
+        <tr bgcolor="#E0E0E0">
+          <td>Overwrite default testing rules </td>
+          <td>-o [Overwrite File.txt] </td>
+          <td>KWStyle -o RulesOverwrite.txt</td>
+          <td><div align="center">&lt;OverwriteFile&gt;overwrite.txt&lt;/OverwriteFile&gt;</div></td>
+          <td><div align="center">[<a href="RulesOverwrite.txt">RulesOverwrite.txt</a>]</div></td>
+        </tr>
+        <tr bgcolor="#CCCCCC">
+          <td>Write out testing report as HTML files </td>
+          <td>-html [HTMLDirectory] </td>
+          <td>KWStyle -html MyHTMLDirectoryOutput</td>
+          <td><div align="center">&lt;HTMLDirectory&gt;KWStyleHTML&lt;/HTMLDirectory&gt;</div></td>
+          <td><div align="center"></div></td>
+        </tr>
+        <tr bgcolor="#E0E0E0">
+          <td>Do not show tests that are free of errors in the matrix view </td>
+          <td>-lesshtml</td>
+          <td>KWStyle -lessthtml -html MyHTMLDirectoryOutput</td>
+          <td><div align="center">&lt;LessHTML&gt;1&lt;/LessHTML&gt;</div></td>
+          <td><div align="center"></div></td>
+        </tr>
+        <tr bgcolor="#CCCCCC">
+          <td>Specify a directory instead of a file </td>
+          <td>-d [directory] (accept globbing expressions) </td>
+          <td>KWStyle -d Insight/Code/Common </td>
+          <td><div align="center">&lt;Directory&gt;MyDirectory&lt;/Directory&gt;</div></td>
+          <td><div align="center"></div></td>
+        </tr>
+        <tr bgcolor="#E0E0E0">
+          <td bgcolor="#E0E0E0">Combined with -d, recurse the directory </td>
+          <td>-R</td>
+          <td>KWStyle -R -d Insight/Code</td>
+          <td><div align="center">&lt;Recursive&gt;1&lt;/Recursive&gt;</div></td>
+          <td><div align="center"></div></td>
+        </tr>
+        <tr bgcolor="#CCCCCC">
+          <td height="15">Specify a list of files </td>
+          <td>-D [FilenamesFile.txt] </td>
+          <td>KWStyle -D MyFilesToCheck.txt </td>
+          <td><div align="center">&lt;Files&gt;MyFiles.txt&lt;/Files&gt;</div></td>
+          <td><div align="center">[<a href="MyFilesToCheck.txt">MyFilesToCheck.txt</a>]</div></td>
+        </tr>
+        <tr bgcolor="#E0E0E0">
+          <td height="15">Specify a blacklist </td>
+          <td>-b</td>
+          <td>KWStyle -b BlackList.txt</td>
+          <td><div align="center">&lt;BlackList&gt;MyFiles.txt&lt;/BlackList&gt;</div></td>
+          <td>&nbsp;</td>
+        </tr>
+      </table>
+      <p><strong>3. Integrating KWStyle with CDash </strong>(and CTest)<br>
+        <br>
+      KWStyle can be integrated with CDash as part of the dashboard (see <a href="http://open.cdash.org/index.php?project=IGSTK">IGSTK</a> or <a href="http://open.cdash.org/index.php?project=Insight">ITK</a> dashboard and look for KWStyle).<br>
+      In order to generate CDash compatible description you need to set these two options when running KWStyle.</p>
+      <table width="795" border="0">
+        <tr bgcolor="#CCCCCC">
+          <td width="226"><div align="center"><strong>Name</strong></div></td>
+          <td width="242"><div align="center"><strong>Argument</strong></div></td>
+          <td width="313"><div align="center"><strong>Example</strong></div></td>
+        </tr>
+        <tr bgcolor="#E0E0E0">
+          <td>Generate a CDash XML description of the errors </td>
+          <td>-dart [BinaryDirectory] [maximum of errors to report (-1 is all)] [Group the errors per file (1) or per category (0)] </td>
+          <td>-dart ${CTEST_BINARY_DIRECTORY} -1 1 </td>
+        </tr>
+        <tr bgcolor="#CCCCCC">
+          <td>Specify the URL of the generated files </td>
+          <td>-kwsurl [URL of the generated file] </td>
+          <td>KWStyle -kwsurl http://66.194.253.24/KWStyleExamples/IGSTK </td>
+        </tr>
+      </table>
+      <p>CDash can be used easily with CTest to generate the dashboard. Here is an <a href="KWStyle-MyProject.cmake">example of a ctest script</a> for KWStyle.<br>
+        Other scripts can be found in the KWStyle/Web/ctests/ directory.</p>
+      <p><strong>4. XML Configuration description<br>
+        <br>
+        </strong>It is often easier to run KWStyle with the -xml flag in order to specify a configuration file.<br>
+        An example of a configuration file is available here: <a href="MyConfiguration.kws.xml">MyConfiguration.kws.xml</a><br>
+        <br>
+        The XML tag: &lt;File&gt;MyFile&lt;/File&gt; can be specified to run KWStyle on the given file without specifying the current argument.<br>
+        <br>
+        When generating HTML reports (using the -html option) it is often usefull to add the project information:<br>
+          <br>
+&lt;Project&gt;This is my project&lt;/Project&gt;<br>
+&lt;ProjectLogo&gt;C:\MyProject\myprojectLogo.jpg&lt;/ProjectLogo&gt;<br>
+&lt;KWStyleLogo&gt;C:\KWStyle\KWStyleLogo.jpg&lt;/KWStyleLogo&gt;<br>
+&lt;ErrorThreshold&gt;10&lt;/ErrorThreshold&gt;<strong><br>
+        <br>
+        </strong>Note that in order to avoid the check of a feature you have to remove the corresponding line in the configuration file.<br>
+        The complete description of the XML tags can be found <a href="features.html">here</a> <br>
+        <br>
+      </p>
+
+
+
+          <br />
+      </div>
+      <br class="clear" />
+      </br>
+    <!-- InstanceEndEditable --></div>
+  </div>
+
+  <div id="footer"><br />
+      <br />
+      <br />
+        <br />
+
+
+   <table width="98%" border="0" cellspacing="0" cellpadding="2">
+  <tr>
+    <td><a rel="license" href="http://creativecommons.org/licenses/by-nd/3.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nd/3.0/80x15.png" /></a> This website is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nd/3.0/">Creative Commons Attribution-NoDerivs 3.0 Unported License</a>. Additional information on this license can be found <a href="http://www.kitware.com/company/cclicense.html">here</a>.<br /></td>
+    <td align="right"><!--[If gt IE 6]><script type="text/javascript" src="http://www.ohloh.net/p/3249/widgets/project_thin_badge.js"></script><![endif]--></script></td>
+  </tr>
+</table>
+
+</div>
+</div>
+</div>
+<!-- InstanceBeginEditable name="tabjs2" -->
+
+<script type="text/javascript">
+<!--
+var MenuBar1 = new Spry.Widget.MenuBar("MenuBar1", {imgDown:"../SpryAssets/SpryMenuBarDownHover.gif", imgRight:"../SpryAssets/SpryMenuBarRightHover.gif"});
+//-->
+</script><!-- InstanceEndEditable -->
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-6042509-17']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</body>
+<!-- InstanceEnd --></html>

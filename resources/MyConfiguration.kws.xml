@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Project>This is my project</Project>
+<ProjectLogo>Project Logo</ProjectLogo>
+<KWStyleLogo>KWSTYleLogo</KWStyleLogo>
+<Description>
+<LineLength>81</LineLength>
+<DeclarationOrder>
+  <public>0</public>
+  <protected>1</protected>
+  <private>2</private>
+</DeclarationOrder>
+<Typedefs>
+  <regex>[A-Z]</regex>
+</Typedefs>
+<InternalVariables>
+  <regex>m_[A-Z]</regex>
+  <alignment>0</alignment>
+</InternalVariables>
+<Struct>
+  <regex>[a-z]</regex>
+</Struct>
+<SemicolonSpace>0</SemicolonSpace>
+<EndOfFileNewLine>1</EndOfFileNewLine>
+<Tabs>1</Tabs>
+<Spaces>3</Spaces>
+<Comments>
+  <begin>/**</begin>
+  <middle> *</middle>
+  <end>*/</end>
+  <emptyLineBeforeClass>true</emptyLineBeforeClass>
+</Comments>
+<Header>
+  <location>/Web/headers/IGSTKSandbox</location>
+  <checkSpacesEndOfLine>false</checkSpacesEndOfLine>
+  <cvsFormat>true</cvsFormat>
+</Header>
+<Indent>
+ <type>SPACE</type>
+ <size>2</size>
+ <noHeader>true</noHeader>
+ <allowBlockLine>true</allowBlockLine>
+</Indent>
+<Namespace>igstk</Namespace>
+<NameOfClass>
+  <name>[NameOfClass]</name>
+  <prefix>igstk</prefix>
+</NameOfClass>
+<IfNDefDefine>__[NameOfClass]_[Extension]</IfNDefDefine>
+<EmptyLines>2</EmptyLines>
+<Template>T</Template>
+<Operator>
+  <spaceBefore>1</spaceBefore>
+  <spaceAfter>1</spaceAfter>
+</Operator>
+</Description>
+

@@ -1,0 +1,476 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><!-- InstanceBegin template="/Templates/kwstyle.dwt" codeOutsideHTMLIsLocked="false" -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta name="Keywords" content="kitware, visualization, visualization technology, large datasets, paraview, information visualization, informatics, paraview consulting" />
+
+<!-- #BeginEditable "doctitle" -->
+<meta name="Description" content="KWStyle is an open-source style checker for code source written in C/C++" />
+<title>KWStyle - The Source Style Checker</title>
+<!-- #EndEditable -->
+
+<link rel="icon" type="image/png" href="../img/favicon.png">
+<script src="../js/jquery-1.3.2.min.js" type="text/javascript"></script>
+<link href="../kitware.css" rel="stylesheet" type="text/css" />
+<script src="../SpryAssets/SpryMenuBar.js" type="text/javascript"></script>
+<link href="../SpryAssets/SpryMenuBarHorizontal.css" rel="stylesheet" type="text/css" />
+<link href="../SpryAssets/SpryTabbedPanels.css" rel="stylesheet" type="text/css" />
+<!-- InstanceBeginEditable name="tabjs" --><!-- InstanceEndEditable -->
+<!--[If lte IE 6]>
+<script type="text/javascript" src="../js/jquery.pngFix.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("div:not('#bannerPara'):not('div#rotator')").pngFix();
+    });
+</script>
+<style>
+div#bannerPara{
+  background: url(../img/bannerorg.jpg) no-repeat;
+  position:relative;
+  left:12px;
+}
+div#nav{
+  right: 27px;
+}
+div#search{
+  left: 635px;
+}
+</style>
+<![endif]-->
+<script type="text/javascript">
+<!--
+function MM_preloadImages() { //v3.0
+  var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
+    var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
+    if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
+}
+
+function MM_swapImgRestore() { //v3.0
+  var i,x,a=document.MM_sr; for(i=0;a&&i<a.length&&(x=a[i])&&x.oSrc;i++) x.src=x.oSrc;
+}
+
+function MM_findObj(n, d) { //v4.01
+  var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
+    d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
+  if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
+  for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);
+  if(!x && d.getElementById) x=d.getElementById(n); return x;
+}
+
+function MM_swapImage() { //v3.0
+  var i,j=0,x,a=MM_swapImage.arguments; document.MM_sr=new Array; for(i=0;i<(a.length-2);i+=3)
+   if ((x=MM_findObj(a[i]))!=null){document.MM_sr[j++]=x; if(!x.oSrc) x.oSrc=x.src; x.src=a[i+2];}
+}
+//-->
+</script>
+</head>
+<body>
+
+<div id="bg">
+<div id="frame">
+   <div id="bannerPara">
+     <div id="search">
+<form method="post" action = "http://www.kitware.com/cgi-bin/htsearch">
+<input name="words" type="text" class="searchfield"
+onfocus="this.value=''" value="Search" size="25"
+  >
+
+</form>
+
+     </div>
+    <div id="nav">
+      <ul id="MenuBar1" class="MenuBarHorizontal">
+        <li><a href="../project/project.html">PROJECT</a>
+          <ul>
+            <li><a href="../project/about.html">About</a></li>
+            <li><a href="../project/parti.html">Participants</a></li>
+            <li><a href="../project/license.html">License</a></li>
+            <li><a href="../project/contactus.html">Contact Us</a></li>
+
+          </ul>
+          </li>
+        <li><a href="resources.html">RESOURCES</a>
+          <ul>
+           <li><a href="http://github.com/Kitware/KWStyle"> Download</a></li>
+           <li><a href="../resources/features.html"> Features</a></li>
+           <li><a href="../resources/documentation.html"> Documentation</a></li>
+           <li><a href="http://my.cdash.org/index.php?project=KWStyle"> Dashboard</a></li>
+           <li><a href="http://www.itk.org/Wiki/ITK/Release_4/Coding_Style/KWStyle"> Wiki</a></li>
+		  </ul>
+          </li>
+        <li><a href="../help/help.html">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HELP</a>
+        <ul>
+               <li><a href="http://www.kitware.com/products/support.html">Support&nbsp;</a></li>
+
+        <li><a href="http://www.kitware.com/products/consulting.html">Consulting&nbsp;</a></li>
+       </ul></li>
+
+        <li><a href="http://www.kitware.com/opensource/opensource.html">OPEN SOURCE</a>
+          <ul style="width:104px">
+            <li style="width:104px"><a href="http://www.vtk.org" title="Offsite Link">VTK &nbsp;<img src="../img/arrow2.png" alt="" width="10" height="11" border="0" /></a></li>
+            <li style="width:104px"><a href="http://www.itk.org" title="Offsite Link">ITK &nbsp;<img src="../img/arrow2.png" alt="" width="10" height="11" border="0" /></a></li>
+            <li style="width:104px"><a href="http://www.cmake.org" title="Offsite Link">CMake &nbsp;<img src="../img/arrow2.png" alt="" width="10" height="11" border="0" /></a></li>
+              <li style="width:104px"><a href="http://www.kiwiviewer.org" title="Offsite Link">KiwiViewer &nbsp;<img src="../img/arrow2.png" alt="" width="10" height="11" border="0" /></a></li>
+            <li style="width:104px"><a href="http://www.cdash.org" title="Offsite Link">CDash &nbsp;<img src="../img/arrow2.png" alt="" width="10" height="11" border="0" /></a></li>
+            <li style="width:104px"><a href="http://www.paraview.org" title="Offsite Link">ParaView &nbsp;<img src="../img/arrow2.png" alt="" width="10" height="11" border="0" /></a></li>
+            <li style="width:104px"><a href="http://www.midasplatform.org/" title="Offsite Link">MIDAS &nbsp;<img src="../img/arrow2.png" alt="" width="10" height="11" border="0" /></a></li>
+             <li style="width:104px"><a href="http://www.igstk.org" title="Offsite Link">IGSTK &nbsp;<img src="../img/arrow2.png" alt="" width="10" height="11" border="0" /></a></li>
+             <li style="width:104px"><a href="http://www.batchmake.org" title="Offsite Link">BatchMake &nbsp;<img src="../img/arrow2.png" alt="" width="10" height="11" border="0" /></a></li>
+            </ul>
+          </li>
+      </ul>
+      </div>
+    <div id="cdashlogo"><a href="http://kitware.github.io/KWStyle"><img src="img/logo.png" title="KWStyle Home" width="372" height="95" border="0" id="kwstyle" onmouseover="MM_swapImage('kwstyle','','img/logo100.png',1)" onmouseout="MM_swapImgRestore()" /></a></div>
+    <div id="logo2"><a href="http://www.kitware.com"><img src="../img/logo2out.png" title="Kitware Home" width="75" height="35" border="0" id="kitsmall5" onmouseover="MM_swapImage('kitsmall5','','../img/logo2over.png',1)" onmouseout="MM_swapImgRestore()" /></a></div>
+  </div>
+  <div id="ContentBg">
+    <div id="Content"><!-- InstanceBeginEditable name="pagecontent" -->
+      <div id="ContentTxtProdWide"><div id="titletext">Features</div>
+        <br />
+        <table width="100%" border="0" cellpadding="0" cellspacing="0">
+      <p><span class="style2"><span class="style19">Implemented:</span></span></p>
+    <table width="100%" border="0">
+      <tr>
+        <td><div align="center" class="style15">Code</div></td>
+        <td><div align="center" class="style15">Definition</div></td>
+        <td><div align="center" class="style15">Description</div></td>
+        <td><div align="center" class="style15">XML Description</div></td>
+      </tr>
+      <tr bgcolor="F0F0F0">
+        <td width="5%"><div align="left" class="style16"><span class="style8">LEN</span></div></td>
+        <td width="15%"><div align="left" class="style16">Line Lenght </div></td>
+        <td width="50%"><div align="left" class="style16">Number of characters per line </div></td>
+        <td width="30%">&lt;LineLength&gt;81&lt;/LineLength&gt;&lt;DeclarationOrder&gt;</td>
+      </tr>
+      <tr bgcolor="#E0E0E0">
+        <td><div align="left" class="style16"><span class="style8">IVR</span></div></td>
+        <td><div align="left" class="style16">Internal Variable RegEx </div></td>
+        <td><div align="left" class="style16">Internal variables should match a particular regular expression </div></td>
+        <td>&lt;InternalVariables&gt;<br>
+&lt;regex&gt;m_[A-Z]&lt;/regex&gt;<br>
+&lt;alignment&gt;0&lt;/alignment&gt;<br>
+&lt;/InternalVariables&gt;</td>
+      </tr>
+      <tr bgcolor="#F0F0F0">
+        <td><div align="left" class="style16"><span class="style8">IVP</span></div></td>
+        <td><div align="left" class="style16">Internal Variable Private/Protected</div></td>
+        <td><div align="left" class="style16">Internal variables should be in the protected or private section </div></td>
+        <td><p><em>// In order to use IVP you should have IVR enable</em><br>
+          &lt;InternalVariables&gt;<br>
+&lt;regex&gt;m_[A-Z]&lt;/regex&gt;<br>
+&lt;alignment&gt;0&lt;/alignment&gt;<br>
+  <strong>&lt;private&gt;0&lt;/private&gt;
+  </strong><br>
+&lt;/InternalVariables&gt;</p>
+          </td>
+      </tr>
+      <tr bordercolor="#FFFFFF" bgcolor="#E0E0E0">
+        <td><span class="style16">SEM</span></td>
+        <td><span class="style16">Semicolons</span></td>
+        <td><span class="style16">Semicolons should be unique and no space between the semicolon and the end of the phrase. Also unecessary semicolons are checked.</span></td>
+        <td>&lt;SemicolonSpace&gt;0&lt;/SemicolonSpace&gt;</td>
+      </tr>
+      <tr bgcolor="#F0F0F0">
+        <td><span class="style16">DCL</span></td>
+        <td bgcolor="#F0F0F0"><span class="style16">Declaration order </span></td>
+        <td><span class="style16">Check if the order of the declaration matches a pattern composed of Public,Protected and Private </span></td>
+        <td>&lt;DeclarationOrder&gt;<br>
+&lt;public&gt;0&lt;/public&gt;<br>
+&lt;protected&gt;1&lt;/protected&gt;<br>
+&lt;private&gt;2&lt;/private&gt;<br>
+&lt;/DeclarationOrder&gt;</td>
+      </tr>
+      <tr bgcolor="#E0E0E0">
+        <td height="39"><span class="style16">EOF</span></td>
+        <td><span class="style16">End Of File </span></td>
+        <td><span class="style16">The File should have only one new line at the end of the file</span></td>
+        <td>&lt;EndOfFileNewLine&gt;true&lt;/EndOfFileNewLine&gt;</td>
+      </tr>
+      <tr bgcolor="#F0F0F0">
+        <td><span class="style16">TAB</span></td>
+        <td bgcolor="#F0F0F0"><span class="style16">Tabulations</span></td>
+        <td><p class="style16">The file should not have any tabulations</p></td>
+        <td>&lt;Tabs&gt;1&lt;/Tabs&gt;</td>
+      </tr>
+      <tr bgcolor="#E0E0E0">
+        <td><span class="style16">ESP</span></td>
+        <td><span class="style16">Spaces</span></td>
+        <td><p class="style16">The number of extra spaces at the end of the line should not exceed a certain number. </p></td>
+        <td>&lt;Spaces&gt;3&lt;/Spaces&gt;</td>
+      </tr>
+      <tr bgcolor="#F0F0F0">
+        <td><span class="style16">IND</span></td>
+        <td><span class="style16">Indentation</span></td>
+        <td><span class="style16">The Indentation should match a specific pattern </span></td>
+        <td>&lt;Indent&gt;<br>
+&lt;type&gt;SPACE&lt;/type&gt;<br>
+&lt;size&gt;2&lt;/size&gt;<br>
+&lt;noHeader&gt;true&lt;/noHeader&gt;<br>
+&lt;allowBlockLine&gt;true&lt;/allowBlockLine&gt;<br>
+&lt;/Indent&gt;</td>
+      </tr>
+      <tr bgcolor="#E0E0E0">
+        <td><span class="style16">HRD</span></td>
+        <td><span class="style16">Header</span></td>
+        <td><span class="style16">The header should respect a given template (specified as a file) </span></td>
+        <td>&lt;Header&gt;<br>
+&lt;location&gt;/Web/headers/IGSTKSandbox&lt;/location&gt;<br>
+&lt;checkSpacesEndOfLine&gt;false&lt;/checkSpacesEndOfLine&gt;<br>
+&lt;cvsFormat&gt;true&lt;/cvsFormat&gt;<br>
+&lt;/Header&gt;</td>
+      </tr>
+      <tr bgcolor="#F0F0F0">
+        <td><span class="style16">DEF</span></td>
+        <td><span class="style16">Definition</span></td>
+        <td><span class="style5"><span class="style16">#ifndef/#define should match a pattern composed of &lt;NameOfClass&gt; and &lt;Extension&gt;</span></span></td>
+        <td>&lt;IfNDefDefine&gt;__[NameOfClass]_[Extension]&lt;/IfNDefDefine&gt;</td>
+      </tr>
+      <tr bgcolor="#E0E0E0">
+        <td><span class="style16">TDR</span></td>
+        <td><span class="style16">Typedefs RegEx</span></td>
+        <td><span class="style16">Typedefs should match a regular Expression</span></td>
+        <td>&lt;Typedefs&gt;<br>
+&lt;regex&gt;[A-Z]&lt;/regex&gt;<br>
+&lt;/Typedefs&gt;</td>
+      </tr>
+      <tr bgcolor="#F0F0F0">
+        <td height="36"><span class="style16">TDA</span></td>
+        <td><span class="style16">Typedefs Alignment </span></td>
+        <td><span class="style16">Typedefs should be align one with the other </span></td>
+        <td><p>&lt;Typedefs&gt;<br>
+&lt;regex&gt;[A-Z]&lt;/regex&gt;<br>
+// true by default <br>
+<strong>&lt;alignment&gt;false&lt;/alignment&gt;</strong><br>
+&lt;/Typedefs&gt;</p>
+          </td>
+      </tr>
+      <tr bgcolor="#E0E0E0">
+        <td><span class="style16">NMS</span></td>
+        <td><span class="style16">Namespace</span></td>
+        <td><span class="style16">The first namespace in the file should match a specific word</span></td>
+        <td>&lt;Namespace&gt;igstk&lt;/Namespace&gt;</td>
+      </tr>
+      <tr bgcolor="#F0F0F0">
+        <td><span class="style16">NMC</span></td>
+        <td><span class="style16">Name of Class</span></td>
+        <td><span class="style16">The name of the class should match the name of the file plus/minus some characters </span></td>
+        <td>&lt;NameOfClass&gt;<br>
+&lt;name&gt;[NameOfClass]&lt;/name&gt;<br>
+&lt;prefix&gt;igstk&lt;/prefix&gt;<br>
+&lt;/NameOfClass&gt;</td>
+      </tr>
+      <tr bgcolor="#E0E0E0">
+        <td><span class="style16">WCM</span></td>
+        <td><span class="style16">Wrong Comments </span></td>
+        <td><span class="style16">Comments in the files should be correct. Right now checking if two consecutive words are not the same . Spelling mistake. </span></td>
+        <td>&lt;Comments&gt;<br>
+&lt;begin&gt;/**&lt;/begin&gt;<br>
+&lt;middle&gt; *&lt;/middle&gt;<br>
+&lt;end&gt;*/&lt;end&gt;<br>
+&lt;emptyLineBeforeClass&gt;true&lt;/emptyLineBeforeClass&gt;<br>
+&lt;checkWrongComment&gt;true&lt;/checkWrongComment&gt;<br>
+&lt;checkMissingComment&gt;true&lt;/checkMissingComment&gt;<br>
+&lt;/Comments&gt;</td>
+      </tr>
+      <tr bgcolor="#F0F0F0">
+        <td height="112"><span class="style16">MCM</span></td>
+        <td><span class="style16">Missing Comments </span></td>
+        <td><span class="style16">Each class definition should have a comment starting with \class </span></td>
+        <td><p>&lt;Comments&gt;<br>
+&lt;begin&gt;/**&lt;/begin&gt;<br>
+&lt;middle&gt; *&lt;/middle&gt;<br>
+&lt;end&gt;*/&lt;end&gt;<br>
+&lt;emptyLineBeforeClass&gt;true&lt;/emptyLineBeforeClass&gt;<br>
+&lt;checkWrongComment&gt;true&lt;/checkWrongComment&gt;<br>
+// True
+if not specified <br>
+<strong>&lt;checkMissingComments&gt;false&lt;/checkMissingComments&gt;</strong><br>
+&lt;/Comments&gt;</p>
+          </td>
+      </tr>
+      <tr bgcolor="#E0E0E0">
+        <td><span class="style16">EML</span></td>
+        <td><span class="style16">Empty lines </span></td>
+        <td><span class="style16">The number of successive empty lines should not be greater than a given number. </span></td>
+        <td>&lt;EmptyLines&gt;2&lt;/EmptyLines&gt;</td>
+      </tr>
+      <tr bgcolor="#F0F0F0">
+        <td><span class="style16">TPL</span></td>
+        <td><span class="style16">Template Parameters Regular Expression </span></td>
+        <td><span class="style16">Template parameters should match a regular expression </span></td>
+        <td>&lt;Template&gt;T&lt;/Template&gt;</td>
+      </tr>
+      <tr bgcolor="#E0E0E0">
+        <td><span class="style16">OSP</span></td>
+        <td><span class="style16">Operators spaces </span></td>
+        <td><span class="style16">Check if there are spaces for operators: i.e a=b v.s. a = b </span></td>
+        <td>&lt;Operator&gt;<br>
+&lt;spaceBefore&gt;1&lt;/spaceBefore&gt;<br>
+&lt;spaceAfter&gt;1&lt;/spaceAfter&gt;<br>
+&lt;/Operator&gt;</td>
+      </tr>
+      <tr bgcolor="#F0F0F0">
+        <td><span class="style16">BLK</span></td>
+        <td><span class="style16">Black List </span></td>
+        <td><span class="style16">Words in the black list cannot be found in the files to be checked.</span></td>
+        <td>&lt;BlackList&gt;myBlackList.txt&lt;/BlackList&gt;</td>
+      </tr>
+      <tr bgcolor="#E0E0E0">
+        <td>&nbsp;</td>
+        <td><span class="style16"> Structs</span></td>
+        <td><span class="style16">Check the regular expression for struct. </span></td>
+        <td>&lt;Struct&gt;<br>
+&lt;regex&gt;[a-z]&lt;regex&gt;<br>
+&lt;/Struct&gt;</td>
+      </tr>
+      <tr bgcolor="#F0F0F0">
+        <td><span class="style16">SPL</span></td>
+        <td><span class="style16">Statement per line </span></td>
+        <td><span class="style16">Check if there is one or more statements per line. </span></td>
+        <td>&lt;StatementPerLine&gt;<br>          &lt;maxNumber&gt;1&lt;/maxNumber&gt;<br>
+&lt;checkInline&gt;0&lt;/checkInline&gt; <strong>// default is true<br>
+</strong>&lt;/StatementPerLine&gt;</td>
+      </tr>
+      <tr bgcolor="#E0E0E0">
+        <td height="45" bgcolor="#E0E0E0"><span class="style16">VPL</span></td>
+        <td bgcolor="#E0E0E0"><span class="style16">Variable per line </span></td>
+        <td><span class="style16">Check if there is one or more variables per line.</span></td>
+        <td><p>&lt;VariablePerLine&gt;<br>
+            &lt;maxNumber&gt;1&lt;/maxNumber&gt;<br>
+&lt;/VariablePerLine&gt;</p>
+          </td>
+      </tr>
+      <tr bgcolor="#F0F0F0">
+        <td><span class="style16">BCH</span></td>
+        <td><span class="style16">Bad characters </span></td>
+        <td><span class="style16">Check if the code has some characters outside [0,127] in the ASCII table </span></td>
+        <td bgcolor="#F0F0F0">&lt;BadCharacters&gt;true&lt;/BadCharacters&gt;</td>
+      </tr>
+      <tr bgcolor="#E0E0E0">
+        <td><span class="style16">MBF</span></td>
+        <td><span class="style16">Member Functions </span></td>
+        <td><span class="style16">Check Regular Expression for Member Functions </span></td>
+        <td bgcolor="#E0E0E0">&lt;MemberFunctions&gt;[A-Z]&lt;/MemberFunctions&gt;</td>
+      </tr>
+      <tr bgcolor="#F0F0F0">
+        <td height="30"><span class="style16">MFL</span></td>
+        <td><span class="style16">Member Functions Length</span></td>
+        <td><span class="style16">Check the number of line of the current member function</span></td>
+        <td><p>&lt;MemberFunctions&gt;<br>
+&lt;regex&gt;[A-Z]&lt;/regex&gt;<br>
+&lt;length&gt;100&lt;/length&gt;<br>
+&lt;/MemberFunctions&gt;</p></td>
+      </tr>
+      <tr bgcolor="#E0E0E0">
+        <td height="30"><span class="style16">FRG</span></td>
+        <td><span class="style16"> Functions</span></td>
+        <td><span class="style16">Check if the function respect regular expressions </span></td>
+        <td><p>&lt;Functions&gt;<br>
+&lt;regex&gt;[A-Z]&lt;/regex&gt;<br>
+&lt;length&gt;100&lt;/length&gt;<br>
+&lt;/Functions&gt;</p></td>
+      </tr>
+      <tr bgcolor="#F0F0F0">
+        <td height="30"><span class="style16">FLN</span></td>
+        <td><span class="style16"> Functions Length </span></td>
+        <td><span class="style16">Check the number of line of the current member function</span></td>
+        <td><p>&lt;Functions&gt;<br>
+             &lt;regex&gt;[A-Z]&lt;/regex&gt;<br>
+             &lt;length&gt;100&lt;/length&gt;<br>
+&lt;/Functions&gt;</p>
+          </td>
+      </tr>
+    </table>
+    <p><span class="style5"><span class="style4"><nameofclass></nameofclass></span></span><span class="style18">Other XML description:</span></p>
+    <table width="100%"  border="0">
+      <tr bgcolor="#F0F0F0">
+        <td width="22%" height="20">Name of the project</td>
+        <td width="34%"><div align="center"><em> The name of the project will appear on the title of the generated HTML pages</em></div></td>
+        <td width="44%">&lt;Project&gt;This is my project&lt;/Project&gt;</td>
+      </tr>
+      <tr bgcolor="#E0E0E0">
+        <td>Logo of the project </td>
+        <td><div align="center"><em>Location of the project's logo to appear on the HTML pages. (The logo is copied automatically in the HTML/images directory) </em></div></td>
+        <td>&lt;ProjectLogo&gt;C:\project\myProjectlogo.jpg&lt;/ProjectLogo&gt;</td>
+      </tr>
+      <tr bgcolor="#F0F0F0">
+        <td>KWStyle Logo </td>
+        <td><div align="center"><em>Location of the KWStyle logo to appear on the HTML pages. (The logo is copied automatically in the HTML/images directory) </em></div></td>
+        <td>&lt;KWStyleLogo&gt;C:\KWStyle\KWStyleLogo.jpg&lt;/KWStyleLogo&gt;</td>
+      </tr>
+      <tr bgcolor="#E0E0E0">
+        <td height="20">Threshold of the number of errors that should be reported as warnings on the dashboard.</td>
+        <td><div align="center"><em>If the number of errors for a given test is above the given threshold the errors appears red on the dashboard</em></div></td>
+        <td>&lt;ErrorThreshold&gt;10&lt;/ErrorThreshold&gt;<strong></strong></td>
+      </tr>
+    </table>
+    <p><span class="style18">        <br>
+        Requested:</span></p>
+    <table width="663" border="0">
+      <tr>
+        <td><div align="center" class="style16"><strong>Code</strong></div></td>
+        <td><div align="center" class="style16"><strong>Definition</strong></div></td>
+        <td><div align="center" class="style16"><strong>Description</strong></div></td>
+      </tr>
+      <tr bgcolor="#E0E0E0">
+        <td width="40"><span class="style16">MFC</span></td>
+        <td width="298"><span class="style16">Missing Function Comment</span></td>
+        <td width="311"><span class="style16">Each function should have a comment</span></td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+    </table>
+    <p><span class="style18">Feature requests:</span></p>
+    <p class="style16">      - Include Spell checker for comments<br>
+      -
+      Include Statistics</p>
+    </td>
+        </table>
+        <br />
+          <br />
+      </div>
+      <br class="clear" />
+      </br>
+    <!-- InstanceEndEditable --></div>
+  </div>
+
+  <div id="footer"><br />
+      <br />
+      <br />
+        <br />
+
+
+   <table width="98%" border="0" cellspacing="0" cellpadding="2">
+  <tr>
+    <td><a rel="license" href="http://creativecommons.org/licenses/by-nd/3.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nd/3.0/80x15.png" /></a> This website is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nd/3.0/">Creative Commons Attribution-NoDerivs 3.0 Unported License</a>. Additional information on this license can be found <a href="http://www.kitware.com/company/cclicense.html">here</a>.<br /></td>
+    <td align="right"><!--[If gt IE 6]><script type="text/javascript" src="http://www.ohloh.net/p/3249/widgets/project_thin_badge.js"></script><![endif]--></script></td>
+  </tr>
+</table>
+
+</div>
+</div>
+</div>
+<!-- InstanceBeginEditable name="tabjs2" -->
+
+<script type="text/javascript">
+<!--
+var MenuBar1 = new Spry.Widget.MenuBar("MenuBar1", {imgDown:"../SpryAssets/SpryMenuBarDownHover.gif", imgRight:"../SpryAssets/SpryMenuBarRightHover.gif"});
+//-->
+</script><!-- InstanceEndEditable -->
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-6042509-17']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</body>
+<!-- InstanceEnd --></html>
