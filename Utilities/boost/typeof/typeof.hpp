@@ -15,7 +15,7 @@
 
 #if defined(__COMO__)
 #   ifdef __GNUG__
-#       ifndef(BOOST_TYPEOF_EMULATION)
+#       ifndef BOOST_TYPEOF_EMULATION
 #           ifndef BOOST_TYPEOF_NATIVE
 #               define BOOST_TYPEOF_NATIVE
 #           endif
@@ -110,24 +110,21 @@
 #       else
 #           error typeof emulation is not supported
 #       endif
-#   elif (_MSC_VER >= 1310)  // 7.1, 8.0
+#   elif (_MSC_VER >= 1310)  // 7.1 ->
 #       ifndef BOOST_TYPEOF_EMULATION
 #           ifndef BOOST_TYPEOF_NATIVE
-#               define BOOST_TYPEOF_NATIVE
+#               ifndef _MSC_EXTENSIONS
+#                   define BOOST_TYPEOF_EMULATION
+#               else
+#                   define BOOST_TYPEOF_NATIVE
+#               endif
 #           endif
+#       endif
+#       ifdef BOOST_TYPEOF_NATIVE
 #           include <boost/typeof/msvc/typeof_impl.hpp>
 #           define MSVC_TYPEOF_HACK
 #       endif
-/*#   else // 8.0
-#       ifndef BOOST_TYPEOF_NATIVE
-#           ifndef BOOST_TYPEOF_EMULATION
-#               define BOOST_TYPEOF_EMULATION
-#           endif
-#       else
-#           error native typeof is not supported
-#       endif*/
 #   endif
-
 #elif defined(__HP_aCC)
 #   ifndef BOOST_TYPEOF_NATIVE
 #       ifndef BOOST_TYPEOF_EMULATION
@@ -158,7 +155,22 @@
 #   else
 #       error native typeof is not supported
 #   endif
-
+#elif defined(__SUNPRO_CC)
+#   if (__SUNPRO_CC < 0x590 )
+#     ifdef BOOST_TYPEOF_NATIVE
+#         error native typeof is not supported
+#     endif
+#     ifndef BOOST_TYPEOF_EMULATION
+#         define BOOST_TYPEOF_EMULATION
+#     endif
+#   else
+#     ifndef BOOST_TYPEOF_EMULATION
+#         ifndef BOOST_TYPEOF_NATIVE
+#             define BOOST_TYPEOF_NATIVE
+#         endif
+#         define BOOST_TYPEOF_KEYWORD __typeof__
+#     endif
+#   endif
 #else //unknown compiler
 #   ifndef BOOST_TYPEOF_NATIVE
 #       ifndef BOOST_TYPEOF_EMULATION
