@@ -153,6 +153,11 @@ private:
       typedef typename boost::is_convertible<ForwardIter, const char_type*>::type tag_type;
       return get_named_sub_index(i, j, tag_type());
    }
+#ifdef BOOST_MSVC
+   // msvc-8.0 issues a spurious warning on the call to std::advance here:
+#pragma warning(push)
+#pragma warning(disable:4244)
+#endif
    inline int toi(ForwardIter& i, ForwardIter j, int base, const boost::mpl::false_&)
    {
       if(i != j)
@@ -166,14 +171,23 @@ private:
       }
       return -1;
    }
+#ifdef BOOST_MSVC
+#pragma warning(pop)
+#endif
    inline int toi(ForwardIter& i, ForwardIter j, int base, const boost::mpl::true_&)
    {
       return m_traits.toi(i, j, base);
    }
    inline int toi(ForwardIter& i, ForwardIter j, int base)
    {
+#if defined(_MSC_VER) && defined(__INTEL_COMPILER) && ((__INTEL_COMPILER == 9999) || (__INTEL_COMPILER == 1210))
+      // Workaround for Intel support issue #656654.
+      // See also https://svn.boost.org/trac/boost/ticket/6359
+      return toi(i, j, base, mpl::false_());
+#else
       typedef typename boost::is_convertible<ForwardIter, const char_type*&>::type tag_type;
       return toi(i, j, base, tag_type());
+#endif
    }
 
    const traits&    m_traits;       // the traits class for localised formatting operations
@@ -269,7 +283,8 @@ void basic_regex_formatter<OutputIterator, Results, traits, ForwardIter>::format
             format_perl();
             break;
          }
-         // fall through, not a special character:
+         // not a special character:
+         BOOST_FALLTHROUGH;
       default:
          put(*m_position);
          ++m_position;
@@ -340,7 +355,7 @@ void basic_regex_formatter<OutputIterator, Results, traits, ForwardIter>::format
    case '{':
       have_brace = true;
       ++m_position;
-      // fall through....
+      BOOST_FALLTHROUGH;
    default:
       // see if we have a number:
       {
@@ -834,7 +849,15 @@ OutputIterator regex_format_imp(OutputIterator out,
 
 BOOST_MPL_HAS_XXX_TRAIT_DEF(const_iterator)
 
-struct any_type { any_type(...); };
+struct any_type 
+{
+   template <class T>
+   any_type(const T&); 
+   template <class T, class U>
+   any_type(const T&, const U&); 
+   template <class T, class U, class V>
+   any_type(const T&, const U&, const V&); 
+};
 typedef char no_type;
 typedef char (&unary_type)[2];
 typedef char (&binary_type)[3];
@@ -1042,7 +1065,7 @@ struct format_functor_c_string
    template <class OutputIter>
    OutputIter operator()(const Match& m, OutputIter i, boost::regex_constants::match_flag_type f, const Traits& t = Traits())
    {
-      typedef typename Match::char_type char_type;
+      //typedef typename Match::char_type char_type;
       const charT* end = func;
       while(*end) ++end;
       return regex_format_imp(i, m, func, end, f, t);
@@ -1061,7 +1084,7 @@ struct format_functor_container
    template <class OutputIter>
    OutputIter operator()(const Match& m, OutputIter i, boost::regex_constants::match_flag_type f, const Traits& t = Traits())
    {
-      typedef typename Match::char_type char_type;
+      //typedef typename Match::char_type char_type;
       return re_detail::regex_format_imp(i, m, func.begin(), func.end(), f, t);
    }
 private:
