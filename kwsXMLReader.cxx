@@ -30,7 +30,7 @@ bool XMLReader::Open(const char* filename)
 {
   // Open file for reading
   m_File.open(filename,std::ifstream::binary);
-  if (m_File == NULL)
+  if ( m_File.fail() )
     {
     return false;
     }
@@ -41,13 +41,13 @@ bool XMLReader::Open(const char* filename)
 
   char* buf = new char[fileSize+1];
   m_File.read(buf,fileSize);
-  buf[fileSize] = 0; 
+  buf[fileSize] = 0;
   m_Buffer = buf;
   m_Buffer.resize(fileSize);
   delete [] buf;
-   
+
   return true;
-} 
+}
 
 std::string XMLReader::GetValue()
 {
@@ -63,7 +63,7 @@ std::string XMLReader::GetTag()
     m_Value = "";
     return "";
     }
- 
+
   long int comment_start = m_Buffer.find("<?",m_CurrentPos);
   if(begin_tag_start == comment_start)
     {
@@ -110,13 +110,13 @@ std::string XMLReader::GetTag()
   long int end_tag_begin = m_Buffer.find(m_EndTag,begin_tag_end+1);
   if(end_tag_begin == -1)
     {
-    std::cout << "XML parsing error, cannot find close tag for " 
+    std::cout << "XML parsing error, cannot find close tag for "
               << m_Tag.c_str() << std::endl;
     return "";
     }
 
   m_CurrentPos = end_tag_begin+1;
- 
+
   std::string value = m_Buffer.substr(begin_tag_end+1,end_tag_begin-begin_tag_end-1);
   m_Value = value;
 
@@ -133,11 +133,11 @@ std::string XMLReader::GetTag()
       }
     long int pos2 = value.find(">",pos1);
     long int pos3 = value.find("<",pos2);
-   
+
     if(i == 0)
       {
       m_Value = value.substr(pos2+1,pos3-pos2-1);
-      
+
       }
     else
       {
