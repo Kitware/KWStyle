@@ -262,7 +262,7 @@ public:
   bool CheckHeader(const char* filename,bool considerSpaceEOL = true,bool useCVS=true);
 
   /** Check if the #ifndef/#define is defined correctly for the class */
-  bool CheckIfNDefDefine(const char* match, bool uppercaseTheDefinition);
+  bool CheckIfNDefDefine(const char* match, bool uppercaseTheDefinition=false);
 
   /** Check the first namespace in the file */
   bool CheckNamespace(const char* name,bool doNotCheckMain=true);
