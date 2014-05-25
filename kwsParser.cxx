@@ -438,7 +438,17 @@ bool Parser::Check(const char* name, const char* value)
     }
   else if(!strcmp(name,"IfNDefDefine"))
     {
-    this->CheckIfNDefDefine(value);
+    std::string val = value;
+    std::string v1 = value;
+    bool uppercaseTheDefinition = false;
+    long pos = val.find(",", 0);
+    if(pos != -1)
+      {
+      v1 = val.substr(0, pos);
+      std::string v2 = val.substr(pos+1);
+      uppercaseTheDefinition = !v2.compare("true") || !v2.compare("1");
+      }
+    this->CheckIfNDefDefine(v1.c_str(), uppercaseTheDefinition);
     }
   else if(!strcmp(name,"EmptyLines"))
     {

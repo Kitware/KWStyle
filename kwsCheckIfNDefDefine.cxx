@@ -12,13 +12,14 @@
 
 =========================================================================*/
 #include "kwsParser.h"
+#include <cctype>
 
 namespace kws {
 
 
 /** Check if the #ifndef/#define is defined correctly for the class 
  *  match can contain [NameOfClass] and [Extension] */
-bool Parser::CheckIfNDefDefine(const char* match)
+bool Parser::CheckIfNDefDefine(const char* match, bool uppercaseTheDefinition)
 {
   // Check only if we are not a .cxx or .cc or .c file
   if(m_Filename.find(".c") != std::string::npos)
@@ -171,6 +172,12 @@ bool Parser::CheckIfNDefDefine(const char* match)
       if(posnofc != -1)
         {
         toMatch.replace(posnofc,11,extension);
+        }
+
+      if(uppercaseTheDefinition)
+        {
+        for(std::string::iterator it = toMatch.begin(); it != toMatch.end(); it++)
+          *it = std::toupper(*it);
         }
 
       if(ifndef != toMatch)
