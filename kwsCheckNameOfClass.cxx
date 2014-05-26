@@ -33,6 +33,7 @@ bool Parser::CheckNameOfClass(const char* name,const char* prefix)
   bool gotAtLeastOne = false;
 
   long int classpos = this->GetClassPosition(0);
+  long int lastClassPos = classpos;
   std::string nameOfClass = "";
   while(classpos!=-1)
     {
@@ -79,13 +80,14 @@ bool Parser::CheckNameOfClass(const char* name,const char* prefix)
       gotMatch = true;
       break; 
       }
+    lastClassPos = classpos;
     classpos = this->GetClassPosition(classpos+1);
     }
 
-  if(!gotMatch && gotAtLeastOne && (classpos!=-1))
+  if(!gotMatch && gotAtLeastOne)
     {
     Error error;
-    error.line = this->GetLineNumber(classpos,true);
+    error.line = this->GetLineNumber(lastClassPos,true);
     error.line2 = error.line;
     error.number = NAMEOFCLASS;
     error.description = "classname is not defined correctly";
