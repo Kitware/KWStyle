@@ -465,6 +465,13 @@ bool Parser::Check(const char* name, const char* value)
     {
     this->CheckBlackList(value);
     }
+  else if(!strcmp(name, "UsingDirectives"))
+    {
+    bool forbidUsingDirectives = true;
+    if( !strcmp(value, "0") || !strcmp(value, "false"))
+      forbidUsingDirectives = false;
+    this->CheckUsingDirectives(forbidUsingDirectives);
+    }
   return false;
 }
 
