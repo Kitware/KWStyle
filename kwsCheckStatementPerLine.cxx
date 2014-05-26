@@ -12,6 +12,7 @@
 
 =========================================================================*/
 #include "kwsParser.h"
+#include <vector>
 
 namespace kws {
 
@@ -36,6 +37,7 @@ bool Parser::CheckStatementPerLine(unsigned long max,bool checkInlineFunctions)
   unsigned long statements = 0;
   bool newline = false;
   std::string line = "";
+  std::vector<int> inlineFunctionLines;
     
   while(posSemicolon != std::string::npos)
     {
@@ -89,13 +91,21 @@ bool Parser::CheckStatementPerLine(unsigned long max,bool checkInlineFunctions)
     
     bool reportError=true;
 
-    if(!checkInlineFunctions)
+    if(checkInlineFunctions)
       {
       if(this->IsInFunction(posSemicolon,m_BufferNoComment.c_str())
          && this->IsInClass(posSemicolon)
         )
         {
-        reportError = false;
+        hasError = true;
+        int tempLineNumber = this->GetLineNumber(posSemicolon);
+        // if the last error occurred on the previous or the same line, compress them, they are probably the same function
+        if(inlineFunctionLines.size() > 0 
+            && ((inlineFunctionLines.back() + 1 == tempLineNumber) || (inlineFunctionLines.back() == tempLineNumber))
+          )
+          inlineFunctionLines.back() = tempLineNumber;
+        else
+          inlineFunctionLines.push_back(tempLineNumber);
         }
       }
 
@@ -123,6 +133,18 @@ bool Parser::CheckStatementPerLine(unsigned long max,bool checkInlineFunctions)
     posSemicolon = posSemicolon2;
     }
 
+  if(inlineFunctionLines.size() > 0)
+    {
+    for(std::vector<int>::iterator it = inlineFunctionLines.begin(); it != inlineFunctionLines.end(); it++)
+      {
+      Error error;
+      error.line = *it;
+      error.line2 = error.line;
+      error.number = STATEMENTPERLINE;
+      error.description = "Function defined inline";
+      m_ErrorList.push_back(error);
+      }
+    }
   return !hasError;
 }
 
