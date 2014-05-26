@@ -26,7 +26,7 @@ bool Parser::CheckUsingDirectives(bool forbidUsingDirectives)
   kwssys::RegularExpression regex("using[ \r\n\t]+namespace[ \r\n\t]+[A-Za-z_]+[ \r\n\t]*;");
   while(ptr && regex.find(ptr))
     {
-    ptr = m_BufferNoComment.c_str() + regex.end() + 1;
+    ptr = m_BufferNoComment.c_str() + regex.end();
     if(this->IsBetweenQuote(regex.start(), false))
       continue;
 
