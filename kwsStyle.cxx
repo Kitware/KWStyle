@@ -187,6 +187,7 @@ int main(int argc, char **argv)
   AddFeature("MemberFunctions","*",true);
   AddFeature("Functions","*",true);
   AddFeature("UsingDirectives", "true", true);
+  AddFeature("RelativePathInInclude", "true", true);
 
   std::string xmlFile = "KWStyle.xml";
   // If we should look the definition from the xml file
