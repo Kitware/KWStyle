@@ -27,7 +27,7 @@ bool Parser::CheckUsingDirectives(bool forbidUsingDirectives)
   size_t usingPos = m_BufferNoComment.find("using");
   while( usingPos != std::string::npos )
     {
-    size_t tempIndex = usingPos += 5;//points right after "using"
+    size_t tempIndex = usingPos + 5;//points right after "using"
     if(this->IsBetweenQuote(usingPos, false))
       {
       usingPos = m_BufferNoComment.find("using", tempIndex);
