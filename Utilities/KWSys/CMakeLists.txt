@@ -85,6 +85,9 @@
 # written.
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6.3 FATAL_ERROR)
+IF(COMMAND CMAKE_POLICY)
+  CMAKE_POLICY(SET CMP0054 NEW)
+ENDIF(COMMAND CMAKE_POLICY)
 
 #-----------------------------------------------------------------------------
 # If a namespace is not specified, use "kwsys" and enable testing.
