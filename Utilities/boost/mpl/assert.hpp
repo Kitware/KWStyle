@@ -10,7 +10,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// 1_57_0
+// $Id$
+// $Date$
+// $Revision$
 
 #include <boost/mpl/not.hpp>
 #include <boost/mpl/aux_/value_wknd.hpp>
@@ -23,7 +25,7 @@
 #include <boost/mpl/aux_/config/dtp.hpp>
 #include <boost/mpl/aux_/config/gcc.hpp>
 #include <boost/mpl/aux_/config/msvc.hpp>
-//#include <boost/mpl/aux_/config/gpu.hpp>
+#include <boost/mpl/aux_/config/gpu.hpp>
 #include <boost/mpl/aux_/config/static_constant.hpp>
 #include <boost/mpl/aux_/config/pp_counter.hpp>
 #include <boost/mpl/aux_/config/workaround.hpp>
@@ -78,18 +80,18 @@ template< bool C >  struct assert        { typedef void* type; };
 template<>          struct assert<false> { typedef AUX778076_ASSERT_ARG(assert) type; };
 
 template< bool C >
-int assertion_failed(typename assert<C>::type);
+int assertion_failed( typename assert<C>::type );
 
 template< bool C >
 struct assertion
 {
-    static int failed(assert<false>);
+    static int failed( assert<false> );
 };
 
 template<>
 struct assertion<true>
 {
-    static int failed(void*);
+    static int failed( void* );
 };
 
 struct assert_
@@ -104,15 +106,15 @@ struct assert_
 
 #if !defined(BOOST_MPL_CFG_ASSERT_USE_RELATION_NAMES)
 
-bool operator==(failed, failed);
-bool operator!=(failed, failed);
-bool operator>(failed, failed);
-bool operator>=(failed, failed);
-bool operator<(failed, failed);
-bool operator<=(failed, failed);
+bool operator==( failed, failed );
+bool operator!=( failed, failed );
+bool operator>( failed, failed );
+bool operator>=( failed, failed );
+bool operator<( failed, failed );
+bool operator<=( failed, failed );
 
 #if defined(__EDG_VERSION__)
-template< bool(*)(failed, failed), long x, long y > struct assert_relation {};
+template< bool (*)(failed, failed), long x, long y > struct assert_relation {};
 #   define BOOST_MPL_AUX_ASSERT_RELATION(x, y, r) assert_relation<r,x,y>
 #else
 template< BOOST_MPL_AUX_NTTP_DECL(long, x), BOOST_MPL_AUX_NTTP_DECL(long, y), bool (*)(failed, failed) > 
@@ -178,31 +180,31 @@ template< typename P > struct assert_arg_pred
 template< typename P > struct assert_arg_pred_not
 {
     typedef typename P::type p_type;
-    BOOST_MPL_AUX_ASSERT_CONSTANT(bool, p = !p_type::value);
+    BOOST_MPL_AUX_ASSERT_CONSTANT( bool, p = !p_type::value );
     typedef typename assert_arg_pred_impl<p>::type type;
 };
 
 template< typename Pred >
-failed ************ (Pred::************
-    assert_arg(void(*)(Pred), typename assert_arg_pred<Pred>::type)
+failed ************ (Pred::************ 
+      assert_arg( void (*)(Pred), typename assert_arg_pred<Pred>::type )
     );
 
 template< typename Pred >
-failed ************ (boost::mpl::not_<Pred>::************
-    assert_not_arg(void(*)(Pred), typename assert_arg_pred_not<Pred>::type)
+failed ************ (boost::mpl::not_<Pred>::************ 
+      assert_not_arg( void (*)(Pred), typename assert_arg_pred_not<Pred>::type )
     );
 
 template< typename Pred >
 AUX778076_ASSERT_ARG(assert<false>)
-assert_arg(void(*)(Pred), typename assert_arg_pred_not<Pred>::type);
+assert_arg( void (*)(Pred), typename assert_arg_pred_not<Pred>::type );
 
 template< typename Pred >
 AUX778076_ASSERT_ARG(assert<false>)
-assert_not_arg(void(*)(Pred), typename assert_arg_pred<Pred>::type);
+assert_not_arg( void (*)(Pred), typename assert_arg_pred<Pred>::type );
 
 
 #else // BOOST_MPL_CFG_ASSERT_BROKEN_POINTER_TO_POINTER_TO_MEMBER
-
+        
 template< bool c, typename Pred > struct assert_arg_type_impl
 {
     typedef failed      ************ Pred::* mwcw83_wknd;
@@ -254,7 +256,7 @@ BOOST_MPL_AUX_ASSERT_CONSTANT( \
           boost::mpl::assertion_failed<false>( \
               boost::mpl::make_assert_arg< \
                   typename boost::mpl::eval_assert<void pred>::type \
-                              >() \
+                >() \
             ) \
         ) \
     ) \
@@ -269,7 +271,7 @@ BOOST_MPL_AUX_ASSERT_CONSTANT( \
           boost::mpl::assertion_failed<false>( \
               boost::mpl::make_assert_arg< \
                   typename boost::mpl::eval_assert_not<void pred>::type \
-                              >() \
+                >() \
             ) \
         ) \
     ) \
@@ -335,7 +337,7 @@ BOOST_MPL_AUX_ASSERT_CONSTANT( \
                     ) ) \
                 , x \
                 , y \
-                            >::************)) 0 ) \
+                >::************)) 0 ) \
         ) \
     ) \
 /**/
@@ -356,7 +358,7 @@ BOOST_MPL_AUX_ASSERT_CONSTANT( \
                   boost::mpl::assert_::relations(BOOST_PP_CAT(mpl_assert_rel,counter)) \
                 , x \
                 , y \
-                              >() ) \
+                >() ) \
             ) \
         ) \
     ) \
