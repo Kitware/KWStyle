@@ -12,7 +12,7 @@ die()
 }
 
 if [ ! -d "${extracted_boost}" ]; then
-  die "A path to directory named with this pattern: /home/me/boost_1_xx_y/ has to be provided as first argument on the command line (including the trailing slash)!"
+  die "A path to directory named with this pattern: /home/me/boost_1_xx_y/ has to be provided as first argument on the command line (including the trailing slash)! It can be downloaded from http://www.boost.org/users/download/"
 fi
 
 ## Set up paths ##
