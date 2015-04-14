@@ -70,4 +70,6 @@ snapshot_new_sha=$(
   git commit --amend -m "$snapshot_new_commit_msg"
 )
 
-echo "Created updated branch '$snapshot_branch_name'.  You can now merge it."
+echo "Created updated branch '$snapshot_branch_name'.  You can now merge it using command:
+
+git checkout master && git merge $snapshot_branch_name"
