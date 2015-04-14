@@ -49,7 +49,7 @@ versioned_boost_path="$script_path/boost/"
 git checkout -b "$snapshot_branch_name"
 
 git rm -r "$versioned_boost_path"
-git commit -m "Updating booost to version: ${extracted_boost} (step: delete old version)"
+git commit -m "Updating boost to version: ${extracted_boost} (step: delete old version)"
 # now copy parts of boost which are needed
 mkdir $versioned_boost_path
 for word in $(cat ${script_path}/boostLibs.txt); do
@@ -62,7 +62,7 @@ find "${extracted_boost}boost/" -maxdepth 1 -type f -exec cp '{}' "${versioned_b
 
 git add --all "$versioned_boost_path"
 
-snapshot_new_commit_msg="Updating booost to version: ${extracted_boost}"
+snapshot_new_commit_msg="Updating boost to version: ${extracted_boost}"
 snapshot_new_sha=$(
   echo "$snapshot_new_commit_msg" |
   GIT_AUTHOR_NAME="Boost Developers" \
