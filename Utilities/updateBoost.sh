@@ -100,5 +100,5 @@ git update-ref refs/heads/$snapshot_branch_name $snapshot_new_sha
 echo "Created updated branch '$snapshot_branch_name'.  You can now merge it using command:
 
     cd \"$toplevel_path\" &&
-    git merge -X subtree=$script_path/boost/ $snapshot_branch_name
+    git merge -X subtree=Utilities/boost $snapshot_branch_name
 "
