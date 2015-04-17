@@ -1,11 +1,18 @@
 #!/usr/bin/env bash
 
-# this script should be run from this directory
-# extracted_boost is a path to directory named boost_1_xx_y
-
-extracted_boost=$1
-boost_version=$(basename "$extracted_boost")
-boost_date_time=$2
+if [[ $# -lt 2 || "$1" = "-h" || "$1" = "--help" ]]; then
+  echo "Usage: ${0##*/} <extracted_boost> <boost_date_time>"
+  echo ''
+  echo 'Where:'
+  echo ''
+  echo '<extracted_boost> is a path to directory named with this pattern:'
+  echo '  /home/me/boost_1_xx_y/ (including the trailing slash)!'
+  echo '  It can be downloaded from http://www.boost.org/users/download/'
+  echo ''
+  echo '<boost_date_time> is the date the given version of boost was released,'
+  echo '  for example, "2015-04-17T00:00:00"'
+  exit 1
+fi
 
 # quit function
 die()
@@ -14,9 +21,18 @@ die()
   exit 1
 }
 
-if [ ! -d "${extracted_boost}" ]; then
-  die "A path to directory named with this pattern: /home/me/boost_1_xx_y/ has to be provided as first argument on the command line (including the trailing slash)! It can be downloaded from http://www.boost.org/users/download/"
-fi
+## Validate ##
+required_commands=( git grep dirname basename cat )
+for required_command in ${required_commands[@]}; do
+  $required_command --version >/dev/null 2>&1
+  if [[ $? -ne 0 ]]; then
+    die "Command \"$required_command\" not found"
+  fi
+done
+
+extracted_boost=$1
+boost_version=$(basename "$extracted_boost")
+boost_date_time=$2
 
 ## Set up paths ##
 script_path=$( cd "$( dirname "$0" )" && pwd )
@@ -26,15 +42,6 @@ if [[ $? -ne 0 ]]; then
 fi
 cd "$toplevel_path"
 
-
-## Validate ##
-required_commands=( git grep sed egrep tar dirname basename cat )
-for required_command in ${required_commands[@]}; do
-  $required_command --version >/dev/null 2>&1
-  if [[ $? -ne 0 ]]; then
-    die "Command \"$required_command\" not found"
-  fi
-done
 
 input_variables=( extracted_boost )
 for input_variable in ${input_variables[@]}; do
@@ -84,9 +91,7 @@ snapshot_new_tree=$(
 rm -rf "$snapshot_temp_path" "$snapshot_temp_index"
 
 snapshot_new_change_id=$(git commit-tree $snapshot_new_tree -p $snapshot_old_sha </dev/null)
-snapshot_new_commit_msg="Updating boost to version: ${boost_version}
-
-Change-Id: I$snapshot_new_change_id"
+snapshot_new_commit_msg="ENH: Updating boost to version: ${boost_version}"
 
 snapshot_new_sha=$(
     echo "$snapshot_new_commit_msg" |
@@ -100,5 +105,5 @@ git update-ref refs/heads/$snapshot_branch_name $snapshot_new_sha
 echo "Created updated branch '$snapshot_branch_name'.  You can now merge it using command:
 
     cd \"$toplevel_path\" &&
-    git merge -X subtree=$script_path/boost/ $snapshot_branch_name
+    git merge -X subtree=Utilities/boost $snapshot_branch_name
 "
