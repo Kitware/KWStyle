@@ -35,7 +35,7 @@
 #include <boost/config.hpp> // make sure 'size_t' is placed into 'std'
 #include <cstddef>
 
-#if BOOST_WORKAROUND(BOOST_MSVC, == 1700)
+#if BOOST_WORKAROUND(BOOST_MSVC, >= 1700)
 #include <boost/mpl/if.hpp>
 #endif
 
@@ -135,7 +135,7 @@ template< assert_::relations r, long x, long y > struct assert_relation {};
 
 #endif 
 
-#if BOOST_WORKAROUND(BOOST_MSVC, == 1700)
+#if BOOST_WORKAROUND(BOOST_MSVC, >= 1700)
 
 template<class Pred>
 struct extract_assert_pred;
@@ -245,7 +245,7 @@ assert_rel_arg( assert_relation<r,x,y> );
 
 BOOST_MPL_AUX_ADL_BARRIER_NAMESPACE_CLOSE
 
-#if BOOST_WORKAROUND(BOOST_MSVC, == 1700)
+#if BOOST_WORKAROUND(BOOST_MSVC, >= 1700)
 
 // BOOST_MPL_ASSERT((pred<x,...>))
 
