@@ -52,7 +52,7 @@ bool Parser::operator<(const Parser& a) const
     }
    return true;
 }
-  
+
 /** Given the name of the check to perform and the default value perform the check */
 bool Parser::Check(const char* name, const char* value)
 {
@@ -94,7 +94,7 @@ bool Parser::Check(const char* name, const char* value)
         }
       val = v1;
       }
-    
+
     this->CheckTypedefs(val.c_str(),alignment);
     return true;
     }
@@ -147,7 +147,7 @@ bool Parser::Check(const char* name, const char* value)
         }
       val = v1;
       }
-    
+
     this->CheckInternalVariables(val.c_str(),alignment,checkProtected);
 
     return true;
@@ -358,7 +358,7 @@ bool Parser::Check(const char* name, const char* value)
 
     bool spaceEndOfLine = false;
     bool useCVS = false;
- 
+
     if(!strcmp(v2.c_str(),"true"))
       {
       spaceEndOfLine = true;
@@ -579,12 +579,12 @@ std::string Parser::GetLine(unsigned long i) const
    prec = pos;
    pos = m_Buffer.find("\n",pos+1);
    }
-  
+
   if(lines == i)
     {
     return m_Buffer.substr(prec,m_Buffer.size()-prec);
     }
- 
+
  return "";
 }
 
@@ -676,7 +676,7 @@ std::string Parser::FindNextWord(size_t pos) const
   return ivar;
 }
 
-/** Return the position in the line given the position in the text */ 
+/** Return the position in the line given the position in the text */
 size_t Parser::GetPositionInLine(size_t pos)
 {
   size_t begin = pos;
@@ -704,7 +704,7 @@ size_t Parser::GetPositionWithComments(size_t pos) const
     it++;
     }
   return pos;
-}  
+}
 
 /** Given the position with comments return the position without the comments */
 size_t Parser::GetPositionWithoutComments(size_t pos) const
@@ -726,7 +726,7 @@ size_t Parser::GetPositionWithoutComments(size_t pos) const
   return pos2;
 }
 
-/** Return if the dept of the current class 
+/** Return if the dept of the current class
  *  This function works on m_BufferNoComments! */
 int Parser::IsInClass(size_t position) const
 {
@@ -744,7 +744,7 @@ int Parser::IsInClass(size_t position) const
       i++;
       }
     size_t classEnd = this->FindClosingChar('{','}',i+1,true);
-   
+
     if(position>classPos && position<classEnd)
       {
       inClass++;
@@ -759,7 +759,7 @@ int Parser::IsInClass(size_t position) const
 /** Return the line number in the source code given the character position */
 long int Parser::GetLineNumber(size_t pos,bool withoutComments) const
 {
-  
+
   // if we have comments we add them to the list
   if(withoutComments)
     {
@@ -772,7 +772,7 @@ long int Parser::GetLineNumber(size_t pos,bool withoutComments) const
     {
     if(pos<=(*it))
       {
-      return i; 
+      return i;
       }
     i++;
     it++;
@@ -790,7 +790,7 @@ void Parser::FindPublicArea(size_t &before, size_t &after, size_t startPos) cons
   size_t pub = this->FindArea("public", startPos);
   size_t priv = this->FindArea("private", startPos);
   size_t protect = this->FindArea("protected", startPos);
-  
+
   if(pub == std::string::npos)
     {
     // ok we don't have any public area
@@ -839,7 +839,7 @@ void Parser::FindPublicArea(size_t &before, size_t &after, size_t startPos) cons
   else
     {
     before = pub;
-  
+
     if(priv<protect)
       {
       after = priv;
@@ -849,14 +849,14 @@ void Parser::FindPublicArea(size_t &before, size_t &after, size_t startPos) cons
       after = protect;
       }
     }
-  
+
   // If there is nothing after we point to the end of the class
   if(after == MAX_CHAR)
     {
     size_t classpos = this->GetClassPosition(startPos);
     if(classpos != std::string::npos)
       {
-      size_t posBrace = m_BufferNoComment.find("{",classpos);          
+      size_t posBrace = m_BufferNoComment.find("{",classpos);
       if(posBrace != std::string::npos)
         {
         size_t end = this->FindClosingChar('{','}',posBrace,true);
@@ -868,8 +868,8 @@ void Parser::FindPublicArea(size_t &before, size_t &after, size_t startPos) cons
       }
     }
 }
- 
-/** Find the correct area given its name 
+
+/** Find the correct area given its name
  *  This looks for public: or public    : */
 size_t Parser::FindArea(const char* name,size_t startPos) const
 {
@@ -901,7 +901,7 @@ void Parser::FindProtectedArea(size_t &before, size_t &after, size_t startPos) c
     {
     priv = MAX_CHAR;
     }
-  
+
   if(protect == std::string::npos)
     {
     protect = MAX_CHAR;
@@ -958,7 +958,7 @@ void Parser::FindProtectedArea(size_t &before, size_t &after, size_t startPos) c
     size_t classpos = this->GetClassPosition(startPos);
     if(classpos != std::string::npos)
       {
-      size_t posBrace = m_BufferNoComment.find("{",classpos);          
+      size_t posBrace = m_BufferNoComment.find("{",classpos);
       if(posBrace != std::string::npos)
         {
         size_t end = this->FindClosingChar('{','}',posBrace,true);
@@ -1024,7 +1024,7 @@ size_t Parser::FindEndOfClass(size_t position) const
           }
         classPos = m_BufferNoComment.find("class",classPos+1);
         }
-      }     
+      }
     endclass = m_BufferNoComment.find("}",endclass+1);
     }
   return std::string::npos;
@@ -1041,7 +1041,7 @@ void Parser::FindPrivateArea(size_t &before, size_t &after, size_t startPos) con
   size_t pub = this->FindArea("public", startPos);
   size_t priv = this->FindArea("private", startPos);
   size_t protect = this->FindArea("protected", startPos);
-  
+
   if(priv == std::string::npos)
     {
     priv = MAX_CHAR;
@@ -1102,7 +1102,7 @@ void Parser::FindPrivateArea(size_t &before, size_t &after, size_t startPos) con
     size_t classpos = this->GetClassPosition(startPos);
     if(classpos != std::string::npos)
       {
-      size_t posBrace = m_BufferNoComment.find("{",classpos);          
+      size_t posBrace = m_BufferNoComment.find("{",classpos);
       if(posBrace != std::string::npos)
         {
         size_t end = this->FindClosingChar('{','}',posBrace,true);
@@ -1115,12 +1115,12 @@ void Parser::FindPrivateArea(size_t &before, size_t &after, size_t startPos) con
     }
 }
 
-/** Return true if the position pos is inside a function 
+/** Return true if the position pos is inside a function
  *  This function works on the m_BufferNoComment */
 bool Parser::IsInFunction(size_t pos,const char* buffer) const
-{ 
+{
   std::string buf = m_BufferNoComment;
-  
+
   if(buffer)
     {
     buf = buffer;
@@ -1175,12 +1175,12 @@ bool Parser::IsInFunction(size_t pos,const char* buffer) const
 }
 
 
-/** Return the position of the last character 
+/** Return the position of the last character
  *  of the function name/definition */
 size_t Parser::FindFunction(size_t pos,const char* buffer) const
-{ 
+{
   std::string buf = m_BufferNoComment;
-  
+
   if(buffer)
     {
     buf = buffer;
@@ -1196,7 +1196,7 @@ size_t Parser::FindFunction(size_t pos,const char* buffer) const
   // here.
 
   // We go backwards
-  size_t end = buf.find('}',pos);        
+  size_t end = buf.find('}',pos);
   while(end != std::string::npos)
     {
     size_t beg = this->FindOpeningChar('}','{',end,true);
@@ -1239,10 +1239,10 @@ size_t Parser::FindFunction(size_t pos,const char* buffer) const
   return std::string::npos;
 }
 
-/** Return true if the position pos is inside a struct 
+/** Return true if the position pos is inside a struct
  *  This function works on the m_BufferNoComment */
 bool Parser::IsInStruct(size_t pos,const char* buffer) const
-{ 
+{
   std::string buf = m_BufferNoComment;
   if(buffer)
     {
@@ -1253,7 +1253,7 @@ bool Parser::IsInStruct(size_t pos,const char* buffer) const
     {
     return false;
     }
-  
+
   size_t b = buf.find("struct",0);
   while(b!=std::string::npos)
     {
@@ -1262,12 +1262,12 @@ bool Parser::IsInStruct(size_t pos,const char* buffer) const
       {
       return false;
       }
-    
+
     if(buf[b+6]!=' ' && buf[b+6]!='{')
       {
       return false;
       }
-    
+
     while(b<buf.size())
       {
       if(buf[b] == '{')
@@ -1289,10 +1289,10 @@ bool Parser::IsInStruct(size_t pos,const char* buffer) const
 }
 
 
-/** Return true if the position pos is inside a union 
+/** Return true if the position pos is inside a union
  *  This function works on the m_BufferNoComment */
 bool Parser::IsInUnion(size_t pos,const char* buffer) const
-{ 
+{
   std::string buf = m_BufferNoComment;
   if(buffer)
     {
@@ -1303,7 +1303,7 @@ bool Parser::IsInUnion(size_t pos,const char* buffer) const
     {
     return false;
     }
-  
+
   size_t b = buf.find("union",0);
   while(b!=std::string::npos)
     {
@@ -1336,14 +1336,14 @@ bool Parser::IsInComments(size_t pos) const
     }
 
   size_t b0 = m_Buffer.find(m_CommentBegin,0);
-  
+
   if(b0 == std::string::npos)
    {
    return false;
    }
 
   size_t b1 = m_Buffer.find(m_CommentEnd,b0);
-  
+
   while(b0 != std::string::npos && b1 != std::string::npos && b1>b0)
     {
     if(pos>=b0 && pos<=(b1+m_CommentEnd.size()))
@@ -1409,7 +1409,7 @@ bool Parser::IsInAnyComments(size_t pos) const
       posend = std::string::npos;
       }
     }
-  return false;    
+  return false;
 }
 
 /** Return true if it's a valid quote */
@@ -1423,7 +1423,7 @@ bool Parser::IsValidQuote(std::string & stream,size_t pos) const
     {
     i = pos-1;
     }
-  
+
   while(i != std::string::npos && stream[i]=='\\')
     {
     n++;
@@ -1536,7 +1536,7 @@ bool Parser::IsBetweenChars(const char begin, const char end ,size_t pos,
       stream = m_Buffer;
       }
     }
-  
+
   if(pos == std::string::npos)
     {
     return false;
@@ -1745,11 +1745,11 @@ std::string Parser::RemoveComments(const char* buffer)
 }
 
 /** Find the constructor in the file */
-size_t Parser::FindConstructor(const std::string & buffer, const std::string & className, 
+size_t Parser::FindConstructor(const std::string & buffer, const std::string & className,
                                bool headerfile, size_t startPos) const
 {
   std::string constructor = "";
-  
+
   if(headerfile)
     {
     constructor = " ";
@@ -1762,7 +1762,7 @@ size_t Parser::FindConstructor(const std::string & buffer, const std::string & c
   size_t pos = buffer.find(constructor.c_str(),startPos);
   size_t pos2 = buffer.find("(",pos);
   size_t pos3 = buffer.find(")",pos2);
-  
+
   // if it's not the destructor ...
   /*std::string dest = "~";
   dest += className;
@@ -1786,9 +1786,9 @@ size_t Parser::FindConstructor(const std::string & buffer, const std::string & c
       if(ok)
         {
         ok2 = true;
-        val = buffer.substr(pos2+1,pos3-pos2-1);       
+        val = buffer.substr(pos2+1,pos3-pos2-1);
         for(size_t i=0;i<val.size();i++)
-          {      
+          {
           if(val[i] != ' ' || val[i] != '\n')
             {
             ok2 =false;
@@ -1812,17 +1812,17 @@ size_t Parser::FindConstructor(const std::string & buffer, const std::string & c
           }
         }
       }
-    std::string constructor = "";
+    std::string localconstructor = "";
     if(headerfile)
       {
-      constructor = " ";
+      localconstructor = " ";
       }
     else
       {
-      constructor = ":";
+      localconstructor = ":";
       }
-    constructor += className;
-    pos = buffer.find(constructor.c_str(),pos+1);
+    localconstructor += className;
+    pos = buffer.find(localconstructor.c_str(),pos+1);
     pos2 = buffer.find("(",pos);
     pos3 = buffer.find(")",pos2);
     }
@@ -1831,7 +1831,7 @@ size_t Parser::FindConstructor(const std::string & buffer, const std::string & c
 }
 
 /** Find the closing char given the position of the opening char */
-size_t Parser::FindClosingChar(char openChar, char closeChar, 
+size_t Parser::FindClosingChar(char openChar, char closeChar,
                                size_t pos,bool noComment,std::string buffer) const
 {
   std::string stream = buffer;
@@ -1866,7 +1866,7 @@ size_t Parser::FindClosingChar(char openChar, char closeChar,
           }
         itLS++;
         }
-    
+
       if(!skip)
         {
         if(stream[i] == openChar)
@@ -1888,10 +1888,10 @@ size_t Parser::FindClosingChar(char openChar, char closeChar,
 }
 
 
-/** Compute the list of #if/#else/#endif 
+/** Compute the list of #if/#else/#endif
  *  In the case we have #if/#else/#endif we want to ignore the #else section
  *  if we have some '{' not closed
- *  #if 
+ *  #if
  *   {
  *  #else
  *   {
@@ -1915,7 +1915,7 @@ void Parser::ComputeIfElseEndifList()
         posIf = m_BufferNoComment.find("#if",posIf+1);
         nIf++;
         }
-        
+
       int nEndIf = 0;
       size_t posEndif = m_BufferNoComment.find("#endif",posSharpElse);
       while(posEndif<posSharpEndif && posEndif!=std::string::npos)
@@ -1923,16 +1923,16 @@ void Parser::ComputeIfElseEndifList()
         posEndif = m_BufferNoComment.find("#endif",posEndif+1);
         nEndIf++;
         }
-       
+
       if(nEndIf == nIf)
         {
         break;
         }
-        
+
       // Then continue to search*/
-      posSharpEndif = m_BufferNoComment.find("#endif",posSharpEndif+1); 
+      posSharpEndif = m_BufferNoComment.find("#endif",posSharpEndif+1);
       }
-    
+
     if(posSharpEndif != std::string::npos)
       {
       // Search for the corresponding if
@@ -1955,19 +1955,19 @@ void Parser::ComputeIfElseEndifList()
         int nClose = 0;
 
         size_t posOpen = m_BufferNoComment.find("{",posSharpIf);
-        while(posOpen != std::string::npos && posOpen<posSharpEndif)  
+        while(posOpen != std::string::npos && posOpen<posSharpEndif)
           {
           nOpen++;
           posOpen = m_BufferNoComment.find("{",posOpen+1);
           }
 
         size_t posClose = m_BufferNoComment.find("}",posSharpIf);
-        while(posClose != std::string::npos && posClose<posSharpEndif)  
+        while(posClose != std::string::npos && posClose<posSharpEndif)
           {
           nClose++;
           posClose = m_BufferNoComment.find("}",posClose+1);
           }
-        
+
         if(nOpen != nClose)
           {
           IfElseEndifPairType p;
@@ -1975,7 +1975,7 @@ void Parser::ComputeIfElseEndifList()
           p.second = this->GetPositionWithComments(posSharpEndif);
           m_IfElseEndifList.push_back(p);
           }
-        }     
+        }
       }
     posSharpElse = m_BufferNoComment.find("#else",posSharpElse+1);
     }
@@ -1983,7 +1983,7 @@ void Parser::ComputeIfElseEndifList()
 
 /** Find the opening char given the position of the closing char */
 size_t Parser::FindOpeningChar(char closeChar, char openChar,size_t pos,bool noComment) const
-{  
+{
   if(pos == std::string::npos)
     {
     return std::string::npos;
@@ -1997,7 +1997,7 @@ size_t Parser::FindOpeningChar(char closeChar, char openChar,size_t pos,bool noC
 
   long int close = 1;
   for(size_t i=pos-1;i!=std::string::npos;i--)
-    { 
+    {
     if(stream[i] == closeChar)
       {
       close++;
@@ -2043,7 +2043,7 @@ void Parser::GenerateFixedFile()
     }
 
   file << this->m_FixedBuffer;
-  
+
   file.close();
 }
 

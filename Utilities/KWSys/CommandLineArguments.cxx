@@ -65,12 +65,12 @@ struct CommandLineArgumentsCallbackStructure
   int VariableType;
   const char* Help;
 };
- 
-class CommandLineArgumentsVectorOfStrings : 
+
+class CommandLineArgumentsVectorOfStrings :
   public kwsys_stl::vector<kwsys::String> {};
 class CommandLineArgumentsSetOfStrings :
   public kwsys_stl::set<kwsys::String> {};
-class CommandLineArgumentsMapOfStrucs : 
+class CommandLineArgumentsMapOfStrucs :
   public kwsys_stl::map<kwsys::String,
     CommandLineArgumentsCallbackStructure> {};
 
@@ -166,7 +166,7 @@ bool CommandLineArguments::GetMatchedArguments(
     const CommandLineArguments::Internal::String& parg = it->first;
     CommandLineArgumentsCallbackStructure *cs = &it->second;
     if (cs->ArgumentType == CommandLineArguments::NO_ARGUMENT ||
-      cs->ArgumentType == CommandLineArguments::SPACE_ARGUMENT) 
+      cs->ArgumentType == CommandLineArguments::SPACE_ARGUMENT)
       {
       if ( arg == parg )
         {
@@ -192,7 +192,7 @@ int CommandLineArguments::Parse()
     }
   for ( cc = 0; cc < this->Internals->Argv.size(); cc ++ )
     {
-    const kwsys_stl::string& arg = this->Internals->Argv[cc]; 
+    const kwsys_stl::string& arg = this->Internals->Argv[cc];
     CommandLineArguments_DEBUG("Process argument: " << arg);
     this->Internals->LastArgument = cc;
     if ( this->GetMatchedArguments(&matches, arg) )
@@ -212,7 +212,7 @@ int CommandLineArguments::Parse()
         }
       // So, the longest one is probably the right one. Now see if it has any
       // additional value
-      CommandLineArgumentsCallbackStructure *cs 
+      CommandLineArgumentsCallbackStructure *cs
         = &this->Internals->Callbacks[matches[maxidx]];
       const kwsys_stl::string& sarg = matches[maxidx];
       if ( cs->Argument != sarg )
@@ -298,7 +298,7 @@ int CommandLineArguments::Parse()
       // Handle unknown arguments
       if ( this->Internals->UnknownArgumentCallback )
         {
-        if ( !this->Internals->UnknownArgumentCallback(arg.c_str(), 
+        if ( !this->Internals->UnknownArgumentCallback(arg.c_str(),
             this->Internals->ClientData) )
           {
           this->Internals->LastArgument --;
@@ -325,7 +325,7 @@ int CommandLineArguments::Parse()
 //----------------------------------------------------------------------------
 void CommandLineArguments::GetRemainingArguments(int* argc, char*** argv)
 {
-  CommandLineArguments::Internal::VectorOfStrings::size_type size 
+  CommandLineArguments::Internal::VectorOfStrings::size_type size
     = this->Internals->Argv.size() - this->Internals->LastArgument + 1;
   CommandLineArguments::Internal::VectorOfStrings::size_type cc;
 
@@ -336,7 +336,7 @@ void CommandLineArguments::GetRemainingArguments(int* argc, char*** argv)
   int cnt = 1;
 
   // Copy everything after the LastArgument, since that was not parsed.
-  for ( cc = this->Internals->LastArgument+1; 
+  for ( cc = this->Internals->LastArgument+1;
     cc < this->Internals->Argv.size(); cc ++ )
     {
     args[cnt] = new char[ this->Internals->Argv[cc].size() + 1];
@@ -350,7 +350,7 @@ void CommandLineArguments::GetRemainingArguments(int* argc, char*** argv)
 //----------------------------------------------------------------------------
 void CommandLineArguments::GetUnusedArguments(int* argc, char*** argv)
 {
-  CommandLineArguments::Internal::VectorOfStrings::size_type size 
+  CommandLineArguments::Internal::VectorOfStrings::size_type size
     = this->Internals->UnusedArguments.size() + 1;
   CommandLineArguments::Internal::VectorOfStrings::size_type cc;
 
@@ -385,7 +385,7 @@ void CommandLineArguments::DeleteRemainingArguments(int argc, char*** argv)
 }
 
 //----------------------------------------------------------------------------
-void CommandLineArguments::AddCallback(const char* argument, ArgumentTypeEnum type, 
+void CommandLineArguments::AddCallback(const char* argument, ArgumentTypeEnum type,
   CallbackType callback, void* call_data, const char* help)
 {
   CommandLineArgumentsCallbackStructure s;
@@ -469,7 +469,7 @@ void CommandLineArguments::SetUnknownArgumentCallback(
 //----------------------------------------------------------------------------
 const char* CommandLineArguments::GetHelp(const char* arg)
 {
-  CommandLineArguments::Internal::CallbacksMap::iterator it 
+  CommandLineArguments::Internal::CallbacksMap::iterator it
     = this->Internals->Callbacks.find(arg);
   if ( it == this->Internals->Callbacks.end() )
     {
@@ -481,7 +481,7 @@ const char* CommandLineArguments::GetHelp(const char* arg)
   CommandLineArgumentsCallbackStructure *cs = &(it->second);
   for(;;)
     {
-    CommandLineArguments::Internal::CallbacksMap::iterator hit 
+    CommandLineArguments::Internal::CallbacksMap::iterator hit
       = this->Internals->Callbacks.find(cs->Help);
     if ( hit == this->Internals->Callbacks.end() )
       {
@@ -519,11 +519,11 @@ unsigned int CommandLineArguments::GetLastArgument()
 void CommandLineArguments::GenerateHelp()
 {
   kwsys_ios::ostringstream str;
-  
+
   // Collapse all arguments into the map of vectors of all arguments that do
   // the same thing.
   CommandLineArguments::Internal::CallbacksMap::iterator it;
-  typedef kwsys_stl::map<CommandLineArguments::Internal::String, 
+  typedef kwsys_stl::map<CommandLineArguments::Internal::String,
      CommandLineArguments::Internal::SetOfStrings > MapArgs;
   MapArgs mp;
   MapArgs::iterator mpit, smpit;
@@ -565,7 +565,7 @@ void CommandLineArguments::GenerateHelp()
       mp[it->first].insert(it->first);
       }
     }
- 
+
   // Find the length of the longest string
   CommandLineArguments::Internal::String::size_type maxlen = 0;
   for ( mpit = mp.begin();
@@ -591,8 +591,6 @@ void CommandLineArguments::GenerateHelp()
     }
 
   // Create format for that string
-  char format[80];
-  sprintf(format, "  %%-%us  ", static_cast<unsigned int>(maxlen));
 
   maxlen += 4; // For the space before and after the option
 
@@ -615,9 +613,7 @@ void CommandLineArguments::GenerateHelp()
         case CommandLineArguments::EQUAL_ARGUMENT:  strcat(argument, "=opt"); break;
         case CommandLineArguments::MULTI_ARGUMENT:  strcat(argument, " opt opt ..."); break;
         }
-      char buffer[80];
-      sprintf(buffer, format, argument);
-      str << buffer;
+      str << "  " << argument << "  ";
       }
     const char* ptr = this->Internals->Callbacks[mpit->first].Help;
     size_t len = strlen(ptr);

@@ -30,7 +30,7 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
     m_TestsDone[FUNCTION_LENGTH] = true;
     m_TestsDescription[FUNCTION_LENGTH] = "Functions must not exceed: ";
     char* temp = new char[10];
-    sprintf(temp,"%ld",maxLength);        
+    sprintf(temp,"%ld",maxLength);
     m_TestsDescription[FUNCTION_LENGTH] += temp;
     m_TestsDescription[FUNCTION_LENGTH] += " lines";
     delete [] temp;
@@ -62,8 +62,8 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
     bool inWord = false;
     for(;i>0;i--)
       {
-      if(m_BufferNoComment[i] != ' ' && m_BufferNoComment[i] != '\t' 
-         && m_BufferNoComment[i] != '\r' && m_BufferNoComment[i] != '\n' 
+      if(m_BufferNoComment[i] != ' ' && m_BufferNoComment[i] != '\t'
+         && m_BufferNoComment[i] != '\r' && m_BufferNoComment[i] != '\n'
          && m_BufferNoComment[i] != '*' && m_BufferNoComment[i] != '&')
         {
         inWord = true;
@@ -130,16 +130,16 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
       long int pos2 = this->FindClosingChar('{','}',bf,true);
       long int poscomments = GetPositionWithComments(pos2);
       long int efl = this->GetLineNumber(poscomments);
-      
+
       pos = this->FindFunction(pos2+1);
 
       // we cannot go backward
       if(pos2 > pos)
         {
-        long int bf = m_BufferNoComment.find('{',pos2);
-        pos = this->FindFunction(bf);
+        long int localbf = m_BufferNoComment.find('{',pos2);
+        pos = this->FindFunction(localbf);
         }
-     
+
       if(!regex.find(functionName))
         {
         Error error;
@@ -169,7 +169,7 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
           error.description += ")";
           m_ErrorList.push_back(error);
           hasError = true;
-          delete [] temp; 
+          delete [] temp;
           }
         }
       }

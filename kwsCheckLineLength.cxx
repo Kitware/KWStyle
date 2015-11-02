@@ -29,7 +29,7 @@ bool Parser::CheckLineLength(unsigned long max,bool checkHeader)
   bool hasError = false;
 
   size_t fileSize = 0;
-  
+
   // If we do not want to check the header
   if(!checkHeader)
     {
@@ -39,7 +39,7 @@ bool Parser::CheckLineLength(unsigned long max,bool checkHeader)
       file.open(m_HeaderFilename.c_str(), std::ios::binary | std::ios::in);
       if(!file.is_open())
         {
-        std::cout << "CheckLineLength() - Cannot open file: " 
+        std::cout << "CheckLineLength() - Cannot open file: "
                   << m_HeaderFilename << std::endl;
         }
       else
@@ -52,7 +52,7 @@ bool Parser::CheckLineLength(unsigned long max,bool checkHeader)
     else
       {
       // we look at the first '*/' in the file which indicated the end of the current header
-      // This assume that there is an header at some point  
+      // This assume that there is an header at some point
       size_t endHeader = m_Buffer.find("*/",0);
       if(endHeader != std::string::npos)
         {
@@ -82,16 +82,16 @@ bool Parser::CheckLineLength(unsigned long max,bool checkHeader)
         error.line2 = error.line;
         error.number = LINE_LENGTH;
         error.description = "Line length exceed ";
-        char* val = new char[10];
-        sprintf(val,"%ld",line_length);
-        error.description += val;
+        char* localval = new char[10];
+        sprintf(localval,"%ld",line_length);
+        error.description += localval;
         error.description += " (max=";
-        delete [] val;
-        val = new char[10];
-        sprintf(val,"%ld",max);
-        error.description += val;
+        delete [] localval;
+        localval = new char[10];
+        sprintf(localval,"%ld",max);
+        error.description += localval;
         error.description += ")";
-        delete [] val;
+        delete [] localval;
         m_ErrorList.push_back(error);
         hasError = true;
         }

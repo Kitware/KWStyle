@@ -45,7 +45,7 @@ bool Parser::CheckExtraSpaces(unsigned long max,bool checkEmptyLines)
           }
         pos--;
         }
-  
+
       if(empty)
         {
         checking = false;
@@ -69,16 +69,16 @@ bool Parser::CheckExtraSpaces(unsigned long max,bool checkEmptyLines)
             error.line2 = error.line;
             error.number = SPACES;
             error.description = "Number of spaces before end of line exceed: ";
-            char* val = new char[10];
-            sprintf(val,"%ld",space);
-            error.description += val;
+            char* localval = new char[10];
+            sprintf(localval,"%ld",space);
+            error.description += localval;
             error.description += " (max=";
-            delete [] val;
-            val = new char[10];
-            sprintf(val,"%ld",max);
-            error.description += val;
+            delete [] localval;
+            localval = new char[10];
+            sprintf(localval,"%ld",max);
+            error.description += localval;
             error.description += ")";
-            delete [] val;
+            delete [] localval;
             m_ErrorList.push_back(error);
             hasError = true;
             break; // avoid multiple error line

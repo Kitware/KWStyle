@@ -63,16 +63,16 @@ bool Parser::CheckMemberFunctions(const char* regEx,unsigned long maxLength)
 
       char* buf = new char[fileSize+1];
       file.read(buf,fileSize);
-      buf[fileSize] = 0; 
+      buf[fileSize] = 0;
       std::string buffer(buf);
       buffer.resize(fileSize);
       delete [] buf;
-      
+
       file.close();
-      
+
       this->ConvertBufferToWindowsFileType(buffer);
       buffer = this->RemoveComments(buffer.c_str());
-      
+
       size_t classpos = this->GetClassPosition(0,buffer);
       while(classpos!=std::string::npos)
         {
@@ -100,13 +100,13 @@ bool Parser::CheckMemberFunctions(const char* regEx,unsigned long maxLength)
   while(classpos!=std::string::npos)
     {
     size_t current;
-    std::string memberFunction = 
+    std::string memberFunction =
             this->FindMemberFunction(m_BufferNoComment,classpos,
                                      this->FindEndOfClass(classpos+1),current);
 
     std::string classname = this->FindPreviousWord(classpos);
-        
-    if(m_BufferNoComment[classpos-1] != ' ' 
+
+    if(m_BufferNoComment[classpos-1] != ' '
       && m_BufferNoComment[classpos-1] != '\n'
       )
       {
@@ -117,7 +117,7 @@ bool Parser::CheckMemberFunctions(const char* regEx,unsigned long maxLength)
         classname = m_BufferNoComment[i]+classname;
         i--;
         }
-      }    
+      }
     std::string destructor = "~";
     destructor += classname;
 
@@ -165,7 +165,7 @@ bool Parser::CheckMemberFunctions(const char* regEx,unsigned long maxLength)
               error.description += ")";
               m_ErrorList.push_back(error);
               hasError = true;
-              delete [] temp; 
+              delete [] temp;
               }
             }
           }
@@ -206,14 +206,14 @@ bool Parser::CheckMemberFunctions(const char* regEx,unsigned long maxLength)
       if(valid)
         {
         size_t i=pos2+2;
-        while(i<m_BufferNoComment.size() && 
-             (m_BufferNoComment[i] == ' ' 
-             || m_BufferNoComment[i] == '\n' 
+        while(i<m_BufferNoComment.size() &&
+             (m_BufferNoComment[i] == ' '
+             || m_BufferNoComment[i] == '\n'
              || m_BufferNoComment[i] == '\r'))
           {
           i++;
           }
-       
+
        size_t pos3 = m_BufferNoComment.find("(",i);
        if(pos3 != std::string::npos)
          {
@@ -222,7 +222,7 @@ bool Parser::CheckMemberFunctions(const char* regEx,unsigned long maxLength)
          destructor += classname;
 
          std::string functionLine = this->GetLine(this->GetLineNumber(i,true)-1);
-         
+
          // if the member function is a constructor or destructor we ignore
          if(functionName != classname
            && functionName != destructor
@@ -246,7 +246,7 @@ bool Parser::CheckMemberFunctions(const char* regEx,unsigned long maxLength)
              size_t close = this->FindClosingChar('{','}',open,true);
              size_t lopen = this->GetLineNumber(open);
              size_t lclose = this->GetLineNumber(close);
-             if((open!=std::string::npos) && (close!=std::string::npos) 
+             if((open!=std::string::npos) && (close!=std::string::npos)
                 && (lclose-lopen>maxLength))
                {
                Error error;
@@ -263,7 +263,7 @@ bool Parser::CheckMemberFunctions(const char* regEx,unsigned long maxLength)
                error.description += ")";
                m_ErrorList.push_back(error);
                hasError = true;
-               delete [] temp; 
+               delete [] temp;
                }
              }
            }
@@ -277,7 +277,7 @@ bool Parser::CheckMemberFunctions(const char* regEx,unsigned long maxLength)
   return !hasError;
 }
 
-/** Find the first member function in the source code 
+/** Find the first member function in the source code
  *  Member functions are defined as int myfunction(); */
 std::string Parser::FindMemberFunction(std::string & buffer, size_t start, size_t end,size_t& pos)
 {
@@ -293,7 +293,7 @@ std::string Parser::FindMemberFunction(std::string & buffer, size_t start, size_
       posSemicolon = buffer.find(";",posSemicolon+1);
       continue;
       }
-       
+
     // We try to find a (
     size_t i=posSemicolon-1;
     bool inFunction = true;
@@ -301,7 +301,7 @@ std::string Parser::FindMemberFunction(std::string & buffer, size_t start, size_
       {
       if(buffer[i] == ')')
         {
-        size_t close = this->FindClosingChar(')','(',i,true);  
+        size_t close = this->FindClosingChar(')','(',i,true);
         if(close>0 && !this->IsInFunction(close,buffer.c_str()))
           {
           i = close;
@@ -313,20 +313,20 @@ std::string Parser::FindMemberFunction(std::string & buffer, size_t start, size_
       }
 
     pos = i-1;
-     
+
     // If we have a match we extract the word
     if(pos != std::string::npos && pos>start && pos<end)
       {
       std::string functionName = "";
       bool inWord = false;
-      size_t i=pos;
-      for(;i!=std::string::npos && i>start;i--)
+      size_t index=pos;
+      for(;index!=std::string::npos && index>start;index--)
         {
-        if(buffer[i] != ' ' && buffer[i] != '\t' 
-           && buffer[i] != '\r' && buffer[i] != '\n' && buffer[i] != '*' && buffer[i] != '&')
+        if(buffer[index] != ' ' && buffer[index] != '\t'
+           && buffer[index] != '\r' && buffer[index] != '\n' && buffer[index] != '*' && buffer[index] != '&')
           {
           inWord = true;
-          functionName = buffer[i]+functionName;
+          functionName = buffer[index]+functionName;
           }
         else if(inWord)
           {
@@ -352,8 +352,8 @@ std::string Parser::FindMemberFunction(std::string & buffer, size_t start, size_
           {
           functionName = functionName.substr(0,posf);
           }
-        
-        // If the function name is void we skip because it means 
+
+        // If the function name is void we skip because it means
         // this is a member variable function (see bug 5086)
         if(functionName != "void")
           {
@@ -364,7 +364,7 @@ std::string Parser::FindMemberFunction(std::string & buffer, size_t start, size_
     posSemicolon = buffer.find(";",posSemicolon+1);
     }
 
-  pos = std::string::npos;  
+  pos = std::string::npos;
   return "";
 }
 
