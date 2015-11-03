@@ -935,15 +935,15 @@ bool Parser::InitIndentation()
         }
       if(m_Buffer[ic] == '{')
         {
-        IndentPosition localindtemp;
-        localindtemp.position = ic;
-        localindtemp.current = 0;
-        localindtemp.after = 0;
-        m_IdentPositionVector.push_back(localindtemp);
-        localindtemp.position = this->FindClosingChar('{','}',ic);
-        localindtemp.current = 0;
-        localindtemp.after = 0;
-        m_IdentPositionVector.push_back(localindtemp);
+        IndentPosition tempind;
+        tempind.position = ic;
+        tempind.current = 0;
+        tempind.after = 0;
+        m_IdentPositionVector.push_back(tempind);
+        tempind.position = this->FindClosingChar('{','}',ic);
+        tempind.current = 0;
+        tempind.after = 0;
+        m_IdentPositionVector.push_back(tempind);
         }
       }
 
