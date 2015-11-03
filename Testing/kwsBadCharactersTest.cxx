@@ -18,6 +18,10 @@
 #pragma warning ( disable : 4786 )
 #endif
 
+#if defined(__clang__)
+#pragma clang diagnostic ignored "-Winvalid-source-encoding"
+#endif
+
 #include "kwsParser.h"
 
 int kwsBadCharactersTest(int, char* [] )
