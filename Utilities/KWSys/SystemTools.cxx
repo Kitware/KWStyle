@@ -37,6 +37,7 @@
 
 #ifdef _MSC_VER
 # pragma warning (disable: 4786)
+# pragma warning (disable: 4996)
 #endif
 
 #if defined(__sgi) && !defined(__GNUC__)

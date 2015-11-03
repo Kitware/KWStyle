@@ -60,6 +60,7 @@ Q190351 and Q150956.
 #pragma warning (pop)
 #pragma warning (disable: 4514)
 #pragma warning (disable: 4706)
+#pragma warning (disable: 4996)
 #endif
 
 #if defined(__BORLANDC__)
