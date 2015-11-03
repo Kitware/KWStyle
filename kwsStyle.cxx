@@ -291,7 +291,7 @@ int main(int argc, char **argv)
     delete [] buf;
 
     long int start = 0;
-    long int pos = buffer.find("\n",start);
+    long int pos = static_cast<long int>(buffer.find("\n",start));
     do
       {
       std::string line = "";
@@ -311,19 +311,19 @@ int main(int argc, char **argv)
         break;
         }
 
-      long int p = line.find(" ");
+      long int p = static_cast<long int>(line.find(" "));
       if(p != -1)
         {
         kwsFeature f;
         f.filename = line.substr(0,p);
         long int p1 = p;
-        p = line.find(" ",p+1);
+        p = static_cast<long int>(line.find(" ",p+1));
         if(p!=-1)
           {
           f.name = line.substr(p1+1,p-p1-1);
           }
         p1 = p;
-        p = line.find(" ",p+1);
+        p = static_cast<long int>(line.find(" ",p+1));
         std::string enablestring = line.substr(p1+1,p-p1-1);
         if(enablestring.find("Enable") != std::string::npos)
           {
@@ -335,7 +335,7 @@ int main(int argc, char **argv)
           }
 
         p1 = p;
-        p = line.find("\n",p+1);
+        p = static_cast<long int>(line.find("\n",p+1));
 
         if(p!=-1)
           {
@@ -347,7 +347,7 @@ int main(int argc, char **argv)
 
       if(static_cast<unsigned long>(pos) != fileSize)
         {
-        pos = buffer.find("\n",start);
+        pos = static_cast<long int>(buffer.find("\n",start));
         }
       } while(pos<(long int)fileSize);
 
@@ -445,17 +445,17 @@ int main(int argc, char **argv)
       else
         {
         dirname = buffer.substr(start,posr-start);
-        start = pos+1;
+        start = static_cast<long int>(pos)+1;
         }
       if(dirname.size() < 2)
         {
         break;
         }
 
-      long int space = dirname.find(" ");
+      long int space = static_cast<long int>(dirname.find(" "));
       while(space != -1 && helperParser.IsBetweenQuote(space,false,dirname))
         {
-        space = dirname.find(" ",space+1);
+        space = static_cast<long int>(dirname.find(" ",space+1));
         }
 
       // if we should remove the file
@@ -478,10 +478,10 @@ int main(int argc, char **argv)
           gotrecurse = true;
           }
 
-        long int localspace = dirname.find(" ");
+        long int localspace = static_cast<long int>(dirname.find(" "));
         while(localspace != -1 && helperParser.IsBetweenQuote(localspace,false,dirname))
           {
-          localspace = dirname.find(" ",localspace+1);
+          localspace = static_cast<long int>(dirname.find(" ",localspace+1));
           }
 
         if(localspace != -1)
@@ -730,7 +730,7 @@ int main(int argc, char **argv)
         }
       }
 
-    nerrors += parser.GetErrors().size();
+    nerrors += static_cast<unsigned long>(parser.GetErrors().size());
 
     parser.GenerateFixedFile();
 

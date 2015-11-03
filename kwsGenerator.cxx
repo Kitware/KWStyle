@@ -321,21 +321,21 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
       localfilename = localfilename.substr(pos+2,localfilename.size()-pos-2);
       }
 
-    long int slash = localfilename.find_last_of("/");
+    long int slash = static_cast<long int>(localfilename.find_last_of("/"));
     unsigned int index=0;
     while(slash != -1 && index<m_MaxDirectoryDepth)
       {
       localfilename.replace(slash,1,"_");
-      slash = localfilename.find_last_of("/");
+      slash = static_cast<long int>(localfilename.find_last_of("/"));
       index++;
       }
-    slash = localfilename.find_last_of("/");
+    slash = static_cast<long int>(localfilename.find_last_of("/"));
     if(slash != -1)
       {
       localfilename = localfilename.substr(slash+1,localfilename.size()-slash-1);
       }
 
-    slash = parser.GetFilename().find_last_of("/");
+    slash = static_cast<long int>(parser.GetFilename().find_last_of("/"));
 
     std::string nameofclass = parser.GetFilename().substr(slash+1,(parser.GetFilename().size())-slash-1);
     std::string filenamecorrect = nameofclass;
@@ -549,15 +549,15 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
       filename2 = filename2.substr(pos+2,filename2.size()-pos-2);
       }
 
-    long int slash = filename2.find_last_of("/");
+    long int slash = static_cast<long int>(filename2.find_last_of("/"));
     unsigned int i = 0;
     while(slash != -1 && i<m_MaxDirectoryDepth)
       {
       filename2.replace(slash,1,"_");
-      slash = filename2.find_last_of("/");
+      slash = static_cast<long int>(filename2.find_last_of("/"));
       i++;
       }
-    slash = filename2.find_last_of("/");
+    slash = static_cast<long int>(filename2.find_last_of("/"));
     if(slash != -1)
       {
       filename2 = filename2.substr(slash+1,filename2.size()-slash-1);
@@ -681,7 +681,7 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
       // If the error is of type extra spaces we show the problem as *
       if(errorTag.find("ESP") != std::string::npos)
         {
-        int k = l.size()-1;
+        int k = static_cast<int>(l.size())-1;
         while(k>0 && (l[k] == ' '))
           {
           l[k]='*';
@@ -690,33 +690,33 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
         }
 
       // Remove the first \n
-      long int p = l.find('\n');
+      long int p = static_cast<long int>(l.find('\n'));
       if(p != -1)
         {
         l.replace(p,1,"");
         }
 
       // Replace < and >
-      long int inf = l.find("<",0);
+      long int inf = static_cast<long int>(l.find("<",0));
       while(inf != -1)
         {
         l.replace(inf,1,"&lt;");
-        inf = l.find("<",0);
+        inf = static_cast<long int>(l.find("<",0));
         }
 
-      long int sup = l.find(">",0);
+      long int sup = static_cast<long int>(l.find(">",0));
       while(sup != -1)
         {
         l.replace(sup,1,"&gt;");
-        sup = l.find(">",0);
+        sup = static_cast<long int>(l.find(">",0));
         }
 
       // Replace the space by &nbsp;
-      long int space = l.find(' ',0);
+      long int space = static_cast<long int>(l.find(' ',0));
       while(space != -1)
         {
         l.replace(space,1,"&nbsp;");
-        space = l.find(' ',space+1);
+        space = static_cast<long int>(l.find(' ',space+1));
         }
 
       // Show the comments in green
@@ -726,7 +726,7 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
         }
 
       // Show the comments in green
-      space = l.find("//",0);
+      space = static_cast<long int>(l.find("//",0));
       if(space != -1)
         {
         l.insert(space,"<font color=\"#009933\">");
@@ -734,12 +734,12 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
         }
       else
         {
-        space = l.find("/*",0);
+        space = static_cast<long int>(l.find("/*",0));
         while(space != -1)
           {
           comment = true;
           l.insert(space,"<font color=\"#009933\">");
-          space = l.find("/*",space+23);
+          space = static_cast<long int>(l.find("/*",space+23));
           }
 
         if(comment)
@@ -747,13 +747,13 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
           l.insert(l.size(),"</font>");
           }
 
-        space = l.find("*/",0);
+        space = static_cast<long int>(l.find("*/",0));
 
         while(space != -1)
           {
           comment = false;
           l.insert(space+2,"</font>");
-          space = l.find("*/",space+8);
+          space = static_cast<long int>(l.find("*/",space+8));
           }
         }
       file << "<td height=\"1\"><font face=\"Courier New, Courier, mono\" size=\"2\">" << l.c_str() << "</font></td>" << std::endl;
@@ -793,12 +793,12 @@ bool Generator::CreateHeader(std::ostream * file,const char* title)
 
  // remove the last extension
  std::string tit = title;
- long int pos = tit.find_last_of(".");
+ long int pos = static_cast<long int>(tit.find_last_of("."));
  if(pos!=-1)
    {
    tit = tit.substr(0,pos);
    }
- pos = tit.find_last_of("/");
+ pos = static_cast<long int>(tit.find_last_of("/"));
  if(pos!=-1)
    {
    tit = tit.substr(pos+1,tit.size()-pos-1);
@@ -867,7 +867,7 @@ void Generator::ExportHTML(std::ostream & output)
 
     // Extract the filename
     std::string filename = "";
-    long int slash = (*it).GetFilename().find_last_of("/");
+    long int slash = static_cast<long int>((*it).GetFilename().find_last_of("/"));
     if(slash == -1)
       {
       slash = 0;
@@ -940,33 +940,33 @@ void Generator::ExportHTML(std::ostream & output)
         }
 
       // Remove the first \n
-      long int p = l.find('\n');
+      long int p = static_cast<long int>(l.find('\n'));
       if(p != -1)
         {
         l.replace(p,1,"");
         }
 
       // Replace < and >
-      long int inf = l.find("<",0);
+      long int inf = static_cast<long int>(l.find("<",0));
       while(inf != -1)
         {
         l.replace(inf,1,"&lt;");
-        inf = l.find("<",0);
+        inf = static_cast<long int>(l.find("<",0));
         }
 
-      long int sup = l.find(">",0);
+      long int sup = static_cast<long int>(l.find(">",0));
       while(sup != -1)
         {
         l.replace(sup,1,"&gt;");
-        sup = l.find(">",0);
+        sup = static_cast<long int>(l.find(">",0));
         }
 
       // Replace the space by &nbsp;
-      long int space = l.find(' ',0);
+      long int space = static_cast<long int>(l.find(' ',0));
       while(space != -1)
         {
         l.replace(space,1,"&nbsp;");
-        space = l.find(' ',space+1);
+        space = static_cast<long int>(l.find(' ',space+1));
         }
 
       // Show the comments in green
@@ -976,7 +976,7 @@ void Generator::ExportHTML(std::ostream & output)
         }
 
       // Show the comments in green
-      space = l.find("//",0);
+      space = static_cast<long int>(l.find("//",0));
       if(space != -1)
         {
         l.insert(space,"<font color=\"#009933\">");
@@ -984,12 +984,12 @@ void Generator::ExportHTML(std::ostream & output)
         }
       else // if we have a line like // */ this is a single line comment
         {
-        space = l.find("/*",0);
+        space = static_cast<long int>(l.find("/*",0));
         while(space != -1)
           {
           comment = true;
           l.insert(space,"<font color=\"#009933\">");
-          space = l.find("/*",space+23);
+          space = static_cast<long int>(l.find("/*",space+23));
           }
 
         if(comment)
@@ -997,12 +997,12 @@ void Generator::ExportHTML(std::ostream & output)
           l.insert(l.size(),"</font>");
           }
 
-        space = l.find("*/",0);
+        space = static_cast<long int>(l.find("*/",0));
         while(space != -1)
           {
           comment = false;
           l.insert(space+2,"</font>");
-          space = l.find("*/",space+8);
+          space = static_cast<long int>(l.find("*/",space+8));
           }
         }
 
@@ -1166,15 +1166,15 @@ bool Generator::GenerateDart(const char* dir,int maxError,
             htmlfile = htmlfile.substr(pos+2,htmlfile.size()-pos-2);
             }
 
-          long int slash = htmlfile.find_last_of("/");
+          long int slash = static_cast<long int>(htmlfile.find_last_of("/"));
           unsigned int i = 0;
           while(slash != -1 && i<m_MaxDirectoryDepth)
             {
             htmlfile.replace(slash,1,"_");
-            slash = htmlfile.find_last_of("/");
+            slash = static_cast<long int>(htmlfile.find_last_of("/"));
             i++;
             }
-          slash = htmlfile.find_last_of("/");
+          slash = static_cast<long int>(htmlfile.find_last_of("/"));
           if(slash != -1)
             {
             htmlfile = htmlfile.substr(slash+1,htmlfile.size()-slash-1);
@@ -1191,23 +1191,23 @@ bool Generator::GenerateDart(const char* dir,int maxError,
       file << (*it).GetErrorTag((*itError).number);
       file << " : ";
       std::string desc = (*itError).description;
-      long int pos = desc.find("&",0);
+      long int pos = static_cast<long int>(desc.find("&",0));
       while(pos != -1)
         {
         desc.replace(pos,1,"&amp;");
-        pos = desc.find("&",pos+3);
+        pos = static_cast<long int>(desc.find("&",pos+3));
         }
-      pos = desc.find("<");
+      pos = static_cast<long int>(desc.find("<"));
       while(pos != -1)
         {
         desc.replace(pos,1,"&#x03C;");
-        pos = desc.find("<");
+        pos = static_cast<long int>(desc.find("<"));
         }
-      pos = desc.find(">");
+      pos = static_cast<long int>(desc.find(">"));
       while(pos != -1)
         {
         desc.replace(pos,1,"&#x03E;");
-        pos = desc.find(">");
+        pos = static_cast<long int>(desc.find(">"));
         }
 
       desc += " ["+(*it).GetTestDescription((*itError).number)+"] (";

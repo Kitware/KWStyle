@@ -713,7 +713,7 @@ bool MetaCommand::ParseXML(const char* buffer)
     unsigned int n = atoi(this->GetXML(buf.c_str(),"nvalues",0).c_str());
 
     // Now check the fields
-    long posF = buf.find("<field>");
+    long posF = static_cast<long>(buf.find("<field>"));
     for(unsigned int i=0;i<n;i++)
       {
       METAIO_STL::string f = this->GetXML(buf.c_str(),"field",posF);
@@ -748,12 +748,12 @@ bool MetaCommand::ParseXML(const char* buffer)
         }
 
       option.fields.push_back(field);
-      posF += f.size()+8;
+      posF += static_cast<long>(f.size())+8;
       }
 
     m_OptionVector.push_back(option);
 
-    pos += buf.size()+17;
+    pos += static_cast<long>(buf.size())+17;
     buf = this->GetXML(buffer,"option",pos);
     }
 
@@ -1252,7 +1252,7 @@ bool MetaCommand::Parse(int argc, char* argv[])
       if(this->OptionExistsByMinusTag(tag))
         {
         inArgument = true;
-        valuesRemaining = this->GetOptionByMinusTag(tag)->fields.size();
+        valuesRemaining = static_cast<unsigned int>(this->GetOptionByMinusTag(tag)->fields.size());
         currentOption = this->GetOptionId(this->GetOptionByMinusTag(tag));
 
         if(currentOption < 0)
@@ -1311,7 +1311,7 @@ bool MetaCommand::Parse(int argc, char* argv[])
         if((pos >= currentField) && ((*it).tag==""))
           {
           currentOption = pos;
-          valuesRemaining = (*it).fields.size();
+          valuesRemaining = static_cast<unsigned int>((*it).fields.size());
           found = true;
           break;
           }
@@ -1346,7 +1346,7 @@ bool MetaCommand::Parse(int argc, char* argv[])
       {
       if(currentOption >=0 && currentOption < (int)(m_OptionVector.size()))
         {
-        unsigned long s = m_OptionVector[currentOption].fields.size();
+        unsigned long s = static_cast<unsigned long>(m_OptionVector[currentOption].fields.size());
         m_OptionVector[currentOption].fields[s-valuesRemaining].value = argv[i];
         m_OptionVector[currentOption].fields[s-valuesRemaining].userDefined =
                                                                            true;

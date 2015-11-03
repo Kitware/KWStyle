@@ -27,7 +27,7 @@ bool Parser::CheckExtraSpaces(unsigned long max,bool checkEmptyLines)
   delete [] val;
 
   bool hasError = false;
-  long int posEndOfLine = m_Buffer.find("\r\n",0);
+  long int posEndOfLine = static_cast<long int>(m_Buffer.find("\r\n",0));
   while(posEndOfLine != -1)
     {
     bool checking = true;
@@ -91,7 +91,7 @@ bool Parser::CheckExtraSpaces(unsigned long max,bool checkEmptyLines)
         i--;
         }
       }
-    posEndOfLine = m_Buffer.find("\r\n",posEndOfLine+1);
+    posEndOfLine = static_cast<long int>(m_Buffer.find("\r\n",posEndOfLine+1));
     }
 
   return !hasError;

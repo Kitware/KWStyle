@@ -108,19 +108,19 @@ int Compare(const char* baseline, const char* testfile)
 
   // Go through the testfile and check if we have the same errors than the
   // baseline
-  long int posError = testfileBuffer.find("<Error>");
-  long int posErrorBase = testfileBuffer.find("<Error>");;
+  long int posError = static_cast<long int>(testfileBuffer.find("<Error>"));
+  long int posErrorBase = static_cast<long int>(testfileBuffer.find("<Error>"));
 
   while(posError != -1)
     {
-    long int posErrorEnd = testfileBuffer.find("</Error>",posError);
+    long int posErrorEnd = static_cast<long int>(testfileBuffer.find("</Error>",posError));
     std::string subError = testfileBuffer.substr(posError,posErrorEnd-posError);
-    long int line1a = subError.find("<SourceLineNumber1>");
-    long int line1b = subError.find("</SourceLineNumber1>");
-    long int line2a = subError.find("<SourceLineNumber2>");
-    long int line2b = subError.find("</SourceLineNumber2>");
-    long int errorNumbera = subError.find("<ErrorNumber>");
-    long int errorNumberb = subError.find("</ErrorNumber>");   
+    long int line1a = static_cast<long int>(subError.find("<SourceLineNumber1>"));
+    long int line1b = static_cast<long int>(subError.find("</SourceLineNumber1>"));
+    long int line2a = static_cast<long int>(subError.find("<SourceLineNumber2>"));
+    long int line2b = static_cast<long int>(subError.find("</SourceLineNumber2>"));
+    long int errorNumbera = static_cast<long int>(subError.find("<ErrorNumber>"));
+    long int errorNumberb = static_cast<long int>(subError.find("</ErrorNumber>"));   
     unsigned int l1 = atoi(subError.substr(line1a+19,line1b-line1a-19).c_str());
     unsigned int l2 = atoi(subError.substr(line2a+19,line2b-line2a-19).c_str());
     unsigned int errorNumber = atoi(subError.substr(errorNumbera+13,errorNumberb-errorNumbera-13).c_str());
@@ -131,14 +131,14 @@ int Compare(const char* baseline, const char* testfile)
       std::cout << "Error not found" << std::endl;
       return 1;
       }
-    long int posErrorEndBase = baselineBuffer.find("</Error>",posErrorBase);
+    long int posErrorEndBase = static_cast<long int>(baselineBuffer.find("</Error>",posErrorBase));
     std::string subErrorBase = baselineBuffer.substr(posErrorBase,posErrorEndBase-posErrorBase);
-    long int line1aBase = subErrorBase.find("<SourceLineNumber1>");
-    long int line1bBase = subErrorBase.find("</SourceLineNumber1>");
-    long int line2aBase = subErrorBase.find("<SourceLineNumber2>");
-    long int line2bBase = subErrorBase.find("</SourceLineNumber2>");
-    long int errorNumberaBase = subErrorBase.find("<ErrorNumber>");
-    long int errorNumberbBase = subErrorBase.find("</ErrorNumber>");   
+    long int line1aBase = static_cast<long int>(subErrorBase.find("<SourceLineNumber1>"));
+    long int line1bBase = static_cast<long int>(subErrorBase.find("</SourceLineNumber1>"));
+    long int line2aBase = static_cast<long int>(subErrorBase.find("<SourceLineNumber2>"));
+    long int line2bBase = static_cast<long int>(subErrorBase.find("</SourceLineNumber2>"));
+    long int errorNumberaBase = static_cast<long int>(subErrorBase.find("<ErrorNumber>"));
+    long int errorNumberbBase = static_cast<long int>(subErrorBase.find("</ErrorNumber>"));   
     unsigned int l1Base = atoi(subErrorBase.substr(line1aBase+19,line1bBase-line1aBase-19).c_str());
     unsigned int l2Base = atoi(subErrorBase.substr(line2aBase+19,line2bBase-line2aBase-19).c_str());
     unsigned int errorNumberBase = atoi(subErrorBase.substr(errorNumberaBase+13,errorNumberbBase-errorNumberaBase-13).c_str());
@@ -152,8 +152,8 @@ int Compare(const char* baseline, const char* testfile)
       return 1;
       }
 
-    posError = testfileBuffer.find("<Error>",posError+1);
-    posErrorBase = baselineBuffer.find("<Error>",posErrorBase+1);
+    posError = static_cast<long int>(testfileBuffer.find("<Error>",posError+1));
+    posErrorBase = static_cast<long int>(baselineBuffer.find("<Error>",posErrorBase+1));
     }
   
   // Check that we don't have any other errors in the baseline

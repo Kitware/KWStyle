@@ -73,7 +73,7 @@ bool Parser::CheckLineLength(unsigned long max,bool checkHeader)
     if ( *inch == '\n' )
       {
       m_Positions.push_back(cc);
-      line_end = cc;
+      line_end = static_cast<long int>(cc);
       long int line_length = line_end - line_start-1;
       if(line_length > (long int)max && cc>fileSize)
         {
@@ -95,7 +95,7 @@ bool Parser::CheckLineLength(unsigned long max,bool checkHeader)
         m_ErrorList.push_back(error);
         hasError = true;
         }
-      line_start = cc + 1;
+      line_start = static_cast<long int>(cc) + 1;
       line_count ++;
       }
     inch ++;

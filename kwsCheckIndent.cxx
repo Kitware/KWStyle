@@ -135,7 +135,7 @@ bool Parser::CheckIndent(IndentType itype,
       {
       // we look at the first '*/' in the file which indicated the end of the current header
       // This assume that there is an header at some point
-      long int endHeader = m_Buffer.find("*/",0);
+      long int endHeader = static_cast<long int>(m_Buffer.find("*/",0));
       if(endHeader>0)
         {
         fileSize = endHeader;
@@ -227,7 +227,7 @@ bool Parser::CheckIndent(IndentType itype,
         if(previousLine[previousLine.size()-1] != ';')
           {
           // Check if we have a << at the beginning of the current line
-          long int posSpecialChar = currentLine.find("<<");
+          long int posSpecialChar = static_cast<long int>(currentLine.find("<<"));
           if(posSpecialChar != -1)
             {
             returnError = false;
@@ -266,14 +266,14 @@ bool Parser::CheckIndent(IndentType itype,
           {
           // We are in a macro if we have
           // '#define foo' and the line finishs with '\'
-          long int begMacro = m_Buffer.find("#define",0);
+          long int begMacro = static_cast<long int>(m_Buffer.find("#define",0));
           while(begMacro!=-1)
             {
             // Find the end of the macro
-            long int endMacro = m_Buffer.find("\r",begMacro);
+            long int endMacro = static_cast<long int>(m_Buffer.find("\r",begMacro));
             while(endMacro>0 && m_Buffer[endMacro-1]=='\\')
               {
-              endMacro = m_Buffer.find("\r",endMacro+1);
+              endMacro = static_cast<long int>(m_Buffer.find("\r",endMacro+1));
               }
 
             if(endMacro!=-1 && (long int)pos<endMacro && (long int)pos>begMacro)
@@ -281,7 +281,7 @@ bool Parser::CheckIndent(IndentType itype,
               returnError = false;
               break;
               }
-            begMacro = m_Buffer.find("#define",endMacro);
+            begMacro = static_cast<long int>(m_Buffer.find("#define",endMacro));
             }
           }
 
@@ -320,7 +320,7 @@ bool Parser::CheckIndent(IndentType itype,
       {
       bool check = true;
       // Check if { is after // [THIS CHECK IS NOT USEFULL ANYMORE]
-      long int doubleslash = m_Buffer.rfind("//",pos);
+      long int doubleslash = static_cast<long int>(m_Buffer.rfind("//",pos));
       if(doubleslash != -1)
         {
         if(this->GetLineNumber(doubleslash) == this->GetLineNumber(pos))
@@ -400,7 +400,7 @@ bool Parser::CheckIndent(IndentType itype,
         isCheckingComment = false;
         }
 
-      unsigned int poswithoutcomment = this->GetPositionWithoutComments(pos);
+      unsigned int poswithoutcomment = static_cast<long int>(this->GetPositionWithoutComments(pos));
 
       if((currentIndent != wantedIndent)
         && ((inComment
@@ -419,10 +419,10 @@ bool Parser::CheckIndent(IndentType itype,
         {
         // If we are inside an enum we do not check indent
         bool isInsideEnum = false;
-        long int bracket = m_Buffer.find_last_of('{',pos);
+        long int bracket = static_cast<long int>(m_Buffer.find_last_of('{',pos));
         if(bracket != -1)
           {
-          unsigned int l = this->FindPreviousWord(bracket-1,true).size();
+          unsigned int l = static_cast<long int>(this->FindPreviousWord(bracket-1,true).size());
           if(this->FindPreviousWord(bracket-l-2,true) == "enum")
             {
             isInsideEnum = true;
@@ -445,7 +445,7 @@ bool Parser::CheckIndent(IndentType itype,
         // Check if the line start with '<<' if this is the case we ignore it
         else if((*it) == '<' && (*(it+1) == '<'))
           {
-          long int posInf = previousLine.find("<<");
+          long int posInf = static_cast<long int>(previousLine.find("<<"));
           if((posInf != -1) && (posInf == currentIndent+1))
             {
             reportError = false;
@@ -454,16 +454,16 @@ bool Parser::CheckIndent(IndentType itype,
         // We don't care about everything between the class and '{'
         else
           {
-          long int classPos = m_Buffer.find("class",0);
+          long int classPos = static_cast<long int>(m_Buffer.find("class",0));
           while(classPos!=-1)
             {
-            long int endClass = m_Buffer.find("{",classPos);
+            long int endClass = static_cast<long int>(m_Buffer.find("{",classPos));
             if(endClass!=-1 && (long int)pos<endClass && (long int)pos>classPos)
               {
               reportError = false;
               break;
               }
-            classPos = m_Buffer.find("class",classPos+1);
+            classPos = static_cast<long int>(m_Buffer.find("class",classPos+1));
             }
           }
 
@@ -471,17 +471,17 @@ bool Parser::CheckIndent(IndentType itype,
         // This is for lists. THIS IS NOT A STRICT CHECK. Might be missing some.
         if(reportError)
           {
-          long int classPos = m_BufferNoComment.find("=",0);
+          long int classPos = static_cast<long int>(m_BufferNoComment.find("=",0));
           while(classPos!=-1)
             {
-            long int posNoCommments = this->GetPositionWithoutComments(pos);
-            long int endClass = m_BufferNoComment.find(";",classPos);
+            long int posNoCommments = static_cast<long int>(this->GetPositionWithoutComments(pos));
+            long int endClass = static_cast<long int>(m_BufferNoComment.find(";",classPos));
             if(endClass!=-1 && (long int)posNoCommments<endClass && (long int)posNoCommments>classPos)
               {
               reportError = false;
               break;
               }
-            classPos = m_BufferNoComment.find("=",classPos+1);
+            classPos = static_cast<long int>(m_BufferNoComment.find("=",classPos+1));
             }
           }
 
@@ -489,18 +489,18 @@ bool Parser::CheckIndent(IndentType itype,
         // This is for the constructor.
         if(reportError)
           {
-          long int classPos = m_BufferNoComment.find(":",0);
+          long int classPos = static_cast<long int>(m_BufferNoComment.find(":",0));
           while(classPos!=-1)
             {
-            long int posNoCommments = this->GetPositionWithoutComments(pos);
-            long int endConstructor = m_BufferNoComment.find("{",classPos);
+            long int posNoCommments = static_cast<long int>(this->GetPositionWithoutComments(pos));
+            long int endConstructor = static_cast<long int>(m_BufferNoComment.find("{",classPos));
 
             if(endConstructor!=-1 && (long int)posNoCommments<endConstructor && (long int)posNoCommments>classPos)
               {
               reportError = false;
               break;
               }
-            classPos = m_BufferNoComment.find(":",classPos+1);
+            classPos = static_cast<long int>(m_BufferNoComment.find(":",classPos+1));
             }
           }
 
@@ -508,18 +508,18 @@ bool Parser::CheckIndent(IndentType itype,
         // Ideally we should have a strict check
         if(reportError)
           {
-          long int classPos = m_BufferNoComment.find("return",0);
+          long int classPos = static_cast<long int>(m_BufferNoComment.find("return",0));
           while(classPos!=-1)
             {
-            long int posNoCommments = this->GetPositionWithoutComments(pos);
-            long int endConstructor = m_BufferNoComment.find(";",classPos);
+            long int posNoCommments = static_cast<long int>(this->GetPositionWithoutComments(pos));
+            long int endConstructor = static_cast<long int>(m_BufferNoComment.find(";",classPos));
 
             if(endConstructor!=-1 && (long int)posNoCommments<endConstructor && (long int)posNoCommments>classPos)
               {
               reportError = false;
               break;
               }
-            classPos = m_BufferNoComment.find("return",classPos+1);
+            classPos = static_cast<long int>(m_BufferNoComment.find("return",classPos+1));
             }
           }
 
@@ -529,14 +529,14 @@ bool Parser::CheckIndent(IndentType itype,
           {
           // We are in a macro if we have
           // '#define foo' and the line finishs with '\'
-          long int begMacro = m_Buffer.find("#define",0);
+          long int begMacro = static_cast<long int>(m_Buffer.find("#define",0));
           while(begMacro!=-1)
             {
             // Find the end of the macro
-            long int endMacro = m_Buffer.find("\r",begMacro);
+            long int endMacro = static_cast<long int>(m_Buffer.find("\r",begMacro));
             while(endMacro>0 && m_Buffer[endMacro-1]=='\\')
               {
-              endMacro = m_Buffer.find("\r",endMacro+1);
+              endMacro = static_cast<long int>(m_Buffer.find("\r",endMacro+1));
               }
 
             if(endMacro!=-1 && (long int)pos<endMacro && (long int)pos>begMacro)
@@ -544,7 +544,7 @@ bool Parser::CheckIndent(IndentType itype,
               reportError = false;
               break;
               }
-            begMacro = m_Buffer.find("#define",endMacro);
+            begMacro = static_cast<long int>(m_Buffer.find("#define",endMacro));
             }
           }
 
@@ -554,7 +554,7 @@ bool Parser::CheckIndent(IndentType itype,
         if(allowCommaIndent && reportError)
           {
           // Check the end of the previous line if we have a comma
-          long int j = previousLine.size()-1;
+          long int j = static_cast<long int>(previousLine.size()-1);
           while(j>0)
             {
             if(previousLine[j] != ' '
@@ -607,7 +607,7 @@ bool Parser::CheckIndent(IndentType itype,
       {
       bool check = true;
       // Check if { is after //
-      long int doubleslash = m_Buffer.rfind("//",pos);
+      long int doubleslash = static_cast<long int>(m_Buffer.rfind("//",pos));
       if(doubleslash != -1)
         {
         if(this->GetLineNumber(doubleslash) == this->GetLineNumber(pos))
@@ -801,7 +801,7 @@ bool Parser::InitIndentation()
     {
     // Check if the next char is '('
     bool valid = true;
-    unsigned long pos = posMain+5;
+    unsigned long pos = static_cast<unsigned long>(posMain+5);
     while(pos<m_BufferNoComment.size()
          && (m_BufferNoComment[pos]==' '
          || m_BufferNoComment[pos]=='\r'
@@ -842,7 +842,7 @@ bool Parser::InitIndentation()
   while(posSwitch != std::string::npos)
     {
     // Check that it is a valid switch statement
-    if(!this->CheckValidSwitchStatement(posSwitch))
+    if(!this->CheckValidSwitchStatement(static_cast<unsigned int>(posSwitch)))
      {
      posSwitch = m_BufferNoComment.find("switch",posSwitch+1);
      continue;
@@ -870,7 +870,7 @@ bool Parser::InitIndentation()
     size_t nestedSwitch = m_BufferNoComment.find("switch",posSwitch+1);
     while(nestedSwitch != std::string::npos)
       {
-      if(!this->CheckValidSwitchStatement(nestedSwitch))
+        if(!this->CheckValidSwitchStatement(static_cast<unsigned int>(nestedSwitch)))
         {
         nestedSwitch = m_BufferNoComment.find("switch",nestedSwitch+1);
         continue;

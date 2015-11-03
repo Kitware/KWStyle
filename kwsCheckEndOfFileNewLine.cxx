@@ -40,7 +40,7 @@ bool Parser::CheckEndOfFileNewLine()
   // Check the number empty lines at the end of the file
   if((m_Buffer[m_Buffer.size()-1] == ' ') || (m_Buffer[m_Buffer.size()-1] == '\n'))
     {
-    long i = m_Buffer.size()-1;
+    long i = static_cast<long>(m_Buffer.size())-1;
     unsigned long numberOfEmptyLines = 0;
     while( ((m_Buffer[i] == '\n') ||  (m_Buffer[i] == ' ') || (m_Buffer[i] == '\r')) && (i>0))
       {

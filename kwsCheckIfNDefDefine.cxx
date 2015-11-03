@@ -32,18 +32,18 @@ bool Parser::CheckIfNDefDefine(const char* match)
   m_TestsDescription[NDEFINE] = val;
   // Replace < and >
   std::string l = match;
-  long int inf = l.find("<",0);
+  long int inf = static_cast<long int>(l.find("<",0));
   while(inf != -1)
     {
     l.replace(inf,1,"&lt;");
-    inf = l.find("<",0);
+    inf = static_cast<long int>(l.find("<",0));
     }
 
-  long int sup = l.find(">",0);
+  long int sup = static_cast<long int>(l.find(">",0));
   while(sup != -1)
     {
     l.replace(sup,1,"&gt;");
-    sup = l.find(">",0);
+    sup = static_cast<long int>(l.find(">",0));
     }
   m_TestsDescription[NDEFINE] += l;
   delete [] val;
@@ -57,7 +57,7 @@ bool Parser::CheckIfNDefDefine(const char* match)
   bool doesMatch = true;
 
   // Find the #ifndef word in the file
-  long int pos = m_BufferNoComment.find("#ifndef",0);
+  long int pos = static_cast<long int>(m_BufferNoComment.find("#ifndef",0));
   if(pos == -1)
     {
     notDefined = true;
@@ -112,7 +112,7 @@ bool Parser::CheckIfNDefDefine(const char* match)
     std::string ifndef = m_BufferNoComment.substr(begin,end-begin);
 
     // Find the word after #define
-    long int posDef = m_BufferNoComment.find("#define",end);
+    long int posDef = static_cast<long int>(m_BufferNoComment.find("#define",end));
 
     if(posDef == -1)
       {
@@ -154,20 +154,20 @@ bool Parser::CheckIfNDefDefine(const char* match)
         return false;
         }
 
-      long int point = m_Filename.find_last_of(".");
-      long int slash = m_Filename.find_last_of("/");
+      long int point = static_cast<long int>(m_Filename.find_last_of("."));
+      long int slash = static_cast<long int>(m_Filename.find_last_of("/"));
 
       std::string nameofclass = m_Filename.substr(slash+1,point-slash-1);
       std::string extension = m_Filename.substr(point+1,m_Filename.size()-point-1);
 
       // construct the string
       std::string toMatch = match;
-      long int posnofc = toMatch.find("[NameOfClass]");
+      long int posnofc = static_cast<long int>(toMatch.find("[NameOfClass]"));
       if(posnofc != -1)
         {
         toMatch.replace(posnofc,13,nameofclass);
         }
-      posnofc = toMatch.find("[Extension]");
+      posnofc = static_cast<long int>(toMatch.find("[Extension]"));
       if(posnofc != -1)
         {
         toMatch.replace(posnofc,11,extension);
@@ -190,7 +190,7 @@ bool Parser::CheckIfNDefDefine(const char* match)
         }
       }
 
-    pos = m_BufferNoComment.find("#ifndef",pos+1);
+    pos = static_cast<long int>(m_BufferNoComment.find("#ifndef",pos+1));
 
     if(pos == -1)
       {

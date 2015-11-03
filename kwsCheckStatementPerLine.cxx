@@ -53,7 +53,7 @@ bool Parser::CheckStatementPerLine(unsigned long max,bool checkInlineFunctions)
     // We need more than the current line to determine if we are between parenthesis
     // This is arbitrary but should work in most cases. Maybe the best will be to find the
     // previous semicolon but it might take a long time
-    long int nb = posSemicolon-100; // 100 characters befor
+    long int nb = static_cast<long int>(posSemicolon)-100; // 100 characters befor
     if(nb < 0)
       {
       nb = 0;
