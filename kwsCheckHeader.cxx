@@ -155,8 +155,8 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL,bool useCVS
         // Check if we have a <NA> tag
         if((*ith) == '<')
           {
-          long int pos2 = buffer.find("<NA>",posh);
-          long int pos3 = buffer.find("<NA>\n",posh);
+          long int pos2 = static_cast<long int>(buffer.find("<NA>",posh));
+          long int pos3 = static_cast<long int>(buffer.find("<NA>\n",posh));
 
           // We skip the line
           if(pos3 == static_cast<long int>(posh))
@@ -249,8 +249,8 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL,bool useCVS
           {
           line = l;
           // Find the word
-          long int poshw = buffer.find(' ',posh);
-          long int poshw2 = buffer.find('\n',posh);
+          long int poshw = static_cast<long int>(buffer.find(' ',posh));
+          long int poshw2 = static_cast<long int>(buffer.find('\n',posh));
           std::string wordh = "";
           if(poshw!= -1 && poshw < poshw2)
             {
@@ -262,8 +262,8 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL,bool useCVS
             }
 
           // Find the word
-          long int posw = m_Buffer.find(' ',pos);
-          long int posw2 = m_Buffer.find('\n',pos);
+          long int posw = static_cast<long int>(m_Buffer.find(' ',pos));
+          long int posw2 = static_cast<long int>(m_Buffer.find('\n',pos));
           std::string word = "";
           if(posw!=-1 && posw < posw2)
             {
@@ -384,7 +384,7 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL,bool useCVS
     if((int)(*itErrV).size() < minErrors)
       {
       header = i;
-      minErrors = (*itErrV).size();
+      minErrors = static_cast<int>((*itErrV).size());
       }
     i++;
     itErrV++;

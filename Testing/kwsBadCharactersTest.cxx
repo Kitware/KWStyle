@@ -9,13 +9,17 @@
   Copyright (c) Insight Software Consortium. All rights reserved.
   See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even 
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
 #if defined(_MSC_VER)
 #pragma warning ( disable : 4786 )
+#endif
+
+#if defined(__clang__)
+#pragma clang diagnostic ignored "-Winvalid-source-encoding"
 #endif
 
 #include "kwsParser.h"
@@ -61,7 +65,7 @@ int kwsBadCharactersTest(int, char* [] )
     {
     for(unsigned int i=0;i<errors.size();i++)
       {
-      std::cout << errors[i].line << " : " 
+      std::cout << errors[i].line << " : "
                 << errors[i].description << std::endl;
       }
     std::cout << "[FAILED]" << std::endl;
@@ -70,6 +74,6 @@ int kwsBadCharactersTest(int, char* [] )
   std::cout << "[PASSED]" << std::endl;
 
   std::cout << "[DONE]" << std::endl;
-  
+
   return 0;
 }

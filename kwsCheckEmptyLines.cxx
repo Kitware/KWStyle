@@ -26,7 +26,7 @@ bool Parser::CheckEmptyLines(unsigned long max, bool checkEndOfFile)
   delete [] val;
 
   bool hasError = false;
-  unsigned long total = m_Buffer.size();
+  unsigned long total = static_cast<unsigned long>(m_Buffer.size());
   unsigned long i = 0;
   unsigned long j = 1;
   unsigned long empty = 0;
@@ -34,7 +34,7 @@ bool Parser::CheckEmptyLines(unsigned long max, bool checkEndOfFile)
     {
     // extract the line
     std::string line = m_Buffer.substr(i+1,m_Buffer.find("\n",i+1)-i-1);
-    
+
     // if we have \n\r
     if(line.length() <= 1)
       {
@@ -64,22 +64,22 @@ bool Parser::CheckEmptyLines(unsigned long max, bool checkEndOfFile)
         error.line2 = error.line;
         error.number = EMPTYLINES;
         error.description = "Empty lines exceed ";
-        char* val = new char[10];
-        sprintf(val,"%ld",empty);
-        error.description += val;
+        char* localval = new char[10];
+        sprintf(localval,"%ld",empty);
+        error.description += localval;
         error.description += " (max=";
-        delete [] val;
-        val = new char[10];
-        sprintf(val,"%ld",max);
-        error.description += val;
+        delete [] localval;
+        localval = new char[10];
+        sprintf(localval,"%ld",max);
+        error.description += localval;
         error.description += ")";
-        delete [] val;
+        delete [] localval;
         m_ErrorList.push_back(error);
         hasError = true;
         }
       }
     j++;
-    i += line.length()+1;
+    i += static_cast<unsigned long>(line.length())+1;
     }
   return !hasError;
 }

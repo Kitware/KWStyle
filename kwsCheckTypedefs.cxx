@@ -45,7 +45,7 @@ bool Parser::CheckTypedefs(const char* regEx, bool alignment,unsigned int maxLen
     size_t beg = 0;
     size_t typedefpos = 0;
     std::string var = this->FindTypedef(pos+1,m_BufferNoComment.size(),pos,beg,typedefpos);
-    
+
     if(var == "")
       {
       continue;
@@ -109,13 +109,13 @@ bool Parser::CheckTypedefs(const char* regEx, bool alignment,unsigned int maxLen
             error.line2 = error.line;
             error.number = TYPEDEF_ALIGN;
             error.description = "Type definition (" + var + ") is not aligned with the previous one: ";
-            char* var = new char[10];
-            sprintf(var,"%ld",l);
-            error.description += var;
+            char* localvar = new char[10];
+            sprintf(localvar,"%ld",l);
+            error.description += localvar;
             error.description += " v.s. ";
-            sprintf(var,"%ld",previouspos);
-            error.description += var;
-            delete [] var;
+            sprintf(localvar,"%ld",previouspos);
+            error.description += localvar;
+            delete [] localvar;
             m_ErrorList.push_back(error);
             hasError = true;
             }
@@ -158,7 +158,7 @@ std::string Parser::FindTypedef(size_t start, size_t end,size_t & pos,size_t & b
 
   // Check if we have any () in the subword then we don't check the typdef
   std::string sub = m_BufferNoComment.substr(posTypedef,posSemicolon-posTypedef);
-  if((sub.find("(",0) != std::string::npos) 
+  if((sub.find("(",0) != std::string::npos)
     || (sub.find(")",0) != std::string::npos)
     || (sub.find("{",0) != std::string::npos)
     || (sub.find("}",0) != std::string::npos)
@@ -175,7 +175,7 @@ std::string Parser::FindTypedef(size_t start, size_t end,size_t & pos,size_t & b
     size_t i=posSemicolon-1;
     bool inWord = true;
     bool first = false;
-    while(i>=0 && inWord)
+    while(inWord)
       {
       if(m_BufferNoComment[i] != ' ')
         {

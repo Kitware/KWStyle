@@ -44,7 +44,7 @@ bool Parser::CheckVariablePerLine(unsigned long max)
       {
       // Check that this is the first word
       bool firstWord = false;
-      long int pos=posType;
+      long int pos=static_cast<long int>(posType);
       pos--;
       while((pos>0) && (m_BufferNoComment[pos]==' '))
         {
@@ -58,26 +58,26 @@ bool Parser::CheckVariablePerLine(unsigned long max)
       if(firstWord)
         {
         std::string line = this->GetLine(this->GetLineNumber(posType,true)-1);
-        
+
         // Check if we have any comments
-        int poscom = line.find("//",0);
-        if(poscom != -1)        
+        int poscom = static_cast<int>(line.find("//",0));
+        if(poscom != -1)
           {
           line = line.substr(0,poscom);
           }
-        poscom = line.find("/*",0);
-        while(poscom != -1)        
+        poscom = static_cast<int>(line.find("/*",0));
+        while(poscom != -1)
           {
-          int poscomend = line.find("*/",0);
+          int poscomend = static_cast<int>(line.find("*/",0));
           if(poscomend == -1)
             {
             line = line.substr(0,poscom);
             break;
             }
-          
+
           std::string line_temp = line.substr(0,poscom);
           line = line_temp+line.substr(poscomend+2,line.size()-poscomend-2);
-          poscom = line.find("/*",poscom+1);
+          poscom = static_cast<int>(line.find("/*",poscom+1));
           }
 
         // If we have any '(' in the line we stop
@@ -85,18 +85,18 @@ bool Parser::CheckVariablePerLine(unsigned long max)
           {
           // This is a very simple check we count the number of comas
           unsigned int vars = 1;
-          pos = line.find(',',0);
+          pos = static_cast<long int>(line.find(',',0));
           while(pos!=-1)
             {
             // Check that we are not initializing an array
-            bool betweenBraces = false;           
+            bool betweenBraces = false;
             long int openCurly = pos-1;
             while(openCurly>0)
               {
               // Ok we have the opening
               if(line[openCurly] == '{')
                 {
-                long int posClosing = this->FindClosingChar('{','}',openCurly,false,line);
+                long int posClosing = static_cast<long int>(this->FindClosingChar('{','}',openCurly,false,line));
                 if(posClosing == -1
                   || pos<posClosing)
                   {
@@ -106,13 +106,13 @@ bool Parser::CheckVariablePerLine(unsigned long max)
                 }
               openCurly--;
               }
-            
+
             // Check if we are not at the end of the line
             bool endofline = true;
-            int eof = pos+1; 
-            while(eof < (int)line.size())          
+            int eof = pos+1;
+            while(eof < (int)line.size())
               {
-              if(line[eof] != ' ' && line[eof] != '\n' 
+              if(line[eof] != ' ' && line[eof] != '\n'
                  && line[eof] != '\r' && line[eof] != '\t')
                 {
                 endofline = false;
@@ -125,9 +125,9 @@ bool Parser::CheckVariablePerLine(unsigned long max)
               {
               vars++;
               }
-            pos = line.find(',',pos+1);  
+            pos = static_cast<long int>(line.find(',',pos+1));
             }
-          
+
           if(vars > max)
             {
             Error error;
@@ -135,16 +135,16 @@ bool Parser::CheckVariablePerLine(unsigned long max)
             error.line2 = error.line;
             error.number = VARIABLEPERLINE;
             error.description = "Number of variable per line exceed: ";
-            char* val = new char[10];
-            sprintf(val,"%d",vars);
-            error.description += val;
+            char* localval = new char[10];
+            sprintf(localval,"%d",vars);
+            error.description += localval;
             error.description += " (max=";
-            delete [] val;
-            val = new char[10];
-            sprintf(val,"%ld",max);
-            error.description += val;
+            delete [] localval;
+            localval = new char[10];
+            sprintf(localval,"%ld",max);
+            error.description += localval;
             error.description += ")";
-            delete [] val;
+            delete [] localval;
             m_ErrorList.push_back(error);
             hasError = true;
             }

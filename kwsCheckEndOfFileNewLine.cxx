@@ -24,7 +24,7 @@ bool Parser::CheckEndOfFileNewLine()
   m_TestsDescription[EOF_NEW_LINE] = val;
   delete [] val;
   bool hasError = false;
-  
+
   // Check if the last character is an end of line
   if(m_Buffer[m_Buffer.size()-1] != '\n')
     {
@@ -38,9 +38,9 @@ bool Parser::CheckEndOfFileNewLine()
     }
 
   // Check the number empty lines at the end of the file
-  if((m_Buffer[m_Buffer.size()-1] == ' ') || (m_Buffer[m_Buffer.size()-1] == '\n')) 
+  if((m_Buffer[m_Buffer.size()-1] == ' ') || (m_Buffer[m_Buffer.size()-1] == '\n'))
     {
-    long i = m_Buffer.size()-1;
+    long i = static_cast<long>(m_Buffer.size())-1;
     unsigned long numberOfEmptyLines = 0;
     while( ((m_Buffer[i] == '\n') ||  (m_Buffer[i] == ' ') || (m_Buffer[i] == '\r')) && (i>0))
       {
@@ -50,19 +50,19 @@ bool Parser::CheckEndOfFileNewLine()
         }
       i-=1;
       }
-    
+
     if(numberOfEmptyLines>1)
       {
       // Maybe should be info and not error
       Error info;
       info.line2 = this->GetLineNumber(m_Buffer.size()-1,false)+1;
-      info.line = info.line2-numberOfEmptyLines+2;      
+      info.line = info.line2-numberOfEmptyLines+2;
       info.number = EOF_NEW_LINE;
       info.description = "Number of empty lines at the end of files: ";
-      char* val = new char[10];
-      sprintf(val,"%ld",numberOfEmptyLines);
-      info.description += val;
-      delete [] val;
+      char* localval = new char[10];
+      sprintf(localval,"%ld",numberOfEmptyLines);
+      info.description += localval;
+      delete [] localval;
       m_ErrorList.push_back(info);
       }
     }

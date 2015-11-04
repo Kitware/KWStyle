@@ -31,7 +31,7 @@ bool Parser::CheckTemplate(const char* regEx)
   // Maybe we should separate the main class from the templated function
   // at some point.
 
-  long int templatePos = m_BufferNoComment.find("template",0);
+  long int templatePos = static_cast<long int>(m_BufferNoComment.find("template",0));
   while(templatePos != -1 ) 
     {
     bool valid = true;
@@ -48,8 +48,8 @@ bool Parser::CheckTemplate(const char* regEx)
       }
 
     // Definition is template <whatever name,whatever name2 = test, ...>
-    long int inf = m_BufferNoComment.find("<",templatePos);
-    long int sup = m_BufferNoComment.find(">",inf);
+    long int inf = static_cast<long int>(m_BufferNoComment.find("<",templatePos));
+    long int sup = static_cast<long int>(m_BufferNoComment.find(">",inf));
 
     if(inf == -1 || sup == -1)
       {
@@ -73,7 +73,7 @@ bool Parser::CheckTemplate(const char* regEx)
 
     if(!valid)
       {
-      templatePos = m_BufferNoComment.find("template",templatePos+1);
+      templatePos = static_cast<long int>(m_BufferNoComment.find("template",templatePos+1));
       continue;
       }
 
@@ -137,7 +137,7 @@ bool Parser::CheckTemplate(const char* regEx)
       i++;
       }
 
-    templatePos = m_BufferNoComment.find("template",templatePos+1);  
+    templatePos = static_cast<long int>(m_BufferNoComment.find("template",templatePos+1));  
     }
 
   return !hasErrors;

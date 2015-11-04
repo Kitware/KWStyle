@@ -36,24 +36,24 @@ bool Parser::CheckStatementPerLine(unsigned long max,bool checkInlineFunctions)
   unsigned long statements = 0;
   bool newline = false;
   std::string line = "";
-    
+
   while(posSemicolon != std::string::npos)
     {
     // If we are on the same line
-    long int lineNumber = this->GetLineNumber(posSemicolon,true); 
-   
+    long int lineNumber = this->GetLineNumber(posSemicolon,true);
+
     if(lineNumber != currentLine)
       {
       currentLine = lineNumber;
       statements = 0;
       }
- 
+
     line = this->GetLine(lineNumber-1);
 
     // We need more than the current line to determine if we are between parenthesis
     // This is arbitrary but should work in most cases. Maybe the best will be to find the
     // previous semicolon but it might take a long time
-    long int nb = posSemicolon-100; // 100 characters befor
+    long int nb = static_cast<long int>(posSemicolon)-100; // 100 characters befor
     if(nb < 0)
       {
       nb = 0;
@@ -85,8 +85,8 @@ bool Parser::CheckStatementPerLine(unsigned long max,bool checkInlineFunctions)
     else
       {
       newline = true;
-      }      
-    
+      }
+
     bool reportError=true;
 
     if(!checkInlineFunctions)
@@ -106,16 +106,16 @@ bool Parser::CheckStatementPerLine(unsigned long max,bool checkInlineFunctions)
       error.line2 = error.line;
       error.number = STATEMENTPERLINE;
       error.description = "Number of statements per line exceed: ";
-      char* val = new char[10];
-      sprintf(val,"%ld",statements);
-      error.description += val;
+      char* localval = new char[10];
+      sprintf(localval,"%ld",statements);
+      error.description += localval;
       error.description += " (max=";
-      delete [] val;
-      val = new char[10];
-      sprintf(val,"%ld",max);
-      error.description += val;
+      delete [] localval;
+      localval = new char[10];
+      sprintf(localval,"%ld",max);
+      error.description += localval;
       error.description += ")";
-      delete [] val;
+      delete [] localval;
       m_ErrorList.push_back(error);
       hasError = true;
       }

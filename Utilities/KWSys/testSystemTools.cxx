@@ -16,23 +16,33 @@
 #endif
 
 #include KWSYS_HEADER(SystemTools.hxx)
-#include KWSYS_HEADER(ios/iostream)
 
 // Work-around CMake dependency scanning limitation.  This must
 // duplicate the above list of headers.
 #if 0
 # include "SystemTools.hxx.in"
-# include "kwsys_ios_iostream.h.in"
 #endif
 
 // Include with <> instead of "" to avoid getting any in-source copy
 // left on disk.
 #include <testSystemTools.h>
 
+#include <iostream>
 #include <string.h> /* strcmp */
+#if defined(_WIN32) && !defined(__CYGWIN__)
+# include <io.h> /* _umask (MSVC) / umask (Borland) */
+# ifdef _MSC_VER
+#  define umask _umask // Note this is still umask on Borland
+# endif
+#endif
+#include <sys/stat.h> /* umask (POSIX), _S_I* constants (Windows) */
+// Visual C++ does not define mode_t (note that Borland does, however).
+#if defined( _MSC_VER )
+typedef unsigned short mode_t;
+#endif
 
 //----------------------------------------------------------------------------
-const char* toUnixPaths[][2] =
+static const char* toUnixPaths[][2] =
 {
     { "/usr/local/bin/passwd", "/usr/local/bin/passwd" },
     { "/usr/lo cal/bin/pa sswd", "/usr/lo cal/bin/pa sswd" },
@@ -52,165 +62,426 @@ const char* toUnixPaths[][2] =
     {0, 0}
 };
 
-bool CheckConvertToUnixSlashes(kwsys_stl::string input,
-                               kwsys_stl::string output)
+static bool CheckConvertToUnixSlashes(std::string input,
+                                      std::string output)
 {
-  kwsys_stl::string result = input;
+  std::string result = input;
   kwsys::SystemTools::ConvertToUnixSlashes(result);
   if ( result != output )
     {
-    kwsys_ios::cerr
-      << "Problem with ConvertToUnixSlashes - input: " << input.c_str()
-      << " output: " << result.c_str() << " expected: " << output.c_str()
-      << kwsys_ios::endl;
+    std::cerr
+      << "Problem with ConvertToUnixSlashes - input: " << input
+      << " output: " << result << " expected: " << output
+      << std::endl;
     return false;
     }
   return true;
 }
 
 //----------------------------------------------------------------------------
-const char* checkEscapeChars[][4] =
+static const char* checkEscapeChars[][4] =
 {
   { "1 foo 2 bar 2", "12", "\\", "\\1 foo \\2 bar \\2"},
   { " {} ", "{}", "#", " #{#} "},
   {0, 0, 0, 0}
 };
 
-bool CheckEscapeChars(kwsys_stl::string input,
-                      const char *chars_to_escape,
-                      char escape_char,
-                      kwsys_stl::string output)
+static bool CheckEscapeChars(std::string input,
+                             const char *chars_to_escape,
+                             char escape_char,
+                             std::string output)
 {
-  kwsys_stl::string result = kwsys::SystemTools::EscapeChars(
+  std::string result = kwsys::SystemTools::EscapeChars(
     input.c_str(), chars_to_escape, escape_char);
   if (result != output)
     {
-    kwsys_ios::cerr
-      << "Problem with CheckEscapeChars - input: " << input.c_str()
-      << " output: " << result.c_str() << " expected: " << output.c_str()
-      << kwsys_ios::endl;
+    std::cerr
+      << "Problem with CheckEscapeChars - input: " << input
+      << " output: " << result << " expected: " << output
+      << std::endl;
     return false;
     }
   return true;
 }
 
 //----------------------------------------------------------------------------
-bool CheckFileOperations()
+static bool CheckFileOperations()
 {
   bool res = true;
+  const std::string testNonExistingFile(TEST_SYSTEMTOOLS_SOURCE_DIR
+    "/testSystemToolsNonExistingFile");
+  const std::string testDotFile(TEST_SYSTEMTOOLS_SOURCE_DIR
+    "/.");
+  const std::string testBinFile(TEST_SYSTEMTOOLS_SOURCE_DIR
+    "/testSystemTools.bin");
+  const std::string testTxtFile(TEST_SYSTEMTOOLS_SOURCE_DIR
+    "/testSystemTools.cxx");
+  const std::string testNewDir(TEST_SYSTEMTOOLS_BINARY_DIR
+    "/testSystemToolsNewDir");
+  const std::string testNewFile(testNewDir + "/testNewFile.txt");
 
-  if (kwsys::SystemTools::DetectFileType(TEST_SYSTEMTOOLS_BIN_FILE) !=
+  if (kwsys::SystemTools::DetectFileType(testNonExistingFile.c_str()) !=
+      kwsys::SystemTools::FileTypeUnknown)
+    {
+    std::cerr
+      << "Problem with DetectFileType - failed to detect type of: "
+      << testNonExistingFile << std::endl;
+    res = false;
+    }
+
+  if (kwsys::SystemTools::DetectFileType(testDotFile.c_str()) !=
+      kwsys::SystemTools::FileTypeUnknown)
+    {
+    std::cerr
+      << "Problem with DetectFileType - failed to detect type of: "
+      << testDotFile << std::endl;
+    res = false;
+    }
+
+  if (kwsys::SystemTools::DetectFileType(testBinFile.c_str()) !=
       kwsys::SystemTools::FileTypeBinary)
     {
-    kwsys_ios::cerr
+    std::cerr
       << "Problem with DetectFileType - failed to detect type of: "
-      << TEST_SYSTEMTOOLS_BIN_FILE << kwsys_ios::endl;
+      << testBinFile << std::endl;
     res = false;
     }
 
-  if (kwsys::SystemTools::DetectFileType(TEST_SYSTEMTOOLS_SRC_FILE) !=
+  if (kwsys::SystemTools::DetectFileType(testTxtFile.c_str()) !=
       kwsys::SystemTools::FileTypeText)
     {
-    kwsys_ios::cerr
+    std::cerr
       << "Problem with DetectFileType - failed to detect type of: "
-      << TEST_SYSTEMTOOLS_SRC_FILE << kwsys_ios::endl;
+      << testTxtFile << std::endl;
     res = false;
     }
-  
-  if (kwsys::SystemTools::FileLength(TEST_SYSTEMTOOLS_BIN_FILE) != 766)
+
+  if (kwsys::SystemTools::FileLength(testBinFile) != 766)
     {
-    kwsys_ios::cerr
+    std::cerr
       << "Problem with FileLength - incorrect length for: "
-      << TEST_SYSTEMTOOLS_BIN_FILE << kwsys_ios::endl;
-    res = false;    
+      << testBinFile << std::endl;
+    res = false;
     }
+
+  if (!kwsys::SystemTools::MakeDirectory(testNewDir))
+    {
+    std::cerr
+      << "Problem with MakeDirectory for: "
+      << testNewDir << std::endl;
+    res = false;
+    }
+
+  if (!kwsys::SystemTools::Touch(testNewFile.c_str(), true))
+    {
+    std::cerr
+      << "Problem with Touch for: "
+      << testNewFile << std::endl;
+    res = false;
+    }
+
+  // Reset umask
+#if defined(_WIN32) && !defined(__CYGWIN__)
+  // NOTE:  Windows doesn't support toggling _S_IREAD.
+  mode_t fullMask = _S_IWRITE;
+#else
+  // On a normal POSIX platform, we can toggle all permissions.
+  mode_t fullMask = S_IRWXU | S_IRWXG | S_IRWXO;
+#endif
+  mode_t orig_umask = umask(fullMask);
+
+  // Test file permissions without umask
+  mode_t origPerm, thisPerm;
+  if (!kwsys::SystemTools::GetPermissions(testNewFile, origPerm))
+    {
+    std::cerr
+      << "Problem with GetPermissions (1) for: "
+      << testNewFile << std::endl;
+    res = false;
+    }
+
+  if (!kwsys::SystemTools::SetPermissions(testNewFile, 0))
+    {
+    std::cerr
+      << "Problem with SetPermissions (1) for: "
+      << testNewFile << std::endl;
+    res = false;
+    }
+
+  if (!kwsys::SystemTools::GetPermissions(testNewFile, thisPerm))
+    {
+    std::cerr
+      << "Problem with GetPermissions (2) for: "
+      << testNewFile << std::endl;
+    res = false;
+    }
+
+  if ((thisPerm & fullMask) != 0)
+    {
+    std::cerr
+      << "SetPermissions failed to set permissions (1) for: "
+      << testNewFile << ": actual = " << thisPerm << "; expected = "
+      << 0 << std::endl;
+    res = false;
+    }
+
+  // While we're at it, check proper TestFileAccess functionality.
+  if (kwsys::SystemTools::TestFileAccess(testNewFile,
+                                         kwsys::TEST_FILE_WRITE))
+    {
+    std::cerr
+      << "TestFileAccess incorrectly indicated that this is a writable file:"
+      << testNewFile << std::endl;
+    res = false;
+    }
+
+  if (!kwsys::SystemTools::TestFileAccess(testNewFile,
+                                          kwsys::TEST_FILE_OK))
+    {
+    std::cerr
+      << "TestFileAccess incorrectly indicated that this file does not exist:"
+      << testNewFile << std::endl;
+    res = false;
+    }
+
+  // Test restoring/setting full permissions.
+  if (!kwsys::SystemTools::SetPermissions(testNewFile, fullMask))
+    {
+    std::cerr
+      << "Problem with SetPermissions (2) for: "
+      << testNewFile << std::endl;
+    res = false;
+    }
+
+  if (!kwsys::SystemTools::GetPermissions(testNewFile, thisPerm))
+    {
+    std::cerr
+      << "Problem with GetPermissions (3) for: "
+      << testNewFile << std::endl;
+    res = false;
+    }
+
+  if ((thisPerm & fullMask) != fullMask)
+    {
+    std::cerr
+      << "SetPermissions failed to set permissions (2) for: "
+      << testNewFile << ": actual = " << thisPerm << "; expected = "
+      << fullMask << std::endl;
+    res = false;
+    }
+
+  // Test setting file permissions while honoring umask
+  if (!kwsys::SystemTools::SetPermissions(testNewFile, fullMask, true))
+    {
+    std::cerr
+      << "Problem with SetPermissions (3) for: "
+      << testNewFile << std::endl;
+    res = false;
+    }
+
+  if (!kwsys::SystemTools::GetPermissions(testNewFile, thisPerm))
+    {
+    std::cerr
+      << "Problem with GetPermissions (4) for: "
+      << testNewFile << std::endl;
+    res = false;
+    }
+
+  if ((thisPerm & fullMask) != 0)
+    {
+    std::cerr
+      << "SetPermissions failed to honor umask for: "
+      << testNewFile << ": actual = " << thisPerm << "; expected = "
+      << 0 << std::endl;
+    res = false;
+    }
+
+  // Restore umask
+  umask(orig_umask);
+
+  // Restore file permissions
+  if (!kwsys::SystemTools::SetPermissions(testNewFile, origPerm))
+    {
+    std::cerr
+      << "Problem with SetPermissions (4) for: "
+      << testNewFile << std::endl;
+    res = false;
+    }
+
+  // Remove the test file
+  if (!kwsys::SystemTools::RemoveFile(testNewFile))
+    {
+    std::cerr
+      << "Problem with RemoveFile: "
+      << testNewFile << std::endl;
+    res = false;
+    }
+
+  std::string const testFileMissing(testNewDir + "/testMissingFile.txt");
+  if (!kwsys::SystemTools::RemoveFile(testFileMissing))
+    {
+    std::string const& msg = kwsys::SystemTools::GetLastSystemError();
+    std::cerr <<
+      "RemoveFile(\"" << testFileMissing << "\") failed: " << msg << "\n";
+    res = false;
+    }
+
+  std::string const testFileMissingDir(testNewDir + "/missing/file.txt");
+  if (!kwsys::SystemTools::RemoveFile(testFileMissingDir))
+    {
+    std::string const& msg = kwsys::SystemTools::GetLastSystemError();
+    std::cerr <<
+      "RemoveFile(\"" << testFileMissingDir << "\") failed: " << msg << "\n";
+    res = false;
+    }
+
+  kwsys::SystemTools::Touch(testNewFile.c_str(), true);
+  if (!kwsys::SystemTools::RemoveADirectory(testNewDir))
+    {
+    std::cerr
+      << "Problem with RemoveADirectory for: "
+      << testNewDir << std::endl;
+    res = false;
+    }
+
+#ifdef KWSYS_TEST_SYSTEMTOOLS_LONG_PATHS
+  // Perform the same file and directory creation and deletion tests but
+  // with paths > 256 characters in length.
+
+  const std::string testNewLongDir(
+    TEST_SYSTEMTOOLS_BINARY_DIR "/"
+    "012345678901234567890123456789012345678901234567890123456789"
+    "012345678901234567890123456789012345678901234567890123456789"
+    "012345678901234567890123456789012345678901234567890123456789"
+    "012345678901234567890123456789012345678901234567890123456789"
+    "01234567890123");
+  const std::string testNewLongFile(testNewLongDir + "/"
+    "012345678901234567890123456789012345678901234567890123456789"
+    "012345678901234567890123456789012345678901234567890123456789"
+    "012345678901234567890123456789012345678901234567890123456789"
+    "012345678901234567890123456789012345678901234567890123456789"
+    "0123456789.txt");
+
+  if (!kwsys::SystemTools::MakeDirectory(testNewLongDir))
+    {
+    std::cerr
+      << "Problem with MakeDirectory for: "
+      << testNewLongDir << std::endl;
+    res = false;
+    }
+
+  if (!kwsys::SystemTools::Touch(testNewLongFile.c_str(), true))
+    {
+    std::cerr
+      << "Problem with Touch for: "
+      << testNewLongFile << std::endl;
+    res = false;
+    }
+
+  if (!kwsys::SystemTools::RemoveFile(testNewLongFile))
+    {
+    std::cerr
+      << "Problem with RemoveFile: "
+      << testNewLongFile << std::endl;
+    res = false;
+    }
+
+  kwsys::SystemTools::Touch(testNewLongFile.c_str(), true);
+  if (!kwsys::SystemTools::RemoveADirectory(testNewLongDir))
+    {
+    std::cerr
+      << "Problem with RemoveADirectory for: "
+      << testNewLongDir << std::endl;
+    res = false;
+    }
+#endif
 
   return res;
 }
 
 //----------------------------------------------------------------------------
-bool CheckStringOperations()
+static bool CheckStringOperations()
 {
   bool res = true;
 
-  kwsys_stl::string test = "mary had a little lamb.";
+  std::string test = "mary had a little lamb.";
   if (kwsys::SystemTools::CapitalizedWords(test) != "Mary Had A Little Lamb.")
     {
-    kwsys_ios::cerr
+    std::cerr
       << "Problem with CapitalizedWords "
-      << TEST_SYSTEMTOOLS_SRC_FILE << kwsys_ios::endl;
-    res = false;    
+      << '"' << test << '"' << std::endl;
+    res = false;
     }
 
   test = "Mary Had A Little Lamb.";
-  if (kwsys::SystemTools::UnCapitalizedWords(test) != 
+  if (kwsys::SystemTools::UnCapitalizedWords(test) !=
       "mary had a little lamb.")
     {
-    kwsys_ios::cerr
+    std::cerr
       << "Problem with UnCapitalizedWords "
-      << TEST_SYSTEMTOOLS_SRC_FILE << kwsys_ios::endl;
-    res = false;    
+      << '"' << test << '"' << std::endl;
+    res = false;
     }
 
   test = "MaryHadTheLittleLamb.";
-  if (kwsys::SystemTools::AddSpaceBetweenCapitalizedWords(test) != 
+  if (kwsys::SystemTools::AddSpaceBetweenCapitalizedWords(test) !=
       "Mary Had The Little Lamb.")
     {
-    kwsys_ios::cerr
+    std::cerr
       << "Problem with AddSpaceBetweenCapitalizedWords "
-      << TEST_SYSTEMTOOLS_SRC_FILE << kwsys_ios::endl;
-    res = false;    
+      << '"' << test << '"' << std::endl;
+    res = false;
     }
 
-  char * cres = 
+  char * cres =
     kwsys::SystemTools::AppendStrings("Mary Had A"," Little Lamb.");
   if (strcmp(cres,"Mary Had A Little Lamb."))
     {
-    kwsys_ios::cerr
+    std::cerr
       << "Problem with AppendStrings "
-      << TEST_SYSTEMTOOLS_SRC_FILE << kwsys_ios::endl;
-    res = false;    
+      << "\"Mary Had A\" \" Little Lamb.\"" << std::endl;
+    res = false;
     }
   delete [] cres;
 
-  cres = 
+  cres =
     kwsys::SystemTools::AppendStrings("Mary Had"," A ","Little Lamb.");
   if (strcmp(cres,"Mary Had A Little Lamb."))
     {
-    kwsys_ios::cerr
+    std::cerr
       << "Problem with AppendStrings "
-      << TEST_SYSTEMTOOLS_SRC_FILE << kwsys_ios::endl;
-    res = false;    
+      << "\"Mary Had\" \" A \" \"Little Lamb.\"" << std::endl;
+    res = false;
     }
   delete [] cres;
 
   if (kwsys::SystemTools::CountChar("Mary Had A Little Lamb.",'a') != 3)
     {
-    kwsys_ios::cerr
+    std::cerr
       << "Problem with CountChar "
-      << TEST_SYSTEMTOOLS_SRC_FILE << kwsys_ios::endl;
-    res = false;    
+      << "\"Mary Had A Little Lamb.\"" << std::endl;
+    res = false;
     }
 
-  cres = 
+  cres =
     kwsys::SystemTools::RemoveChars("Mary Had A Little Lamb.","aeiou");
   if (strcmp(cres,"Mry Hd A Lttl Lmb."))
     {
-    kwsys_ios::cerr
+    std::cerr
       << "Problem with RemoveChars "
-      << TEST_SYSTEMTOOLS_SRC_FILE << kwsys_ios::endl;
-    res = false;    
+      << "\"Mary Had A Little Lamb.\"" << std::endl;
+    res = false;
     }
   delete [] cres;
 
-  cres = 
+  cres =
     kwsys::SystemTools::RemoveCharsButUpperHex("Mary Had A Little Lamb.");
   if (strcmp(cres,"A"))
     {
-    kwsys_ios::cerr
+    std::cerr
       << "Problem with RemoveCharsButUpperHex "
-      << TEST_SYSTEMTOOLS_SRC_FILE << kwsys_ios::endl;
-    res = false;    
+      << "\"Mary Had A Little Lamb.\"" << std::endl;
+    res = false;
     }
   delete [] cres;
 
@@ -219,111 +490,303 @@ bool CheckStringOperations()
   kwsys::SystemTools::ReplaceChars(cres2,"aeiou",'X');
   if (strcmp(cres2,"MXry HXd A LXttlX LXmb."))
     {
-    kwsys_ios::cerr
+    std::cerr
       << "Problem with ReplaceChars "
-      << TEST_SYSTEMTOOLS_SRC_FILE << kwsys_ios::endl;
-    res = false;    
+      << "\"Mary Had A Little Lamb.\"" << std::endl;
+    res = false;
     }
   delete [] cres2;
 
   if (!kwsys::SystemTools::StringStartsWith("Mary Had A Little Lamb.",
                                             "Mary "))
     {
-    kwsys_ios::cerr
+    std::cerr
       << "Problem with StringStartsWith "
-      << TEST_SYSTEMTOOLS_SRC_FILE << kwsys_ios::endl;
-    res = false;    
+      << "\"Mary Had A Little Lamb.\"" << std::endl;
+    res = false;
     }
 
   if (!kwsys::SystemTools::StringEndsWith("Mary Had A Little Lamb.",
                                           " Lamb."))
     {
-    kwsys_ios::cerr
+    std::cerr
       << "Problem with StringEndsWith "
-      << TEST_SYSTEMTOOLS_SRC_FILE << kwsys_ios::endl;
-    res = false;    
+      << "\"Mary Had A Little Lamb.\"" << std::endl;
+    res = false;
     }
 
   cres = kwsys::SystemTools::DuplicateString("Mary Had A Little Lamb.");
   if (strcmp(cres,"Mary Had A Little Lamb."))
     {
-    kwsys_ios::cerr
+    std::cerr
       << "Problem with DuplicateString "
-      << TEST_SYSTEMTOOLS_SRC_FILE << kwsys_ios::endl;
-    res = false;    
+      << "\"Mary Had A Little Lamb.\"" << std::endl;
+    res = false;
     }
   delete [] cres;
 
   test = "Mary Had A Little Lamb.";
-  if (kwsys::SystemTools::CropString(test,13) != 
+  if (kwsys::SystemTools::CropString(test,13) !=
       "Mary ...Lamb.")
     {
-    kwsys_ios::cerr
+    std::cerr
       << "Problem with CropString "
-      << TEST_SYSTEMTOOLS_SRC_FILE << kwsys_ios::endl;
-    res = false;    
+      << "\"Mary Had A Little Lamb.\"" << std::endl;
+    res = false;
     }
 
-  kwsys_stl::vector<kwsys_stl::string> lines;
+  std::vector<std::string> lines;
   kwsys::SystemTools::Split("Mary Had A Little Lamb.",lines,' ');
   if (lines[0] != "Mary" || lines[1] != "Had" ||
       lines[2] != "A" || lines[3] != "Little" || lines[4] != "Lamb.")
     {
-    kwsys_ios::cerr
+    std::cerr
       << "Problem with Split "
-      << TEST_SYSTEMTOOLS_SRC_FILE << kwsys_ios::endl;
-    res = false;    
+      << "\"Mary Had A Little Lamb.\"" << std::endl;
+    res = false;
+    }
+
+#ifdef _WIN32
+  if (kwsys::SystemTools::ConvertToWindowsExtendedPath
+      ("L:\\Local Mojo\\Hex Power Pack\\Iffy Voodoo") !=
+      L"\\\\?\\L:\\Local Mojo\\Hex Power Pack\\Iffy Voodoo")
+    {
+    std::cerr
+      << "Problem with ConvertToWindowsExtendedPath "
+      << "\"L:\\Local Mojo\\Hex Power Pack\\Iffy Voodoo\""
+      << std::endl;
+    res = false;
+    }
+
+  if (kwsys::SystemTools::ConvertToWindowsExtendedPath
+      ("L:/Local Mojo/Hex Power Pack/Iffy Voodoo") !=
+      L"\\\\?\\L:\\Local Mojo\\Hex Power Pack\\Iffy Voodoo")
+    {
+    std::cerr
+      << "Problem with ConvertToWindowsExtendedPath "
+      << "\"L:/Local Mojo/Hex Power Pack/Iffy Voodoo\""
+      << std::endl;
+    res = false;
+    }
+
+  if (kwsys::SystemTools::ConvertToWindowsExtendedPath
+      ("\\\\Foo\\Local Mojo\\Hex Power Pack\\Iffy Voodoo") !=
+      L"\\\\?\\UNC\\Foo\\Local Mojo\\Hex Power Pack\\Iffy Voodoo")
+    {
+    std::cerr
+      << "Problem with ConvertToWindowsExtendedPath "
+      << "\"\\\\Foo\\Local Mojo\\Hex Power Pack\\Iffy Voodoo\""
+      << std::endl;
+    res = false;
+    }
+
+  if (kwsys::SystemTools::ConvertToWindowsExtendedPath
+      ("//Foo/Local Mojo/Hex Power Pack/Iffy Voodoo") !=
+      L"\\\\?\\UNC\\Foo\\Local Mojo\\Hex Power Pack\\Iffy Voodoo")
+    {
+    std::cerr
+      << "Problem with ConvertToWindowsExtendedPath "
+      << "\"//Foo/Local Mojo/Hex Power Pack/Iffy Voodoo\""
+      << std::endl;
+    res = false;
+    }
+
+  if (kwsys::SystemTools::ConvertToWindowsExtendedPath("//") !=
+      L"//")
+    {
+    std::cerr
+      << "Problem with ConvertToWindowsExtendedPath "
+      << "\"//\""
+      << std::endl;
+    res = false;
+    }
+
+  if (kwsys::SystemTools::ConvertToWindowsExtendedPath("\\\\.\\") !=
+      L"\\\\.\\")
+    {
+    std::cerr
+      << "Problem with ConvertToWindowsExtendedPath "
+      << "\"\\\\.\\\""
+      << std::endl;
+    res = false;
+    }
+
+  if (kwsys::SystemTools::ConvertToWindowsExtendedPath("\\\\.\\X") !=
+      L"\\\\.\\X")
+    {
+    std::cerr
+      << "Problem with ConvertToWindowsExtendedPath "
+      << "\"\\\\.\\X\""
+      << std::endl;
+    res = false;
+    }
+
+  if (kwsys::SystemTools::ConvertToWindowsExtendedPath("\\\\.\\X:") !=
+      L"\\\\?\\X:")
+    {
+    std::cerr
+      << "Problem with ConvertToWindowsExtendedPath "
+      << "\"\\\\.\\X:\""
+      << std::endl;
+    res = false;
+    }
+
+  if (kwsys::SystemTools::ConvertToWindowsExtendedPath("\\\\.\\X:\\") !=
+      L"\\\\?\\X:\\")
+    {
+    std::cerr
+      << "Problem with ConvertToWindowsExtendedPath "
+      << "\"\\\\.\\X:\\\""
+      << std::endl;
+    res = false;
+    }
+
+  if (kwsys::SystemTools::ConvertToWindowsExtendedPath("NUL") !=
+      L"\\\\.\\NUL")
+    {
+    std::cerr
+      << "Problem with ConvertToWindowsExtendedPath "
+      << "\"NUL\""
+      << std::endl;
+    res = false;
+    }
+
+#endif
+
+  if (kwsys::SystemTools::ConvertToWindowsOutputPath
+      ("L://Local Mojo/Hex Power Pack/Iffy Voodoo") !=
+      "\"L:\\Local Mojo\\Hex Power Pack\\Iffy Voodoo\"")
+    {
+    std::cerr
+      << "Problem with ConvertToWindowsOutputPath "
+      << "\"L://Local Mojo/Hex Power Pack/Iffy Voodoo\""
+      << std::endl;
+    res = false;
     }
 
   if (kwsys::SystemTools::ConvertToWindowsOutputPath
-      ("L://Local Mojo/Hex Power Pack/Iffy Voodoo") != 
-      "\"L:\\Local Mojo\\Hex Power Pack\\Iffy Voodoo\"")
-    {
-    kwsys_ios::cerr
-      << "Problem with ConvertToWindowsOutputPath "
-      << kwsys_ios::endl;
-    res = false;    
-    }
-  
-  if (kwsys::SystemTools::ConvertToWindowsOutputPath
-      ("//grayson/Local Mojo/Hex Power Pack/Iffy Voodoo") != 
+      ("//grayson/Local Mojo/Hex Power Pack/Iffy Voodoo") !=
       "\"\\\\grayson\\Local Mojo\\Hex Power Pack\\Iffy Voodoo\"")
     {
-    kwsys_ios::cerr
+    std::cerr
       << "Problem with ConvertToWindowsOutputPath "
-      << kwsys_ios::endl;
-    res = false;    
+      << "\"//grayson/Local Mojo/Hex Power Pack/Iffy Voodoo\""
+      << std::endl;
+    res = false;
     }
 
   if (kwsys::SystemTools::ConvertToUnixOutputPath
-      ("//Local Mojo/Hex Power Pack/Iffy Voodoo") != 
+      ("//Local Mojo/Hex Power Pack/Iffy Voodoo") !=
       "//Local\\ Mojo/Hex\\ Power\\ Pack/Iffy\\ Voodoo")
     {
-    kwsys_ios::cerr
+    std::cerr
       << "Problem with ConvertToUnixOutputPath "
-      << kwsys_ios::endl;
-    res = false;    
+      << "\"//Local Mojo/Hex Power Pack/Iffy Voodoo\""
+      << std::endl;
+    res = false;
     }
 
-  int targc;
-  char **targv;
-  kwsys::SystemTools::ConvertWindowsCommandLineToUnixArguments
-    ("\"Local Mojo\\Voodoo.asp\" -CastHex \"D:\\My Secret Mojo\\Voodoo.mp3\"", &targc, &targv);
-  if (targc != 4 || strcmp(targv[1],"Local Mojo\\Voodoo.asp") ||
-      strcmp(targv[2],"-CastHex") || 
-      strcmp(targv[3],"D:\\My Secret Mojo\\Voodoo.mp3"))
-    {
-    kwsys_ios::cerr
-      << "Problem with ConvertWindowsCommandLineToUnixArguments"
-      << TEST_SYSTEMTOOLS_SRC_FILE << kwsys_ios::endl;
-    res = false;    
-    }
-  for (;targc >=0; --targc)
-    {
-    delete [] targv[targc];
-    }
-  delete [] targv;
+  return res;
+}
 
+//----------------------------------------------------------------------------
+
+static bool CheckPutEnv(const std::string& env, const char* name, const char* value)
+{
+  if(!kwsys::SystemTools::PutEnv(env))
+    {
+    std::cerr << "PutEnv(\"" << env
+                    << "\") failed!" << std::endl;
+    return false;
+    }
+  const char* v = kwsys::SystemTools::GetEnv(name);
+  v = v? v : "(null)";
+  if(strcmp(v, value) != 0)
+    {
+    std::cerr << "GetEnv(\"" << name << "\") returned \""
+                    << v << "\", not \"" << value << "\"!" << std::endl;
+    return false;
+    }
+  return true;
+}
+
+static bool CheckUnPutEnv(const char* env, const char* name)
+{
+  if(!kwsys::SystemTools::UnPutEnv(env))
+    {
+    std::cerr << "UnPutEnv(\"" << env << "\") failed!"
+                    << std::endl;
+    return false;
+    }
+  if(const char* v = kwsys::SystemTools::GetEnv(name))
+    {
+    std::cerr << "GetEnv(\"" << name << "\") returned \""
+                    << v << "\", not (null)!" << std::endl;
+    return false;
+    }
+  return true;
+}
+
+static bool CheckEnvironmentOperations()
+{
+  bool res = true;
+  res &= CheckPutEnv("A=B", "A", "B");
+  res &= CheckPutEnv("B=C", "B", "C");
+  res &= CheckPutEnv("C=D", "C", "D");
+  res &= CheckPutEnv("D=E", "D", "E");
+  res &= CheckUnPutEnv("A", "A");
+  res &= CheckUnPutEnv("B=", "B");
+  res &= CheckUnPutEnv("C=D", "C");
+  /* Leave "D=E" in environment so a memory checker can test for leaks.  */
+  return res;
+}
+
+
+static bool CheckRelativePath(
+  const std::string& local,
+  const std::string& remote,
+  const std::string& expected)
+{
+  std::string result = kwsys::SystemTools::RelativePath(local, remote);
+  if(expected != result)
+    {
+    std::cerr << "RelativePath(" << local << ", " << remote
+      << ")  yielded " << result << " instead of " << expected << std::endl;
+    return false;
+    }
+  return true;
+}
+
+static bool CheckRelativePaths()
+{
+  bool res = true;
+  res &= CheckRelativePath("/usr/share", "/bin/bash", "../../bin/bash");
+  res &= CheckRelativePath("/usr/./share/", "/bin/bash", "../../bin/bash");
+  res &= CheckRelativePath("/usr//share/", "/bin/bash", "../../bin/bash");
+  res &= CheckRelativePath("/usr/share/../bin/", "/bin/bash", "../../bin/bash");
+  res &= CheckRelativePath("/usr/share", "/usr/share//bin", "bin");
+  return res;
+}
+
+static bool CheckCollapsePath(
+  const std::string& path,
+  const std::string& expected)
+{
+  std::string result = kwsys::SystemTools::CollapseFullPath(path);
+  if(expected != result)
+    {
+    std::cerr << "CollapseFullPath(" << path
+      << ")  yielded " << result << " instead of " << expected << std::endl;
+    return false;
+    }
+  return true;
+}
+
+static bool CheckCollapsePath()
+{
+  bool res = true;
+  res &= CheckCollapsePath("/usr/share/*", "/usr/share/*");
+  res &= CheckCollapsePath("C:/Windows/*", "C:/Windows/*");
   return res;
 }
 
@@ -339,7 +802,7 @@ int testSystemTools(int, char*[])
     }
 
   // Special check for ~
-  kwsys_stl::string output;
+  std::string output;
   if(kwsys::SystemTools::GetEnv("HOME", output))
     {
     output += "/foo bar/lala";
@@ -348,13 +811,19 @@ int testSystemTools(int, char*[])
 
   for (cc = 0; checkEscapeChars[cc][0]; cc ++ )
     {
-    res &= CheckEscapeChars(checkEscapeChars[cc][0], checkEscapeChars[cc][1], 
+    res &= CheckEscapeChars(checkEscapeChars[cc][0], checkEscapeChars[cc][1],
                             *checkEscapeChars[cc][2], checkEscapeChars[cc][3]);
     }
 
   res &= CheckFileOperations();
 
   res &= CheckStringOperations();
+
+  res &= CheckEnvironmentOperations();
+
+  res &= CheckRelativePaths();
+
+  res &= CheckCollapsePath();
 
   return res ? 0 : 1;
 }

@@ -83,8 +83,8 @@ void DisableFeature(const char* name)
 void RemoveFile(const char* regEx,std::vector<std::string> & filenames)
 {
   kwssys::RegularExpression regex(regEx);
-  std::vector<std::string>::iterator it = filenames.begin(); 
-  
+  std::vector<std::string>::iterator it = filenames.begin();
+
   while(it != filenames.end())
     {
     if(regex.find((*it).c_str()))
@@ -104,7 +104,7 @@ int main(int argc, char **argv)
 
   MetaCommand command;
   command.SetVersion(KWSTYLE_VERSION_STRING);
-  
+
   // Check if -cvs is defined and put MetaCommand in quiet mode
   /*for(int j=0;j<argc;j++)
     {
@@ -112,7 +112,7 @@ int main(int argc, char **argv)
       {
       command.SetVerbose(false);
       }
-    }*/  
+    }*/
 
   command.SetOption("directory","d",false,"Specify a directory");
   command.SetOption("recursive","R",false,"Associated with -d recurse through directories");
@@ -139,7 +139,7 @@ int main(int argc, char **argv)
   command.SetOption("dirfile","D",false,"Specify a file listing all the directories");
   command.SetOption("basedirectory","B",false,"Specify the base directory of the file");
   command.AddOptionField("basedirectory","filename",MetaCommand::STRING,false);
-    
+
   command.SetOption("blacklist","b",false,"Specify a black list of words");
   command.AddOptionField("blacklist","filename",MetaCommand::STRING,false);
   command.SetOption("dart","dart",false,"Write out files to be send to the dart server");
@@ -178,8 +178,8 @@ int main(int argc, char **argv)
   AddFeature("Namespace","itk",true);
   AddFeature("NameOfClass","[NameOfClass],itk",true);
   AddFeature("IfNDefDefine","__[NameOfClass]_[Extension]",true);
-  AddFeature("EmptyLines","2",true); 
-  AddFeature("Template","T",true); 
+  AddFeature("EmptyLines","2",true);
+  AddFeature("Template","T",true);
   AddFeature("Operator","1,1",true);
   AddFeature("StatementPerLine","1",true);
   AddFeature("VariablePerLine","1",true);
@@ -217,7 +217,7 @@ int main(int argc, char **argv)
         std::string val = reader.GetValue((*it).name.c_str());
         if(val.length() > 0 )
           {
-          ChangeFeature((*it).name.c_str(),val.c_str()); 
+          ChangeFeature((*it).name.c_str(),val.c_str());
           }
         else
           {
@@ -253,7 +253,7 @@ int main(int argc, char **argv)
       std::cout << "Cannot open configuration file: " << xmlFile.c_str() << std::endl;
       }
     }
-  
+
   if(command.GetOptionWasSet("blacklist"))
     {
     blacklist = command.GetValueAsString("blacklist","filename");
@@ -285,14 +285,14 @@ int main(int argc, char **argv)
 
     char* buf = new char[fileSize+1];
     file.read(buf,fileSize);
-    buf[fileSize] = 0; 
+    buf[fileSize] = 0;
     std::string buffer(buf);
     buffer.resize(fileSize);
     delete [] buf;
-   
+
     long int start = 0;
-    long int pos = buffer.find("\n",start);
-    do    
+    long int pos = static_cast<long int>(buffer.find("\n",start));
+    do
       {
       std::string line = "";
 
@@ -311,19 +311,19 @@ int main(int argc, char **argv)
         break;
         }
 
-      long int p = line.find(" ");
+      long int p = static_cast<long int>(line.find(" "));
       if(p != -1)
         {
         kwsFeature f;
         f.filename = line.substr(0,p);
         long int p1 = p;
-        p = line.find(" ",p+1);
+        p = static_cast<long int>(line.find(" ",p+1));
         if(p!=-1)
           {
-          f.name = line.substr(p1+1,p-p1-1); 
+          f.name = line.substr(p1+1,p-p1-1);
           }
         p1 = p;
-        p = line.find(" ",p+1);
+        p = static_cast<long int>(line.find(" ",p+1));
         std::string enablestring = line.substr(p1+1,p-p1-1);
         if(enablestring.find("Enable") != std::string::npos)
           {
@@ -335,22 +335,22 @@ int main(int argc, char **argv)
           }
 
         p1 = p;
-        p = line.find("\n",p+1);
-          
+        p = static_cast<long int>(line.find("\n",p+1));
+
         if(p!=-1)
           {
           f.value = line.substr(p1+1,p-p1-1);
           }
-       
+
         overwriteFeatures.push_back(f);
         }
 
       if(static_cast<unsigned long>(pos) != fileSize)
         {
-        pos = buffer.find("\n",start);
+        pos = static_cast<long int>(buffer.find("\n",start));
         }
       } while(pos<(long int)fileSize);
- 
+
     file.close();
     }
 
@@ -379,7 +379,7 @@ int main(int argc, char **argv)
       directoryToCheck += '/';
       }
     }
-   
+
   std::vector<std::string> filenames;
   std::vector<kws::Parser> m_Parsers;
 
@@ -392,7 +392,7 @@ int main(int argc, char **argv)
       glob.RecurseOn();
       }
     std::string globoption = directoryToCheck.c_str();
-    
+
     if(kwssys::SystemTools::FileExists(directoryToCheck.c_str()))
       {
       globoption += "*.*";
@@ -417,11 +417,11 @@ int main(int argc, char **argv)
 
     char* buf = new char[fileSize+1];
     file.read(buf,fileSize);
-    buf[fileSize] = 0; 
+    buf[fileSize] = 0;
     std::string buffer(buf);
     buffer.resize(fileSize);
     delete [] buf;
-   
+
     long int start = 0;
     size_t pos = buffer.find("\n",start);
     size_t posr = buffer.find("\r",start);
@@ -433,7 +433,7 @@ int main(int argc, char **argv)
     // Define a parser to find if we are between quotes
     kws::Parser helperParser;
 
-    do    
+    do
       {
       std::string dirname = "";
 
@@ -445,17 +445,17 @@ int main(int argc, char **argv)
       else
         {
         dirname = buffer.substr(start,posr-start);
-        start = pos+1;
+        start = static_cast<long int>(pos)+1;
         }
       if(dirname.size() < 2)
         {
         break;
         }
 
-      long int space = dirname.find(" ");
+      long int space = static_cast<long int>(dirname.find(" "));
       while(space != -1 && helperParser.IsBetweenQuote(space,false,dirname))
         {
-        space = dirname.find(" ",space+1);
+        space = static_cast<long int>(dirname.find(" ",space+1));
         }
 
       // if we should remove the file
@@ -477,18 +477,18 @@ int main(int argc, char **argv)
           glob.RecurseOn();
           gotrecurse = true;
           }
-      
-        long int space = dirname.find(" ");
-        while(space != -1 && helperParser.IsBetweenQuote(space,false,dirname))
+
+        long int localspace = static_cast<long int>(dirname.find(" "));
+        while(localspace != -1 && helperParser.IsBetweenQuote(localspace,false,dirname))
           {
-          space = dirname.find(" ",space+1);
+          localspace = static_cast<long int>(dirname.find(" ",localspace+1));
           }
 
-        if(space != -1)
+        if(localspace != -1)
           {
-          dirname = dirname.substr(0,space);
+          dirname = dirname.substr(0,localspace);
           }
-     
+
         // Remove quotes if any
         if(dirname.size()>0 && dirname[0] == '"')
           {
@@ -516,7 +516,7 @@ int main(int argc, char **argv)
           }
         }
       } while(pos<fileSize);
- 
+
     file.close();
     }
    else
@@ -527,7 +527,7 @@ int main(int argc, char **argv)
   // sort the filenames
   std::sort(filenames.begin(), filenames.end());
 
-  
+
   // if the -cvs command is used
   // WARNING this option should be last because its position is used
   // to determine the filenames.
@@ -544,7 +544,7 @@ int main(int argc, char **argv)
         cvspos = i;
         break;
         }
-      }     
+      }
     cvspos++;
     std::string cvsdir = argv[cvspos];
     cvspos++;
@@ -597,11 +597,11 @@ int main(int argc, char **argv)
 
     char* buf = new char[fileSize+1];
     file.read(buf,fileSize);
-    buf[fileSize] = 0; 
+    buf[fileSize] = 0;
     std::string buffer(buf);
     buffer.resize(fileSize);
     delete [] buf;
-   
+
     file.close();
 
     kws::Parser parser;
@@ -613,7 +613,7 @@ int main(int argc, char **argv)
       {
       parser.SetFixFile(true);
       }
-    
+
     std::vector<kwsFeature>::iterator itf = features.begin();
     while(itf != features.end())
       {
@@ -621,13 +621,13 @@ int main(int argc, char **argv)
       bool checked = false;
       std::vector<kwsFeature>::iterator itof = overwriteFeatures.begin();
       while(itof != overwriteFeatures.end())
-        {        
+        {
         // Allow for for regex expression within overwrite files
         kwssys::RegularExpression regex((*itof).filename.c_str());
 
         if( regex.find((*it).c_str())
            && (!strcmp((*itof).name.c_str(),(*itf).name.c_str())))
-          { 
+          {
           if((*itof).enable)
             {
             parser.Check((*itof).name.c_str(),(*itof).value.c_str());
@@ -636,9 +636,9 @@ int main(int argc, char **argv)
           if((*itof).name == "LineLength" && !((*itof).enable))
             {
             std::cout << "Cannot disable LineLength check. It computes internal parameters" << std::endl;
-            }  
+            }
           else
-            {  
+            {
             checked = true;
             }
           }
@@ -658,7 +658,7 @@ int main(int argc, char **argv)
      }
 
     // If we should display the error
-    if(verbose.size()>0 
+    if(verbose.size()>0
       && !command.GetOptionWasSet("msvc")
       && !command.GetOptionWasSet("vim")
       && !command.GetOptionWasSet("gcc")
@@ -675,7 +675,7 @@ int main(int argc, char **argv)
       kws::Parser::ErrorVectorType::const_iterator eit = errors.begin();
       while(eit != errors.end())
         {
-        std::cout << (*it).c_str() << ":" << (*eit).line << ":" 
+        std::cout << (*it).c_str() << ":" << (*eit).line << ":"
                   << (*eit).description << std::endl;
         eit++;
         }
@@ -687,7 +687,7 @@ int main(int argc, char **argv)
       kws::Parser::ErrorVectorType::const_iterator eit = errors.begin();
       while(eit != errors.end())
         {
-        std::cout << (*it).c_str() << "(" << (*eit).line << ") : error " << (*eit).number << ":"  
+        std::cout << (*it).c_str() << "(" << (*eit).line << ") : error " << (*eit).number << ":"
                   << (*eit).description << std::endl;
         eit++;
         }
@@ -695,7 +695,7 @@ int main(int argc, char **argv)
       kws::Parser::WarningVectorType::const_iterator wit = warnings.begin();
       while(wit != warnings.end())
         {
-        std::cout << (*it).c_str() << "(" << (*wit).line << ") : warning " << (*wit).number << ":"  
+        std::cout << (*it).c_str() << "(" << (*wit).line << ") : warning " << (*wit).number << ":"
                   << (*wit).description << std::endl;
         wit++;
         }
@@ -707,7 +707,7 @@ int main(int argc, char **argv)
       kws::Parser::ErrorVectorType::const_iterator eit = errors.begin();
       while(eit != errors.end())
         {
-        std::cout << (*it).c_str() << ":" << (*eit).line << ": error: " 
+        std::cout << (*it).c_str() << ":" << (*eit).line << ": error: "
                   << (*eit).description << std::endl;
         eit++;
         }
@@ -715,12 +715,12 @@ int main(int argc, char **argv)
       kws::Parser::WarningVectorType::const_iterator wit = warnings.begin();
       while(wit != warnings.end())
         {
-        std::cout << (*it).c_str() << ":" << (*wit).line << ": warning: " 
+        std::cout << (*it).c_str() << ":" << (*wit).line << ": warning: "
                   << (*wit).description << std::endl;
         wit++;
         }
       }
-            
+
     if(command.GetOptionWasSet("cvs"))
       {
       std::cout << parser.GetLastErrors().c_str() << std::endl;
@@ -729,8 +729,8 @@ int main(int argc, char **argv)
         return 1;
         }
       }
-    
-    nerrors += parser.GetErrors().size();
+
+    nerrors += static_cast<unsigned long>(parser.GetErrors().size());
 
     parser.GenerateFixedFile();
 
@@ -763,7 +763,7 @@ int main(int argc, char **argv)
         showNoErrors = true;
         }
       }
-    
+
     if(command.GetOptionWasSet("lesshtml"))
       {
       showNoErrors = true;
@@ -811,9 +811,9 @@ int main(int argc, char **argv)
       {
       url = command.GetValueAsString("kwsurl","url");
       }
-    
+
     std::string baseDirectory = "";
-    
+
     if(command.GetOptionWasSet("basedirectory"))
       {
       baseDirectory = command.GetValueAsString("basedirectory","filename");

@@ -83,8 +83,8 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment,bool checkP
         if(alignment)
           {
           // Find the position in the line
-          unsigned long posvar = m_BufferNoComment.find(var,pos-var.size()-2);
-          unsigned long l = this->GetPositionInLine(posvar);
+          unsigned long posvar = static_cast<unsigned long>(m_BufferNoComment.find(var,pos-var.size()-2));
+          unsigned long l = static_cast<unsigned long>(this->GetPositionInLine(posvar));
           unsigned long line = this->GetLineNumber(pos,true);
 
           // if the typedef is on a line close to the previous one we check
@@ -272,7 +272,7 @@ std::string Parser::FindInternalVariable(size_t start, size_t end,size_t & pos)
   while(posSemicolon != std::string::npos && posSemicolon<end)
     {
     // We try to find the word before that
-    long i=posSemicolon-1;
+    long i=static_cast<long>(posSemicolon)-1;
     bool inWord = true;
     bool first = false;
     std::string ivar = "";

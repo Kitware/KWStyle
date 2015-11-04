@@ -27,17 +27,17 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
   delete [] val;
 
   bool hasError = false;
-  long int posSemicolon = m_BufferNoComment.find(";",0);
+  long int posSemicolon = static_cast<long int>(m_BufferNoComment.find(";",0));
   while(posSemicolon != -1)
     {
     // We try to find the word before that
-    unsigned long i=posSemicolon-1;
+    long i=posSemicolon-1;
     unsigned long space = 0;
     while(i>=0)
       {
        if(m_BufferNoComment[i] == ' ')
         {
-        if(!IsBetweenQuote(i)) 
+        if(!IsBetweenQuote(i))
           {
           space++;
           }
@@ -51,16 +51,16 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
           error.line2 = error.line;
           error.number = SEMICOLON_SPACE;
           error.description = "Number of spaces before semicolon exceed: ";
-          char* val = new char[10];
-          sprintf(val,"%ld",space);
-          error.description += val;
+          char* localval = new char[10];
+          sprintf(localval,"%ld",space);
+          error.description += localval;
           error.description += " (max=";
-          delete [] val;
-          val = new char[10];
-          sprintf(val,"%ld",max);
-          error.description += val;
+          delete [] localval;
+          localval = new char[10];
+          sprintf(localval,"%ld",max);
+          error.description += localval;
           error.description += ")";
-          delete [] val;
+          delete [] localval;
           m_ErrorList.push_back(error);
           hasError = true;
 
@@ -73,11 +73,11 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
         }
       i--;
       }
-    posSemicolon = m_BufferNoComment.find(";",posSemicolon+1);
+    posSemicolon = static_cast<long int>(m_BufferNoComment.find(";",posSemicolon+1));
     }
 
   // We also check if we have two or more semicolons following each other
-  posSemicolon = m_BufferNoComment.find(";",0);
+  posSemicolon = static_cast<long int>(m_BufferNoComment.find(";",0));
   while(posSemicolon != -1)
     {
     // We look forward
@@ -115,20 +115,20 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
         }
       i++;
       }
-    posSemicolon = m_BufferNoComment.find(";",i+1);
+    posSemicolon = static_cast<long int>(m_BufferNoComment.find(";",i+1));
     }
 
 
   // We also check if we have unecessary semicolons
-  posSemicolon = m_BufferNoComment.find(";",0);
+  posSemicolon = static_cast<long int>(m_BufferNoComment.find(";",0));
   while(posSemicolon != -1)
     {
     // check if we have a } before
     long int pos = posSemicolon;
     pos--;
-    while(pos>0 && 
-      (m_BufferNoComment[pos] == ' ' 
-      || m_BufferNoComment[pos] == '\n' 
+    while(pos>0 &&
+      (m_BufferNoComment[pos] == ' '
+      || m_BufferNoComment[pos] == '\n'
       || m_BufferNoComment[pos] == '\r'))
       {
       pos--;
@@ -138,9 +138,9 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
       {
       bool error = true;
       // We check that this is not a class
-      long int openingChar = this->FindOpeningChar('}','{',pos,true);
+      long int openingChar = static_cast<long int>(this->FindOpeningChar('}','{',pos,true));
 
-      long int classPos = m_BufferNoComment.find("class");
+      long int classPos = static_cast<long int>(m_BufferNoComment.find("class"));
       while(classPos != -1)
         {
         if(classPos != -1 && openingChar!= -1)
@@ -158,11 +158,11 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
             error = false;
             }
           }
-        classPos = m_BufferNoComment.find("class",classPos+1);
+        classPos = static_cast<long int>(m_BufferNoComment.find("class",classPos+1));
         }
 
       // We check that this is not a enum
-      long int enumPos = m_BufferNoComment.find("enum");
+      long int enumPos = static_cast<long int>(m_BufferNoComment.find("enum"));
       while(enumPos != -1)
         {
         if(enumPos != -1 && openingChar!= -1)
@@ -180,9 +180,9 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
             error = false;
             }
           }
-        enumPos = m_BufferNoComment.find("enum",enumPos+1);
+        enumPos = static_cast<long int>(m_BufferNoComment.find("enum",enumPos+1));
         }
-  
+
       std::string word = this->FindPreviousWord(openingChar);
       if(word == "enum")
         {
@@ -190,7 +190,7 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
         }
 
       // We check that this is not a struct
-      long int structPos = m_BufferNoComment.find("struct");
+      long int structPos = static_cast<long int>(m_BufferNoComment.find("struct"));
       while(structPos != -1)
         {
         if(structPos != -1 && openingChar!= -1)
@@ -208,7 +208,7 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
             error = false;
             }
           }
-        structPos = m_BufferNoComment.find("struct",structPos+1);
+        structPos = static_cast<long int>(m_BufferNoComment.find("struct",structPos+1));
         }
 
       word = this->FindPreviousWord(openingChar);
@@ -218,7 +218,7 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
         }
 
       // We check that this is not a union
-      long int unionPos = m_BufferNoComment.find("union");
+      long int unionPos = static_cast<long int>(m_BufferNoComment.find("union"));
       while(unionPos != -1)
         {
         if(unionPos != -1 && openingChar!= -1)
@@ -236,7 +236,7 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
             error = false;
             }
           }
-        unionPos = m_BufferNoComment.find("union",unionPos+1);
+        unionPos = static_cast<long int>(m_BufferNoComment.find("union",unionPos+1));
         }
 
       word = this->FindPreviousWord(openingChar);
@@ -249,7 +249,7 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
       long int i = pos--;
       while(i>0)
         {
-        if(m_BufferNoComment[i]==';' 
+        if(m_BufferNoComment[i]==';'
           || (m_BufferNoComment[i]==')'))
           {
           break;
@@ -268,16 +268,16 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
         {
         if(m_BufferNoComment[i]=='}')
           {
-          long int openingChar = this->FindOpeningChar('}','{',i,true);
-          long int j = openingChar-1;
-          while(j>0 && (m_BufferNoComment[j]==' ' 
-            || m_BufferNoComment[j]=='\n' 
+          long int localopeningChar = static_cast<long int>(this->FindOpeningChar('}','{',i,true));
+          long int j = localopeningChar-1;
+          while(j>0 && (m_BufferNoComment[j]==' '
+            || m_BufferNoComment[j]=='\n'
             || m_BufferNoComment[j]=='\r')
             )
             {
             j--;
             }
-  
+
           if(m_BufferNoComment[j]=='=')
             {
             error = false;
@@ -286,15 +286,15 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
           }
         i--;
         }
-      
+
       // Check if the {} is empty or not
       if(openingChar!= -1)
         {
         bool empty = true;
-        for(unsigned long i=openingChar+1;i<(unsigned long)pos;i++)
+        for(unsigned long index=openingChar+1;index<(unsigned long)pos;index++)
           {
-          if(m_BufferNoComment[i] != ' ' || m_BufferNoComment[i] != '\r'
-            || m_BufferNoComment[i] != '\n')
+          if(m_BufferNoComment[index] != ' ' || m_BufferNoComment[index] != '\r'
+            || m_BufferNoComment[index] != '\n')
             {
             empty = false;
             break;
@@ -308,16 +308,16 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
 
       if(error)
         {
-        Error error;
-        error.line = this->GetLineNumber(posSemicolon,true);
-        error.line2 = error.line;
-        error.number = SEMICOLON_SPACE;
-        error.description = "Unnecessary semicolon";
-        m_ErrorList.push_back(error);
+        Error localerror;
+        localerror.line = this->GetLineNumber(posSemicolon,true);
+        localerror.line2 = localerror.line;
+        localerror.number = SEMICOLON_SPACE;
+        localerror.description = "Unnecessary semicolon";
+        m_ErrorList.push_back(localerror);
         hasError = true;
         }
       }
-    posSemicolon = m_BufferNoComment.find(";",posSemicolon+1);
+    posSemicolon = static_cast<long int>(m_BufferNoComment.find(";",posSemicolon+1));
     }
 
   return !hasError;

@@ -85,7 +85,7 @@ bool Parser::CheckOperator(unsigned int before, unsigned int after,
       {
       // Check number of space before
       unsigned int bef = 0;
-      long int i = operatorPos-1;
+      long int i = static_cast<long int>(operatorPos)-1;
       while((i>0) && (m_BufferNoComment[i] == ' '))
         {
         bef++;
@@ -94,7 +94,7 @@ bool Parser::CheckOperator(unsigned int before, unsigned int after,
 
       // Check number of space after
       unsigned int aft = 0;
-      i = operatorPos+1;
+      i = static_cast<long int>(operatorPos)+1;
       while((i<(long int)m_BufferNoComment.size()) && (m_BufferNoComment[i] == ' '))
         {
         aft++;
@@ -151,7 +151,7 @@ bool Parser::FindOperator(const char* op,unsigned int before,
     bool showError=true;
     // Check number of space before
     unsigned int bef = 0;
-    long int i = operatorPos-1;
+    long int i = static_cast<long int>(operatorPos)-1;
     while((i>0) && ((m_BufferNoComment[i] == ' ')
        || (m_BufferNoComment[i] == '\r')
        || (m_BufferNoComment[i] == '\n'))
@@ -167,7 +167,7 @@ bool Parser::FindOperator(const char* op,unsigned int before,
         // check if the sum of the two lines is higher than the maximum length
         std::string currentLine = this->GetLine(this->GetLineNumber(i,true)-1);
         std::string previousLine = this->GetLine(this->GetLineNumber(i,true));
-        unsigned long sum = currentLine.size()+previousLine.size();
+        unsigned long sum = static_cast<unsigned long>(currentLine.size()+previousLine.size());
         if(sum>maxSize)
           {
           showError = false;
@@ -179,7 +179,7 @@ bool Parser::FindOperator(const char* op,unsigned int before,
 
     // Check number of space after
     unsigned int aft = 0;
-    i = operatorPos+strlen(op);
+    i = static_cast<long int>(operatorPos+strlen(op));
     while((i<(long int)m_BufferNoComment.size())
            && ((m_BufferNoComment[i] == ' ')
            || (m_BufferNoComment[i] == '\r')
@@ -193,7 +193,7 @@ bool Parser::FindOperator(const char* op,unsigned int before,
         // check if the sum of the two lines is higher than the maximum length
         std::string currentLine = this->GetLine(this->GetLineNumber(i,true)-1);
         std::string nextLine = this->GetLine(this->GetLineNumber(i,true));
-        unsigned long sum = currentLine.size()+nextLine.size();
+        unsigned long sum = static_cast<unsigned long>(currentLine.size()+nextLine.size());
         if(sum>maxSize)
           {
           showError = false;
@@ -239,7 +239,7 @@ bool Parser::FindOperator(const char* op,unsigned int before,
         hasErrors = true;
         }
       }
-    pos = operatorPos+1;
+    pos = static_cast<long int>(operatorPos)+1;
     operatorPos = m_BufferNoComment.find(op,operatorPos+1);  
     }
   return !hasErrors;

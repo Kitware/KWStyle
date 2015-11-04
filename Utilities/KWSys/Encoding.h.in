@@ -9,10 +9,11 @@
   implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License for more information.
 ============================================================================*/
-#ifndef @KWSYS_NAMESPACE@_System_h
-#define @KWSYS_NAMESPACE@_System_h
+#ifndef @KWSYS_NAMESPACE@_Encoding_h
+#define @KWSYS_NAMESPACE@_Encoding_h
 
 #include <@KWSYS_NAMESPACE@/Configure.h>
+#include <wchar.h>
 
 /* Redefine all public interface symbol names to be in the proper
    namespace.  These macros are used internally to kwsys only, and are
@@ -23,7 +24,11 @@
 # define kwsysEXPORT @KWSYS_NAMESPACE@_EXPORT
 #endif
 #if !@KWSYS_NAMESPACE@_NAME_IS_KWSYS
-# define kwsysSystem_Parse_CommandForUnix             kwsys_ns(System_Parse_CommandForUnix)
+# define kwsysEncoding         kwsys_ns(Encoding)
+# define kwsysEncoding_mbstowcs  kwsys_ns(Encoding_mbstowcs)
+# define kwsysEncoding_DupToWide  kwsys_ns(Encoding_DupToWide)
+# define kwsysEncoding_wcstombs  kwsys_ns(Encoding_wcstombs)
+# define kwsysEncoding_DupToNarrow kwsys_ns(Encoding_DupToNarrow)
 #endif
 
 #if defined(__cplusplus)
@@ -31,26 +36,27 @@ extern "C"
 {
 #endif
 
-/**
- * Parse a unix-style command line string into separate arguments.
- *
- * On success, returns a pointer to an array of pointers to individual
- * argument strings.  Each string is null-terminated and the last
- * entry in the array is a NULL pointer (just like argv).  It is the
- * caller's responsibility to free() the strings and the array of
- * pointers to them.
- *
- * On failure, returns NULL.  Failure occurs only on invalid flags or
- * when memory cannot be allocated; never due to content of the input
- * string.  Missing close-quotes are treated as if the necessary
- * closing quote appears.
- *
- * By default single- and double-quoted arguments are supported, and
- * any character may be escaped by a backslash.  The flags argument is
- * reserved for future use, and must be zero (or the call will fail).
- */
-kwsysEXPORT char** kwsysSystem_Parse_CommandForUnix(const char* command,
-                                                    int flags);
+
+/* Convert a narrow string to a wide string.
+   On Windows, UTF-8 is assumed, and on other platforms,
+   the current locale is assumed.
+   */
+kwsysEXPORT size_t kwsysEncoding_mbstowcs(wchar_t* dest, const char* src, size_t n);
+
+/* Convert a narrow string to a wide string.
+   This can return NULL if the conversion fails. */
+kwsysEXPORT wchar_t* kwsysEncoding_DupToWide(const char* src);
+
+
+/* Convert a wide string to a narrow string.
+   On Windows, UTF-8 is assumed, and on other platforms,
+   the current locale is assumed. */
+kwsysEXPORT size_t kwsysEncoding_wcstombs(char* dest, const wchar_t* src, size_t n);
+
+/* Convert a wide string to a narrow string.
+   This can return NULL if the conversion fails. */
+kwsysEXPORT char* kwsysEncoding_DupToNarrow(const wchar_t* str);
+
 
 #if defined(__cplusplus)
 } /* extern "C" */
@@ -62,7 +68,11 @@ kwsysEXPORT char** kwsysSystem_Parse_CommandForUnix(const char* command,
 # undef kwsys_ns
 # undef kwsysEXPORT
 # if !defined(KWSYS_NAMESPACE) && !@KWSYS_NAMESPACE@_NAME_IS_KWSYS
-#  undef kwsysSystem_Parse_CommandForUnix
+#  undef kwsysEncoding
+#  undef kwsysEncoding_mbstowcs
+#  undef kwsysEncoding_DupToWide
+#  undef kwsysEncoding_wcstombs
+#  undef kwsysEncoding_DupToNarrow
 # endif
 #endif
 

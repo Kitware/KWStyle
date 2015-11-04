@@ -32,7 +32,7 @@ bool Parser::CheckNameOfClass(const char* name,const char* prefix)
   bool gotMatch = false;
   bool gotAtLeastOne = false;
 
-  long int classpos = this->GetClassPosition(0);
+  long int classpos = static_cast<long int>(this->GetClassPosition(0));
   std::string nameOfClass = "";
   while(classpos!=-1)
     {
@@ -44,8 +44,8 @@ bool Parser::CheckNameOfClass(const char* name,const char* prefix)
       return false;
       }
 
-    long int point = m_Filename.find_last_of(".");
-    long int slash = m_Filename.find_last_of("/");
+    long int point = static_cast<long int>(m_Filename.find_last_of("."));
+    long int slash = static_cast<long int>(m_Filename.find_last_of("/"));
 
     if(slash == -1)
       {
@@ -57,12 +57,12 @@ bool Parser::CheckNameOfClass(const char* name,const char* prefix)
 
     // construct the string
     std::string toMatch = name;
-    long int p = toMatch.find("[NameOfClass]");
+    long int p = static_cast<long int>(toMatch.find("[NameOfClass]"));
     if(p != -1)
       {
       toMatch.replace(p,13,nameofclass);
       }
-    p = toMatch.find("[Extension]");
+    p = static_cast<long int>(toMatch.find("[Extension]"));
     if(p != -1)
       {
       toMatch.replace(p,11,extension);
@@ -79,7 +79,7 @@ bool Parser::CheckNameOfClass(const char* name,const char* prefix)
       gotMatch = true;
       break; 
       }
-    classpos = this->GetClassPosition(classpos+1);
+    classpos = static_cast<long int>(this->GetClassPosition(classpos+1));
     }
 
   if(!gotMatch && gotAtLeastOne && (classpos!=-1))
