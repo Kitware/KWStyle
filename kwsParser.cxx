@@ -15,7 +15,6 @@
 
 #include <stdlib.h> // atoi
 #include <string.h>
-#include <kwssys/ios/sstream>
 #include <boost/xpressive/xpressive.hpp>
 
 using namespace boost::xpressive;
