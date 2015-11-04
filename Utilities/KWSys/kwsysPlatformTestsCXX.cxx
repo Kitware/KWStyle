@@ -9,107 +9,8 @@
   implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License for more information.
 ============================================================================*/
-// Setup for tests that use result of stl namespace test.
-#if defined(KWSYS_STL_HAVE_STD)
-# if KWSYS_STL_HAVE_STD
-#  define kwsys_stl std
-# else
-#  define kwsys_stl
-# endif
-#endif
-
-// Setup for tests that use iostreams.
-#if defined(KWSYS_IOS_USE_ANSI) && defined(KWSYS_IOS_HAVE_STD)
-# if defined(_MSC_VER)
-#  pragma warning (push,1)
-# endif
-# if KWSYS_IOS_USE_ANSI
-#  include <iostream>
-# else
-#  include <iostream.h>
-# endif
-# if defined(_MSC_VER)
-#  pragma warning (pop)
-# endif
-# if KWSYS_IOS_HAVE_STD
-#  define kwsys_ios std
-# else
-#  define kwsys_ios
-# endif
-#endif
-
-#ifdef TEST_KWSYS_STL_HAVE_STD
-#include <list>
-void f(std ::list<int>*) {}
-int main() { return 0; }
-#endif
-
-#ifdef TEST_KWSYS_IOS_USE_ANSI
-#include <iosfwd>
-int main() { return 0; }
-#endif
-
-#ifdef TEST_KWSYS_IOS_HAVE_STD
-#include <iosfwd>
-void f(std ::ostream*) {}
-int main() { return 0; }
-#endif
-
-#ifdef TEST_KWSYS_IOS_USE_SSTREAM
-#include <sstream>
-#if defined(__GNUC__) && __GNUC__ == 2 && __GNUC_MINOR__ == 96
-# error "GCC 2.96 stringstream is buggy"
-#endif
-int main()
-{
-  std ::ostringstream ostr;
-  ostr << "hello";
-  if(ostr.str().size() == 5)
-    {
-    return 0;
-    }
-  return -1;
-}
-#endif
-
-#ifdef TEST_KWSYS_IOS_USE_STRSTREAM_H
-#include <strstream.h>
-int main() { return 0; }
-#endif
-
-#ifdef TEST_KWSYS_IOS_USE_STRSTREA_H
-#include <strstrea.h>
-int main() { return 0; }
-#endif
-
-#ifdef TEST_KWSYS_STL_STRING_HAVE_OSTREAM
-# include <iostream.h>
-# include <string>
-void f(ostream& os, const kwsys_stl::string& s) { os << s; }
-int main() { return 0; }
-#endif
-
-#ifdef TEST_KWSYS_STL_STRING_HAVE_ISTREAM
-# include <iostream.h>
-# include <string>
-void f(istream& is, kwsys_stl::string& s) { is >> s; }
-int main() { return 0; }
-#endif
-
-#ifdef TEST_KWSYS_STL_STRING_HAVE_NEQ_CHAR
-# include <string>
-bool f(const kwsys_stl::string& s) { return s != ""; }
-int main() { return 0; }
-#endif
-
 #ifdef TEST_KWSYS_CXX_HAS_CSTDIO
 #include <cstdio>
-int main() { return 0; }
-#endif
-
-#ifdef TEST_KWSYS_CXX_HAS_CSTDDEF
-#include <cstddef>
-void f(size_t) {}
 int main() { return 0; }
 #endif
 
@@ -122,147 +23,12 @@ int main()
 }
 #endif
 
-#ifdef TEST_KWSYS_CXX_HAS_NULL_TEMPLATE_ARGS
-template <class T> class A;
-template <class T> int f(A<T>&);
-template <class T> class A
-{
-public:
-  // "friend int f<>(A<T>&)" would conform
-  friend int f(A<T>&);
-private:
-  int x;
-};
-
-template <class T> int f(A<T>& a) { return a.x = 0; }
-template int f(A<int>&);
-
+#ifdef TEST_KWSYS_CXX_HAS___INT64
+__int64 f(__int64 n) { return n; }
 int main()
 {
-  A<int> a;
-  return f(a);
-}
-#endif
-
-#ifdef TEST_KWSYS_CXX_HAS_MEMBER_TEMPLATES
-template <class U>
-class A
-{
-public:
-  U u;
-  A(): u(0) {}
-  template <class V> V m(V* p) { return *p = u; }
-};
-
-int main()
-{
-  A<short> a;
-  int s = 1;
-  return a.m(&s);
-}
-#endif
-
-#ifdef TEST_KWSYS_CXX_HAS_FULL_SPECIALIZATION
-template <class T> struct A {};
-template <> struct A<int*>
-{
-  static int f() { return 0; }
-};
-int main() { return A<int*>::f(); }
-#endif
-
-#ifdef TEST_KWSYS_CXX_HAS_ARGUMENT_DEPENDENT_LOOKUP
-namespace N
-{
-  class A {};
-  int f(A*) { return 0; }
-}
-void f(void*);
-int main()
-{
-  N::A* a = 0;
-  return f(a);
-}
-#endif
-
-#ifdef TEST_KWSYS_STL_HAS_ITERATOR_TRAITS
-#include <iterator>
-#include <list>
-void f(kwsys_stl::iterator_traits<kwsys_stl::list<int>::iterator>::iterator_category const&) {}
-int main() { return 0; }
-#endif
-
-#ifdef TEST_KWSYS_STL_HAS_ITERATOR_CATEGORY
-#include <iterator>
-#include <list>
-void f(kwsys_stl::list<int>::iterator x) { kwsys_stl::iterator_category(x); }
-int main() { return 0; }
-#endif
-
-#ifdef TEST_KWSYS_STL_HAS___ITERATOR_CATEGORY
-#include <iterator>
-#include <list>
-void f(kwsys_stl::list<int>::iterator x) { kwsys_stl::__iterator_category(x); }
-int main() { return 0; }
-#endif
-
-#ifdef TEST_KWSYS_STL_HAS_ALLOCATOR_TEMPLATE
-#include <memory>
-template <class Alloc>
-void f(const Alloc&)
-{
-  typedef typename Alloc::size_type alloc_size_type;
-}
-int main()
-{
-  f(kwsys_stl::allocator<char>());
-  return 0;
-}
-#endif
-
-#ifdef TEST_KWSYS_STL_HAS_ALLOCATOR_NONTEMPLATE
-#include <memory>
-void f(kwsys_stl::allocator::size_type const&) {}
-int main() { return 0; }
-#endif
-
-#ifdef TEST_KWSYS_STL_HAS_ALLOCATOR_REBIND
-#include <memory>
-template <class T, class Alloc>
-void f(const T&, const Alloc&)
-{
-  typedef typename Alloc::template rebind<T>::other alloc_type;
-}
-int main()
-{
-  f(0, kwsys_stl::allocator<char>());
-  return 0;
-}
-#endif
-
-#ifdef TEST_KWSYS_STL_HAS_ALLOCATOR_MAX_SIZE_ARGUMENT
-#include <memory>
-void f(kwsys_stl::allocator<char> const& a)
-{
-  a.max_size(sizeof(int));
-}
-int main()
-{
-  f(kwsys_stl::allocator<char>());
-  return 0;
-}
-#endif
-
-#ifdef TEST_KWSYS_STL_HAS_ALLOCATOR_OBJECTS
-#include <vector>
-void f(kwsys_stl::vector<int> const& v1)
-{
-  kwsys_stl::vector<int>(1, 1, v1.get_allocator());
-}
-int main()
-{
-  f(kwsys_stl::vector<int>());
-  return 0;
+  __int64 n = 0;
+  return static_cast<int>(f(n));
 }
 #endif
 
@@ -314,38 +80,55 @@ int main()
 }
 #endif
 
-#ifdef TEST_KWSYS_IOS_HAVE_BINARY
-int test_binary(int, ...)
-{
-  return 0;
-}
-int main()
-{
-  return test_binary(1, kwsys_ios::ios::binary);
-}
-#endif
-
 #ifdef TEST_KWSYS_IOS_HAS_ISTREAM_LONG_LONG
-int test_istream(kwsys_ios::istream& is, long long& x)
+# include <iostream>
+int test_istream(std::istream& is, long long& x)
 {
   return (is >> x)? 1:0;
 }
 int main()
 {
   long long x = 0;
-  return test_istream(kwsys_ios::cin, x);
+  return test_istream(std::cin, x);
 }
 #endif
 
 #ifdef TEST_KWSYS_IOS_HAS_OSTREAM_LONG_LONG
-int test_ostream(kwsys_ios::ostream& os, long long x)
+# include <iostream>
+int test_ostream(std::ostream& os, long long x)
 {
   return (os << x)? 1:0;
 }
 int main()
 {
   long long x = 0;
-  return test_ostream(kwsys_ios::cout, x);
+  return test_ostream(std::cout, x);
+}
+#endif
+
+#ifdef TEST_KWSYS_IOS_HAS_ISTREAM___INT64
+# include <iostream>
+int test_istream(std::istream& is, __int64& x)
+{
+  return (is >> x)? 1:0;
+}
+int main()
+{
+  __int64 x = 0;
+  return test_istream(std::cin, x);
+}
+#endif
+
+#ifdef TEST_KWSYS_IOS_HAS_OSTREAM___INT64
+# include <iostream>
+int test_ostream(std::ostream& os, __int64 x)
+{
+  return (os << x)? 1:0;
+}
+int main()
+{
+  __int64 x = 0;
+  return test_ostream(std::cout, x);
 }
 #endif
 
@@ -390,6 +173,158 @@ int main(int, char **argv)
   fseek( file, offset, SEEK_CUR );
   fclose( file );
   return 0;
+}
+#endif
+
+#ifdef TEST_KWSYS_CXX_HAS_SETENV
+#include <stdlib.h>
+int main()
+{
+  return setenv("A", "B", 1);
+}
+#endif
+
+#ifdef TEST_KWSYS_CXX_HAS_UNSETENV
+#include <stdlib.h>
+int main()
+{
+  unsetenv("A");
+  return 0;
+}
+#endif
+
+#ifdef TEST_KWSYS_CXX_HAS_ENVIRON_IN_STDLIB_H
+#include <stdlib.h>
+int main()
+{
+  char* e = environ[0];
+  return e? 0:1;
+}
+#endif
+
+#ifdef TEST_KWSYS_CXX_HAS_GETLOADAVG
+// Match feature definitions from SystemInformation.cxx
+#if (defined(__GNUC__) || defined(__PGI)) && !defined(_GNU_SOURCE)
+# define _GNU_SOURCE
+#endif
+#include <stdlib.h>
+int main()
+{
+  double loadavg[3] = { 0.0, 0.0, 0.0 };
+  return getloadavg(loadavg, 3);
+}
+#endif
+
+#ifdef TEST_KWSYS_CXX_HAS_RLIMIT64
+# if defined(KWSYS_HAS_LFS)
+#  define _LARGEFILE_SOURCE
+#  define _LARGEFILE64_SOURCE
+#  define _LARGE_FILES
+#  define _FILE_OFFSET_BITS 64
+# endif
+# include <sys/resource.h>
+int main()
+{
+  struct rlimit64 rlim;
+  return getrlimit64(0,&rlim);
+}
+#endif
+
+#ifdef TEST_KWSYS_CXX_HAS_ATOLL
+#include <stdlib.h>
+int main()
+{
+  const char *str="1024";
+  return static_cast<int>(atoll(str));
+}
+#endif
+
+#ifdef TEST_KWSYS_CXX_HAS_ATOL
+#include <stdlib.h>
+int main()
+{
+  const char *str="1024";
+  return static_cast<int>(atol(str));
+}
+#endif
+
+#ifdef TEST_KWSYS_CXX_HAS__ATOI64
+#include <stdlib.h>
+int main()
+{
+  const char *str="1024";
+  return static_cast<int>(_atoi64(str));
+}
+#endif
+
+#ifdef TEST_KWSYS_CXX_HAS_UTIMES
+#include <sys/time.h>
+int main()
+{
+  struct timeval* current_time = 0;
+  return utimes("/example", current_time);
+}
+#endif
+
+#ifdef TEST_KWSYS_CXX_HAS_UTIMENSAT
+#include <fcntl.h>
+#include <sys/stat.h>
+int main()
+{
+  struct timespec times[2] = {{0,UTIME_OMIT},{0,UTIME_NOW}};
+  return utimensat(AT_FDCWD, "/example", times, AT_SYMLINK_NOFOLLOW);
+}
+#endif
+
+#ifdef TEST_KWSYS_CXX_HAS_BACKTRACE
+#if defined(__PATHSCALE__) || defined(__PATHCC__) \
+  || (defined(__LSB_VERSION__) && (__LSB_VERSION__ < 41))
+backtrace doesnt work with this compiler or os
+#endif
+#if (defined(__GNUC__) || defined(__PGI)) && !defined(_GNU_SOURCE)
+# define _GNU_SOURCE
+#endif
+#include <execinfo.h>
+int main()
+{
+  void *stackSymbols[256];
+  backtrace(stackSymbols,256);
+  backtrace_symbols(&stackSymbols[0],1);
+  return 0;
+}
+#endif
+
+#ifdef TEST_KWSYS_CXX_HAS_DLADDR
+#if (defined(__GNUC__) || defined(__PGI)) && !defined(_GNU_SOURCE)
+# define _GNU_SOURCE
+#endif
+#include <dlfcn.h>
+int main()
+{
+  Dl_info info;
+  int ierr=dladdr((void*)main,&info);
+  return 0;
+}
+#endif
+
+#ifdef TEST_KWSYS_CXX_HAS_CXXABI
+#if (defined(__GNUC__) || defined(__PGI)) && !defined(_GNU_SOURCE)
+# define _GNU_SOURCE
+#endif
+#if defined(__SUNPRO_CC) && __SUNPRO_CC >= 0x5130 \
+     && __linux && __SUNPRO_CC_COMPAT == 'G'
+#  include <iostream>
+#endif
+#include <cxxabi.h>
+int main()
+{
+  int status = 0;
+  size_t bufferLen = 512;
+  char buffer[512] = {'\0'};
+  const char *function="_ZN5kwsys17SystemInformation15GetProgramStackEii";
+  char *demangledFunction =
+    abi::__cxa_demangle(function, buffer, &bufferLen, &status);
+  return status;
 }
 #endif
 
@@ -478,4 +413,37 @@ int main()
     return 1;
     }
 }
+#endif
+
+#ifdef TEST_KWSYS_CXX_HAS_BORLAND_ASM
+int main()
+{
+  int a = 1;
+  __asm {
+    xor EBX, EBX;
+    mov a, EBX;
+  }
+
+  return a;
+}
+#endif
+
+#ifdef TEST_KWSYS_CXX_HAS_BORLAND_ASM_CPUID
+int main()
+{
+  int a = 0;
+  __asm {
+    xor EAX, EAX;
+    cpuid;
+    mov a, EAX;
+  }
+
+  return a;
+}
+#endif
+
+#ifdef TEST_KWSYS_STL_HAS_WSTRING
+#include <string>
+void f(std ::wstring*) {}
+int main() { return 0; }
 #endif

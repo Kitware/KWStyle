@@ -65,6 +65,15 @@
   See the comments below for specific explanations of each macro.
 */
 
+/* Disable -Wcast-qual warnings since they are too hard to fix in a
+   cross-platform way.  */
+#if defined(__clang__) && defined(__has_warning)
+# if __has_warning("-Wcast-qual")
+#  pragma clang diagnostic push
+#  pragma clang diagnostic ignored "-Wcast-qual"
+# endif
+#endif
+
 /*--------------------------------------------------------------------------*/
 
 /* Full path to the directory in which this executable is built.  Do
@@ -415,7 +424,7 @@ static int kwsys_shared_forward_realpath(const char* in_path, char* out_path)
 {
 #if defined(_WIN32) && !defined(__CYGWIN__)
   /* Implementation for Windows.  */
-  DWORD n = GetFullPathName(in_path, KWSYS_SHARED_FORWARD_MAXPATH,
+  DWORD n = GetFullPathNameA(in_path, KWSYS_SHARED_FORWARD_MAXPATH,
                             out_path, 0);
   return n > 0 && n <= KWSYS_SHARED_FORWARD_MAXPATH;
 #else
@@ -429,9 +438,9 @@ static int kwsys_shared_forward_samepath(const char* file1, const char* file2)
 {
 #if defined(_WIN32)
   int result = 0;
-  HANDLE h1 = CreateFile(file1, GENERIC_READ, FILE_SHARE_READ, NULL,
+  HANDLE h1 = CreateFileA(file1, GENERIC_READ, FILE_SHARE_READ, NULL,
                          OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL);
-  HANDLE h2 = CreateFile(file2, GENERIC_READ, FILE_SHARE_READ, NULL,
+  HANDLE h2 = CreateFileA(file2, GENERIC_READ, FILE_SHARE_READ, NULL,
                          OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL);
   if(h1 != INVALID_HANDLE_VALUE && h2 != INVALID_HANDLE_VALUE)
     {
@@ -462,7 +471,7 @@ static void kwsys_shared_forward_strerror(char* message)
 #if defined(_WIN32) && !defined(__CYGWIN__)
   /* Implementation for Windows.  */
   DWORD original = GetLastError();
-  DWORD length = FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM |
+  DWORD length = FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM |
                                FORMAT_MESSAGE_IGNORE_INSERTS, 0, original,
                                MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
                                message, KWSYS_SHARED_FORWARD_MAXPATH, 0);
@@ -512,7 +521,7 @@ static void kwsys_shared_forward_execvp(const char* cmd,
   /* Invoke the child process.  */
 #if defined(_MSC_VER)
   _execvp(cmd, argv);
-#elif defined(__MINGW32__)
+#elif defined(__MINGW32__) && !defined(__MINGW64__)
   execvp(cmd, argv);
 #else
   execvp(cmd, (char* const*)argv);
@@ -772,7 +781,7 @@ static int kwsys_shared_forward_get_settings(const char* self_path,
   const char** dir;
   for(dir = search_path; *dir; ++dir)
     {
-    /* Add seperator between path components.  */
+    /* Add separator between path components.  */
     if(dir != search_path)
       {
       strcat(ldpath, kwsys_shared_forward_path_sep);
@@ -813,7 +822,7 @@ static void kwsys_shared_forward_print_failure(char const* const* argv)
 }
 
 /* Static storage space to store the updated environment variable.  */
-static char kwsys_shared_forward_ldpath[KWSYS_SHARED_FORWARD_MAXPATH*16] = KWSYS_SHARED_FORWARD_LDPATH "=";
+static char kwsys_shared_forward_ldpath[65535] = KWSYS_SHARED_FORWARD_LDPATH "=";
 
 /*--------------------------------------------------------------------------*/
 /* Main driver function to be called from main.  */
@@ -916,6 +925,13 @@ static int @KWSYS_NAMESPACE@_shared_forward_to_real(int argc, char** argv_in)
   /* Exit with failure.  */
   return 1;
 }
+
+/* Restore warning stack.  */
+#if defined(__clang__) && defined(__has_warning)
+# if __has_warning("-Wcast-qual")
+#  pragma clang diagnostic pop
+# endif
+#endif
 
 #else
 # error "@KWSYS_NAMESPACE@/SharedForward.h should be included only once."

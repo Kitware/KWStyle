@@ -12,33 +12,28 @@
 #include "kwsysPrivate.h"
 
 #include KWSYS_HEADER(DynamicLoader.hxx)
-#include KWSYS_HEADER(ios/iostream)
-#include KWSYS_HEADER(stl/string)
 
-#if defined(__BEOS__) && !defined(__HAIKU__)
+#if defined(__BEOS__) || defined(__HAIKU__)
 #include <be/kernel/OS.h>  /* disable_debugger() API. */
-#endif
-
-#if defined(__HAIKU__)
-#include <os/kernel/OS.h>  /* disable_debugger() API. */
 #endif
 
 // Work-around CMake dependency scanning limitation.  This must
 // duplicate the above list of headers.
 #if 0
 # include "DynamicLoader.hxx.in"
-# include "kwsys_ios_iostream.h.in"
-# include "kwsys_stl_string.hxx.in"
 #endif
+
+#include <string>
+#include <iostream>
 
 // Include with <> instead of "" to avoid getting any in-source copy
 // left on disk.
 #include <testSystemTools.h>
 
-kwsys_stl::string GetLibName(const char* lname)
+static std::string GetLibName(const char* lname)
 {
   // Construct proper name of lib
-  kwsys_stl::string slname;
+  std::string slname;
   slname = EXECUTABLE_OUTPUT_PATH;
 #ifdef CMAKE_INTDIR
   slname += "/";
@@ -60,30 +55,30 @@ kwsys_stl::string GetLibName(const char* lname)
  */
 int TestDynamicLoader(const char* libname, const char* symbol, int r1, int r2, int r3)
 {
-  kwsys_ios::cerr << "Testing: " << libname << kwsys_ios::endl;
+  std::cerr << "Testing: " << libname << std::endl;
   kwsys::DynamicLoader::LibraryHandle l
     = kwsys::DynamicLoader::OpenLibrary(libname);
   // If result is incompatible with expectation just fails (xor):
   if( (r1 && !l) || (!r1 && l) )
     {
-    kwsys_ios::cerr
-      << kwsys::DynamicLoader::LastError() << kwsys_ios::endl;
+    std::cerr
+      << kwsys::DynamicLoader::LastError() << std::endl;
     return 1;
     }
   kwsys::DynamicLoader::SymbolPointer f
     = kwsys::DynamicLoader::GetSymbolAddress(l, symbol);
   if( (r2 && !f) || (!r2 && f) )
     {
-    kwsys_ios::cerr
-      << kwsys::DynamicLoader::LastError() << kwsys_ios::endl;
+    std::cerr
+      << kwsys::DynamicLoader::LastError() << std::endl;
     return 1;
     }
 #ifndef __APPLE__
   int s = kwsys::DynamicLoader::CloseLibrary(l);
   if( (r3 && !s) || (!r3 && s) )
     {
-    kwsys_ios::cerr
-      << kwsys::DynamicLoader::LastError() << kwsys_ios::endl;
+    std::cerr
+      << kwsys::DynamicLoader::LastError() << std::endl;
     return 1;
     }
 #else
@@ -109,10 +104,10 @@ int testDynamicLoader(int argc, char *argv[])
 
 // dlopen() on Syllable before 11/22/2007 doesn't return 0 on error
 #ifndef __SYLLABLE__
-  // Make sure that inexistant lib is giving correct result
+  // Make sure that inexistent lib is giving correct result
   res += TestDynamicLoader("azerty_", "foo_bar",0,0,0);
-  // Make sure that random binary file cannnot be assimilated as dylib
-  res += TestDynamicLoader(TEST_SYSTEMTOOLS_BIN_FILE, "wp",0,0,0);
+  // Make sure that random binary file cannot be assimilated as dylib
+  res += TestDynamicLoader(TEST_SYSTEMTOOLS_SOURCE_DIR "/testSystemTools.bin", "wp",0,0,0);
 #endif
 
 #ifdef __linux__
@@ -122,7 +117,7 @@ int testDynamicLoader(int argc, char *argv[])
   res += TestDynamicLoader("libdl.so", "TestDynamicLoader",1,0,1);
 #endif
   // Now try on the generated library
-  kwsys_stl::string libname = GetLibName(KWSYS_NAMESPACE_STRING "TestDynload");
+  std::string libname = GetLibName(KWSYS_NAMESPACE_STRING "TestDynload");
   res += TestDynamicLoader(libname.c_str(), "dummy",1,0,1);
   res += TestDynamicLoader(libname.c_str(), "TestDynamicLoaderSymbolPointer",1,1,1);
   res += TestDynamicLoader(libname.c_str(), "_TestDynamicLoaderSymbolPointer",1,0,1);
