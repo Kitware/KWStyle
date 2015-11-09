@@ -51,7 +51,7 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment,bool checkP
 
     size_t previousline = 0;
     size_t previouspos = 0;
-    
+
     size_t pos = publicFirst;
     while(pos!= std::string::npos)
       {
@@ -78,7 +78,7 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment,bool checkP
           m_ErrorList.push_back(error);
           hasError = true;
           }
-        
+
         // Check the alignment if specified
         if(alignment)
           {
@@ -140,7 +140,7 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment,bool checkP
         {
         continue;
         }
-   
+
       if(this->IsInStruct(pos) || this->IsInUnion(pos))
         {
         continue;
@@ -201,19 +201,19 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment,bool checkP
     previouspos = 0;
     while(pos != std::string::npos)
       {
-      std::string var = this->FindInternalVariable(pos+1,privateLast,pos); 
+      std::string var = this->FindInternalVariable(pos+1,privateLast,pos);
       if(var == "")
         {
         continue;
         }
-      
+
       if(this->IsInStruct(pos) || this->IsInUnion(pos))
         {
         continue;
         }
 
       if(var.length() > 0)
-        {  
+        {
         // Check the alignment if specified
         if(alignment)
           {
@@ -257,11 +257,11 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment,bool checkP
           }
         }
       }
-    
+
     classPosBegin = this->GetClassPosition(classPosBegin+1);
-    
+
     } // End loop class pos
-    
+
   return !hasError;
 }
 
@@ -272,7 +272,7 @@ std::string Parser::FindInternalVariable(size_t start, size_t end,size_t & pos)
   while(posSemicolon != std::string::npos && posSemicolon<end)
     {
     // We try to find the word before that
-    long i=static_cast<long>(posSemicolon)-1;
+    unsigned long i=static_cast<unsigned long>(posSemicolon)-1;
     bool inWord = true;
     bool first = false;
     std::string ivar = "";
@@ -359,10 +359,7 @@ std::string Parser::FindInternalVariable(size_t start, size_t end,size_t & pos)
      }
 
     std::string subphrase = "";
-    if(i>=0)
-      {
-      subphrase = m_BufferNoComment.substr(i+1,posSemicolon-i-1);
-      }
+    subphrase = m_BufferNoComment.substr(i+1,posSemicolon-i-1);
 
     if( (subphrase.find("=") == std::string::npos)
       && (subphrase.find("(") == std::string::npos)
