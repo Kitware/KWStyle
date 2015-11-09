@@ -142,8 +142,8 @@ protected:
         : member()
         {}
 
-    BOOST_PP_REPEAT_FROM_TO( 1, BOOST_PP_INC(BOOST_BASE_FROM_MEMBER_MAX_ARITY),
-     BOOST_PRIVATE_CTR_DEF, _ )
+//    BOOST_PP_REPEAT_FROM_TO( 1, BOOST_PP_INC(BOOST_BASE_FROM_MEMBER_MAX_ARITY),
+//     BOOST_PRIVATE_CTR_DEF, _ )
 #endif
 
 };  // boost::base_from_member
