@@ -20,6 +20,10 @@
 #include <boost/mpl/has_xxx.hpp>
 #endif
 
+#if defined(__clang__)
+#pragma clang diagnostic ignored "-Wdisabled-macro-expansion"
+#endif
+
 namespace boost { namespace fusion { namespace detail
 {
     // This is a temporary workaround for result_of before we make fusion fully
