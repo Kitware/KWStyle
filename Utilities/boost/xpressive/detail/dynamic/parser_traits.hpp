@@ -388,16 +388,16 @@ private:
     regex_constants::compiler_token_type parse_mods_(FwdIter &begin, FwdIter end)
     {
         using namespace regex_constants;
-        bool set = true;
+        bool localset = true;
         do switch(*begin)
         {
-        case BOOST_XPR_CHAR_(char_type, 'i'): this->flag_(set, icase_); break;
-        case BOOST_XPR_CHAR_(char_type, 'm'): this->flag_(!set, single_line); break;
-        case BOOST_XPR_CHAR_(char_type, 's'): this->flag_(!set, not_dot_newline); break;
-        case BOOST_XPR_CHAR_(char_type, 'x'): this->flag_(set, ignore_white_space); break;
+        case BOOST_XPR_CHAR_(char_type, 'i'): this->flag_(localset, icase_); break;
+        case BOOST_XPR_CHAR_(char_type, 'm'): this->flag_(!localset, single_line); break;
+        case BOOST_XPR_CHAR_(char_type, 's'): this->flag_(!localset, not_dot_newline); break;
+        case BOOST_XPR_CHAR_(char_type, 'x'): this->flag_(localset, ignore_white_space); break;
         case BOOST_XPR_CHAR_(char_type, ':'): ++begin; BOOST_FALLTHROUGH;
         case BOOST_XPR_CHAR_(char_type, ')'): return token_no_mark;
-        case BOOST_XPR_CHAR_(char_type, '-'): if(false == (set = !set)) break; BOOST_FALLTHROUGH;
+        case BOOST_XPR_CHAR_(char_type, '-'): if(false == (localset = !localset)) break; BOOST_FALLTHROUGH;
         default: BOOST_THROW_EXCEPTION(regex_error(error_paren, "unknown pattern modifier"));
         }
         while(BOOST_XPR_ENSURE_(++begin != end, error_paren, "incomplete extension"));
@@ -408,9 +408,9 @@ private:
 
     ///////////////////////////////////////////////////////////////////////////////
     // flag_
-    void flag_(bool set, regex_constants::syntax_option_type flag)
+    void flag_(bool localset, regex_constants::syntax_option_type flag)
     {
-        this->flags_ = set ? (this->flags_ | flag) : (this->flags_ & ~flag);
+        this->flags_ = localset ? (this->flags_ | flag) : (this->flags_ & ~flag);
     }
 
     ///////////////////////////////////////////////////////////////////////////

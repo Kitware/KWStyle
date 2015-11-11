@@ -39,8 +39,9 @@
 #endif
 
 #if defined(__clang__)
-#pragma clang diagnostic ignored "-Wunused-local-typedef"
+#pragma clang diagnostic ignored "-Wall"
 #endif
+
 namespace boost
 {
 
@@ -1079,6 +1080,7 @@ namespace boost
 #if (defined _MSC_VER)
 # pragma warning( pop )
 #endif
+
 
 # include <boost/concept/detail/concept_undef.hpp>
 
