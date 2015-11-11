@@ -301,8 +301,8 @@ inline void parse_charset
         case token_posix_charset_begin:
             {
                 FwdIter tmp = begin, start = begin;
-                bool invert = (token_charset_invert == tr.get_charset_token(tmp, end));
-                if(invert)
+                bool localinvert = (token_charset_invert == tr.get_charset_token(tmp, end));
+                if(localinvert)
                 {
                     begin = start = tmp;
                 }
@@ -315,7 +315,7 @@ inline void parse_charset
                 {
                     char_class_type chclass = rxtraits.lookup_classname(start, tmp, icase);
                     BOOST_XPR_ENSURE_(0 != chclass, error_ctype, "unknown class name");
-                    chset.set_class(chclass, invert);
+                    chset.set_class(chclass, localinvert);
                     continue;
                 }
                 begin = iprev; // un-get this token
