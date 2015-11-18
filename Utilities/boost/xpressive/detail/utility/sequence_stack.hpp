@@ -13,6 +13,7 @@
 # pragma once
 # pragma warning(push)
 # pragma warning(disable : 4127) // conditional expression constant
+# pragma warning(disable : 4996) 
 #endif
 
 #include <algorithm>

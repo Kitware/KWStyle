@@ -38,8 +38,14 @@
 # pragma warning( disable : 4610 ) // object 'class' can never be instantiated - user-defined constructor required
 #endif
 
-#if defined(__clang__)
-#pragma clang diagnostic ignored "-Wall"
+#if defined(__clang__) 
+# if defined(__has_warning)
+#  if __has_warning("-Wunused-local-typedef")
+#   pragma clang diagnostic ignored "-Wunused-local-typedef"
+#  endif
+# else
+#  pragma clang diagnostic ignored "-Wall"
+# endif
 #endif
 
 namespace boost
