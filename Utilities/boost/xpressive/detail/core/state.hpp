@@ -11,6 +11,8 @@
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER)
 # pragma once
+# pragma warning(push)
+# pragma warning(disable : 4996)
 #endif
 
 #include <boost/noncopyable.hpp>
@@ -397,5 +399,9 @@ inline Traits const &traits_cast(match_state<BidiIter> const &state)
 }
 
 }}} // namespace boost::xpressive::detail
+
+#if defined(_MSC_VER)
+# pragma warning(pop)
+#endif
 
 #endif
