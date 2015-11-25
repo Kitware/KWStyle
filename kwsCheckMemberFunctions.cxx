@@ -157,7 +157,7 @@ bool Parser::CheckMemberFunctions(const char* regEx,unsigned long maxLength)
               error.number = MEMBERFUNCTION_LENGTH;
               error.description = "function (" + memberFunction + ") has too many lines: ";
               char* temp = new char[10];
-              sprintf(temp,"%ld",lclose-lopen);
+              sprintf(temp,"%zd",lclose-lopen);
               error.description += temp;
               error.description += " (";
               sprintf(temp,"%ld",maxLength);
@@ -255,7 +255,7 @@ bool Parser::CheckMemberFunctions(const char* regEx,unsigned long maxLength)
                error.number = MEMBERFUNCTION_LENGTH;
                error.description = "function (" + functionName + ") has too many lines: ";
                char* temp = new char[10];
-               sprintf(temp,"%ld",lclose-lopen);
+               sprintf(temp,"%zd",lclose-lopen);
                error.description += temp;
                error.description += " (";
                sprintf(temp,"%ld",maxLength);

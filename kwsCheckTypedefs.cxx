@@ -110,10 +110,10 @@ bool Parser::CheckTypedefs(const char* regEx, bool alignment,unsigned int maxLen
             error.number = TYPEDEF_ALIGN;
             error.description = "Type definition (" + var + ") is not aligned with the previous one: ";
             char* localvar = new char[10];
-            sprintf(localvar,"%ld",l);
+            sprintf(localvar,"%zd",l);
             error.description += localvar;
             error.description += " v.s. ";
-            sprintf(localvar,"%ld",previouspos);
+            sprintf(localvar,"%zd",previouspos);
             error.description += localvar;
             delete [] localvar;
             m_ErrorList.push_back(error);
