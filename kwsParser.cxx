@@ -464,6 +464,20 @@ bool Parser::Check(const char* name, const char* value)
     {
     this->CheckBlackList(value);
     }
+  else if(!strcmp(name, "UsingDirectives"))
+    {
+    bool forbidUsingDirectives = true;
+    if( !strcmp(value, "0") || !strcmp(value, "false"))
+      forbidUsingDirectives = false;
+    this->CheckUsingDirectives(forbidUsingDirectives);
+    }
+  else if(!strcmp(name, "RelativePathInInclude"))
+    {
+    bool forbidRelativePaths = true;
+    if( !strcmp(value, "0") || !strcmp(value, "false"))
+      forbidRelativePaths = false;
+    this->CheckRelativePathInInclude(forbidRelativePaths);
+    }
   return false;
 }
 

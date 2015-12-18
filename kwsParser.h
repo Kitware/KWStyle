@@ -29,7 +29,7 @@
 namespace kws
 {
 #define MAX_CHAR 99999999
-#define NUMBER_ERRORS 32
+#define NUMBER_ERRORS 34
 
 typedef enum
   {
@@ -70,7 +70,9 @@ typedef enum
   MEMBERFUNCTION_REGEX,
   MEMBERFUNCTION_LENGTH,
   FUNCTION_REGEX,
-  FUNCTION_LENGTH
+  FUNCTION_LENGTH,
+  USING_DIRECTIVES,
+  RELATIVE_PATH_IN_INCLUDE
   } ErrorType;
 
 const char ErrorTag[NUMBER_ERRORS][4] = {
@@ -105,7 +107,9 @@ const char ErrorTag[NUMBER_ERRORS][4] = {
    {'M','B','F','\0'},
    {'M','F','L','\0'},
    {'F','R','G','\0'},
-   {'F','L','N','\0'}
+   {'F','L','N','\0'},
+   {'U','N','D','\0'},
+   {'R','P','I','\0'}
   };
 
 
@@ -180,6 +184,12 @@ public:
 
   /** Return the warning vector */
   const WarningVectorType & GetWarnings() const {return m_WarningList;}
+
+  /** Check if the file contains "using namespace .* ;" */
+  bool CheckUsingDirectives(bool forbidUsingDirectives);
+
+  /** Check if the file contains includes with paths that refer to parent directory (ie: #include "../folder/file.h" ) */
+  bool CheckRelativePathInInclude(bool forbidRelativePaths);
 
   /** Check if the file contains tabs */
   bool CheckTabs();
