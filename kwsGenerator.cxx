@@ -1188,6 +1188,8 @@ bool Generator::GenerateDart(const char* dir,int maxError,
         file << "          <Text>";
         }
 
+      file << sourcefile.c_str();
+      file << " : ";
       file << (*it).GetErrorTag((*itError).number);
       file << " : ";
       std::string desc = (*itError).description;
