@@ -13,7 +13,19 @@
 #ifndef BOOST_NONE_17SEP2003_HPP
 #define BOOST_NONE_17SEP2003_HPP
 
+#if defined(__clang__)
+# if defined(__has_warning)
+#  if __has_warning("-Wunneeded-internal-declaration")
+#   pragma clang diagnostic push
+#   pragma clang diagnostic ignored "-Wunneeded-internal-declaration"
+#  endif
+# endif
+#endif
+
 #include "boost/none_t.hpp"
+
+
+
 
 // NOTE: Borland users have to include this header outside any precompiled headers
 // (bcc<=5.64 cannot include instance data in a precompiled header)
@@ -35,7 +47,7 @@ namespace detail { namespace optional_detail {
   {
     static const T instance;
   };
-  
+
   template <typename T>
   const T none_instance<T>::instance = T(); // global, but because 'tis a template, no cpp file required
 
@@ -43,8 +55,8 @@ namespace detail { namespace optional_detail {
 
 
 namespace {
-  // TU-local
-  const none_t& none = detail::optional_detail::none_instance<none_t>::instance; 
+   //TU-local
+  const none_t& none = detail::optional_detail::none_instance<none_t>::instance;
 }
 
 #else
@@ -54,6 +66,15 @@ const none_t none ((none_t::init_tag()));
 #endif // older definitions
 
 } // namespace boost
+
+
+#if defined(__clang__)
+# if defined(__has_warning)
+#  if __has_warning("-Wunneeded-internal-declaration")
+#   pragma clang diagnostic pop
+#  endif
+# endif
+#endif
 
 #endif // header guard
 
