@@ -750,7 +750,7 @@ namespace boost { namespace proto
             };
 
             /// \brief Return the Nth child of the given expression.
-            /// \param expr The expression node.
+            /// \param e The expression node.
             /// \pre <tt>is_expr\<Expr\>::value</tt> is \c true
             /// \pre <tt>N \< Expr::proto_arity::value</tt>
             /// \return <tt>proto::child_c\<N\>(expr)</tt>
@@ -795,7 +795,7 @@ namespace boost { namespace proto
             };
 
             /// \brief Return the Nth child of the given expression.
-            /// \param expr The expression node.
+            /// \param e The expression node.
             /// \pre <tt>is_expr\<Expr\>::value</tt> is \c true
             /// \pre <tt>N::value \< Expr::proto_arity::value</tt>
             /// \return <tt>proto::child\<N\>(expr)</tt>
@@ -835,7 +835,7 @@ namespace boost { namespace proto
             };
 
             /// \brief Return the value of the given terminal expression.
-            /// \param expr The terminal expression node.
+            /// \param e The terminal expression node.
             /// \pre <tt>is_expr\<Expr\>::value</tt> is \c true
             /// \pre <tt>0 == Expr::proto_arity::value</tt>
             /// \return <tt>proto::value(expr)</tt>
@@ -875,7 +875,7 @@ namespace boost { namespace proto
             };
 
             /// \brief Return the left child of the given binary expression.
-            /// \param expr The expression node.
+            /// \param e The expression node.
             /// \pre <tt>is_expr\<Expr\>::value</tt> is \c true
             /// \pre <tt>2 == Expr::proto_arity::value</tt>
             /// \return <tt>proto::left(expr)</tt>
@@ -915,7 +915,7 @@ namespace boost { namespace proto
             };
 
             /// \brief Return the right child of the given binary expression.
-            /// \param expr The expression node.
+            /// \param e The expression node.
             /// \pre <tt>is_expr\<Expr\>::value</tt> is \c true
             /// \pre <tt>2 == Expr::proto_arity::value</tt>
             /// \return <tt>proto::right(expr)</tt>
@@ -1062,7 +1062,7 @@ namespace boost { namespace proto
     /// to be <tt>mpl::long_\<0\></tt>. The child is returned by
     /// reference.
     ///
-    /// \param expr The Proto expression.
+    /// \param e The Proto expression.
     /// \pre <tt>is_expr\<Expr\>::value</tt> is \c true.
     /// \pre \c N is an MPL Integral Constant.
     /// \pre <tt>N::value \< Expr::proto_arity::value</tt>
@@ -1111,7 +1111,7 @@ namespace boost { namespace proto
     /// Return the Nth child of the specified Proto expression. The child
     /// is returned by reference.
     ///
-    /// \param expr The Proto expression.
+    /// \param e The Proto expression.
     /// \pre <tt>is_expr\<Expr\>::value</tt> is \c true.
     /// \pre <tt>N \< Expr::proto_arity::value</tt>
     /// \throw nothrow
@@ -1141,7 +1141,7 @@ namespace boost { namespace proto
     /// terminal expression. The value is returned by
     /// reference.
     ///
-    /// \param expr The Proto terminal expression.
+    /// \param e The Proto terminal expression.
     /// \pre <tt>N::value == 0</tt>
     /// \throw nothrow
     /// \return A reference to the terminal's value
@@ -1169,7 +1169,7 @@ namespace boost { namespace proto
     /// Return the left child of the specified binary Proto expression. The
     /// child is returned by reference.
     ///
-    /// \param expr The Proto expression.
+    /// \param e The Proto expression.
     /// \pre <tt>is_expr\<Expr\>::value</tt> is \c true.
     /// \pre <tt>2 == Expr::proto_arity::value</tt>
     /// \throw nothrow
@@ -1198,7 +1198,7 @@ namespace boost { namespace proto
     /// Return the right child of the specified binary Proto expression. The
     /// child is returned by reference.
     ///
-    /// \param expr The Proto expression.
+    /// \param e The Proto expression.
     /// \pre <tt>is_expr\<Expr\>::value</tt> is \c true.
     /// \pre <tt>2 == Expr::proto_arity::value</tt>
     /// \throw nothrow
