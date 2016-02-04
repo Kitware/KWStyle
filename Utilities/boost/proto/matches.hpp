@@ -802,7 +802,7 @@ namespace boost { namespace proto
     /// matches <tt>C::case_\<boost::result_of\<T(E)\>::type\></tt>.
     ///
     /// When applying <tt>switch_\<C,T\></tt> as a transform with an
-    /// expression \c e of type \c E, state \c s of type \S and data
+    /// expression \c e of type \c E, state \c s of type \c S and data
     /// \c d of type \c D, it is equivalent to
     /// <tt>C::case_\<boost::result_of\<T(E,S,D)\>::type\>()(e, s, d)</tt>.
     template<typename Cases, typename Transform>

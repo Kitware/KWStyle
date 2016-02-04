@@ -17,7 +17,7 @@ namespace kws {
 
 #define ALIGN_LEFT -99999
 
-/** Extract the current line from pos to \n */
+/** Extract the current line from pos to LF */
 std::string Parser::ExtractLine(size_t pos)
 {
   size_t p = m_Buffer.find("\n",pos);

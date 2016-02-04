@@ -323,7 +323,7 @@ public:
 
 protected:
 
-  /** Convert the file with \r\n instead of \n */ 
+  /** Convert the file with CR+LF instead of LF */
   void ConvertBufferToWindowsFileType(std::string & buffer);
   
   /** Check the operator.
@@ -423,7 +423,7 @@ protected:
   /** Init the indentation step for CheckIndent() */
   bool InitIndentation();
 
-  /** Extract the current line from pos to  \n */
+  /** Extract the current line from pos to LF */
   std::string ExtractLine(size_t pos);
 
   /** Return the current ident */
