@@ -569,7 +569,7 @@ namespace boost { namespace proto
         {
             typedef Expr result_type;
 
-            /// \param expr An expression
+            /// \param e An expression
             /// \return \c e
             BOOST_PROTO_RETURN_TYPE_STRICT_LOOSE(result_type, typename impl::expr_param)
             operator()(

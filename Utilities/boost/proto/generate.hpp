@@ -112,7 +112,7 @@ namespace boost { namespace proto
             typedef Expr type;
         };
 
-        /// \param expr A Proto expression
+        /// \param e A Proto expression
         /// \return expr
         template<typename Expr>
         BOOST_FORCEINLINE
@@ -171,7 +171,7 @@ namespace boost { namespace proto
             typedef Extends<Expr> type;
         };
 
-        /// \param expr A Proto expression
+        /// \param e A Proto expression
         /// \return Extends<Expr>(expr)
         template<typename Expr>
         BOOST_FORCEINLINE
@@ -218,7 +218,7 @@ namespace boost { namespace proto
             typedef Extends<Expr> type;
         };
 
-        /// \param expr The expression to wrap
+        /// \param e The expression to wrap
         /// \return <tt>Extends\<Expr\> that = {expr}; return that;</tt>
         template<typename Expr>
         BOOST_FORCEINLINE
@@ -294,7 +294,7 @@ namespace boost { namespace proto
             type;
         };
 
-        /// \param expr The expression to modify.
+        /// \param e The expression to modify.
         /// \return <tt>deep_copy(expr)</tt>
         template<typename Expr>
         BOOST_FORCEINLINE
@@ -352,7 +352,7 @@ namespace boost { namespace proto
             type;
         };
 
-        /// \param expr The expression to modify.
+        /// \param e The expression to modify.
         /// \return Second()(First()(expr))
         template<typename Expr>
         BOOST_FORCEINLINE

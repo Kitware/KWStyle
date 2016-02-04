@@ -56,8 +56,8 @@ namespace boost { namespace proto
 
             /// \brief Evaluate a given Proto expression with a given
             /// context.
-            /// \param expr The Proto expression to evaluate
-            /// \param context The context in which the expression should be
+            /// \param e The Proto expression to evaluate
+            /// \param ctx The context in which the expression should be
             ///     evaluated.
             /// \return <tt>typename Context::template eval<Expr>()(expr, context)</tt>
             template<typename Expr, typename Context>
@@ -98,8 +98,8 @@ namespace boost { namespace proto
 
     /// \brief Evaluate a given Proto expression with a given
     /// context.
-    /// \param expr The Proto expression to evaluate
-    /// \param context The context in which the expression should be
+    /// \param e The Proto expression to evaluate
+    /// \param ctx The context in which the expression should be
     ///     evaluated.
     /// \return <tt>typename Context::template eval<Expr>()(expr, context)</tt>
     template<typename Expr, typename Context>
