@@ -38,7 +38,6 @@ bool Parser::CheckBadCharacters(bool checkComments)
   sregex_iterator currentBadCharIterator(buffer.begin(), buffer.end(), lineWithBadCharRegex);
   sregex_iterator end;
 
-  std::cerr << buffer << std::endl;
   for (; currentBadCharIterator != end; ++currentBadCharIterator)
     {
     Error error;
