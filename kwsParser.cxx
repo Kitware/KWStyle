@@ -1213,6 +1213,10 @@ size_t Parser::FindFunction(size_t pos,const char* buffer) const
   while(end != std::string::npos)
     {
     size_t beg = this->FindOpeningChar('}','{',end,true);
+    if(beg == std::string::npos)
+        {
+        break;
+        }
 
     // check that before the beg we have
     bool nospecialchar=true;
@@ -1230,7 +1234,7 @@ size_t Parser::FindFunction(size_t pos,const char* buffer) const
         {
         nospecialchar = false;
         }
-      i--;
+      --i;
       }
 
     if(nospecialchar)
