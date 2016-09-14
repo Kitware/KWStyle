@@ -188,6 +188,7 @@ int main(int argc, char **argv)
   AddFeature("Functions","*",true);
   AddFeature("UsingDirectives", "true", true);
   AddFeature("RelativePathInInclude", "true", true);
+  AddFeature("IfWhileForUntil","",true);
 
   std::string xmlFile = "KWStyle.xml";
   // If we should look the definition from the xml file

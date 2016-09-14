@@ -72,7 +72,8 @@ typedef enum
   FUNCTION_REGEX,
   FUNCTION_LENGTH,
   USING_DIRECTIVES,
-  RELATIVE_PATH_IN_INCLUDE
+  RELATIVE_PATH_IN_INCLUDE,
+  IFWHILEFORUNTIL
   } ErrorType;
 
 const char ErrorTag[NUMBER_ERRORS][4] = {
@@ -222,6 +223,9 @@ public:
                      unsigned long maxSize=81,
                      bool doNotCheckInsideParenthesis=true);
 
+  bool CheckIfWhileForUntil( unsigned int spaces,
+                     unsigned long maxSize=81 );
+
   /** Check the number of character per line */
   bool CheckLineLength(unsigned long max,bool checkHeader=false);
 
@@ -331,6 +335,12 @@ protected:
   bool FindOperator(const char* op,unsigned int before, 
                     unsigned int after,unsigned long maxSize,
                     bool doNotCheckInsideParenthesis=true);
+
+  /** Check the operator.
+   *  \warning This function add an error in the Error list */
+  bool FindIfWhileForUntil(const char* op, unsigned int after,
+                           unsigned long maxSize );
+
 
   /** Get the class position within the file. This function checks that this is the 
    *  classname */

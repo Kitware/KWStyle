@@ -76,6 +76,7 @@ kwsCheckNameOfClass.cxx
 kwsCheckEmptyLines.cxx
 kwsCheckTemplate.cxx
 kwsCheckOperator.cxx
+kwsCheckIfWhileForUntil.cxx
 kwsCheckBlackList.cxx
 kwsCheckExtraSpaces.cxx
 kwsCheckStatementPerLine.cxx
