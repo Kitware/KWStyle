@@ -460,6 +460,10 @@ bool Parser::Check(const char* name, const char* value)
     std::string v2 = val.substr(pos+1,val.length()-pos-1);
     this->CheckOperator(atoi(v1.c_str()),atoi(v2.c_str()));
     }
+  else if(!strcmp(name,"IfWhileForUntil"))
+    {
+    this->CheckIfWhileForUntil(atoi(value));
+    }
   else if(!strcmp(name,"BlackList"))
     {
     this->CheckBlackList(value);
