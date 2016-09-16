@@ -189,6 +189,8 @@ int main(int argc, char **argv)
   AddFeature("UsingDirectives", "true", true);
   AddFeature("RelativePathInInclude", "true", true);
   AddFeature("IfWhileForUntil","",true);
+  AddFeature("Comma","",true);
+  AddFeature("Parenthesis","",true);
 
   std::string xmlFile = "KWStyle.xml";
   // If we should look the definition from the xml file

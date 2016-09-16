@@ -29,7 +29,7 @@
 namespace kws
 {
 #define MAX_CHAR 99999999
-#define NUMBER_ERRORS 34
+#define NUMBER_ERRORS 37
 
 typedef enum
   {
@@ -73,7 +73,9 @@ typedef enum
   FUNCTION_LENGTH,
   USING_DIRECTIVES,
   RELATIVE_PATH_IN_INCLUDE,
-  IFWHILEFORUNTIL
+  IFWHILEFORUNTIL,
+  COMMA,
+  PARENTHESIS
   } ErrorType;
 
 const char ErrorTag[NUMBER_ERRORS][4] = {
@@ -110,7 +112,10 @@ const char ErrorTag[NUMBER_ERRORS][4] = {
    {'F','R','G','\0'},
    {'F','L','N','\0'},
    {'U','N','D','\0'},
-   {'R','P','I','\0'}
+   {'R','P','I','\0'},
+   {'I','F','S','\0'},
+   {'C','M','A','\0'},
+   {'P','R','N','\0'}
   };
 
 
@@ -223,6 +228,15 @@ public:
                      unsigned long maxSize=81,
                      bool doNotCheckInsideParenthesis=true);
 
+  /** Check comma spaces a,b versus a, b, etc... */
+  bool CheckComma(unsigned int before, unsigned int after,
+                  unsigned long maxSize=81 );
+
+  /** Check parenthesis spaces ( foo ) versus (foo) */
+  bool CheckParenthesis(unsigned int space,
+                        unsigned long maxSize=81 );
+
+  /** Check spaces after if, while, for, and until keywords */
   bool CheckIfWhileForUntil( unsigned int spaces,
                      unsigned long maxSize=81 );
 
@@ -336,11 +350,10 @@ protected:
                     unsigned int after,unsigned long maxSize,
                     bool doNotCheckInsideParenthesis=true);
 
-  /** Check the operator.
+  /** Check the spaces after if, while, for, and until.
    *  \warning This function add an error in the Error list */
   bool FindIfWhileForUntil(const char* op, unsigned int after,
                            unsigned long maxSize );
-
 
   /** Get the class position within the file. This function checks that this is the 
    *  classname */
