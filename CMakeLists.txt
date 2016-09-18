@@ -76,7 +76,6 @@ kwsCheckNameOfClass.cxx
 kwsCheckEmptyLines.cxx
 kwsCheckTemplate.cxx
 kwsCheckOperator.cxx
-kwsCheckIfWhileForUntil.cxx
 kwsCheckBlackList.cxx
 kwsCheckExtraSpaces.cxx
 kwsCheckStatementPerLine.cxx
@@ -88,6 +87,9 @@ kwsCheckMemberFunctions.cxx
 kwsCheckFunctions.cxx
 kwsCheckUsingDirectives.cxx
 kwsCheckRelativePathInInclude.cxx
+kwsCheckIfWhileForUntil.cxx
+kwsCheckComma.cxx
+kwsCheckParenthesis.cxx
 )
 
 SUBDIRS(Utilities)

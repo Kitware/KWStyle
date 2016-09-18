@@ -460,6 +460,23 @@ bool Parser::Check(const char* name, const char* value)
     std::string v2 = val.substr(pos+1,val.length()-pos-1);
     this->CheckOperator(atoi(v1.c_str()),atoi(v2.c_str()));
     }
+  else if(!strcmp(name,"Comma"))
+    {
+    std::string val = value;
+    long pos = static_cast<long>(val.find(",",0));
+    if(pos == -1)
+      {
+      std::cout << "Comma not defined correctly" << std::endl;
+      return false;
+      }
+    std::string v1 = val.substr(0,pos);
+    std::string v2 = val.substr(pos+1,val.length()-pos-1);
+    this->CheckComma(atoi(v1.c_str()),atoi(v2.c_str()));
+    }
+  else if(!strcmp(name,"Parenthesis"))
+    {
+    this->CheckParenthesis(atoi(value));
+    }
   else if(!strcmp(name,"IfWhileForUntil"))
     {
     this->CheckIfWhileForUntil(atoi(value));
