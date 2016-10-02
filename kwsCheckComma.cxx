@@ -17,8 +17,7 @@
 namespace kws {
 
 /** Check the number of spaces after the if keyword */
-bool Parser::CheckComma(unsigned int before, unsigned int after,
-                        unsigned long maxSize)
+bool Parser::CheckComma( unsigned int before, unsigned int after )
 {
   m_TestsDone[COMMA] = true;
   m_TestsDescription[COMMA] =

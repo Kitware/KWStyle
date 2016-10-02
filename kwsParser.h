@@ -229,16 +229,13 @@ public:
                      bool doNotCheckInsideParenthesis=true);
 
   /** Check comma spaces a,b versus a, b, etc... */
-  bool CheckComma(unsigned int before, unsigned int after,
-                  unsigned long maxSize=81 );
+  bool CheckComma(unsigned int before, unsigned int after );
 
   /** Check parenthesis spaces ( foo ) versus (foo) */
-  bool CheckParenthesis(unsigned int space,
-                        unsigned long maxSize=81 );
+  bool CheckParenthesis(unsigned int space );
 
   /** Check spaces after if, while, for, and until keywords */
-  bool CheckIfWhileForUntil( unsigned int spaces,
-                     unsigned long maxSize=81 );
+  bool CheckIfWhileForUntil( unsigned int spaces );
 
   /** Check the number of character per line */
   bool CheckLineLength(unsigned long max,bool checkHeader=false);
@@ -352,8 +349,7 @@ protected:
 
   /** Check the spaces after if, while, for, and until.
    *  \warning This function add an error in the Error list */
-  bool FindIfWhileForUntil(const char* op, unsigned int after,
-                           unsigned long maxSize );
+  bool FindIfWhileForUntil(const char* op, unsigned int after );
 
   /** Get the class position within the file. This function checks that this is the 
    *  classname */

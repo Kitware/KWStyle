@@ -17,8 +17,7 @@
 namespace kws {
 
 /** Check the number of spaces after ( and before ) */
-bool Parser::CheckParenthesis(unsigned int space,
-                        unsigned long maxSize)
+bool Parser::CheckParenthesis( unsigned int space )
 {
   m_TestsDone[PARENTHESIS] = true;
   m_TestsDescription[PARENTHESIS] =
