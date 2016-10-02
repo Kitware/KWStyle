@@ -22,7 +22,7 @@ bool Parser::CheckComma( unsigned int before, unsigned int after )
   m_TestsDone[COMMA] = true;
   m_TestsDescription[COMMA] =
     "Number of spaces for , should be:";
-  char* val = new char[10];
+  char* val = new char[200];
   sprintf(val," before = %d",before);
   m_TestsDescription[COMMA] += val;
   sprintf(val," : after = %d",after);
@@ -69,26 +69,26 @@ bool Parser::CheckComma( unsigned int before, unsigned int after )
         error.line2 = error.line;
         error.number = COMMA;
         error.description = "Spaces before , = ";
-        char* val = new char[10];
-        sprintf(val,"%d",bfr);
-        error.description += val;
+        char* errorVal = new char[200];
+        sprintf(errorVal,"%d",bfr);
+        error.description += errorVal;
         error.description += " v.s ";
-        sprintf(val,"%d",before);
-        error.description += val;
+        sprintf(errorVal,"%d",before);
+        error.description += errorVal;
         error.description += " : Spaces after , = ";
-        sprintf(val,"%d",aft);
-        error.description += val;
+        sprintf(errorVal,"%d",aft);
+        error.description += errorVal;
         error.description += " v.s ";
-        sprintf(val,"%d",after);
-        error.description += val;
+        sprintf(errorVal,"%d",after);
+        error.description += errorVal;
         m_ErrorList.push_back(error);
-        delete [] val;
+        delete [] errorVal;
         hasErrors = true;
         }
       }
 
     prevOperatorPos = static_cast<long int>(operatorPos)+1;
-    if( prevOperatorPos < m_BufferNoComment.size()-1 )
+    if( prevOperatorPos < (long int)( m_BufferNoComment.size() )-1 )
       {
       operatorPos = m_BufferNoComment.find(",", prevOperatorPos);  
       }
