@@ -17,8 +17,7 @@
 namespace kws {
 
 /** Check the number of spaces after the if keyword */
-bool Parser::CheckIfWhileForUntil(unsigned int after,
-                     unsigned long maxSize)
+bool Parser::CheckIfWhileForUntil(unsigned int after)
 {
   m_TestsDone[IFWHILEFORUNTIL] = true;
   m_TestsDescription[IFWHILEFORUNTIL] =
@@ -30,19 +29,19 @@ bool Parser::CheckIfWhileForUntil(unsigned int after,
 
   bool hasErrors = false;
   
-  if(!this->FindIfWhileForUntil("if",after,maxSize))
+  if(!this->FindIfWhileForUntil("if",after))
     {
     hasErrors = true;
     }
-  if(!this->FindIfWhileForUntil("while",after,maxSize))
+  if(!this->FindIfWhileForUntil("while",after))
     {
     hasErrors = true;
     }
-  if(!this->FindIfWhileForUntil("for",after,maxSize))
+  if(!this->FindIfWhileForUntil("for",after))
     {
     hasErrors = true;
     }
-  if(!this->FindIfWhileForUntil("until",after,maxSize))
+  if(!this->FindIfWhileForUntil("until",after))
     {
     hasErrors = true;
     }
@@ -52,8 +51,7 @@ bool Parser::CheckIfWhileForUntil(unsigned int after,
 
 /** Check the operator */
 bool Parser::FindIfWhileForUntil(const char* op,
-                          unsigned int after,
-                          unsigned long maxSize)
+                          unsigned int after)
 {
   bool hasErrors = false;
 
