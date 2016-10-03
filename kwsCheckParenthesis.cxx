@@ -22,7 +22,7 @@ bool Parser::CheckParenthesis( unsigned int space )
   m_TestsDone[PARENTHESIS] = true;
   m_TestsDescription[PARENTHESIS] =
     "Number of spaces after ( and before ) should be = ";
-  char* val = new char[10];
+  char* val = new char[200];
   sprintf(val,"%d", space);
   m_TestsDescription[PARENTHESIS] += val;
   delete [] val;
@@ -62,19 +62,19 @@ bool Parser::CheckParenthesis( unsigned int space )
       error.line2 = error.line;
       error.number = PARENTHESIS;
       error.description = "Spaces after ( = ";
-      char* val = new char[10];
-      sprintf(val,"%d",aft);
-      error.description += val;
+      char* errorVal = new char[200];
+      sprintf(errorVal,"%d",aft);
+      error.description += errorVal;
       error.description += " v.s ";
-      sprintf(val,"%d",space);
-      error.description += val;
+      sprintf(errorVal,"%d",space);
+      error.description += errorVal;
       m_ErrorList.push_back(error);
-      delete [] val;
+      delete [] errorVal;
       hasErrors = true;
       }
 
     prevOperatorPos = static_cast<long int>(operatorPos)+1;
-    if( prevOperatorPos < m_BufferNoComment.size()-1 )
+    if( prevOperatorPos < (long int)( m_BufferNoComment.size() ) - 1 )
       {
       operatorPos = m_BufferNoComment.find("(", prevOperatorPos);  
       }
@@ -109,19 +109,19 @@ bool Parser::CheckParenthesis( unsigned int space )
       error.line2 = error.line;
       error.number = PARENTHESIS;
       error.description = "Spaces before ) = ";
-      char* val = new char[10];
-      sprintf(val,"%d",bfr);
-      error.description += val;
+      char* errorVal = new char[200];
+      sprintf(errorVal,"%d",bfr);
+      error.description += errorVal;
       error.description += " v.s ";
-      sprintf(val,"%d",space);
-      error.description += val;
+      sprintf(errorVal,"%d",space);
+      error.description += errorVal;
       m_ErrorList.push_back(error);
-      delete [] val;
+      delete [] errorVal;
       hasErrors = true;
       }
 
     prevOperatorPos = static_cast<long int>(operatorPos)+1;
-    if( prevOperatorPos < m_BufferNoComment.size()-1 )
+    if( prevOperatorPos < (long int)( m_BufferNoComment.size() ) - 1 )
       {
       operatorPos = m_BufferNoComment.find(")", prevOperatorPos);  
       }

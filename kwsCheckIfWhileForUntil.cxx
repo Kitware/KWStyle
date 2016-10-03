@@ -22,7 +22,7 @@ bool Parser::CheckIfWhileForUntil(unsigned int after)
   m_TestsDone[IFWHILEFORUNTIL] = true;
   m_TestsDescription[IFWHILEFORUNTIL] =
     "Number of spaces after If/While/For should be";
-  char* val = new char[10];
+  char* val = new char[200];
   sprintf(val," = %d",after);
   m_TestsDescription[IFWHILEFORUNTIL] += val;
   delete [] val;
@@ -99,20 +99,21 @@ bool Parser::FindIfWhileForUntil(const char* op,
           error.description = "Spaces after ";
           error.description += op;
           error.description += " = ";
-          char* val = new char[10];
-          sprintf(val,"%d",aft);
-          error.description += val;
+          char* errorVal = new char[200];
+          sprintf(errorVal,"%d",aft);
+          error.description += errorVal;
           error.description += " v.s ";
-          sprintf(val,"%d",after);
-          error.description += val;
+          sprintf(errorVal,"%d",after);
+          error.description += errorVal;
           m_ErrorList.push_back(error);
-          delete [] val;
+          delete [] errorVal;
           hasErrors = true;
           }
         }
       }
-    prevOperatorPos = static_cast<long int>(operatorPos)+1;
-    if( prevOperatorPos < m_BufferNoComment.size()-1 )
+    prevOperatorPos = static_cast<long int>( operatorPos ) + 1;
+    if( prevOperatorPos < static_cast<long int>( m_BufferNoComment.size() )
+      - 1 )
       {
       operatorPos = m_BufferNoComment.find(op,prevOperatorPos);  
       }
