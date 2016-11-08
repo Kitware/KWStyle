@@ -1475,8 +1475,26 @@ bool Parser::IsValidQuote(std::string & stream,size_t pos) const
   return false;
 }
 
+/**  return true if the position pos is between ' ' */
+bool Parser::IsBetweenSingleQuote(size_t pos,bool withComments,std::string buffer) const
+{
+  return this->IsBetweenQuoteChar(pos,withComments,buffer,'\'');
+}
+
 /**  return true if the position pos is between " " */
+bool Parser::IsBetweenDoubleQuote(size_t pos,bool withComments,std::string buffer) const
+{
+  return this->IsBetweenQuoteChar(pos,withComments,buffer,'"');
+}
+
+/**  return true if the position pos is between " " or ' ' */
 bool Parser::IsBetweenQuote(size_t pos,bool withComments,std::string buffer) const
+{
+  return (this->IsBetweenQuoteChar(pos,withComments,buffer,'\'') || this->IsBetweenQuoteChar(pos,withComments,buffer,'"'));
+}
+
+/**  return true if the position pos is between the selected quoteChar (should be ' or ") */
+bool Parser::IsBetweenQuoteChar(size_t pos,bool withComments,std::string buffer, char quoteChar) const
 {
   std::string stream = buffer;
 
@@ -1495,16 +1513,16 @@ bool Parser::IsBetweenQuote(size_t pos,bool withComments,std::string buffer) con
     }
 
   // We don't want to check for \" otherwise it fails
-  size_t b0 = stream.find('"',0);
+  size_t b0 = stream.find(quoteChar,0);
   while((b0!=std::string::npos) && !this->IsValidQuote(stream,b0))
     {
-    b0 = stream.find('"',b0+1);
+    b0 = stream.find(quoteChar,b0+1);
     }
 
-  size_t b1 = stream.find('"',b0+1);
+  size_t b1 = stream.find(quoteChar,b0+1);
   while((b1!=std::string::npos) && !this->IsValidQuote(stream,b1))
     {
-    b1 = stream.find('"',b1+1);
+    b1 = stream.find(quoteChar,b1+1);
     }
 
   while(b0 != std::string::npos && b1 != std::string::npos && b1>b0)
@@ -1513,16 +1531,16 @@ bool Parser::IsBetweenQuote(size_t pos,bool withComments,std::string buffer) con
       {
       return true;
       }
-    b0 = stream.find('"',b1+1);
+    b0 = stream.find(quoteChar,b1+1);
     while((b0!=std::string::npos) && !this->IsValidQuote(stream,b0))
       {
-      b0 = stream.find('"',b0+1);
+      b0 = stream.find(quoteChar,b0+1);
       }
 
-    b1 = stream.find('"',b0+1);
+    b1 = stream.find(quoteChar,b0+1);
     while((b1!=std::string::npos) && !this->IsValidQuote(stream,b1))
       {
-      b1 = stream.find('"',b1+1);
+      b1 = stream.find(quoteChar,b1+1);
       }
     }
   return false;

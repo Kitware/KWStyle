@@ -333,8 +333,14 @@ public:
   void SetFixFile(bool fix) {m_FixFile = fix;}
   void GenerateFixedFile();
 
-  /**  return true if the position pos is between " " */
+  /**  return true if the position pos is between " " or ' ' */
   bool IsBetweenQuote(size_t pos,bool withComments=false,std::string buffer="") const;
+
+  /**  return true if the position pos is between ' ' */
+  bool IsBetweenSingleQuote(size_t pos,bool withComments=false,std::string buffer="") const;
+
+  /**  return true if the position pos is between " " */
+  bool IsBetweenDoubleQuote(size_t pos,bool withComments=false,std::string buffer="") const;
 
 protected:
 
@@ -399,6 +405,9 @@ protected:
    *  The Fast version just check for <test> and not for <test<>,test<>>*/
   bool IsBetweenCharsFast(const char begin, const char end, size_t pos,bool withComments=false,std::string buffer="") const;
   bool IsBetweenChars(const char begin, const char end, size_t pos,bool withComments=false,std::string buffer="") const;
+
+  /** Return true if the position pos is between the selected quote character (' or ") */
+  bool IsBetweenQuoteChar(size_t pos,bool withComments,std::string buffer, char quoteChar) const;
 
   bool IsValidQuote(std::string & stream,size_t pos) const;
 
