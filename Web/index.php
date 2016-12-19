@@ -12,47 +12,48 @@ $xmlfileselect = $_GET["xmlfileselect"];
 
 if($_FILES['userfile']['name'])
 {
-$newloc = "/tmp/".$_FILES['userfile']['name'];
-move_uploaded_file($_FILES['userfile']['tmp_name'],$newloc);
-$command = $kwstyle." -xml ";
-$command .= $xmlfile;
-$command .= " -exporthtml ";
-$command .= $newloc;
-//echo $command;
-$output = shell_exec($command);
-echo $output;
+ $newloc = "/tmp/".$_FILES['userfile']['name'];
+ move_uploaded_file($_FILES['userfile']['tmp_name'],$newloc);
+ $command = $kwstyle." -xml ";
+ $command .= $xmlfile;
+ $command .= " -exporthtml ";
+ $command .= $newloc;
+ //echo $command;
+ $output = shell_exec($command);
+ echo $output;
 } // end submit
 
  ?>
  
-<SCRIPT LANGUAGE="Javascript">
+<script language="Javascript">
 function test(value)
 {
   url = "index.php?xmlfileselect="+value;
 	window.location.href = url;
 }
-</SCRIPT>
+</script>
 
 <?php
 $currentfile = "";
 ?>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<html><head><style type="text/css">
-</style><title>KWStyle - The Source Code Checker</title>
-<meta name="keywords" content="Style, Checker, Source, Code, Kitware, Julien, Jomier">
-<meta name="description" content="The Source Code Checker">
-<meta name="rating" content="General">
-<meta name="ROBOTS" content="ALL">
-<link rel="stylesheet" href="default.css" type="text/css">
+<html>
+<head>
+<title>KWStyle - The Source Code Checker</title>
+<meta name="keywords" content="Style, Checker, Source, Code, Kitware, Julien, Jomier" />
+<meta name="description" content="The Source Code Checker" />
+<meta name="rating" content="General" />
+<meta name="robots" content="ALL" />
+<link rel="stylesheet" href="default.css" type="text/css" />
+<link rel="icon" href="/KWStyle/favicon.ico" type="image/ico" />
+<link rel="shortcut icon" href="/KWStyle/favicon.ico" />
 <style type="text/css">
 <!--
 .style7 {font-size: 12px}
 -->
 </style>
 </head>
-<link rel="icon" href="/KWStyle/favicon.ico" type="image/ico">
-<link rel="SHORTCUT ICON" href="/KWStyle/favicon.ico">
 
 <body topmargin="0" leftmargin="0" alink="#000000" bgcolor="#ffffff" link="#0000ff" marginheight="0" marginwidth="0" text="black" vlink="#000000">
 <img src="images/TitleBar.jpg" width="650" height="170"> 
@@ -64,32 +65,32 @@ $currentfile = "";
        border: 0 ridge #800000" border="0" cellpadding="4" cellspacing="0" width="143">
         <tbody> 
         <tr> 
-          <td width="135" height="369" valign="top"> <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <a class="left" href="http://public.kitware.com/KWStyle/index.htm"><b>&nbsp;Home</b></a><br>
-            <br>
-            <a class="left" href="http://public.kitware.com/KWStyle/features.htm"><b>&nbsp;Features</b></a><br>
-			<br>
-			<a class="left" href="http://192.168.113.30/KWStyle"><b>&nbsp;Check my file</b></a><br>
-            <br>
-            <a class="left" href="http://public.kitware.com/KWStyle/download.htm"><b>&nbsp;Download</b></a><br>
-            <br>
-            <a class="left" href="http://public.kitware.com/KWStyle/example.htm"><b>&nbsp;Example</b></a><br>
-            <br>
-            <a class="left" href="http://public.kitware.com/KWStyle/testing.htm"><b>&nbsp;Testing</b></a><br>
-            <br>
-            <a class="left" href="http://public.kitware.com/KWStyle/sponsors.htm"><b>&nbsp;Sponsors</b></a><br>
-            <br>
-            <a class="left" href="http://public.kitware.com/KWStyle/documentation.htm"><b>&nbsp;Documentation</b></a><br>
-            <br>
-            <a class="left" href="http://public.kitware.com/KWStyle/copyright.htm"><b>&nbsp;Copyright</b></a><br>
-            <br>
+          <td width="135" height="369" valign="top"> <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <a class="left" href="https://public.kitware.com/KWStyle/index.htm"><b>&nbsp;Home</b></a><br />
+            <br />
+            <a class="left" href="https://public.kitware.com/KWStyle/features.htm"><b>&nbsp;Features</b></a><br />
+			<br />
+			<a class="left" href="http://192.168.113.30/KWStyle"><b>&nbsp;Check my file</b></a><br />
+            <br />
+            <a class="left" href="https://public.kitware.com/KWStyle/download.htm"><b>&nbsp;Download</b></a><br />
+            <br />
+            <a class="left" href="https://public.kitware.com/KWStyle/example.htm"><b>&nbsp;Example</b></a><br />
+            <br />
+            <a class="left" href="https://public.kitware.com/KWStyle/testing.htm"><b>&nbsp;Testing</b></a><br />
+            <br />
+            <a class="left" href="https://public.kitware.com/KWStyle/sponsors.htm"><b>&nbsp;Sponsors</b></a><br />
+            <br />
+            <a class="left" href="https://public.kitware.com/KWStyle/documentation.htm"><b>&nbsp;Documentation</b></a><br />
+            <br />
+            <a class="left" href="https://public.kitware.com/KWStyle/copyright.htm"><b>&nbsp;Copyright</b></a><br />
+            <br />
             <a class="left" href="http://public.kitware.com/Bug/"><b>&nbsp;Bug 
-            Tracker</b></a><br>
-            <br>
+            Tracker</b></a><br />
+            <br />
           </td>
         </tr>
         </tbody>
@@ -107,7 +108,7 @@ $currentfile = "";
 						
     				$handler = opendir($kwstyle2);
 
-						$i = 0;
+    				$i = 0;
 
     				// keep going until all files in directory have been read
    					while ($file = readdir($handler)) 
@@ -137,8 +138,8 @@ $currentfile = "";
     closedir($handler);
 		?>
       </select>
-      <br>
-      <br>
+      <br />
+      <br />
       <?php
 			
 class xmlParser{
@@ -180,7 +181,7 @@ class xmlParser{
    function dataHandler($parser, $data){
        if($data!="\n") {
            $_output_idx = count($this->output) - 1;
-					// echo $data."<br>";
+					// echo $data."<br />";
            $this->output[$_output_idx]['content'] = $data;
        }
    }
@@ -194,14 +195,15 @@ $a = $p->output;
 
 for($i=1;$i<count($a);$i++)
 {
-  echo "<b>".ucfirst(strtolower($a[$i]['attrs']))." : </b>".$a[$i]['content']."<br>";
+  echo "<b>".ucfirst(strtolower($a[$i]['attrs']))." : </b>".$a[$i]['content']."<br />";
 } 
 ?>
     </p>
- <p>    <input type="hidden" name="MAX_FILE_SIZE" value="30000" />
+    <p>
+      <input type="hidden" name="MAX_FILE_SIZE" value="30000" />
     <!-- Name of input element determines name in $_FILES array -->
     Check this file: 
-		 <input name="userfile" type="file" size="70" />
+	   <input name="userfile" type="file" size="70" />
     </p>
     <p>      
       <input type="submit" value=">> Check Style" />
@@ -210,5 +212,5 @@ for($i=1;$i<count($a);$i++)
 </td>
   </tr>
 </table>
-</body></html>
-
+</body>
+</html>
