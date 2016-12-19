@@ -12,4 +12,3 @@ test:
   override:
     - mkdir ~/KWStyle-build
     - docker run -v ~/KWStyle:/usr/src/KWStyle -v ~/KWStyle-build:/usr/src/KWStyle-build kitware/kwstyle-testing /usr/src/KWStyle/Testing/Docker/test.sh
-

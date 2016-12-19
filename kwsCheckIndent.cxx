@@ -702,8 +702,8 @@ bool Parser::InitIndentation()
   while(posClass != std::string::npos)
     {
     // We count the number of { and } before posClass
-    int nOpen = 0;
-    int nClose = 0;
+    unsigned int nOpen = 0;
+    unsigned int nClose = 0;
 
     size_t open = m_BufferNoComment.find('{',0);
     while(open!=std::string::npos && open<posClass)
