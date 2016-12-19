@@ -154,7 +154,7 @@ bool Parser::CheckIndent(IndentType itype,
     }
 
   char type = ' ';
-  if(itype == (IndentType)TABS) {type = '\t';}
+  if(itype == kws::TAB) {type = '\t';}
 
   int wantedIndent = 0;
 
