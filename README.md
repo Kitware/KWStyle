@@ -24,5 +24,21 @@ Among the fearures provided by KWStyle:
 
 A complete list of the features is available [here][fl].
 
+Build
+-----
+
+```shell
+mkdir build
+cd build
+cmake ..
+make
+```
+
+Install
+-------
+
+- Build and `make install` or `checkinstall`
+- On at least Debian and Trisquel, `apt-get install kwstyle`
+
 
 [fl]: https://kitware.github.io/KWStyle/resources/features.html
