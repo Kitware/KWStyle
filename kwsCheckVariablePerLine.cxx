@@ -81,49 +81,54 @@ bool Parser::CheckVariablePerLine(unsigned long max)
           }
 
         // If we have any '(' in the line we stop
-        if(line.find('(') == std::string::npos)
+        if( !this->IsBetweenChars( '(', ')', posType, false ) &&
+          !this->IsBetweenChars( '<', '>', posType, false ))
           {
           // This is a very simple check we count the number of comas
           unsigned int vars = 1;
           pos = static_cast<long int>(line.find(',',0));
           while(pos!=-1)
             {
-            // Check that we are not initializing an array
-            bool betweenBraces = false;
-            long int openCurly = pos-1;
-            while(openCurly>0)
+            posType = m_BufferNoComment.find(',', posType+1);
+            if( !this->IsBetweenCharsFast( '(', ')', posType, false ) &&
+              !this->IsBetweenCharsFast( '<', '>', posType, false ))
               {
-              // Ok we have the opening
-              if(line[openCurly] == '{')
+              // Check that we are not initializing an array
+              bool betweenBraces = false;
+              long int openCurly = pos-1;
+              while(openCurly>0)
                 {
-                long int posClosing = static_cast<long int>(this->FindClosingChar('{','}',openCurly,false,line));
-                if(posClosing == -1
-                  || pos<posClosing)
+                // Ok we have the opening
+                if(line[openCurly] == '{')
                   {
-                  betweenBraces = true;
+                  long int posClosing = static_cast<long int>(this->FindClosingChar('{','}',openCurly,false,line));
+                  if(posClosing == -1
+                    || pos<posClosing)
+                    {
+                    betweenBraces = true;
+                    }
+                  break;
                   }
-                break;
+                openCurly--;
                 }
-              openCurly--;
-              }
-
-            // Check if we are not at the end of the line
-            bool endofline = true;
-            int eof = pos+1;
-            while(eof < (int)line.size())
-              {
-              if(line[eof] != ' ' && line[eof] != '\n'
-                 && line[eof] != '\r' && line[eof] != '\t')
+              // Check if we are not at the end of the line
+              bool endofline = true;
+              int eof = pos+1;
+              while(eof < (int)line.size())
                 {
-                endofline = false;
-                break;
+                if(line[eof] != ' ' && line[eof] != '\n'
+                   && line[eof] != '\r' && line[eof] != '\t')
+                  {
+                  endofline = false;
+                  break;
+                  }
+                eof++;
                 }
-              eof++;
-              }
 
-            if(!betweenBraces && !endofline)
-              {
-              vars++;
+              if(!betweenBraces && !endofline)
+                {
+                vars++;
+                }
               }
             pos = static_cast<long int>(line.find(',',pos+1));
             }
