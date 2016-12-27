@@ -613,11 +613,27 @@ bool Parser::CheckIndent(IndentType itype,
         if(this->GetLineNumber(doubleslash) == this->GetLineNumber(pos))
           {
           check = false;
+          std::cout << "Ignored }" << std::endl;
+          std::cout << " Line = " << this->GetLineNumber(pos) << std::endl;
+          std::cout << " Doubleslash" << std::endl;
           }
         }
       if(check)
         {
         wantedIndent -= size;
+        }
+      }
+    else
+      {
+      if((it != m_Buffer.end()) && ((*it) == '}')
+         && !sindent )
+        {
+        std::cout << "Ignored }" << std::endl;
+        std::cout << " Line = " << this->GetLineNumber(pos) << std::endl;
+        std::cout << " IsInAnyCommnets = " << this->IsInAnyComments(pos)
+          << std::endl;
+        std::cout << " IsBetweenQuote = " << this->IsBetweenQuote(
+          this->GetPositionWithoutComments(pos),false) << std::endl;
         }
       }
 

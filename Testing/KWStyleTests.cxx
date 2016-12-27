@@ -16,6 +16,7 @@
 
 void RegisterTests()
 {
+  REGISTER_TEST(kwsIndentTest);
   REGISTER_TEST(kwsSemiColonSpaceTest);
   REGISTER_TEST(kwsStatementPerLineTest);
   REGISTER_TEST(kwsVariablePerLineTest);

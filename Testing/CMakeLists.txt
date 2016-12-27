@@ -4,6 +4,7 @@ SET(KWSTYLE_TESTS  ${CXX_TEST_PATH}/KWStyleTests)
 
 SET(
  KWStyleTests_SRCS
+ kwsIndentTest.cxx
  kwsSemiColonSpaceTest.cxx
  kwsStatementPerLineTest.cxx
  kwsVariablePerLineTest.cxx
