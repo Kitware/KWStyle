@@ -1478,7 +1478,39 @@ bool Parser::IsValidQuote(std::string & stream,size_t pos) const
 /**  return true if the position pos is between ' ' */
 bool Parser::IsBetweenSingleQuote(size_t pos,bool withComments,std::string buffer) const
 {
-  return this->IsBetweenQuoteChar(pos,withComments,buffer,'\'');
+  std::string stream = buffer;
+
+  if(pos == std::string::npos)
+    {
+    return false;
+    }
+
+  if(pos == 0)
+    {
+    return false;
+    }
+
+  if(buffer.size()==0)
+    {
+    stream = m_BufferNoComment;
+    if(withComments)
+      {
+      stream = m_Buffer;
+      }
+    }
+
+  if(pos == 1 && stream[0] != '\'')
+    {
+    return false;
+    }
+
+  if(pos == stream.length()-1)
+    {
+    return false;
+    }
+
+  return ( ( stream[pos-1] == '\'' || ( stream[pos-1] == '\\' &&
+       stream[pos-2] == '\'' ) ) && stream[pos+1] == '\'' );
 }
 
 /**  return true if the position pos is between " " */
@@ -1490,7 +1522,8 @@ bool Parser::IsBetweenDoubleQuote(size_t pos,bool withComments,std::string buffe
 /**  return true if the position pos is between " " or ' ' */
 bool Parser::IsBetweenQuote(size_t pos,bool withComments,std::string buffer) const
 {
-  return (this->IsBetweenQuoteChar(pos,withComments,buffer,'\'') || this->IsBetweenQuoteChar(pos,withComments,buffer,'"'));
+  return ( this->IsBetweenSingleQuote(pos,withComments,buffer) ||
+    this->IsBetweenDoubleQuote(pos,withComments,buffer) );
 }
 
 /**  return true if the position pos is between the selected quoteChar (should be ' or ") */
