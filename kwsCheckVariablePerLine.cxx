@@ -82,7 +82,9 @@ bool Parser::CheckVariablePerLine(unsigned long max)
 
         // If we have any '(' in the line we stop
         if( !this->IsBetweenChars( '(', ')', posType, false ) &&
-          !this->IsBetweenChars( '<', '>', posType, false ))
+          !this->IsBetweenCharsFast( '(', ')', posType, false ) &&
+          !this->IsBetweenChars( '<', '>', posType, false ) &&
+          !this->IsBetweenCharsFast( '<', '>', posType, false ))
           {
           // This is a very simple check we count the number of comas
           unsigned int vars = 1;
@@ -90,7 +92,9 @@ bool Parser::CheckVariablePerLine(unsigned long max)
           while(pos!=-1)
             {
             posType = m_BufferNoComment.find(',', posType+1);
-            if( !this->IsBetweenCharsFast( '(', ')', posType, false ) &&
+            if( !this->IsBetweenChars( '(', ')', posType, false ) &&
+              !this->IsBetweenCharsFast( '(', ')', posType, false ) &&
+              !this->IsBetweenChars( '<', '>', posType, false ) &&
               !this->IsBetweenCharsFast( '<', '>', posType, false ))
               {
               // Check that we are not initializing an array
