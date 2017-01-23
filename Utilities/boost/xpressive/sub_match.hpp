@@ -81,8 +81,8 @@ public:
     {
     }
 
-    sub_match(BidiIter first, BidiIter second, bool matched_ = false)
-      : std::pair<BidiIter, BidiIter>(first, second)
+    sub_match(BidiIter iterFirst, BidiIter iterSecond, bool matched_ = false)
+      : std::pair<BidiIter, BidiIter>(iterFirst, iterSecond)
       , matched(matched_)
     {
     }
