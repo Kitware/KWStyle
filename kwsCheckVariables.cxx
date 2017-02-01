@@ -19,7 +19,7 @@ namespace kws {
 bool Parser::CheckVariables(const char* regEx)
 {
   m_TestsDone[VARS] = true;
-  m_TestsDescription[VARS] = "ivars implentation should match regular expression: ";
+  m_TestsDescription[VARS] = "ivars implementation should match regular expression: ";
   m_TestsDescription[VARS] += regEx;
 
   // First we need to find the parameters
