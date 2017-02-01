@@ -40,7 +40,7 @@ bool Parser::CheckNameOfClass(const char* name,const char* prefix)
         
     if(m_Filename == "")
       {
-      std::cout << "CheckNameOfClass() : m_Filename shoud be set" << std::endl;
+      std::cout << "CheckNameOfClass() : m_Filename should be set" << std::endl;
       return false;
       }
 

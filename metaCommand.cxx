@@ -554,7 +554,7 @@ void MetaCommand::ListOptions()
       {
       METAIO_STREAM::cout << "   Required: false" << METAIO_STREAM::endl;
       }
-    METAIO_STREAM::cout << "   Number of expeted values: " << (*it).fields.size() 
+    METAIO_STREAM::cout << "   Number of expected values: " << (*it).fields.size() 
                                               << METAIO_STREAM::endl;
     
     METAIO_STL::vector<Field>::const_iterator itField = (*it).fields.begin();

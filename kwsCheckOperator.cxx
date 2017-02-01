@@ -22,7 +22,7 @@ bool Parser::CheckOperator(unsigned int before, unsigned int after,
                            bool doNotCheckInsideParenthesis)
 {
   m_TestsDone[OPERATOR] = true;
-  m_TestsDescription[OPERATOR] = "Number of spaces for the operators shoud be: before=";
+  m_TestsDescription[OPERATOR] = "Number of spaces for the operators should be: before=";
   char* val = new char[10];
   sprintf(val,"%d",before);
   m_TestsDescription[OPERATOR] += val;  

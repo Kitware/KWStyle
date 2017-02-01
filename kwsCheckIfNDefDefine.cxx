@@ -150,7 +150,7 @@ bool Parser::CheckIfNDefDefine(const char* match)
       {
       if(m_Filename == "")
         {
-        std::cout << "CheckIfNDefDefine() : m_Filename shoud be set" << std::endl;
+        std::cout << "CheckIfNDefDefine() : m_Filename should be set" << std::endl;
         return false;
         }
 
