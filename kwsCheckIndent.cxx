@@ -102,7 +102,8 @@ bool Parser::CheckIndent(IndentType itype,
   this->InitIndentation();
 
   // Print the initial indentation
-  /*std::vector<IndentPosition>::const_iterator itIndent = m_IdentPositionVector.begin();
+  /*std::vector<IndentPosition>::const_iterator itIndent
+   * = m_IdentPositionVector.begin();
   while(itIndent != m_IdentPositionVector.end())
     {
     std::cout << this->GetLineNumber((*itIndent).position) << std::endl;
@@ -133,7 +134,8 @@ bool Parser::CheckIndent(IndentType itype,
       }
     else
       {
-      // we look at the first '*/' in the file which indicated the end of the current header
+      // we look at the first '*/' in the file which indicated the end
+      // of the current header
       // This assume that there is an header at some point
       long int endHeader = static_cast<long int>(m_Buffer.find("*/",0));
       if(endHeader>0)
@@ -158,7 +160,8 @@ bool Parser::CheckIndent(IndentType itype,
 
   int wantedIndent = 0;
 
-  // We extract the firt line and compute the number of spaces/tabs at the beginning
+  // We extract the first line and compute the number of spaces/tabs at
+  // the beginning
   std::string line = this->ExtractLine(pos);
   int currentIndent = this->GetCurrentIdent(line,type);
   bool firstChar = true;
@@ -168,6 +171,16 @@ bool Parser::CheckIndent(IndentType itype,
     {
     // If we should skip the line
     bool skip = this->IsInElseForbiddenSection(pos);
+
+    if( strncmp(&(*it), "typedef", 7 ) == 0 ) 
+      {
+      while( it != m_Buffer.end() && (*it) != ';' )
+        {
+        ++it;
+        ++pos;
+        }
+      continue;
+      }
 
     if((*it) == type || (*it)=='\r' || skip)
       {
@@ -217,7 +230,7 @@ bool Parser::CheckIndent(IndentType itype,
         std::string previousLine = this->GetLine(this->GetLineNumber(pos)-2);
         std::string currentLine = this->GetLine(this->GetLineNumber(pos)-1);
         if( (previousLine[previousLine.size()-1] != ';')
-           && (previousLine.size()+currentLine.size()-currentIndent>maxLength)
+           && (previousLine.size()+currentLine.size()-currentIndent>0.9*maxLength)
           )
           {
           returnError = false;
@@ -443,13 +456,18 @@ bool Parser::CheckIndent(IndentType itype,
           reportError = false;
           }
         // Check if the line start with '<<' if this is the case we ignore it
-        else if((*it) == '<' && (*(it+1) == '<'))
+        else if( strncmp( &(*it), "<<", 2) == 0  || 
+          ( previousLine.size() > 6
+          && previousLine.compare( previousLine.size()-2, 2, "<<" ) == 0) )
           {
-          long int posInf = static_cast<long int>(previousLine.find("<<"));
-          if((posInf != -1) && (posInf == currentIndent+1))
-            {
-            reportError = false;
-            }
+          reportError = false;
+          }
+        // Catch some instances of long variable declarations using
+        // typedefed types that end in "Type".
+        else if( previousLine.size() > 6
+          && previousLine.compare( previousLine.size()-4, 4, "Type" ) == 0 )
+          {
+          reportError = false;
           }
         // We don't care about everything between the class and '{'
         else
@@ -570,6 +588,11 @@ bool Parser::CheckIndent(IndentType itype,
             {
             reportError = false;
             }
+          }
+
+        if( currentIndent < 0 )
+          {
+          reportError = false;
           }
 
         if(reportError)
