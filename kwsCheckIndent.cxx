@@ -13,6 +13,8 @@
 =========================================================================*/
 #include "kwsParser.h"
 
+#include <string.h>
+
 namespace kws {
 
 #define ALIGN_LEFT -99999
