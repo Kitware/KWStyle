@@ -55,7 +55,8 @@ bool Parser::CheckComma( unsigned int before, unsigned int after )
       }
     if( i<(long int)m_BufferNoComment.size()
         && ( m_BufferNoComment[i] == '\n' ||
-             m_BufferNoComment[i] == '\r' ) )
+             m_BufferNoComment[i] == '\r' ||
+             m_BufferNoComment[i] == '\\' ) )
       {
       aft = after;
       }
