@@ -451,7 +451,7 @@ bool Parser::CheckIndent(IndentType itype,
         std::string previousLine = this->GetLine(this->GetLineNumber(pos)-2);
         std::string currentLine = this->GetLine(this->GetLineNumber(pos)-1);
         if(( (previousLine[previousLine.size()-1] != ';')
-           && (previousLine.size()+currentLine.size()-currentIndent>maxLength))
+           && (previousLine.size()+currentLine.size()-currentIndent>0.9*maxLength))
           || (isInsideEnum)
           )
           {
