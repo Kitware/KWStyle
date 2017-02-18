@@ -475,12 +475,10 @@ int main(int argc, char **argv)
         }
       else // we add a directory
         {
-        bool gotrecurse = false;
         kwssys::Glob glob;
         if(dirname.find("[R]",0) != std::string::npos)
           {
           glob.RecurseOn();
-          gotrecurse = true;
           }
 
         long int localspace = static_cast<long int>(dirname.find(" "));
