@@ -43,7 +43,7 @@ MetaCommand::MetaCommand()
 METAIO_STL::string MetaCommand::ExtractDateFromCVS(METAIO_STL::string date)
 {
   METAIO_STL::string newdate;
-  for(int i=7; i < date.size()-1; ++i)
+  for(unsigned int i=7; i < date.size()-1; ++i)
     {
     newdate += date[i];
     }
