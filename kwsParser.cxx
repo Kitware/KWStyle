@@ -1319,7 +1319,6 @@ bool Parser::IsInStruct(size_t pos,const char* buffer) const
     if(pos<c && pos>b)
       {
       return true;
-      break;
       }
     b = buf.find("struct",b+1);
     }
@@ -1358,7 +1357,6 @@ bool Parser::IsInUnion(size_t pos,const char* buffer) const
     if(pos<c && pos>b)
       {
       return true;
-      break;
       }
     b = buf.find("union",b+1);
     }
