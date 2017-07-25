@@ -38,10 +38,10 @@ struct kwsFeature{
   };
 
 // List of features to check
-std::vector<kwsFeature> features;
-std::vector<kwsFeature> overwriteFeatures;
+static std::vector<kwsFeature> features;
+static std::vector<kwsFeature> overwriteFeatures;
 
-void AddFeature(const char* name,const char* value,bool enable)
+static void AddFeature(const char* name,const char* value,bool enable)
 {
   kwsFeature f;
   f.name = name;
@@ -51,7 +51,7 @@ void AddFeature(const char* name,const char* value,bool enable)
   features.push_back(f);
 }
 
-void ChangeFeature(const char* name,const char* value)
+static void ChangeFeature(const char* name,const char* value)
 {
   std::vector<kwsFeature>::iterator it = features.begin();
   while(it != features.end())
@@ -65,7 +65,7 @@ void ChangeFeature(const char* name,const char* value)
     }
 }
 
-void DisableFeature(const char* name)
+static void DisableFeature(const char* name)
 {
   std::vector<kwsFeature>::iterator it = features.begin();
   while(it != features.end())
@@ -80,7 +80,7 @@ void DisableFeature(const char* name)
 }
 
 /** Remove files */
-void RemoveFile(const char* regEx,std::vector<std::string> & filenames)
+static void RemoveFile(const char* regEx,std::vector<std::string> & filenames)
 {
   kwssys::RegularExpression regex(regEx);
   std::vector<std::string>::iterator it = filenames.begin();

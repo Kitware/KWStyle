@@ -101,7 +101,7 @@ bool Parser::CheckComments(const char* begin,const char* middle,const char* end,
     {
     // Check if there is a comment before each class
     m_TestsDone[MISSINGCOMMENT] = true;
-    m_TestsDescription[MISSINGCOMMENT] = "The class should have previously define comments starting with \\class";
+    m_TestsDescription[MISSINGCOMMENT] = "The class should have previously defined comments starting with \\class";
 
     if(allowEmptyLineBeforeClass)
       {

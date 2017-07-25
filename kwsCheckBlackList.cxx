@@ -21,7 +21,7 @@ namespace kws {
 bool Parser::CheckBlackList(const char* filename)
 {
   m_TestsDone[BLACKLIST] = true;
-  m_TestsDescription[BLACKLIST] = "No word should matche any words from the file: ";
+  m_TestsDescription[BLACKLIST] = "No word should match any words from the file: ";
   m_TestsDescription[BLACKLIST] += filename;
 
   bool hasError = false;
