@@ -48,7 +48,7 @@ int RegressionTestImage (const char *, const char *, int);
 std::map<std::string,int> RegressionTestBaselines (char *);
 
 void RegisterTests();
-void PrintAvailableTests()
+static void PrintAvailableTests()
 {
   std::cout << "Available tests:\n";
   std::map<std::string, MainFuncPointer>::iterator j = StringToTestFunctionMap.begin();
@@ -62,7 +62,7 @@ void PrintAvailableTests()
 }
 
 /** Compare the baseline and the testfile */
-int Compare(const char* baseline, const char* testfile)
+static int Compare(const char* baseline, const char* testfile)
 {
   // Load the baseline
   std::ifstream baselineFile;
