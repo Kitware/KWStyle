@@ -1146,7 +1146,7 @@ bool MetaCommand::ExportGAD(bool dynamic)
 
 
 /** Parse the command line */
-bool MetaCommand::Parse(int argc, char* argv[])
+bool MetaCommand::Parse(int argc, const char* argv[])
 {  
   m_ExecutableName = argv[0];
 
@@ -1211,7 +1211,7 @@ bool MetaCommand::Parse(int argc, char* argv[])
 
   bool exportGAD = false;
 
-  for(unsigned int i=1;i<(unsigned int)argc;i++)
+  for(unsigned int i=1; i<(unsigned int)argc; ++i)
     {
     // If we have the tag -export-gad
     if(!strcmp(argv[i],"-exportGAD"))
@@ -1224,7 +1224,7 @@ bool MetaCommand::Parse(int argc, char* argv[])
     if(argv[i][0] == '-' && (atof(argv[i])==0) && (strlen(argv[i])>1))
       {    
       // if we have a tag before the expected values we throw an exception
-      if(valuesRemaining!=0)
+      if(valuesRemaining != 0)
         {
         if(!isComplete)
           {
@@ -1512,19 +1512,19 @@ MetaCommand::TypeEnumType MetaCommand::StringToType(const char* type)
     {
     return INT;
     }
-  else if(!strcmp(type,"float"))
+  if(!strcmp(type,"float"))
     {
     return FLOAT;
     }
-  else if(!strcmp(type,"string"))
+  if(!strcmp(type,"string"))
     {
     return STRING;
     }
-  else if(!strcmp(type,"list"))
+  if(!strcmp(type,"list"))
     {
     return LIST;
     }
-  else if(!strcmp(type,"flag"))
+  if(!strcmp(type,"flag"))
     {
     return FLAG;
     }

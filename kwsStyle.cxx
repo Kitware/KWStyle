@@ -61,7 +61,7 @@ static void ChangeFeature(const char* name,const char* value)
       (*it).value = value;
       return;
       }
-    it++;
+    ++it;
     }
 }
 
@@ -75,7 +75,7 @@ static void DisableFeature(const char* name)
       (*it).enable = false;
       return;
       }
-    it++;
+    ++it;
     }
 }
 
@@ -93,12 +93,12 @@ static void RemoveFile(const char* regEx,std::vector<std::string> & filenames)
       }
     else
       {
-      it++;
+      ++it;
       }
     }
 }
 
-int main(int argc, char **argv)
+int main(int argc, const char **argv)
 {
   double time0 = kwssys::SystemTools::GetTime();
 
@@ -220,7 +220,7 @@ int main(int argc, char **argv)
       while(it != features.end())
         {
         std::string val = reader.GetValue((*it).name.c_str());
-        if(val.length() > 0 )
+        if(!val.empty())
           {
           ChangeFeature((*it).name.c_str(),val.c_str());
           }
@@ -228,20 +228,20 @@ int main(int argc, char **argv)
           {
           DisableFeature((*it).name.c_str());
           }
-        it++;
+        ++it;
         }
 
       // Read the current configuration
       blacklist = reader.GetValue("BlackList");
       overwrite = reader.GetValue("OverwriteFile");
       verbose = reader.GetValue("Verbose");
-      if(verbose.size()>0 && verbose[0] != '1')
+      if(!verbose.empty() && verbose[0] != '1')
         {
         verbose = "";
         }
 
       recursive = reader.GetValue("Recursive");
-      if(recursive.size()>0 && recursive[0] != '1')
+      if(!recursive.empty() && recursive[0] != '1')
         {
         recursive = "";
         }
@@ -263,7 +263,7 @@ int main(int argc, char **argv)
     {
     blacklist = command.GetValueAsString("blacklist","filename");
     }
-  if(blacklist.size()>0)
+  if(!blacklist.empty())
     {
     AddFeature("BlackList",blacklist.c_str(),true);
     }
@@ -274,7 +274,7 @@ int main(int argc, char **argv)
     overwrite = command.GetValueAsString("overwrite","filename");
     }
 
-  if(overwrite.size()>0)
+  if(!overwrite.empty())
     {
     // Read the file
     std::ifstream file;
@@ -330,19 +330,12 @@ int main(int argc, char **argv)
         p1 = p;
         p = static_cast<long int>(line.find(" ",p+1));
         std::string enablestring = line.substr(p1+1,p-p1-1);
-        if(enablestring.find("Enable") != std::string::npos)
-          {
-          f.enable = true;
-          }
-        else
-          {
-          f.enable = false;
-          }
+        f.enable = enablestring.find("Enable") != std::string::npos;
 
         p1 = p;
         p = static_cast<long int>(line.find("\n",p+1));
 
-        if(p!=-1)
+        if(p != -1)
           {
           f.value = line.substr(p1+1,p-p1-1);
           }
@@ -352,9 +345,9 @@ int main(int argc, char **argv)
 
       if(static_cast<unsigned long>(pos) != fileSize)
         {
-        pos = static_cast<long int>(buffer.find("\n",start));
+        pos = static_cast<long int>(buffer.find("\n", start));
         }
-      } while(pos<(long int)fileSize);
+      } while(pos < (long int)fileSize);
 
     file.close();
     }
@@ -460,7 +453,7 @@ int main(int argc, char **argv)
       long int space = static_cast<long int>(dirname.find(" "));
       while(space != -1 && helperParser.IsBetweenQuote(space,false,dirname))
         {
-        space = static_cast<long int>(dirname.find(" ",space+1));
+        space = static_cast<long int>(dirname.find(" ", space+1));
         }
 
       // if we should remove the file
@@ -493,7 +486,7 @@ int main(int argc, char **argv)
           }
 
         // Remove quotes if any
-        if(dirname.size()>0 && dirname[0] == '"')
+        if(!dirname.empty() && dirname[0] == '"')
           {
           dirname = dirname.substr(1,dirname.size()-2);
           }
@@ -505,20 +498,20 @@ int main(int argc, char **argv)
         while(itglob != globfiles.end())
           {
           filenames.push_back(*itglob);
-          itglob++;
+          ++itglob;
           }
         }
 
       if(pos != fileSize)
         {
-        pos = buffer.find("\n",start);
-        posr = buffer.find("\r",start);
+        pos = buffer.find("\n", start);
+        posr = buffer.find("\r", start);
         if(posr == std::string::npos)
           {
           posr = pos;
           }
         }
-      } while(pos<fileSize);
+      } while(pos < fileSize);
 
     file.close();
     }
@@ -567,7 +560,7 @@ int main(int argc, char **argv)
 
   std::vector<std::string>::const_iterator it = filenames.begin();
 
-  unsigned long nerrors =0;
+  unsigned long nerrors = 0;
 
   while(it != filenames.end())
     {
@@ -645,14 +638,14 @@ int main(int argc, char **argv)
             checked = true;
             }
           }
-        itof++;
+        ++itof;
         }
 
       if(!checked && (*itf).enable)
         {
         parser.Check((*itf).name.c_str(),(*itf).value.c_str());
         }
-      itf++;
+      ++itf;
       }
 
    if(command.GetOptionWasSet("verbose"))
@@ -661,7 +654,7 @@ int main(int argc, char **argv)
      }
 
     // If we should display the error
-    if(verbose.size()>0
+   if(!verbose.empty()
       && !command.GetOptionWasSet("msvc")
       && !command.GetOptionWasSet("vim")
       && !command.GetOptionWasSet("gcc")
@@ -680,7 +673,7 @@ int main(int argc, char **argv)
         {
         std::cout << (*it).c_str() << ":" << (*eit).line << ":"
                   << (*eit).description << std::endl;
-        eit++;
+        ++eit;
         }
       }
     else if(command.GetOptionWasSet("msvc"))
@@ -692,7 +685,7 @@ int main(int argc, char **argv)
         {
         std::cout << (*it).c_str() << "(" << (*eit).line << ") : error " << (*eit).number << ":"
                   << (*eit).description << std::endl;
-        eit++;
+        ++eit;
         }
       const kws::Parser::WarningVectorType warnings = parser.GetWarnings();
       kws::Parser::WarningVectorType::const_iterator wit = warnings.begin();
@@ -700,7 +693,7 @@ int main(int argc, char **argv)
         {
         std::cout << (*it).c_str() << "(" << (*wit).line << ") : warning " << (*wit).number << ":"
                   << (*wit).description << std::endl;
-        wit++;
+        ++wit;
         }
       }
      else if(command.GetOptionWasSet("gcc"))
@@ -712,7 +705,7 @@ int main(int argc, char **argv)
         {
         std::cout << (*it).c_str() << ":" << (*eit).line << ": error: "
                   << (*eit).description << std::endl;
-        eit++;
+        ++eit;
         }
       const kws::Parser::WarningVectorType warnings = parser.GetWarnings();
       kws::Parser::WarningVectorType::const_iterator wit = warnings.begin();
@@ -720,7 +713,7 @@ int main(int argc, char **argv)
         {
         std::cout << (*it).c_str() << ":" << (*wit).line << ": warning: "
                   << (*wit).description << std::endl;
-        wit++;
+        ++wit;
         }
       }
 
@@ -738,7 +731,7 @@ int main(int argc, char **argv)
     parser.GenerateFixedFile();
 
     m_Parsers.push_back(parser);
-    it++;
+    ++it;
     } // end filenames
 
   if(command.GetOptionWasSet("html"))
@@ -747,7 +740,7 @@ int main(int argc, char **argv)
     }
 
   // If we should generate the HTML file
-  if(htmlDirectory.size()>0)
+  if(!htmlDirectory.empty())
     {
     kws::Generator generator;
     generator.SetParser(&m_Parsers);
@@ -771,7 +764,7 @@ int main(int argc, char **argv)
       {
       showNoErrors = true;
       }
-    generator.GenerateHTML(htmlDirectory.c_str(),!showNoErrors);
+    generator.GenerateHTML(htmlDirectory.c_str(), !showNoErrors);
     }
 
   // If we should export the html report
@@ -780,7 +773,7 @@ int main(int argc, char **argv)
     kws::Generator generator;
     if(command.GetOptionWasSet("xml"))
       {
-      std::string xml = command.GetValueAsString("xml","filename");
+      std::string xml = command.GetValueAsString("xml", "filename");
       generator.ReadConfigurationFile(xml.c_str());
       }
     generator.SetParser(&m_Parsers);
@@ -789,7 +782,7 @@ int main(int argc, char **argv)
 
   if(command.GetOptionWasSet("exportxml"))
     {
-    std::string outputxmlFile = command.GetValueAsString("exportxml","filename");
+    const std::string outputxmlFile = command.GetValueAsString("exportxml","filename");
     kws::Generator generator;
     generator.SetParser(&m_Parsers);
     generator.ExportXML(outputxmlFile.c_str());
@@ -798,13 +791,13 @@ int main(int argc, char **argv)
   // If we should generate dart files
   if(command.GetOptionWasSet("dart"))
     {
-    std::string dart = command.GetValueAsString("dart","filename");
-    int maxerror = command.GetValueAsInt("dart","maxerror");
-    bool grouperrors = command.GetValueAsBool("dart","group");
+    std::string dart = command.GetValueAsString("dart", "filename");
+    int maxerror = command.GetValueAsInt("dart", "maxerror");
+    bool grouperrors = command.GetValueAsBool("dart", "group");
     kws::Generator generator;
     if(command.GetOptionWasSet("xml"))
       {
-      std::string xml = command.GetValueAsString("xml","filename");
+      std::string xml = command.GetValueAsString("xml", "filename");
       generator.ReadConfigurationFile(xml.c_str());
       }
     generator.SetParser(&m_Parsers);
@@ -825,10 +818,10 @@ int main(int argc, char **argv)
     }
 
   // If we have errors we return false
-  if(nerrors>0)
+  if(nerrors > 0)
     {
-    return 1;
+    return EXIT_FAILURE;
     }
 
-  return 0;
+  return EXIT_SUCCESS;
 }

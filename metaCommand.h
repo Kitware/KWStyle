@@ -163,7 +163,7 @@ public:
 
   bool OptionExistsByMinusTag(METAIO_STL::string minusTag);
 
-  bool Parse(int argc, char* argv[]);
+  bool Parse(int argc, const char* argv[]);
   
   /** Given an XML buffer fill in the command line arguments */
   bool ParseXML(const char* buffer);
