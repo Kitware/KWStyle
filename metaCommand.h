@@ -106,10 +106,7 @@ public:
       {
       return this->AddField(name,description,type,DATA_IN);
       }
-    else
-      {
-      return this->AddField(name,description,type,DATA_NONE);
-      }
+    return this->AddField(name,description,type,DATA_NONE);
     }
 
   
@@ -252,4 +249,4 @@ private:
 };
 #endif
 
-#endif 
+#endif

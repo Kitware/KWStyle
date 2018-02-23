@@ -45,11 +45,7 @@ Parser::~Parser()
  /** To be able to use std::sort we provide the < operator */
 bool Parser::operator<(const Parser& a) const
 {
-  if(m_Filename.compare(a.m_Filename))
-    {
-    return false;
-    }
-   return true;
+  return !m_Filename.compare(a.m_Filename);
 }
 
 /** Given the name of the check to perform and the default value perform the check */
@@ -60,12 +56,12 @@ bool Parser::Check(const char* name, const char* value)
     this->CheckLineLength(atoi(value));
     return true;
     }
-  else if(!strcmp(name,"DeclarationOrder"))
+  if(!strcmp(name,"DeclarationOrder"))
     {
     this->CheckDeclarationOrder(atoi(&value[0]),atoi(&value[2]),atoi(&value[4]));
     return true;
     }
-  else if(!strcmp(name,"Typedefs"))
+  if(!strcmp(name,"Typedefs"))
     {
     bool alignment = true; // check alignment by default
     std::string val = value;
@@ -97,7 +93,7 @@ bool Parser::Check(const char* name, const char* value)
     this->CheckTypedefs(val.c_str(),alignment);
     return true;
     }
-  else if(!strcmp(name,"InternalVariables"))
+  if(!strcmp(name,"InternalVariables"))
     {
     bool alignment = true; // check alignment by default
     bool checkProtected = false; // check protected by default
@@ -151,17 +147,17 @@ bool Parser::Check(const char* name, const char* value)
 
     return true;
     }
-  else if(!strcmp(name,"Variables"))
+  if(!strcmp(name,"Variables"))
     {
     this->CheckVariables(value);
     return true;
     }
-  else if(!strcmp(name,"Struct"))
+  if(!strcmp(name,"Struct"))
     {
     this->CheckStruct(value);
     return true;
     }
-  else if(!strcmp(name,"MemberFunctions"))
+  if(!strcmp(name,"MemberFunctions"))
     {
     std::string val = value;
     std::string v1 = value;
@@ -175,7 +171,7 @@ bool Parser::Check(const char* name, const char* value)
     this->CheckMemberFunctions(v1.c_str(),atoi(v2.c_str()));
     return true;
     }
-  else if(!strcmp(name,"Functions"))
+  if(!strcmp(name,"Functions"))
     {
     std::string val = value;
     std::string v1 = value;
@@ -189,27 +185,27 @@ bool Parser::Check(const char* name, const char* value)
     this->CheckFunctions(v1.c_str(),atoi(v2.c_str()));
     return true;
     }
-  else if(!strcmp(name,"SemicolonSpace"))
+  if(!strcmp(name,"SemicolonSpace"))
     {
     this->CheckSemicolonSpace(atoi(value));
     return true;
     }
-  else if(!strcmp(name,"EndOfFileNewLine"))
+  if(!strcmp(name,"EndOfFileNewLine"))
     {
     this->CheckEndOfFileNewLine();
     return true;
     }
-  else if(!strcmp(name,"Tabs"))
+  if(!strcmp(name,"Tabs"))
     {
     this->CheckTabs();
     return true;
     }
-  else if(!strcmp(name,"Spaces"))
+  if(!strcmp(name,"Spaces"))
     {
     this->CheckExtraSpaces(atoi(value));
     return true;
     }
-  else if(!strcmp(name,"StatementPerLine"))
+  if(!strcmp(name,"StatementPerLine"))
     {
     std::string val = value;
     std::string v1 = value;
@@ -228,24 +224,17 @@ bool Parser::Check(const char* name, const char* value)
     this->CheckStatementPerLine(atoi(v1.c_str()),checkInlineFunctions);
     return true;
     }
- else if(!strcmp(name,"BadCharacters"))
+ if(!strcmp(name,"BadCharacters"))
     {
-    if(!strcmp(value,"true"))
-      {
-      this->CheckBadCharacters(true);
-      }
-    else
-      {
-      this->CheckBadCharacters(false);
-      }
+    this->CheckBadCharacters(!strcmp(value,"true"));
     return true;
     }
-  else if(!strcmp(name,"VariablePerLine"))
+  if(!strcmp(name,"VariablePerLine"))
     {
     this->CheckVariablePerLine(atoi(value));
     return true;
     }
-  else if(!strcmp(name,"Comments"))
+  if(!strcmp(name,"Comments"))
     {
     std::string val = value;
     long pos = static_cast<long>(val.find(",",0));
@@ -282,11 +271,7 @@ bool Parser::Check(const char* name, const char* value)
       v4 = val.substr(pos+1,pos1-pos-1);
       }
 
-    bool allowEmptyLine = false;
-    if(!strcmp(v4.c_str(),"true"))
-      {
-      allowEmptyLine = true;
-      }
+    bool allowEmptyLine = !strcmp(v4.c_str(),"true");
 
     // Check if we should check the comments misspeling
     pos = static_cast<long>(val.find(",",pos1+1));
@@ -1262,7 +1247,7 @@ size_t Parser::FindFunction(size_t pos,const char* buffer) const
       {
       return beg;
       }
-    else if(i != std::string::npos)// check if we have a const
+    if(i != std::string::npos)// check if we have a const
       {
       if(buf.substr(i,beg-i).find("]") == std::string::npos &&
          buf.substr(i,beg-i).find("const") != std::string::npos
@@ -1466,11 +1451,7 @@ bool Parser::IsValidQuote(std::string & stream,size_t pos) const
     i--;
     }
 
-  if(n%2==0)
-    {
-    return true;
-    }
-  return false;
+  return n % 2 == 0;
 }
 
 /**  return true if the position pos is between ' ' */
@@ -1893,10 +1874,7 @@ size_t Parser::FindConstructor(const std::string & buffer, const std::string & c
           {
           return pos5;
           }
-        else
-          {
-          return std::string::npos;
-          }
+	return std::string::npos;
         }
       }
     std::string localconstructor = "";
@@ -2092,6 +2070,10 @@ size_t Parser::FindOpeningChar(char closeChar, char openChar,size_t pos,bool noC
     else if(stream[i] == openChar)
       {
       close--;
+      }
+    else
+      {
+      continue;
       }
     if(close == 0)
       {
