@@ -86,27 +86,6 @@ int kwsSemiColonSpaceTest(int, char* [] )
     }
   std::cout << "[PASSED]" << std::endl;
 
-  // Test for bad syntax
-  buffer = "class myclass\n{\nmyfunction(){this is a test};\n\n\n\n};";
-  parser.ClearErrors();
-  parser.SetBuffer(buffer);
-  parser.Check("SemicolonSpace","0");
-  std::cout << "Test for bad syntax: ";
-  errors = parser.GetErrors();
-  if(errors.size() > 0)
-    {
-    for(unsigned int i=0;i<errors.size();i++)
-      {
-      std::cout << errors[i].description << std::endl;
-      }
-    }
-  else
-    {
-    std::cout << "[FAILED]" << std::endl;
-    return EXIT_FAILURE;
-    }
-  std::cout << "[PASSED]" << std::endl;
-
   // Test for good syntax of initializer value return lists
   buffer = "const int spacing{ 1 };";
   parser.ClearErrors();
