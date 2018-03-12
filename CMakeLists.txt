@@ -107,9 +107,13 @@ ADD_LIBRARY(KWStyleLib ${KWStyle_SRCS} ${KWStyle_HDRS})
 ADD_EXECUTABLE(KWStyle kwsStyle.cxx)
 TARGET_LINK_LIBRARIES(KWStyle KWStyleLib kwssys)
 
-ADD_CUSTOM_COMMAND(TARGET KWStyle POST_BUILD COMMAND "${CMAKE_COMMAND}" -E copy 
-     "$<TARGET_FILE:KWStyle>" "${KWStyle_BINARY_DIR}/${EXECUTABLE_NAME}"
-  COMMENT "Move the executable to the top binary tree")
+# Move the executable to the top binary tree
+ADD_CUSTOM_COMMAND(
+   TARGET KWStyle
+   POST_BUILD
+   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:KWStyle>
+     ${KWStyle_BINARY_DIR}/$<TARGET_FILE_NAME:KWStyle>
+ )
 
 # Installation file
 INSTALL(TARGETS KWStyle
