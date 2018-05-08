@@ -1,9 +1,7 @@
-cmake_minimum_required(VERSION 2.8.4)
+cmake_minimum_required(VERSION 3.10.2)
 
 foreach(p
-    CMP0003
-    CMP0026
-    CMP0054
+    # Place newer policies here if needed for cmake greater than 3.10.2
     )
   if(POLICY ${p})
     cmake_policy(SET ${p} NEW)
