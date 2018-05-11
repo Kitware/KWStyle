@@ -1,8 +1,8 @@
-INCLUDE_DIRECTORIES(${KWStyle_SOURCE_DIR})
+include_directories(${KWStyle_SOURCE_DIR})
 
-SET(KWSTYLE_TESTS  ${CXX_TEST_PATH}/KWStyleTests)
+set(KWSTYLE_TESTS  ${CXX_TEST_PATH}/KWStyleTests)
 
-SET(
+set(
  KWStyleTests_SRCS
  kwsIndentTest.cxx
  kwsSemiColonSpaceTest.cxx
@@ -12,29 +12,29 @@ SET(
  kwsBadCharactersTest.cxx
 )
 
-FOREACH(TestFiles ${KWStyleTests_SRCS})   
-  GET_FILENAME_COMPONENT(TestProgram ${TestFiles} NAME_WE)   
-  ADD_TEST(${TestProgram} ${KWSTYLE_TESTS} ${TestProgram}) 
-ENDFOREACH(TestFiles)
+foreach(TestFiles ${KWStyleTests_SRCS})
+  get_filename_component(TestProgram ${TestFiles} NAME_WE)
+  add_test(${TestProgram} ${KWSTYLE_TESTS} ${TestProgram})
+endforeach(TestFiles)
 
-SET(KWStyleTests_SRCS
+set(KWStyleTests_SRCS
  ${KWStyleTests_SRCS}
  kwsRunKWStyleTest.cxx
- )
+)
 
-ADD_EXECUTABLE( KWStyleTests KWStyleTests.cxx ${KWStyleTests_SRCS})
-TARGET_LINK_LIBRARIES(KWStyleTests KWStyleLib kwssys)
+add_executable( KWStyleTests KWStyleTests.cxx ${KWStyleTests_SRCS})
+target_link_libraries(KWStyleTests KWStyleLib kwssys)
 
 
-MACRO(ADD_TEST_FROM_BUG_TRACKER BUG_NUMBER FILENAME)
-  ADD_TEST(Test${BUG_NUMBER} ${KWSTYLE_TESTS}
+macro(ADD_TEST_FROM_BUG_TRACKER BUG_NUMBER FILENAME)
+  add_test(Test${BUG_NUMBER} ${KWSTYLE_TESTS}
   --compare ${KWStyle_SOURCE_DIR}/Testing/Data/${BUG_NUMBER}-output.xml
             ${KWStyle_BINARY_DIR}/${BUG_NUMBER}-output.xml
   kwsRunKWStyleTest ${KWStyle_BINARY_DIR}/KWStyle -xml ${KWStyle_SOURCE_DIR}/Testing/Data/${BUG_NUMBER}-KWStyleConfiguration.kws.xml
   -exportxml ${KWStyle_BINARY_DIR}/${BUG_NUMBER}-output.xml
   ${KWStyle_SOURCE_DIR}/Testing/Data/${BUG_NUMBER}-${FILENAME})
 
-ENDMACRO(ADD_TEST_FROM_BUG_TRACKER BUG_NUMBER FILENAME)
+endmacro(ADD_TEST_FROM_BUG_TRACKER BUG_NUMBER FILENAME)
 
 ADD_TEST_FROM_BUG_TRACKER(kwsTabsTest test.cxx)
 ADD_TEST_FROM_BUG_TRACKER(0001 test.cpp)
