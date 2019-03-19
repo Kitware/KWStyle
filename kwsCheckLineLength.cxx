@@ -17,7 +17,7 @@ namespace kws {
 
 
 /** Check the number of character per line */
-bool Parser::CheckLineLength(unsigned long max,bool checkHeader)
+bool Parser::CheckLineLength(unsigned long max,bool checkHeader, bool doErrorCheck)
 {
   m_TestsDone[LINE_LENGTH] = true;
   char* val = new char[255];
@@ -75,7 +75,7 @@ bool Parser::CheckLineLength(unsigned long max,bool checkHeader)
       m_Positions.push_back(cc);
       line_end = static_cast<long int>(cc);
       long int line_length = line_end - line_start-1;
-      if(line_length > (long int)max && cc>fileSize)
+      if(doErrorCheck && (line_length > (long int)max && cc>fileSize))
         {
         Error error;
         error.line = line_count;

@@ -27,7 +27,6 @@ int kwsSwitchCaseTest(int, char* [] )
 
   kws::Parser parser;
   parser.SetBuffer(buffer);
-  parser.Check("LineLength","999");
   parser.Check("Indent","SPACE,2,true,true");
 
   // Test for bad syntax
@@ -51,7 +50,6 @@ int kwsSwitchCaseTest(int, char* [] )
   buffer = "void()\n{\n  test;\n};";
   parser.ClearErrors();
   parser.SetBuffer(buffer);
-  parser.Check("LineLength","999");
   parser.Check("Indent","SPACE,2,true,true");
 
   std::cout << "Test for good syntax: ";

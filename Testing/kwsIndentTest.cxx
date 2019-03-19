@@ -27,7 +27,6 @@ int kwsIndentTest(int, char* [] )
 
   kws::Parser parser;
   parser.SetBuffer(buffer);
-  parser.Check("LineLength","999");
   parser.Check("Indent","SPACE,2,true,true");
 
   // Test for bad syntax
@@ -51,7 +50,6 @@ int kwsIndentTest(int, char* [] )
   buffer = "int main(int argc, argv)\r\n{\r\n  int a;\r\n}";
   parser.ClearErrors();
   parser.SetBuffer(buffer);
-  parser.Check("LineLength","999");
   parser.Check("Indent","SPACE,2,true,true");
 
   std::cout << "Test for good syntax: ";
@@ -71,7 +69,6 @@ int kwsIndentTest(int, char* [] )
   buffer = "int main(int argc, argv)\r\n{\r\n  std::string x(\"my string's test\");\r\n  for(;;)\r\n    {\r\n    }\r\n  int a;\r\n}";
   parser.ClearErrors();
   parser.SetBuffer(buffer);
-  parser.Check("LineLength","999");
   parser.Check("Indent","SPACE,2,true,true");
 
   std::cout << "Test for good syntax: ";

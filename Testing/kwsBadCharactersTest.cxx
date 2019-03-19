@@ -31,7 +31,6 @@ int kwsBadCharactersTest(int, char* [] )
 
   kws::Parser parser;
   parser.SetBuffer(buffer);
-  parser.Check("LineLength","999");
   parser.Check("BadCharacters","true");
 
   // Test for bad syntax
@@ -55,7 +54,6 @@ int kwsBadCharactersTest(int, char* [] )
   buffer = "void()\n{\n  //testäüöß;\n};";
   parser.ClearErrors();
   parser.SetBuffer(buffer);
-  parser.Check("LineLength","999");
   // the point is that now we don't check in comments
   parser.Check("BadCharacters","false");
 
