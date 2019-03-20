@@ -56,6 +56,10 @@ bool Parser::Check(const char* name, const char* value)
     this->CheckLineLength(atoi(value));
     return true;
     }
+  else if(m_Positions.empty())
+    {
+    this->CheckLineLength(0,false,false); // run CheckLineLength without errors to fill m_Positions
+    }
   if(!strcmp(name,"DeclarationOrder"))
     {
     this->CheckDeclarationOrder(atoi(&value[0]),atoi(&value[2]),atoi(&value[4]));

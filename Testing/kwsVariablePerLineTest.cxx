@@ -27,7 +27,6 @@ int kwsVariablePerLineTest(int, char* [] )
 
   kws::Parser parser;
   parser.SetBuffer(buffer);
-  parser.Check("LineLength","999");
   parser.Check("VariablePerLine","1");
 
   // Test for bad syntax
@@ -51,7 +50,6 @@ int kwsVariablePerLineTest(int, char* [] )
   buffer = "int a;\r\nint b;";
   parser.ClearErrors();
   parser.SetBuffer(buffer);
-  parser.Check("LineLength","999");
   parser.Check("VariablePerLine","1");
 
   std::cout << "Test for good syntax: ";
@@ -71,7 +69,6 @@ int kwsVariablePerLineTest(int, char* [] )
   buffer = "int a,b;";
   parser.ClearErrors();
   parser.SetBuffer(buffer);
-  parser.Check("LineLength","999");
   parser.Check("VariablePerLine","2");
 
   std::cout << "Test for good syntax: ";
@@ -91,7 +88,6 @@ int kwsVariablePerLineTest(int, char* [] )
   buffer = "template < int t,\r\nint x, int c > foo;";
   parser.ClearErrors();
   parser.SetBuffer(buffer);
-  parser.Check("LineLength","999");
   parser.Check("VariablePerLine","1");
 
   std::cout << "Test for good syntax: ";
@@ -110,7 +106,6 @@ int kwsVariablePerLineTest(int, char* [] )
   buffer = "void func( int t,\r\n  int x, int c, \r\n  int d );";
   parser.ClearErrors();
   parser.SetBuffer(buffer);
-  parser.Check("LineLength","999");
   parser.Check("VariablePerLine","1");
 
   std::cout << "Test for good syntax: ";

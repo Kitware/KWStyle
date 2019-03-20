@@ -238,7 +238,7 @@ public:
   bool CheckIfWhileForUntil( unsigned int spaces );
 
   /** Check the number of character per line */
-  bool CheckLineLength(unsigned long max,bool checkHeader=false);
+  bool CheckLineLength(unsigned long max,bool checkHeader=false, bool doErrorCheck=true);
 
   /** Check if the internal parameters of the class are correct */
   bool CheckInternalVariables(const char* regEx,bool alignement = true,bool checkProtected=false);

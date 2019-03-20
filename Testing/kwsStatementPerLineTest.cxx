@@ -27,7 +27,6 @@ int kwsStatementPerLineTest(int, char* [] )
 
   kws::Parser parser;
   parser.SetBuffer(buffer);
-  parser.Check("LineLength","999");
   parser.Check("StatementPerLine","1");
 
   // Test for bad syntax
@@ -51,7 +50,6 @@ int kwsStatementPerLineTest(int, char* [] )
   buffer = "Test1();\r\nTest2();";
   parser.ClearErrors();
   parser.SetBuffer(buffer);
-  parser.Check("LineLength","999");
   parser.Check("StatementPerLine","1");
 
   std::cout << "Test for good syntax: ";
@@ -71,7 +69,6 @@ int kwsStatementPerLineTest(int, char* [] )
   buffer = "for(int i=0;i<3;i++)";
   parser.ClearErrors();
   parser.SetBuffer(buffer);
-  parser.Check("LineLength","999");
   parser.Check("StatementPerLine","1");
 
   std::cout << "Test for good syntax: ";
