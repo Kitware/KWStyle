@@ -28,5 +28,5 @@ addons:
 script:
   - mkdir build-clang
   - mkdir build-gcc
-  - cd build-clang && CC=clang CXX=clang++ cmake .. && make && cd ..
-  - cd build-gcc   && CC=gcc   CXX=g++     cmake .. && make && cd ..
+  - cd build-clang && CC=clang CXX=clang++ cmake .. && make && make test && cd ..
+  - cd build-gcc   && CC=gcc   CXX=g++     cmake .. && make && make test && cd ..
