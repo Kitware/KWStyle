@@ -139,21 +139,20 @@ bool Parser::CheckVariablePerLine(unsigned long max)
 
           if(vars > max)
             {
+            // len(str(2**64)) == 20 + 1 for +/- + 1  for '\0'
+            char localval[22]={0}; //Make an extra large buffer to avoid compiler overflow warnings
             Error error;
             error.line = this->GetLineNumber(posType,true);
             error.line2 = error.line;
             error.number = VARIABLEPERLINE;
             error.description = "Number of variable per line exceed: ";
-            char* localval = new char[10];
             sprintf(localval,"%d",vars);
             error.description += localval;
             error.description += " (max=";
-            delete [] localval;
-            localval = new char[10];
+            localval[0]='\0';
             sprintf(localval,"%ld",max);
             error.description += localval;
             error.description += ")";
-            delete [] localval;
             m_ErrorList.push_back(error);
             hasError = true;
             }
