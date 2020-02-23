@@ -11,8 +11,8 @@
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
-#ifndef __kwsParser_h
-#define __kwsParser_h
+#ifndef kwsParser_h
+#define kwsParser_h
 
 // Put kwssys/Configure.h first for proper compiler warning suppression:
 #include <kwssys/Configure.h>

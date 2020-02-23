@@ -11,8 +11,8 @@
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
-#ifndef _XMLREADER_H
-#define _XMLREADER_H
+#ifndef kwsXMLReader_h
+#define kwsXMLReader_h
 
 #include <iostream>
 #include <stdlib.h>

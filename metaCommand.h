@@ -14,8 +14,8 @@
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
-#ifndef ITKMetaIO_METACOMMAND_H
-#define ITKMetaIO_METACOMMAND_H
+#ifndef metaCommand_h
+#define metaCommand_h
 
 
 #ifdef _MSC_VER

@@ -1,5 +1,5 @@
-#ifndef __itkMeasurementVectorTraits_h
-#define __itkMeasurementVectorTraits_h
+#ifndef hg5059_test_h
+#define hg5059_test_h
 
 #include "itkMacro.h"
 #include "itkArray.h"
