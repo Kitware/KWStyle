@@ -1,6 +1,6 @@
 /*============================================================================
   KWSys - Kitware System Library
-  Copyright 2000-2009 Kitware, Inc., Insight Software Consortium
+  Copyright 2000-2020 Kitware, Inc., NumFOCUS
 
   Distributed under the OSI-approved BSD License (the "License");
   see accompanying file Copyright.txt for details.
@@ -68,10 +68,10 @@ namespace @KWSYS_NAMESPACE@
  * and utilities.
  *
  * Example: The perl code
- * 
+ *
  *    $filename =~ m"([a-z]+)\.cc";
  *    print $1;
- *    
+ *
  * Is written as follows in C++
  *
  *    RegularExpression re("([a-z]+)\\.cc");
@@ -181,13 +181,13 @@ namespace @KWSYS_NAMESPACE@
  *      the line.  It would match "drepa qrepb" in "rep drepa qrepb".
  *
  */
-class @KWSYS_NAMESPACE@_EXPORT RegularExpression 
+class @KWSYS_NAMESPACE@_EXPORT RegularExpression
 {
 public:
   /**
    * Instantiate RegularExpression with program=NULL.
    */
-  inline RegularExpression ();        
+  inline RegularExpression ();
 
   /**
    * Instantiate RegularExpression with compiled char*.
@@ -265,7 +265,7 @@ public:
    * and the same start and end pointers.
    */
   bool deep_equal (RegularExpression const&) const;
-  
+
   /**
    * True if the compiled regexp is valid.
    */
@@ -274,7 +274,7 @@ public:
   /**
    * Marks the regular expression as invalid.
    */
-  inline void set_invalid();            
+  inline void set_invalid();
 
   /**
    * Destructor.
@@ -283,16 +283,16 @@ public:
   std::string::size_type start(int n) const;
   std::string::size_type end(int n) const;
   std::string match(int n) const;
-  
+
   enum { NSUBEXP = 10 };
-private: 
+private:
   const char* startp[NSUBEXP];
   const char* endp[NSUBEXP];
   char  regstart;                       // Internal use only
   char  reganch;                        // Internal use only
   const char* regmust;                  // Internal use only
   std::string::size_type regmlen;                // Internal use only
-  char* program;   
+  char* program;
   int   progsize;
   const char* searchstring;
 };
@@ -300,8 +300,8 @@ private:
 /**
  * Create an empty regular expression.
  */
-inline RegularExpression::RegularExpression () 
-{ 
+inline RegularExpression::RegularExpression ()
+{
   this->program = 0;
 }
 
@@ -309,8 +309,8 @@ inline RegularExpression::RegularExpression ()
  * Creates a regular expression from string s, and
  * compiles s.
  */
-inline RegularExpression::RegularExpression (const char* s) 
-{  
+inline RegularExpression::RegularExpression (const char* s)
+{
   this->program = 0;
   if ( s )
     {
@@ -331,7 +331,7 @@ inline RegularExpression::RegularExpression (const std::string& s)
 /**
  * Destroys and frees space allocated for the regular expression.
  */
-inline RegularExpression::~RegularExpression () 
+inline RegularExpression::~RegularExpression ()
 {
 //#ifndef _WIN32
   delete [] this->program;
@@ -379,7 +379,7 @@ inline std::string::size_type RegularExpression::end () const
  * Returns true if two regular expressions have different
  * compiled program for pattern matching.
  */
-inline bool RegularExpression::operator!= (const RegularExpression& r) const 
+inline bool RegularExpression::operator!= (const RegularExpression& r) const
 {
   return(!(*this == r));
 }
@@ -388,13 +388,13 @@ inline bool RegularExpression::operator!= (const RegularExpression& r) const
  * Returns true if a valid regular expression is compiled
  * and ready for pattern matching.
  */
-inline bool RegularExpression::is_valid () const 
+inline bool RegularExpression::is_valid () const
 {
   return (this->program != 0);
 }
 
 
-inline void RegularExpression::set_invalid () 
+inline void RegularExpression::set_invalid ()
 {
 //#ifndef _WIN32
   delete [] this->program;

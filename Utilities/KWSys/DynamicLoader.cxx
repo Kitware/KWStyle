@@ -1,6 +1,6 @@
 /*============================================================================
   KWSys - Kitware System Library
-  Copyright 2000-2009 Kitware, Inc., Insight Software Consortium
+  Copyright 2000-2020 Kitware, Inc., NumFOCUS
 
   Distributed under the OSI-approved BSD License (the "License");
   see accompanying file Copyright.txt for details.
@@ -343,7 +343,7 @@ DynamicLoader::SymbolPointer DynamicLoader::GetSymbolAddress(
   DynamicLoader::LibraryHandle lib, const std::string& sym)
 {
   // Hack to cast pointer-to-data to pointer-to-function.
-  union 
+  union
   {
     void* pvoid;
     DynamicLoader::SymbolPointer psym;
@@ -511,7 +511,7 @@ DynamicLoader::SymbolPointer DynamicLoader::GetSymbolAddress(
   DynamicLoader::LibraryHandle lib, const std::string& sym)
 {
   // Hack to cast pointer-to-data to pointer-to-function.
-  union 
+  union
   {
     void* pvoid;
     DynamicLoader::SymbolPointer psym;

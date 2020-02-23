@@ -1,19 +1,20 @@
 /*=========================================================================
-
-  Program:   Insight Segmentation & Registration Toolkit
-  Module:    metaCommand.h
-  Language:  C++
-  Date:      $Date$
-  Version:   $Revision$
-
-  Copyright (c) 2002 Insight Consortium. All rights reserved.
-  See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
-
-     This software is distributed WITHOUT ANY WARRANTY; without even 
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
-     PURPOSE.  See the above copyright notices for more information.
-
-=========================================================================*/
+ *
+ *  Copyright NumFOCUS
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0.txt
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *=========================================================================*/
 #ifndef metaCommand_h
 #define metaCommand_h
 
@@ -68,8 +69,8 @@ public:
     bool               complete;
   };
 
-  typedef METAIO_STL::vector<Option>                OptionVector; 
-  
+  typedef METAIO_STL::vector<Option>                OptionVector;
+
   MetaCommand();
   ~MetaCommand() {}
 
@@ -109,7 +110,7 @@ public:
     return this->AddField(name,description,type,DATA_NONE);
     }
 
-  
+
   /** Add a field to an option */
   bool AddOptionField(METAIO_STL::string optionName,
                       METAIO_STL::string name,
@@ -118,7 +119,7 @@ public:
                       METAIO_STL::string defVal = "",
                       METAIO_STL::string description = "",
                       DataEnumType externalData = DATA_NONE);
-  
+
   /** Set the range of value as an option */
   bool SetOptionRange(METAIO_STL::string optionName,
                       METAIO_STL::string name,
@@ -126,10 +127,10 @@ public:
                       METAIO_STL::string rangeMax);
 
 
-  /** Collect all the information until the next tag 
+  /** Collect all the information until the next tag
    * \warning this function works only if the field is of type String */
   void SetOptionComplete(METAIO_STL::string optionName,
-                         bool complete);  
+                         bool complete);
 
   /** Get the values given the option name */
   bool GetValueAsBool(METAIO_STL::string optionName,METAIO_STL::string fieldName="");
@@ -161,7 +162,7 @@ public:
   bool OptionExistsByMinusTag(METAIO_STL::string minusTag);
 
   bool Parse(int argc, const char* argv[]);
-  
+
   /** Given an XML buffer fill in the command line arguments */
   bool ParseXML(const char* buffer);
 
@@ -173,32 +174,32 @@ public:
   METAIO_STL::string ExtractDateFromCVS(METAIO_STL::string date);
 
   /** Set the version of the app */
-  METAIO_STL::string GetVersion() 
+  METAIO_STL::string GetVersion()
     { return m_Version; }
 
-  void SetVersion(const char* version) 
+  void SetVersion(const char* version)
     { m_Version=version; }
-  
+
   /** Get the name of the application */
-  METAIO_STL::string GetApplicationName() 
+  METAIO_STL::string GetApplicationName()
     { return m_ExecutableName; }
 
   /** Set the date of the app */
-  METAIO_STL::string GetDate() 
+  METAIO_STL::string GetDate()
     { return m_Date; }
 
-  void SetDate(const char* date) 
+  void SetDate(const char* date)
     { m_Date=date; }
 
-  void SetName(const char* name) 
+  void SetName(const char* name)
     { m_Name=name; }
 
-  void SetDescription(const char* description) 
+  void SetDescription(const char* description)
     { m_Description=description; }
   METAIO_STL::string GetDescription() const
     {return m_Description;}
 
-  void SetAuthor(const char* author) 
+  void SetAuthor(const char* author)
     { m_Author=author; }
   METAIO_STL::string GetAuthor() const
     {return m_Author;}
@@ -206,16 +207,16 @@ public:
   long GetOptionId(Option* option);
 
   /** Return the list of options */
-  const OptionVector & GetOptions() 
+  const OptionVector & GetOptions()
     { return m_OptionVector; }
 
   /** Return the list of parse options */
-  const OptionVector & GetParsedOptions() 
+  const OptionVector & GetParsedOptions()
     { return m_ParsedOptionVector; }
 
   void SetHelpCallBack(void (* newHelpCallBack)(void))
     { m_HelpCallBack = newHelpCallBack; }
-  
+
   METAIO_STL::string TypeToString(TypeEnumType type);
   TypeEnumType StringToType(const char* type);
 

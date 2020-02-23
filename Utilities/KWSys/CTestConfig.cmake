@@ -1,6 +1,6 @@
 #=============================================================================
 # KWSys - Kitware System Library
-# Copyright 2000-2012 Kitware, Inc., Insight Software Consortium
+# Copyright 2000-2020 Kitware, Inc., NumFOCUS
 #
 # Distributed under the OSI-approved BSD License (the "License");
 # see accompanying file Copyright.txt for details.
@@ -11,7 +11,7 @@
 #=============================================================================
 set(CTEST_PROJECT_NAME "KWSys")
 set(CTEST_NIGHTLY_START_TIME "21:00:00 EDT")
-set(CTEST_DROP_METHOD "http")
+set(CTEST_DROP_METHOD "https")
 set(CTEST_DROP_SITE "open.cdash.org")
 set(CTEST_DROP_LOCATION "/submit.php?project=KWSys")
 set(CTEST_DROP_SITE_CDASH TRUE)
