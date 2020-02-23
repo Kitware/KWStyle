@@ -15,7 +15,7 @@ set(
 foreach(TestFiles ${KWStyleTests_SRCS})
   get_filename_component(TestProgram ${TestFiles} NAME_WE)
   add_test(${TestProgram} ${KWSTYLE_TESTS} ${TestProgram})
-endforeach(TestFiles)
+endforeach()
 
 set(KWStyleTests_SRCS
  ${KWStyleTests_SRCS}
@@ -34,7 +34,7 @@ macro(ADD_TEST_FROM_BUG_TRACKER BUG_NUMBER FILENAME)
   -exportxml ${KWStyle_BINARY_DIR}/${BUG_NUMBER}-output.xml
   ${KWStyle_SOURCE_DIR}/Testing/Data/${BUG_NUMBER}-${FILENAME})
 
-endmacro(ADD_TEST_FROM_BUG_TRACKER BUG_NUMBER FILENAME)
+endmacro()
 
 ADD_TEST_FROM_BUG_TRACKER(kwsTabsTest test.cxx)
 ADD_TEST_FROM_BUG_TRACKER(0001 test.cpp)

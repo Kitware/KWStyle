@@ -12,7 +12,7 @@ if(NOT KWStyle_USE_FILE_INCLUDED)
   if(KWStyle_BUILD_SETTINGS_FILE)
     include(${CMAKE_ROOT}/Modules/CMakeImportBuildSettings.cmake)
     CMAKE_IMPORT_BUILD_SETTINGS(${KWStyle_BUILD_SETTINGS_FILE})
-  endif(KWStyle_BUILD_SETTINGS_FILE)
+  endif()
 
   # Add compiler flags needed to use KWStyle.
   set(CMAKE_C_FLAGS
@@ -35,4 +35,4 @@ if(NOT KWStyle_USE_FILE_INCLUDED)
   # Add cmake module path.
   set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${KWStyle_CMAKE_DIR}")
 
-endif(NOT KWStyle_USE_FILE_INCLUDED)
+endif()
