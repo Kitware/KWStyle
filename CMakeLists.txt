@@ -37,7 +37,7 @@ enable_testing()
 include(CTest)
 
 if(BUILD_TESTING)
-  subdirs(Testing)
+  add_subdirectory(Testing)
 endif()
 
 include_directories(
@@ -92,13 +92,13 @@ kwsCheckComma.cxx
 kwsCheckParenthesis.cxx
 )
 
-subdirs(Utilities)
+add_subdirectory(Utilities)
 
 set(KWStyle_EXECUTABLE_DIRS ${EXECUTABLE_OUTPUT_PATH})
 set(KWStyle_LIBRARY_DIRS ${LIBRARY_OUTPUT_PATH})
 
 # Configure the export configuration
-subdirs(CMake/ExportConfiguration)
+add_subdirectory(CMake/ExportConfiguration)
 
 configure_file(${KWStyle_SOURCE_DIR}/KWStyleConfigure.h.in 
   ${KWStyle_BINARY_DIR}/KWStyleConfigure.h)

@@ -22,7 +22,7 @@
 #
 #  set(KWSYS_NAMESPACE foosys)
 #  set(KWSYS_USE_Directory 1)    # Enable Directory class.
-#  subdirs(kwsys)
+#  add_subdirectory(kwsys)
 #
 # Optional settings are as follows:
 #
