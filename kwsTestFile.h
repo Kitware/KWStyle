@@ -11,8 +11,8 @@
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
-#ifndef __itkXMLReader_H
-#define __itkXMLReader_H
+#ifndef kwsTestFile_h
+#define kwsTestFile_h
 
 #include "itkXMLDefs.h"
 

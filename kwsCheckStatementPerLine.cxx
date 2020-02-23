@@ -13,12 +13,15 @@
 =========================================================================*/
 #include "kwsParser.h"
 
+#include <limits>       // std::numeric_limits
+
 namespace kws {
 
 
 /** Check the number of statements per line */
 bool Parser::CheckStatementPerLine(unsigned long max,bool checkInlineFunctions)
 {
+  this->CheckLineLength(std::numeric_limits<unsigned long>::max(),false,false); // run CheckLineLength without errors to fill m_Positions
   m_TestsDone[STATEMENTPERLINE] = true;
   char* val = new char[255];
   sprintf(val,"Statements per line = %ld max",max);

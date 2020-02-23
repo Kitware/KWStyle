@@ -11,8 +11,8 @@
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
-#ifndef __kwsGenerator_h
-#define __kwsGenerator_h
+#ifndef kwsGenerator_h
+#define kwsGenerator_h
 
 #include "kwsParser.h"
 #include <iostream>

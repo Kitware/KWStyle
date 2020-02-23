@@ -1,24 +1,20 @@
-
 /*=========================================================================
-
-  Program:   Insight Segmentation & Registration Toolkit
-  Module:    kwsTestMain.h
-  Language:  C++
-  Date:      $Date$
-  Version:   $Revision$
-
-  Copyright (c) Insight Software Consortium. All rights reserved.
-  See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
-
-  Portions of this code are covered under the VTK copyright.
-  See VTKCopyright.txt or http://www.kitware.com/VTKCopyright.htm for details.
-
-     This software is distributed WITHOUT ANY WARRANTY; without even 
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
-     PURPOSE.  See the above copyright notices for more information.
-
-=========================================================================*/
-
+ *
+ *  Copyright NumFOCUS
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0.txt
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *=========================================================================*/
 // Put kwssys/Configure.h first for proper compiler warning suppression:
 #include <kwssys/Configure.h>
 
@@ -72,17 +68,17 @@ static int Compare(const char* baseline, const char* testfile)
     std::cout << "Cannot open baselineFile for reading: " << baseline << std::endl;
     return 1;
     }
- 
+
   baselineFile.seekg(0,std::ios::end);
   unsigned long fileSize = baselineFile.tellg();
   baselineFile.seekg(0,std::ios::beg);
 
   char* buf = new char[fileSize+1];
   baselineFile.read(buf,fileSize);
-  buf[fileSize] = 0; 
+  buf[fileSize] = 0;
   std::string baselineBuffer(buf);
   baselineBuffer.resize(fileSize);
-  delete [] buf; 
+  delete [] buf;
   baselineFile.close();
 
   // Load the testfile
@@ -100,10 +96,10 @@ static int Compare(const char* baseline, const char* testfile)
 
   buf = new char[fileSize+1];
   testfileFile.read(buf,fileSize);
-  buf[fileSize] = 0; 
+  buf[fileSize] = 0;
   std::string testfileBuffer(buf);
   testfileBuffer.resize(fileSize);
-  delete [] buf; 
+  delete [] buf;
   testfileFile.close();
 
   // Go through the testfile and check if we have the same errors than the
@@ -120,7 +116,7 @@ static int Compare(const char* baseline, const char* testfile)
     long int line2a = static_cast<long int>(subError.find("<SourceLineNumber2>"));
     long int line2b = static_cast<long int>(subError.find("</SourceLineNumber2>"));
     long int errorNumbera = static_cast<long int>(subError.find("<ErrorNumber>"));
-    long int errorNumberb = static_cast<long int>(subError.find("</ErrorNumber>"));   
+    long int errorNumberb = static_cast<long int>(subError.find("</ErrorNumber>"));
     unsigned int l1 = atoi(subError.substr(line1a+19,line1b-line1a-19).c_str());
     unsigned int l2 = atoi(subError.substr(line2a+19,line2b-line2a-19).c_str());
     unsigned int errorNumber = atoi(subError.substr(errorNumbera+13,errorNumberb-errorNumbera-13).c_str());
@@ -138,7 +134,7 @@ static int Compare(const char* baseline, const char* testfile)
     long int line2aBase = static_cast<long int>(subErrorBase.find("<SourceLineNumber2>"));
     long int line2bBase = static_cast<long int>(subErrorBase.find("</SourceLineNumber2>"));
     long int errorNumberaBase = static_cast<long int>(subErrorBase.find("<ErrorNumber>"));
-    long int errorNumberbBase = static_cast<long int>(subErrorBase.find("</ErrorNumber>"));   
+    long int errorNumberbBase = static_cast<long int>(subErrorBase.find("</ErrorNumber>"));
     unsigned int l1Base = atoi(subErrorBase.substr(line1aBase+19,line1bBase-line1aBase-19).c_str());
     unsigned int l2Base = atoi(subErrorBase.substr(line2aBase+19,line2bBase-line2aBase-19).c_str());
     unsigned int errorNumberBase = atoi(subErrorBase.substr(errorNumberaBase+13,errorNumberbBase-errorNumberaBase-13).c_str());
@@ -155,7 +151,7 @@ static int Compare(const char* baseline, const char* testfile)
     posError = static_cast<long int>(testfileBuffer.find("<Error>",posError+1));
     posErrorBase = static_cast<long int>(baselineBuffer.find("<Error>",posErrorBase+1));
     }
-  
+
   // Check that we don't have any other errors in the baseline
   if(posErrorBase != -1)
     {

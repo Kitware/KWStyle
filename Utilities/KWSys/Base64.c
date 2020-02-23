@@ -1,6 +1,6 @@
 /*============================================================================
   KWSys - Kitware System Library
-  Copyright 2000-2009 Kitware, Inc., Insight Software Consortium
+  Copyright 2000-2020 Kitware, Inc., NumFOCUS
 
   Distributed under the OSI-approved BSD License (the "License");
   see accompanying file Copyright.txt for details.
@@ -142,7 +142,7 @@ size_t kwsysBase64_Encode(const unsigned char *input,
     }
 
   /* Encodes a 1-byte ending into 2 bytes and 2 pad bytes */
-  
+
   else if (end - ptr == 1)
     {
     kwsysBase64_Encode1(ptr, optr);
@@ -170,35 +170,35 @@ int kwsysBase64_Decode3(const unsigned char *src, unsigned char *dest)
   d1 = kwsysBase64DecodeChar(src[1]);
   d2 = kwsysBase64DecodeChar(src[2]);
   d3 = kwsysBase64DecodeChar(src[3]);
-  
+
   /* Make sure all characters were valid */
 
   if (d0 == 0xFF || d1 == 0xFF || d2 == 0xFF || d3 == 0xFF)
-    { 
-    return 0; 
+    {
+    return 0;
     }
-  
+
   /* Decode the 3 bytes */
 
   dest[0] = (unsigned char)(((d0 << 2) & 0xFC) | ((d1 >> 4) & 0x03));
   dest[1] = (unsigned char)(((d1 << 4) & 0xF0) | ((d2 >> 2) & 0x0F));
   dest[2] = (unsigned char)(((d2 << 6) & 0xC0) | ((d3 >> 0) & 0x3F));
-  
+
   /* Return the number of bytes actually decoded */
 
-  if (src[2] == '=') 
-    { 
-    return 1; 
+  if (src[2] == '=')
+    {
+    return 1;
     }
-  if (src[3] == '=') 
-    { 
-    return 2; 
+  if (src[3] == '=')
+    {
+    return 2;
     }
   return 3;
 }
 
 /*--------------------------------------------------------------------------*/
-/* Decode bytes from the input buffer and store the decoded stream 
+/* Decode bytes from the input buffer and store the decoded stream
    into the output buffer until 'length' bytes have been decoded.  Return the
    real length of the decoded stream (which should be equal to 'length'). Note
    that the output buffer must be allocated by the caller.  If
@@ -230,8 +230,8 @@ size_t kwsysBase64_Decode(const unsigned char *input,
         }
       ptr += 4;
       }
-    } 
-  else 
+    }
+  else
     {
     unsigned char *oend = output + length;
     while ((oend - optr) >= 3)
@@ -246,7 +246,7 @@ size_t kwsysBase64_Decode(const unsigned char *input,
       }
 
     /* Decode the last triplet */
-  
+
     if (oend - optr == 2)
       {
       unsigned char temp[3];

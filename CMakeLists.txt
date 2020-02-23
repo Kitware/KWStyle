@@ -6,7 +6,7 @@ foreach(p
     CMP0054
     )
   if(POLICY ${p})
-    CMAKE_POLICY(SET ${p} NEW)
+    cmake_policy(SET ${p} NEW)
   endif()
 endforeach()
 
@@ -36,15 +36,20 @@ endif()
 enable_testing()
 include(CTest)
 
-if(BUILD_TESTING)
-  subdirs(Testing)
-endif()
-
 include_directories(
 ${CMAKE_CURRENT_BINARY_DIR}
 ${KWStyle_BINARY_DIR}/Utilities
 ${KWStyle_SOURCE_DIR}/Utilities
 )
+
+set(KWStyle_EXECUTABLE_DIRS ${EXECUTABLE_OUTPUT_PATH})
+set(KWStyle_LIBRARY_DIRS ${LIBRARY_OUTPUT_PATH})
+
+# Configure the export configuration
+add_subdirectory(CMake/ExportConfiguration)
+
+configure_file(${KWStyle_SOURCE_DIR}/KWStyleConfigure.h.in
+  ${KWStyle_BINARY_DIR}/KWStyleConfigure.h)
 
 set(KWStyle_HDRS
 kwsParser.h
@@ -92,16 +97,7 @@ kwsCheckComma.cxx
 kwsCheckParenthesis.cxx
 )
 
-subdirs(Utilities)
-
-set(KWStyle_EXECUTABLE_DIRS ${EXECUTABLE_OUTPUT_PATH})
-set(KWStyle_LIBRARY_DIRS ${LIBRARY_OUTPUT_PATH})
-
-# Configure the export configuration
-subdirs(CMake/ExportConfiguration)
-
-configure_file(${KWStyle_SOURCE_DIR}/KWStyleConfigure.h.in 
-  ${KWStyle_BINARY_DIR}/KWStyleConfigure.h)
+add_subdirectory(Utilities)
 
 add_library(KWStyleLib ${KWStyle_SRCS} ${KWStyle_HDRS})
 add_executable(KWStyle kwsStyle.cxx)
@@ -114,6 +110,10 @@ add_custom_command(
    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:KWStyle>
      ${KWStyle_BINARY_DIR}/$<TARGET_FILE_NAME:KWStyle>
  )
+
+if(BUILD_TESTING)
+  add_subdirectory(Testing)
+endif()
 
 # Installation file
 install(TARGETS KWStyle

@@ -1,10 +1,10 @@
-SET (CTEST_SOURCE_DIRECTORY "/home/kitware/Dashboards/KWStyleBuilds/IGSTK")
-SET (CTEST_BINARY_DIRECTORY "/home/kitware/Dashboards/KWStyleBuilds/IGSTK-KWStyle")
+set (CTEST_SOURCE_DIRECTORY "/home/kitware/Dashboards/KWStyleBuilds/IGSTK")
+set (CTEST_BINARY_DIRECTORY "/home/kitware/Dashboards/KWStyleBuilds/IGSTK-KWStyle")
 
-SET (KWSTYLE_DIRECTORY "${CTEST_SOURCE_DIRECTORY}/Utilities/KWStyle")
+set (KWSTYLE_DIRECTORY "${CTEST_SOURCE_DIRECTORY}/Utilities/KWStyle")
 
 # which ctest command to use for running the dashboard
-SET (CTEST_COMMAND  
+set (CTEST_COMMAND  
 "/home/kitware/Dashboards/cmake-2.8.0-rc5/bin/ctest -D NightlyStart"
 "/home/kitware/Dashboards/cmake-2.8.0-rc5/bin/ctest -D NightlyUpdate"
 "/home/kitware/Dashboards/cmake-2.8.0-rc5/bin/ctest -D NightlyConfigure"
@@ -13,7 +13,7 @@ SET (CTEST_COMMAND
 )
 
 
-SET (CTEST_INITIAL_CACHE 
+set (CTEST_INITIAL_CACHE 
 "CMAKE_GENERATOR:INTERNAL=Unix Makefiles
 SITE:STRING=dash21.kitware
 BUILDNAME:STRING=KWStyle
