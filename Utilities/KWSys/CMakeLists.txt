@@ -77,10 +77,10 @@
 
 cmake_minimum_required(VERSION 2.6.3 FATAL_ERROR)
 if(POLICY CMP0025)
-  CMAKE_POLICY(SET CMP0025 NEW)
+  cmake_policy(SET CMP0025 NEW)
 endif()
 if(POLICY CMP0056)
-  CMAKE_POLICY(SET CMP0056 NEW)
+  cmake_policy(SET CMP0056 NEW)
 endif()
 set(CMAKE_LEGACY_CYGWIN_WIN32 0)
 
@@ -95,10 +95,10 @@ endif()
 
 #-----------------------------------------------------------------------------
 # The project name is that of the specified namespace.
-PROJECT(${KWSYS_NAMESPACE})
+project(${KWSYS_NAMESPACE})
 
 # Tell CMake how to follow dependencies of sources in this directory.
-SET_PROPERTY(DIRECTORY
+set_property(DIRECTORY
   PROPERTY IMPLICIT_DEPENDS_INCLUDE_TRANSFORM
   "KWSYS_HEADER(%)=<${KWSYS_NAMESPACE}/%>"
   )
@@ -446,7 +446,7 @@ if(KWSYS_USE_SystemTools)
     "Checking whether CXX compiler struct stat has st_mtim member" DIRECT)
   KWSYS_PLATFORM_CXX_TEST(KWSYS_CXX_STAT_HAS_ST_MTIMESPEC
     "Checking whether CXX compiler struct stat has st_mtimespec member" DIRECT)
-  SET_PROPERTY(SOURCE SystemTools.cxx APPEND PROPERTY COMPILE_DEFINITIONS
+  set_property(SOURCE SystemTools.cxx APPEND PROPERTY COMPILE_DEFINITIONS
     KWSYS_CXX_HAS_SETENV=${KWSYS_CXX_HAS_SETENV}
     KWSYS_CXX_HAS_UNSETENV=${KWSYS_CXX_HAS_UNSETENV}
     KWSYS_CXX_HAS_ENVIRON_IN_STDLIB_H=${KWSYS_CXX_HAS_ENVIRON_IN_STDLIB_H}
@@ -458,13 +458,13 @@ if(KWSYS_USE_SystemTools)
 endif()
 
 if(KWSYS_USE_SystemInformation)
-  SET_PROPERTY(SOURCE SystemInformation.cxx APPEND PROPERTY
+  set_property(SOURCE SystemInformation.cxx APPEND PROPERTY
     COMPILE_DEFINITIONS SIZEOF_VOID_P=${CMAKE_SIZEOF_VOID_P})
   if(NOT CYGWIN)
     include(CheckIncludeFiles)
     CHECK_INCLUDE_FILES("sys/types.h;ifaddrs.h" KWSYS_SYS_HAS_IFADDRS_H)
     if(KWSYS_SYS_HAS_IFADDRS_H)
-      SET_PROPERTY(SOURCE SystemInformation.cxx APPEND PROPERTY
+      set_property(SOURCE SystemInformation.cxx APPEND PROPERTY
         COMPILE_DEFINITIONS KWSYS_SYS_HAS_IFADDRS_H=1)
     endif()
   endif()
@@ -474,7 +474,7 @@ if(KWSYS_USE_SystemInformation)
     CHECK_SYMBOL_EXISTS(GetProcessMemoryInfo "windows.h;psapi.h" KWSYS_SYS_HAS_PSAPI)
     UNset(CMAKE_REQUIRED_LIBRARIES)
     if(KWSYS_SYS_HAS_PSAPI)
-      SET_PROPERTY(SOURCE SystemInformation.cxx APPEND PROPERTY
+      set_property(SOURCE SystemInformation.cxx APPEND PROPERTY
         COMPILE_DEFINITIONS KWSYS_SYS_HAS_PSAPI=1)
       if(MSVC70 OR MSVC71)
         # Suppress LNK4089: all references to 'PSAPI.DLL' discarded by /OPT:REF
@@ -485,14 +485,14 @@ if(KWSYS_USE_SystemInformation)
   if(CMAKE_SYSTEM MATCHES "HP-UX")
     CHECK_INCLUDE_FILES("sys/mpctl.h" KWSYS_SYS_HAS_MPCTL_H)
     if(KWSYS_SYS_HAS_MPCTL_H)
-      SET_PROPERTY(SOURCE SystemInformation.cxx APPEND PROPERTY
+      set_property(SOURCE SystemInformation.cxx APPEND PROPERTY
         COMPILE_DEFINITIONS KWSYS_SYS_HAS_MPCTL_H=1)
     endif()
   endif()
   if(CMAKE_SYSTEM MATCHES "BSD")
     CHECK_INCLUDE_FILES("machine/cpu.h" KWSYS_SYS_HAS_MACHINE_CPU_H)
     if(KWSYS_SYS_HAS_MACHINE_CPU_H)
-      SET_PROPERTY(SOURCE SystemInformation.cxx APPEND PROPERTY
+      set_property(SOURCE SystemInformation.cxx APPEND PROPERTY
         COMPILE_DEFINITIONS KWSYS_SYS_HAS_MACHINE_CPU_H=1)
     endif()
   endif()
@@ -503,25 +503,25 @@ if(KWSYS_USE_SystemInformation)
     "Checking whether CXX compiler has rlimit64" DIRECT)
   set(KWSYS_PLATFORM_CXX_TEST_DEFINES)
   if(KWSYS_CXX_HAS_RLIMIT64)
-    SET_PROPERTY(SOURCE SystemInformation.cxx APPEND PROPERTY
+    set_property(SOURCE SystemInformation.cxx APPEND PROPERTY
       COMPILE_DEFINITIONS KWSYS_CXX_HAS_RLIMIT64=1)
   endif()
   KWSYS_PLATFORM_CXX_TEST(KWSYS_CXX_HAS_ATOL
     "Checking whether CXX compiler has atol" DIRECT)
   if(KWSYS_CXX_HAS_ATOL)
-    SET_PROPERTY(SOURCE SystemInformation.cxx APPEND PROPERTY
+    set_property(SOURCE SystemInformation.cxx APPEND PROPERTY
       COMPILE_DEFINITIONS KWSYS_CXX_HAS_ATOL=1)
   endif()
   KWSYS_PLATFORM_CXX_TEST(KWSYS_CXX_HAS_ATOLL
     "Checking whether CXX compiler has atoll" DIRECT)
   if(KWSYS_CXX_HAS_ATOLL)
-    SET_PROPERTY(SOURCE SystemInformation.cxx APPEND PROPERTY
+    set_property(SOURCE SystemInformation.cxx APPEND PROPERTY
       COMPILE_DEFINITIONS KWSYS_CXX_HAS_ATOLL=1)
   endif()
   KWSYS_PLATFORM_CXX_TEST(KWSYS_CXX_HAS__ATOI64
     "Checking whether CXX compiler has _atoi64" DIRECT)
   if(KWSYS_CXX_HAS__ATOI64)
-    SET_PROPERTY(SOURCE SystemInformation.cxx APPEND PROPERTY
+    set_property(SOURCE SystemInformation.cxx APPEND PROPERTY
       COMPILE_DEFINITIONS KWSYS_CXX_HAS__ATOI64=1)
   endif()
   if(UNIX)
@@ -529,60 +529,60 @@ if(KWSYS_USE_SystemInformation)
     # check for simple stack trace
     # usually it's in libc but on FreeBSD
     # it's in libexecinfo
-    FIND_LIBRARY(EXECINFO_LIB "execinfo")
+    find_library(EXECINFO_LIB "execinfo")
     mark_as_advanced(EXECINFO_LIB)
-    IF (NOT EXECINFO_LIB)
+    if (NOT EXECINFO_LIB)
       set(EXECINFO_LIB "")
     endif()
     CHECK_INCLUDE_FILE_CXX("execinfo.h" KWSYS_CXX_HAS_EXECINFOH)
-    IF (KWSYS_CXX_HAS_EXECINFOH)
+    if (KWSYS_CXX_HAS_EXECINFOH)
       # we have the backtrace header check if it
       # can be used  with this compiler
       set(KWSYS_PLATFORM_CXX_TEST_LINK_LIBRARIES ${EXECINFO_LIB})
       KWSYS_PLATFORM_CXX_TEST(KWSYS_CXX_HAS_BACKTRACE
          "Checking whether backtrace works with this C++ compiler" DIRECT)
       set(KWSYS_PLATFORM_CXX_TEST_LINK_LIBRARIES)
-      IF (KWSYS_CXX_HAS_BACKTRACE)
+      if (KWSYS_CXX_HAS_BACKTRACE)
         # backtrace is supported by this system and compiler.
         # now check for the more advanced capabilities.
-        SET_PROPERTY(SOURCE SystemInformation.cxx APPEND PROPERTY
+        set_property(SOURCE SystemInformation.cxx APPEND PROPERTY
           COMPILE_DEFINITIONS KWSYS_SYSTEMINFORMATION_HAS_BACKTRACE=1)
         # check for symbol lookup using dladdr
         CHECK_INCLUDE_FILE_CXX("dlfcn.h" KWSYS_CXX_HAS_DLFCNH)
-        IF (KWSYS_CXX_HAS_DLFCNH)
+        if (KWSYS_CXX_HAS_DLFCNH)
           # we have symbol lookup libraries and headers
           # check if they can be used with this compiler
           set(KWSYS_PLATFORM_CXX_TEST_LINK_LIBRARIES ${CMAKE_DL_LIBS})
             KWSYS_PLATFORM_CXX_TEST(KWSYS_CXX_HAS_DLADDR
             "Checking whether dladdr works with this C++ compiler" DIRECT)
           set(KWSYS_PLATFORM_CXX_TEST_LINK_LIBRARIES)
-          IF (KWSYS_CXX_HAS_DLADDR)
+          if (KWSYS_CXX_HAS_DLADDR)
             # symbol lookup is supported by this system
             # and compiler.
-            SET_PROPERTY(SOURCE SystemInformation.cxx APPEND PROPERTY
+            set_property(SOURCE SystemInformation.cxx APPEND PROPERTY
               COMPILE_DEFINITIONS KWSYS_SYSTEMINFORMATION_HAS_SYMBOL_LOOKUP=1)
           endif()
         endif()
         # c++ demangling support
         # check for cxxabi headers
         CHECK_INCLUDE_FILE_CXX("cxxabi.h" KWSYS_CXX_HAS_CXXABIH)
-        IF (KWSYS_CXX_HAS_CXXABIH)
+        if (KWSYS_CXX_HAS_CXXABIH)
           # check if cxxabi can be used with this
           # system and compiler.
           KWSYS_PLATFORM_CXX_TEST(KWSYS_CXX_HAS_CXXABI
             "Checking whether cxxabi works with this C++ compiler" DIRECT)
-          IF (KWSYS_CXX_HAS_CXXABI)
+          if (KWSYS_CXX_HAS_CXXABI)
             # c++ demangle using cxxabi is supported with
             # this system and compiler
-            SET_PROPERTY(SOURCE SystemInformation.cxx APPEND PROPERTY
+            set_property(SOURCE SystemInformation.cxx APPEND PROPERTY
               COMPILE_DEFINITIONS KWSYS_SYSTEMINFORMATION_HAS_CPP_DEMANGLE=1)
           endif()
         endif()
         # basic backtrace works better with release build
         # don't bother with advanced features for release
-        SET_PROPERTY(SOURCE SystemInformation.cxx APPEND PROPERTY
+        set_property(SOURCE SystemInformation.cxx APPEND PROPERTY
           COMPILE_DEFINITIONS_DEBUG KWSYS_SYSTEMINFORMATION_HAS_DEBUG_BUILD=1)
-        SET_PROPERTY(SOURCE SystemInformation.cxx APPEND PROPERTY
+        set_property(SOURCE SystemInformation.cxx APPEND PROPERTY
           COMPILE_DEFINITIONS_RELWITHDEBINFO KWSYS_SYSTEMINFORMATION_HAS_DEBUG_BUILD=1)
       endif()
     endif()
@@ -591,34 +591,34 @@ if(KWSYS_USE_SystemInformation)
     KWSYS_PLATFORM_CXX_TEST(KWSYS_CXX_HAS_BORLAND_ASM
       "Checking whether Borland CXX compiler supports assembler instructions" DIRECT)
     if(KWSYS_CXX_HAS_BORLAND_ASM)
-      SET_PROPERTY(SOURCE SystemInformation.cxx APPEND PROPERTY
+      set_property(SOURCE SystemInformation.cxx APPEND PROPERTY
         COMPILE_DEFINITIONS KWSYS_CXX_HAS_BORLAND_ASM=1)
       KWSYS_PLATFORM_CXX_TEST(KWSYS_CXX_HAS_BORLAND_ASM_CPUID
         "Checking whether Borland CXX compiler supports CPUID assembler instruction" DIRECT)
       if(KWSYS_CXX_HAS_BORLAND_ASM_CPUID)
-        SET_PROPERTY(SOURCE SystemInformation.cxx APPEND PROPERTY
+        set_property(SOURCE SystemInformation.cxx APPEND PROPERTY
           COMPILE_DEFINITIONS KWSYS_CXX_HAS_BORLAND_ASM_CPUID=1)
       endif()
     endif()
   endif()
   if(KWSYS_USE___INT64)
-    SET_PROPERTY(SOURCE SystemInformation.cxx testSystemInformation.cxx APPEND PROPERTY
+    set_property(SOURCE SystemInformation.cxx testSystemInformation.cxx APPEND PROPERTY
       COMPILE_DEFINITIONS KWSYS_USE___INT64=1)
   endif()
   if(KWSYS_USE_LONG_LONG)
-    SET_PROPERTY(SOURCE SystemInformation.cxx testSystemInformation.cxx APPEND PROPERTY
+    set_property(SOURCE SystemInformation.cxx testSystemInformation.cxx APPEND PROPERTY
       COMPILE_DEFINITIONS KWSYS_USE_LONG_LONG=1)
   endif()
   if(KWSYS_IOS_HAS_OSTREAM_LONG_LONG)
-    SET_PROPERTY(SOURCE SystemInformation.cxx testSystemInformation.cxx APPEND PROPERTY
+    set_property(SOURCE SystemInformation.cxx testSystemInformation.cxx APPEND PROPERTY
       COMPILE_DEFINITIONS KWSYS_IOS_HAS_OSTREAM_LONG_LONG=1)
   endif()
   if(KWSYS_IOS_HAS_OSTREAM___INT64)
-    SET_PROPERTY(SOURCE SystemInformation.cxx testSystemInformation.cxx APPEND PROPERTY
+    set_property(SOURCE SystemInformation.cxx testSystemInformation.cxx APPEND PROPERTY
       COMPILE_DEFINITIONS KWSYS_IOS_HAS_OSTREAM___INT64=1)
   endif()
   if(KWSYS_BUILD_SHARED)
-    SET_PROPERTY(SOURCE SystemInformation.cxx APPEND PROPERTY
+    set_property(SOURCE SystemInformation.cxx APPEND PROPERTY
       COMPILE_DEFINITIONS KWSYS_BUILD_SHARED=1)
   endif()
 
@@ -626,7 +626,7 @@ if(KWSYS_USE_SystemInformation)
     KWSYS_PLATFORM_CXX_TEST(KWSYS_CXX_HAS_GETLOADAVG
       "Checking whether CXX compiler has getloadavg" DIRECT)
     if(KWSYS_CXX_HAS_GETLOADAVG)
-      SET_PROPERTY(SOURCE SystemInformation.cxx APPEND PROPERTY
+      set_property(SOURCE SystemInformation.cxx APPEND PROPERTY
         COMPILE_DEFINITIONS KWSYS_CXX_HAS_GETLOADAVG=1)
     endif()
   endif()
@@ -797,11 +797,11 @@ if(KWSYS_C_SRCS OR KWSYS_CXX_SRCS)
         target_link_libraries(${KWSYS_NAMESPACE} Psapi)
       endif()
     elseif(UNIX)
-      IF (EXECINFO_LIB AND KWSYS_CXX_HAS_BACKTRACE)
+      if (EXECINFO_LIB AND KWSYS_CXX_HAS_BACKTRACE)
         # backtrace on FreeBSD is not in libc
         target_link_libraries(${KWSYS_NAMESPACE} ${EXECINFO_LIB})
       endif()
-      IF (KWSYS_CXX_HAS_DLADDR)
+      if (KWSYS_CXX_HAS_DLADDR)
         # for symbol lookup using dladdr
         target_link_libraries(${KWSYS_NAMESPACE} ${CMAKE_DL_LIBS})
       endif()
@@ -888,7 +888,7 @@ if(KWSYS_STANDALONE OR CMake_SOURCE_DIR)
     if(KWSYS_STANDALONE)
       set(KWSYS_C_TESTS ${KWSYS_C_TESTS} testFail)
     endif()
-    CREATE_TEST_SOURCELIST(
+    create_test_sourcelist(
       KWSYS_C_TEST_SRCS ${KWSYS_NAMESPACE}TestsC.c
       ${KWSYS_C_TESTS}
       )

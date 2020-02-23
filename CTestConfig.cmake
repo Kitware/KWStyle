@@ -2,8 +2,8 @@
 ## Then modify the CMakeLists.txt file in the root directory of your
 ## project to incorporate the testing dashboard.
 ## # The following are required to uses Dart and the Cdash dashboard
-##   ENABLE_TESTING()
-##   INCLUDE(Dart)
+##   enable_testing()
+##   include(Dart)
 set(CTEST_PROJECT_NAME "KWStyle")
 set(CTEST_NIGHTLY_START_TIME "21:00:00 EST")
 

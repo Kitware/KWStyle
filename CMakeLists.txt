@@ -6,7 +6,7 @@ foreach(p
     CMP0054
     )
   if(POLICY ${p})
-    CMAKE_POLICY(SET ${p} NEW)
+    cmake_policy(SET ${p} NEW)
   endif()
 endforeach()
 
