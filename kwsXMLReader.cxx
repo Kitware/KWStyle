@@ -21,10 +21,7 @@ XMLReader::XMLReader()
   m_CurrentPos = 0;
 }
 
-
-XMLReader::~XMLReader()
-{
-}
+XMLReader::~XMLReader() = default;
 
 bool XMLReader::Open(const char* filename)
 {

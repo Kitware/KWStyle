@@ -48,9 +48,7 @@ Generator::Generator()
 }
 
 /** Destructor */
-Generator::~Generator()
-{
-}
+Generator::~Generator() = default;
 
 /** Read the configuration file */
 void Generator::ReadConfigurationFile(const char* configFile)
