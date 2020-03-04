@@ -83,10 +83,9 @@ public:
   void ExportHTML(std::ostream & output);
 
   /** Generate dart files */
-  bool GenerateDart(const char* dir,int maxerror = -1,
-                    bool group = false,std::string url="",
-                    double time=0,
-                    std::string baseDirectory="");
+  bool GenerateDart(const char *dir, int maxError = -1, bool group = false,
+                    std::string url = "", double time = 0,
+                    std::string basedirectory = "");
 
   /** Generate a simple XML report of the errors */
   bool ExportXML(const char* filename);
