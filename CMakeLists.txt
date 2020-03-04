@@ -13,16 +13,27 @@ project(KWStyle
    DESCRIPTION "Kitware Style Checker"
    LANGUAGES C CXX
 )
-# Output directories
-if(NOT LIBRARY_OUTPUT_PATH)
-  set(LIBRARY_OUTPUT_PATH ${KWStyle_BINARY_DIR}/bin CACHE INTERNAL "Single output directory for building all libraries.")
-endif()
-if(NOT EXECUTABLE_OUTPUT_PATH)
-  set(EXECUTABLE_OUTPUT_PATH ${KWStyle_BINARY_DIR}/bin CACHE INTERNAL "Single output directory for building all executables.")
-endif()
-mark_as_advanced(LIBRARY_OUTPUT_PATH EXECUTABLE_OUTPUT_PATH)
 
-set(CXX_TEST_PATH ${EXECUTABLE_OUTPUT_PATH})
+
+#-----------------------------------------------------------------------------
+if(NOT COMMAND SETIFEMPTY)
+  macro(SETIFEMPTY)
+    set(KEY ${ARGV0})
+    set(VALUE ${ARGV1})
+    if(NOT ${KEY})
+      set(${ARGV})
+    endif()
+  endmacro()
+endif()
+
+#-----------------------------------------------------------------------------
+SETIFEMPTY(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${KWStyle_BINARY_DIR}/bin)
+SETIFEMPTY(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${KWStyle_BINARY_DIR}/bin)
+SETIFEMPTY(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${KWStyle_BINARY_DIR}/bin)
+SETIFEMPTY(CMAKE_BUNDLE_OUTPUT_DIRECTORY  ${KWStyle_BINARY_DIR}/bin)
+file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+
+set(CXX_TEST_PATH ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
 # Disable MSVC 8 warnings
 if(WIN32)
@@ -39,8 +50,8 @@ ${KWStyle_BINARY_DIR}/Utilities
 ${KWStyle_SOURCE_DIR}/Utilities
 )
 
-set(KWStyle_EXECUTABLE_DIRS ${EXECUTABLE_OUTPUT_PATH})
-set(KWStyle_LIBRARY_DIRS ${LIBRARY_OUTPUT_PATH})
+set(KWStyle_EXECUTABLE_DIRS ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+set(KWStyle_LIBRARY_DIRS ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 
 # Configure the export configuration
 add_subdirectory(CMake/ExportConfiguration)
