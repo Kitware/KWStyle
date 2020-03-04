@@ -557,40 +557,34 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
     file << "<table width=\"100%\" border=\"0\" height=\"1\">" << std::endl;
 
    // To speedup the process we list the lines that have errors
-   typedef std::pair<int,std::vector<int> > ErrorLineType;
-   std::vector<ErrorLineType> errorLines;
+    using ErrorLineType = std::pair<int, std::vector<int>>;
+    std::vector<ErrorLineType> errorLines;
 
-   const Parser::ErrorVectorType errors = (*it).GetErrors();
-   Parser::ErrorVectorType::const_iterator itError = errors.begin();
-   while(itError != errors.end())
-     {
-     for(unsigned int index=(*itError).line;index<=(*itError).line2;index++)
-       {
-       ErrorLineType errLine;
-       errLine.first = index;
+    const Parser::ErrorVectorType errors = (*it).GetErrors();
+    Parser::ErrorVectorType::const_iterator itError = errors.begin();
+    while (itError != errors.end()) {
+      for (unsigned int index = (*itError).line; index <= (*itError).line2;
+           index++) {
+        ErrorLineType errLine;
+        errLine.first = index;
 
-       // Check if the line already exists
-       std::vector<ErrorLineType>::iterator errorLineIt = errorLines.begin();
-       while(errorLineIt != errorLines.end())
-         {
-         if((*errorLineIt).first == static_cast<int>(index))
-           {
-           break;
-           }
-         errorLineIt++;
-         }
+        // Check if the line already exists
+        std::vector<ErrorLineType>::iterator errorLineIt = errorLines.begin();
+        while (errorLineIt != errorLines.end()) {
+          if ((*errorLineIt).first == static_cast<int>(index)) {
+            break;
+          }
+          errorLineIt++;
+        }
 
-       if(errorLineIt != errorLines.end())
-         {
-         (*errorLineIt).second.push_back((*itError).number);
-         }
-       else
-         {
-         errLine.second.push_back((*itError).number);
-         errorLines.push_back(errLine);
-         }
-       }
-     itError++;
+        if (errorLineIt != errorLines.end()) {
+          (*errorLineIt).second.push_back((*itError).number);
+        } else {
+          errLine.second.push_back((*itError).number);
+          errorLines.push_back(errLine);
+        }
+      }
+      itError++;
      }
 
     bool comment = false;

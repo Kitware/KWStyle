@@ -64,7 +64,7 @@ bool Parser::CheckVariables(const char* regEx)
   buffer = this->RemoveComments(buffer.c_str());
   
   // Construct the list of variables to check
-  typedef std::pair<std::string,long int> PairType;
+  using PairType = std::pair<std::string, long>;
   std::vector<PairType> ivars;
   size_t pos = 0;
   while(pos != std::string::npos)
