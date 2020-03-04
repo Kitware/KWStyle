@@ -27,7 +27,7 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
   delete [] val;
 
   bool hasError = false;
-  long int posSemicolon = static_cast<long int>(m_BufferNoComment.find(";",0));
+  auto posSemicolon = static_cast<long int>(m_BufferNoComment.find(";", 0));
   while(posSemicolon != -1)
     {
     // We try to find the word before that

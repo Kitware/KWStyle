@@ -43,8 +43,8 @@ bool Parser::CheckNameOfClass(const char* name,const char* prefix)
       return false;
     }
 
-    long int point = static_cast<long int>(m_Filename.find_last_of("."));
-    long int slash = static_cast<long int>(m_Filename.find_last_of("/"));
+    auto point = static_cast<long int>(m_Filename.find_last_of("."));
+    auto slash = static_cast<long int>(m_Filename.find_last_of("/"));
 
     if(slash == -1)
       {
@@ -56,7 +56,7 @@ bool Parser::CheckNameOfClass(const char* name,const char* prefix)
 
     // construct the string
     std::string toMatch = name;
-    long int p = static_cast<long int>(toMatch.find("[NameOfClass]"));
+    auto p = static_cast<long int>(toMatch.find("[NameOfClass]"));
     if(p != -1)
       {
       toMatch.replace(p,13,nameofclass);

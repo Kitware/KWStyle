@@ -303,13 +303,12 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
       localfilename = localfilename.substr(pos+2,localfilename.size()-pos-2);
       }
 
-    long int slash = static_cast<long int>(localfilename.find_last_of("/"));
-    unsigned int index=0;
-    while(slash != -1 && index<m_MaxDirectoryDepth)
-      {
-      localfilename.replace(slash,1,"_");
-      slash = static_cast<long int>(localfilename.find_last_of("/"));
-      index++;
+      auto slash = static_cast<long int>(localfilename.find_last_of("/"));
+      unsigned int index = 0;
+      while (slash != -1 && index < m_MaxDirectoryDepth) {
+        localfilename.replace(slash, 1, "_");
+        slash = static_cast<long int>(localfilename.find_last_of("/"));
+        index++;
       }
     slash = static_cast<long int>(localfilename.find_last_of("/"));
     if(slash != -1)
@@ -526,13 +525,12 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
       filename2 = filename2.substr(pos+2,filename2.size()-pos-2);
       }
 
-    long int slash = static_cast<long int>(filename2.find_last_of("/"));
-    unsigned int i = 0;
-    while(slash != -1 && i<m_MaxDirectoryDepth)
-      {
-      filename2.replace(slash,1,"_");
-      slash = static_cast<long int>(filename2.find_last_of("/"));
-      i++;
+      auto slash = static_cast<long int>(filename2.find_last_of("/"));
+      unsigned int i = 0;
+      while (slash != -1 && i < m_MaxDirectoryDepth) {
+        filename2.replace(slash, 1, "_");
+        slash = static_cast<long int>(filename2.find_last_of("/"));
+        i++;
       }
     slash = static_cast<long int>(filename2.find_last_of("/"));
     if(slash != -1)
@@ -559,7 +557,7 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
     std::vector<ErrorLineType> errorLines;
 
     const Parser::ErrorVectorType errors = (*it).GetErrors();
-    Parser::ErrorVectorType::const_iterator itError = errors.begin();
+    auto itError = errors.begin();
     while (itError != errors.end()) {
       for (unsigned int index = (*itError).line; index <= (*itError).line2;
            index++) {
@@ -567,7 +565,7 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
         errLine.first = index;
 
         // Check if the line already exists
-        std::vector<ErrorLineType>::iterator errorLineIt = errorLines.begin();
+        auto errorLineIt = errorLines.begin();
         while (errorLineIt != errorLines.end()) {
           if ((*errorLineIt).first == static_cast<int>(index)) {
             break;
@@ -598,7 +596,7 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
         {
         if((*errorLineIt).first == static_cast<int>(i+1))
           {
-          std::vector<int>::const_iterator err = (*errorLineIt).second.begin();
+          auto err = (*errorLineIt).second.begin();
           while(err != (*errorLineIt).second.end())
             {
             error = *err;
@@ -658,33 +656,29 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
         }
 
       // Remove the first \n
-      long int p = static_cast<long int>(l.find('\n'));
-      if(p != -1)
-        {
-        l.replace(p,1,"");
+        auto p = static_cast<long int>(l.find('\n'));
+        if (p != -1) {
+          l.replace(p, 1, "");
         }
 
       // Replace < and >
-      long int inf = static_cast<long int>(l.find("<",0));
-      while(inf != -1)
-        {
-        l.replace(inf,1,"&lt;");
-        inf = static_cast<long int>(l.find("<",0));
+        auto inf = static_cast<long int>(l.find("<", 0));
+        while (inf != -1) {
+          l.replace(inf, 1, "&lt;");
+          inf = static_cast<long int>(l.find("<", 0));
         }
 
-      long int sup = static_cast<long int>(l.find(">",0));
-      while(sup != -1)
-        {
-        l.replace(sup,1,"&gt;");
-        sup = static_cast<long int>(l.find(">",0));
+        auto sup = static_cast<long int>(l.find(">", 0));
+        while (sup != -1) {
+          l.replace(sup, 1, "&gt;");
+          sup = static_cast<long int>(l.find(">", 0));
         }
 
       // Replace the space by &nbsp;
-      long int space = static_cast<long int>(l.find(' ',0));
-      while(space != -1)
-        {
-        l.replace(space,1,"&nbsp;");
-        space = static_cast<long int>(l.find(' ',space+1));
+        auto space = static_cast<long int>(l.find(' ', 0));
+        while (space != -1) {
+          l.replace(space, 1, "&nbsp;");
+          space = static_cast<long int>(l.find(' ', space + 1));
         }
 
       // Show the comments in green
@@ -761,7 +755,7 @@ bool Generator::CreateHeader(std::ostream * file,const char* title)
 
  // remove the last extension
  std::string tit = title;
- long int pos = static_cast<long int>(tit.find_last_of("."));
+ auto pos = static_cast<long int>(tit.find_last_of("."));
  if(pos!=-1)
    {
    tit = tit.substr(0,pos);
@@ -854,7 +848,7 @@ void Generator::ExportHTML(std::ostream & output)
       std::string errorTag = "";
 
       const Parser::ErrorVectorType errors = (*it).GetErrors();
-      Parser::ErrorVectorType::const_iterator itError = errors.begin();
+      auto itError = errors.begin();
       while(itError != errors.end())
         {
         if( ((i+1>=(*itError).line) && (i+1<=(*itError).line2))
@@ -903,33 +897,29 @@ void Generator::ExportHTML(std::ostream & output)
         }
 
       // Remove the first \n
-      long int p = static_cast<long int>(l.find('\n'));
-      if(p != -1)
-        {
-        l.replace(p,1,"");
+        auto p = static_cast<long int>(l.find('\n'));
+        if (p != -1) {
+          l.replace(p, 1, "");
         }
 
       // Replace < and >
-      long int inf = static_cast<long int>(l.find("<",0));
-      while(inf != -1)
-        {
-        l.replace(inf,1,"&lt;");
-        inf = static_cast<long int>(l.find("<",0));
+        auto inf = static_cast<long int>(l.find("<", 0));
+        while (inf != -1) {
+          l.replace(inf, 1, "&lt;");
+          inf = static_cast<long int>(l.find("<", 0));
         }
 
-      long int sup = static_cast<long int>(l.find(">",0));
-      while(sup != -1)
-        {
-        l.replace(sup,1,"&gt;");
-        sup = static_cast<long int>(l.find(">",0));
+        auto sup = static_cast<long int>(l.find(">", 0));
+        while (sup != -1) {
+          l.replace(sup, 1, "&gt;");
+          sup = static_cast<long int>(l.find(">", 0));
         }
 
       // Replace the space by &nbsp;
-      long int space = static_cast<long int>(l.find(' ',0));
-      while(space != -1)
-        {
-        l.replace(space,1,"&nbsp;");
-        space = static_cast<long int>(l.find(' ',space+1));
+        auto space = static_cast<long int>(l.find(' ', 0));
+        while (space != -1) {
+          l.replace(space, 1, "&nbsp;");
+          space = static_cast<long int>(l.find(' ', space + 1));
         }
 
       // Show the comments in green
@@ -1080,7 +1070,7 @@ bool Generator::GenerateDart(const char* dir,int maxError,
 
     bool first = true;
     const Parser::ErrorVectorType errors = (*it).GetErrors();
-    Parser::ErrorVectorType::const_iterator itError = errors.begin();
+    auto itError = errors.begin();
     while(itError != errors.end())
       {
       if((!group) || (first && group))
@@ -1127,13 +1117,12 @@ bool Generator::GenerateDart(const char* dir,int maxError,
             htmlfile = htmlfile.substr(pos+2,htmlfile.size()-pos-2);
             }
 
-          long int slash = static_cast<long int>(htmlfile.find_last_of("/"));
-          unsigned int i = 0;
-          while(slash != -1 && i<m_MaxDirectoryDepth)
-            {
-            htmlfile.replace(slash,1,"_");
-            slash = static_cast<long int>(htmlfile.find_last_of("/"));
-            i++;
+            auto slash = static_cast<long int>(htmlfile.find_last_of("/"));
+            unsigned int i = 0;
+            while (slash != -1 && i < m_MaxDirectoryDepth) {
+              htmlfile.replace(slash, 1, "_");
+              slash = static_cast<long int>(htmlfile.find_last_of("/"));
+              i++;
             }
           slash = static_cast<long int>(htmlfile.find_last_of("/"));
           if(slash != -1)
@@ -1154,7 +1143,7 @@ bool Generator::GenerateDart(const char* dir,int maxError,
       file << (*it).GetErrorTag((*itError).number);
       file << " : ";
       std::string desc = (*itError).description;
-      long int pos = static_cast<long int>(desc.find("&",0));
+      auto pos = static_cast<long int>(desc.find("&", 0));
       while(pos != -1)
         {
         desc.replace(pos,1,"&amp;");
@@ -1261,7 +1250,7 @@ bool Generator::ExportXML(const char* filename)
   while(it != m_Parsers->end())
     {
     const Parser::ErrorVectorType errors = (*it).GetErrors();
-    Parser::ErrorVectorType::const_iterator itError = errors.begin();
+    auto itError = errors.begin();
     while(itError != errors.end())
       {
       file << "<Error>" << std::endl;

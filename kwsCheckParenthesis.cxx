@@ -35,7 +35,7 @@ bool Parser::CheckParenthesis( unsigned int space )
     {
     // Check number of space after
     unsigned int aft = 0;
-    long int i = static_cast<long int>( operatorPos+1 );
+    auto i = static_cast<long int>(operatorPos + 1);
     while( i<(long int)m_BufferNoComment.size()
            && m_BufferNoComment[i] == ' ' )
       {
@@ -90,7 +90,7 @@ bool Parser::CheckParenthesis( unsigned int space )
     {
     // Check number of space before
     unsigned int bfr = 0;
-    long int i = static_cast<long int>( operatorPos );
+    auto i = static_cast<long int>(operatorPos);
     while( i>0 && m_BufferNoComment[i-1] == ' ' )
       {
       ++bfr;

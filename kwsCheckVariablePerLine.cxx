@@ -44,7 +44,7 @@ bool Parser::CheckVariablePerLine(unsigned long max)
       {
       // Check that this is the first word
       bool firstWord = false;
-      long int pos=static_cast<long int>(posType);
+      auto pos = static_cast<long int>(posType);
       pos--;
       while((pos>0) && (m_BufferNoComment[pos]==' '))
         {

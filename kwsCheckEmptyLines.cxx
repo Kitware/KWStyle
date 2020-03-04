@@ -26,7 +26,7 @@ bool Parser::CheckEmptyLines(unsigned long max, bool checkEndOfFile)
   delete [] val;
 
   bool hasError = false;
-  unsigned long total = static_cast<unsigned long>(m_Buffer.size());
+  auto total = static_cast<unsigned long>(m_Buffer.size());
   unsigned long i = 0;
   unsigned long j = 1;
   unsigned long empty = 0;

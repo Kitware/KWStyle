@@ -170,7 +170,7 @@ bool MetaCommand::AddField(METAIO_STL::string name,
 void MetaCommand::SetOptionComplete(METAIO_STL::string optionName,
                                     bool complete)
 {
-  OptionVector::iterator it = m_OptionVector.begin();
+  auto it = m_OptionVector.begin();
   while(it != m_OptionVector.end())
     {
     if((*it).name == optionName)
@@ -192,7 +192,7 @@ bool MetaCommand::AddOptionField(METAIO_STL::string optionName,
                                  DataEnumType externalData
                                  )
 {
-  OptionVector::iterator it = m_OptionVector.begin();
+  auto it = m_OptionVector.begin();
   while(it != m_OptionVector.end())
     {
     if((*it).name == optionName)
@@ -231,13 +231,13 @@ bool MetaCommand::SetOptionRange(METAIO_STL::string optionName,
                                  METAIO_STL::string rangeMin,
                                  METAIO_STL::string rangeMax)
 {
-  OptionVector::iterator it = m_OptionVector.begin();
+  auto it = m_OptionVector.begin();
   while(it != m_OptionVector.end())
     {
     if((*it).name == optionName)
       {
       METAIO_STL::vector<Field> & fields = (*it).fields;
-      METAIO_STL::vector<Field>::iterator itField = fields.begin();
+      auto itField = fields.begin();
       while(itField != fields.end())
         {
         if((*itField).name == name)
@@ -268,7 +268,7 @@ bool MetaCommand::GetValueAsBool(METAIO_STL::string optionName,METAIO_STL::strin
     {
     if((*it).name == optionName)
       {
-      METAIO_STL::vector<Field>::const_iterator itField = (*it).fields.begin();
+      auto itField = (*it).fields.begin();
       while(itField != (*it).fields.end())
         {
         if((*itField).name == fieldname)
@@ -333,7 +333,7 @@ float MetaCommand::GetValueAsFloat(METAIO_STL::string optionName,METAIO_STL::str
     {
     if((*it).name == optionName)
       {
-      METAIO_STL::vector<Field>::const_iterator itField = (*it).fields.begin();
+      auto itField = (*it).fields.begin();
       while(itField != (*it).fields.end())
         {
         if((*itField).name == fieldname)
@@ -381,7 +381,7 @@ int MetaCommand::GetValueAsInt(METAIO_STL::string optionName,METAIO_STL::string 
     {
     if((*it).name == optionName)
       {
-      METAIO_STL::vector<Field>::const_iterator itField = (*it).fields.begin();
+      auto itField = (*it).fields.begin();
       while(itField != (*it).fields.end())
         {
         if((*itField).name == fieldname)
@@ -430,7 +430,7 @@ METAIO_STL::string MetaCommand::GetValueAsString(METAIO_STL::string optionName,
     {
     if((*it).name == optionName)
       {
-      METAIO_STL::vector<Field>::const_iterator itField = (*it).fields.begin();
+      auto itField = (*it).fields.begin();
       while(itField != (*it).fields.end())
         {
         if((*itField).name == fieldname)
@@ -543,7 +543,7 @@ void MetaCommand::ListOptions()
     METAIO_STREAM::cout << "   Number of expected values: " << (*it).fields.size()
                                               << METAIO_STREAM::endl;
 
-    METAIO_STL::vector<Field>::const_iterator itField = (*it).fields.begin();
+    auto itField = (*it).fields.begin();
     while(itField != (*it).fields.end())
       {
       METAIO_STREAM::cout << "      Field Name: " <<  (*itField).name.c_str()
@@ -607,7 +607,7 @@ void MetaCommand::ListOptionsXML()
 
     METAIO_STREAM::cout << "<nvalues>" << (*it).fields.size() << "</nvalues>" << METAIO_STREAM::endl;
 
-    METAIO_STL::vector<Field>::const_iterator itField = (*it).fields.begin();
+    auto itField = (*it).fields.begin();
     while(itField != (*it).fields.end())
       {
       METAIO_STREAM::cout << "<field>" << METAIO_STREAM::endl;
@@ -762,14 +762,12 @@ void MetaCommand::ListOptionsSimplified()
       if (!(*it).tag.empty()) {
         METAIO_STREAM::cout << "-" << (*it).tag.c_str() << " ";
       }
-    METAIO_STL::vector<Field>::const_iterator itField = (*it).fields.begin();
-    while(itField != (*it).fields.end())
-      {
-      if((*itField).type != FLAG) // only display the type if it's not a FLAG
+      auto itField = (*it).fields.begin();
+      while (itField != (*it).fields.end()) {
+        if ((*itField).type != FLAG) // only display the type if it's not a FLAG
         {
-        if((*itField).required)
-          {
-          METAIO_STREAM::cout << "<";
+          if ((*itField).required) {
+            METAIO_STREAM::cout << "<";
           }
         else
           {
@@ -851,7 +849,7 @@ MetaCommand::OptionExistsByMinusTag(METAIO_STL::string minusTag)
 MetaCommand::Option *
 MetaCommand::GetOptionByMinusTag(METAIO_STL::string minusTag)
 {
-  OptionVector::iterator it = m_OptionVector.begin();
+  auto it = m_OptionVector.begin();
   while(it != m_OptionVector.end())
     {
     METAIO_STL::string tagToSearch = "-";
@@ -869,7 +867,7 @@ MetaCommand::GetOptionByMinusTag(METAIO_STL::string minusTag)
 MetaCommand::Option *
 MetaCommand::GetOptionByTag(METAIO_STL::string minusTag)
 {
-  OptionVector::iterator it = m_OptionVector.begin();
+  auto it = m_OptionVector.begin();
   while(it != m_OptionVector.end())
     {
     if((*it).tag == minusTag)
@@ -885,7 +883,7 @@ MetaCommand::GetOptionByTag(METAIO_STL::string minusTag)
 long
 MetaCommand::GetOptionId(Option* option)
 {
-  OptionVector::iterator it = m_OptionVector.begin();
+  auto it = m_OptionVector.begin();
   unsigned long i = 0;
   while(it != m_OptionVector.end())
     {
@@ -943,7 +941,7 @@ bool MetaCommand::ExportGAD(bool dynamic)
   OptionVector::const_iterator it = options.begin();
   while(it != options.end())
     {
-    METAIO_STL::vector<Field>::const_iterator itFields = (*it).fields.begin();
+    auto itFields = (*it).fields.begin();
     while(itFields != (*it).fields.end())
       {
       if((*itFields).externaldata == DATA_IN)
@@ -998,7 +996,7 @@ bool MetaCommand::ExportGAD(bool dynamic)
     {
     // Find if this is a non data field
     bool isData = false;
-    METAIO_STL::vector<Field>::const_iterator itFields = (*it).fields.begin();
+    auto itFields = (*it).fields.begin();
     while(itFields != (*it).fields.end())
       {
       if((*itFields).externaldata != DATA_NONE)
@@ -1080,7 +1078,7 @@ bool MetaCommand::ExportGAD(bool dynamic)
   it = options.begin();
   while(it != options.end())
     {
-    METAIO_STL::vector<Field>::const_iterator itFields = (*it).fields.begin();
+    auto itFields = (*it).fields.begin();
     while(itFields != (*it).fields.end())
       {
       if((*itFields).externaldata == DATA_OUT)
@@ -1275,7 +1273,7 @@ bool MetaCommand::Parse(int argc, const char* argv[])
     else if(!inArgument) // If this is a field
       {
       // Look for the field to add
-      OptionVector::iterator it = m_OptionVector.begin();
+      auto it = m_OptionVector.begin();
       unsigned long pos = 0;
       bool found = false;
       while(it != m_OptionVector.end())
@@ -1314,7 +1312,8 @@ bool MetaCommand::Parse(int argc, const char* argv[])
       {
       if(currentOption >=0 && currentOption < (int)(m_OptionVector.size()))
         {
-        unsigned long s = static_cast<unsigned long>(m_OptionVector[currentOption].fields.size());
+        auto s = static_cast<unsigned long>(
+            m_OptionVector[currentOption].fields.size());
         m_OptionVector[currentOption].fields[s-valuesRemaining].value = argv[i];
         m_OptionVector[currentOption].fields[s-valuesRemaining].userDefined =
                                                                            true;
@@ -1346,20 +1345,18 @@ bool MetaCommand::Parse(int argc, const char* argv[])
     }
 
   // Check if the options with required arguments are defined
-  OptionVector::iterator it = m_OptionVector.begin();
-  bool requiredAndNotDefined = false;
-  while(it != m_OptionVector.end())
-    {
-    if((*it).required)
-      {
-      // First check if the option is actually defined
-      if(!(*it).userDefined)
-        {
-        METAIO_STREAM::cout << "Option " << (*it).name
-                  << " is required but not defined" << METAIO_STREAM::endl;
-        requiredAndNotDefined = true;
-        ++it;
-        continue;
+    auto it = m_OptionVector.begin();
+    bool requiredAndNotDefined = false;
+    while (it != m_OptionVector.end()) {
+      if ((*it).required) {
+        // First check if the option is actually defined
+        if (!(*it).userDefined) {
+          METAIO_STREAM::cout << "Option " << (*it).name
+                              << " is required but not defined"
+                              << METAIO_STREAM::endl;
+          requiredAndNotDefined = true;
+          ++it;
+          continue;
         }
 
       // Check if the values are defined
@@ -1401,32 +1398,32 @@ bool MetaCommand::Parse(int argc, const char* argv[])
     }
 
   // Check if the values are in range (if the range is defined)
-  OptionVector::iterator itParsed = m_ParsedOptionVector.begin();
-  bool valueInRange = true;
-  while(itParsed != m_ParsedOptionVector.end())
-    {
-    METAIO_STL::vector<Field>::const_iterator itFields = (*itParsed).fields.begin();
-    while(itFields != (*itParsed).fields.end())
-      {
-      // Check only if this is a number
-      if (((*itFields).type == INT || (*itFields).type == FLOAT ||
-           (*itFields).type == CHAR) &&
-          (!(*itFields).value.empty())) {
-        // Check the range min
-        if (((!(*itFields).rangeMin.empty()) &&
-             (atof((*itFields).rangeMin.c_str()) >
-              atof((*itFields).value.c_str()))) ||
-            ((!(*itFields).rangeMax.empty()) &&
-             (atof((*itFields).rangeMax.c_str()) <
-              atof((*itFields).value.c_str())))) {
-          METAIO_STREAM::cout << (*itParsed).name << "." << (*itFields).name
-                    << " : Value (" << (*itFields).value << ") "
-                    << "is not in the range [" << (*itFields).rangeMin
-                    << "," << (*itFields).rangeMax << "]" << METAIO_STREAM::endl;
-          valueInRange = false;
+    auto itParsed = m_ParsedOptionVector.begin();
+    bool valueInRange = true;
+    while (itParsed != m_ParsedOptionVector.end()) {
+      METAIO_STL::vector<Field>::const_iterator itFields =
+          (*itParsed).fields.begin();
+      while (itFields != (*itParsed).fields.end()) {
+        // Check only if this is a number
+        if (((*itFields).type == INT || (*itFields).type == FLOAT ||
+             (*itFields).type == CHAR) &&
+            (!(*itFields).value.empty())) {
+          // Check the range min
+          if (((!(*itFields).rangeMin.empty()) &&
+               (atof((*itFields).rangeMin.c_str()) >
+                atof((*itFields).value.c_str()))) ||
+              ((!(*itFields).rangeMax.empty()) &&
+               (atof((*itFields).rangeMax.c_str()) <
+                atof((*itFields).value.c_str())))) {
+            METAIO_STREAM::cout
+                << (*itParsed).name << "." << (*itFields).name << " : Value ("
+                << (*itFields).value << ") "
+                << "is not in the range [" << (*itFields).rangeMin << ","
+                << (*itFields).rangeMax << "]" << METAIO_STREAM::endl;
+            valueInRange = false;
+          }
         }
-      }
-      ++itFields;
+        ++itFields;
       }
     ++itParsed;
     }

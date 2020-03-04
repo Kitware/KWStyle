@@ -53,7 +53,7 @@ static void AddFeature(const char* name,const char* value,bool enable)
 
 static void ChangeFeature(const char* name,const char* value)
 {
-  std::vector<kwsFeature>::iterator it = features.begin();
+  auto it = features.begin();
   while(it != features.end())
     {
     if(!strcmp((*it).name.c_str(),name))
@@ -67,7 +67,7 @@ static void ChangeFeature(const char* name,const char* value)
 
 static void DisableFeature(const char* name)
 {
-  std::vector<kwsFeature>::iterator it = features.begin();
+  auto it = features.begin();
   while(it != features.end())
     {
     if(!strcmp((*it).name.c_str(),name))
@@ -83,7 +83,7 @@ static void DisableFeature(const char* name)
 static void RemoveFile(const char* regEx,std::vector<std::string> & filenames)
 {
   kwssys::RegularExpression regex(regEx);
-  std::vector<std::string>::iterator it = filenames.begin();
+  auto it = filenames.begin();
 
   while(it != filenames.end())
     {
@@ -215,7 +215,7 @@ int main(int argc, const char **argv)
     kws::XMLReader reader;
     if(reader.Open(xmlFile.c_str()))
       {
-      std::vector<kwsFeature>::iterator it = features.begin();
+      auto it = features.begin();
       while(it != features.end())
         {
         std::string val = reader.GetValue((*it).name.c_str());
@@ -295,7 +295,7 @@ int main(int argc, const char **argv)
     delete [] buf;
 
     long int start = 0;
-    long int pos = static_cast<long int>(buffer.find("\n",start));
+    auto pos = static_cast<long int>(buffer.find("\n", start));
     do
       {
       std::string line = "";
@@ -315,16 +315,14 @@ int main(int argc, const char **argv)
         break;
         }
 
-      long int p = static_cast<long int>(line.find(" "));
-      if(p != -1)
-        {
-        kwsFeature f;
-        f.filename = line.substr(0,p);
-        long int p1 = p;
-        p = static_cast<long int>(line.find(" ",p+1));
-        if(p!=-1)
-          {
-          f.name = line.substr(p1+1,p-p1-1);
+        auto p = static_cast<long int>(line.find(" "));
+        if (p != -1) {
+          kwsFeature f;
+          f.filename = line.substr(0, p);
+          long int p1 = p;
+          p = static_cast<long int>(line.find(" ", p + 1));
+          if (p != -1) {
+            f.name = line.substr(p1 + 1, p - p1 - 1);
           }
         p1 = p;
         p = static_cast<long int>(line.find(" ",p+1));
@@ -444,10 +442,10 @@ int main(int argc, const char **argv)
         break;
         }
 
-      long int space = static_cast<long int>(dirname.find(" "));
-      while(space != -1 && helperParser.IsBetweenQuote(space,false,dirname))
-        {
-        space = static_cast<long int>(dirname.find(" ", space+1));
+        auto space = static_cast<long int>(dirname.find(" "));
+        while (space != -1 &&
+               helperParser.IsBetweenQuote(space, false, dirname)) {
+          space = static_cast<long int>(dirname.find(" ", space + 1));
         }
 
       // if we should remove the file
@@ -468,10 +466,11 @@ int main(int argc, const char **argv)
           glob.RecurseOn();
           }
 
-        long int localspace = static_cast<long int>(dirname.find(" "));
-        while(localspace != -1 && helperParser.IsBetweenQuote(localspace,false,dirname))
-          {
-          localspace = static_cast<long int>(dirname.find(" ",localspace+1));
+          auto localspace = static_cast<long int>(dirname.find(" "));
+          while (localspace != -1 &&
+                 helperParser.IsBetweenQuote(localspace, false, dirname)) {
+            localspace =
+                static_cast<long int>(dirname.find(" ", localspace + 1));
           }
 
         if(localspace != -1)
@@ -602,23 +601,19 @@ int main(int argc, const char **argv)
       parser.SetFixFile(true);
       }
 
-    std::vector<kwsFeature>::iterator itf = features.begin();
-    while(itf != features.end())
-      {
-      // Check if we have a match in the list of overwriteFeatures
-      bool checked = false;
-      std::vector<kwsFeature>::iterator itof = overwriteFeatures.begin();
-      while(itof != overwriteFeatures.end())
-        {
-        // Allow for for regex expression within overwrite files
-        kwssys::RegularExpression regex((*itof).filename.c_str());
+      auto itf = features.begin();
+      while (itf != features.end()) {
+        // Check if we have a match in the list of overwriteFeatures
+        bool checked = false;
+        auto itof = overwriteFeatures.begin();
+        while (itof != overwriteFeatures.end()) {
+          // Allow for for regex expression within overwrite files
+          kwssys::RegularExpression regex((*itof).filename.c_str());
 
-        if( regex.find((*it).c_str())
-           && (!strcmp((*itof).name.c_str(),(*itf).name.c_str())))
-          {
-          if((*itof).enable)
-            {
-            parser.Check((*itof).name.c_str(),(*itof).value.c_str());
+          if (regex.find((*it).c_str()) &&
+              (!strcmp((*itof).name.c_str(), (*itf).name.c_str()))) {
+            if ((*itof).enable) {
+              parser.Check((*itof).name.c_str(), (*itof).value.c_str());
             }
 
           if((*itof).name == "LineLength" && !((*itof).enable))
@@ -660,7 +655,7 @@ int main(int argc, const char **argv)
       {
       // Format the string for vim
       const kws::Parser::ErrorVectorType errors = parser.GetErrors();
-      kws::Parser::ErrorVectorType::const_iterator eit = errors.begin();
+      auto eit = errors.begin();
       while(eit != errors.end())
         {
         std::cout << (*it).c_str() << ":" << (*eit).line << ":"
@@ -672,7 +667,7 @@ int main(int argc, const char **argv)
       {
       // Format the string for Visual Studio
       const kws::Parser::ErrorVectorType errors = parser.GetErrors();
-      kws::Parser::ErrorVectorType::const_iterator eit = errors.begin();
+      auto eit = errors.begin();
       while(eit != errors.end())
         {
         std::cout << (*it).c_str() << "(" << (*eit).line << ") : error " << (*eit).number << ":"
@@ -680,7 +675,7 @@ int main(int argc, const char **argv)
         ++eit;
         }
       const kws::Parser::WarningVectorType warnings = parser.GetWarnings();
-      kws::Parser::WarningVectorType::const_iterator wit = warnings.begin();
+      auto wit = warnings.begin();
       while(wit != warnings.end())
         {
         std::cout << (*it).c_str() << "(" << (*wit).line << ") : warning " << (*wit).number << ":"
@@ -692,7 +687,7 @@ int main(int argc, const char **argv)
       {
       // Format the string for Visual Studio
       const kws::Parser::ErrorVectorType errors = parser.GetErrors();
-      kws::Parser::ErrorVectorType::const_iterator eit = errors.begin();
+      auto eit = errors.begin();
       while(eit != errors.end())
         {
         std::cout << (*it).c_str() << ":" << (*eit).line << ": error: "
@@ -700,7 +695,7 @@ int main(int argc, const char **argv)
         ++eit;
         }
       const kws::Parser::WarningVectorType warnings = parser.GetWarnings();
-      kws::Parser::WarningVectorType::const_iterator wit = warnings.begin();
+      auto wit = warnings.begin();
       while(wit != warnings.end())
         {
         std::cout << (*it).c_str() << ":" << (*wit).line << ": warning: "

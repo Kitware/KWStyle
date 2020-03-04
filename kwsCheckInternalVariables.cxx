@@ -82,8 +82,9 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment,bool checkP
         if(alignment)
           {
           // Find the position in the line
-          unsigned long posvar = static_cast<unsigned long>(m_BufferNoComment.find(var,pos-var.size()-2));
-          unsigned long l = static_cast<unsigned long>(this->GetPositionInLine(posvar));
+          auto posvar = static_cast<unsigned long>(
+              m_BufferNoComment.find(var, pos - var.size() - 2));
+          auto l = static_cast<unsigned long>(this->GetPositionInLine(posvar));
           unsigned long line = this->GetLineNumber(pos,true);
 
           // if the typedef is on a line close to the previous one we check

@@ -246,7 +246,7 @@ bool Parser::Check(const char* name, const char* value)
       return false;
       }
     std::string v1 = val.substr(0,pos);
-    long int pos1 = static_cast<long int>(val.find(",",pos+1));
+    auto pos1 = static_cast<long int>(val.find(",", pos + 1));
     if(pos1 == -1)
       {
       std::cout << "Comments not defined correctly" << std::endl;
@@ -332,11 +332,10 @@ bool Parser::Check(const char* name, const char* value)
       v1 = val.substr(0,pos);
       }
 
-    long int pos1 = static_cast<long int>(val.find(",",pos+1));
-    if(pos1 == -1)
-      {
-      std::cout << "Header not defined correctly" << std::endl;
-      return false;
+      auto pos1 = static_cast<long int>(val.find(",", pos + 1));
+      if (pos1 == -1) {
+        std::cout << "Header not defined correctly" << std::endl;
+        return false;
       }
 
     std::string v2 = val.substr(pos+1,pos1-pos-1);
@@ -369,7 +368,7 @@ bool Parser::Check(const char* name, const char* value)
       return false;
       }
     std::string v1 = val.substr(0,pos);
-    long int pos1 = static_cast<long int>(val.find(",",pos+1));
+    auto pos1 = static_cast<long int>(val.find(",", pos + 1));
     if(pos1 == -1)
       {
       std::cout << "Indent not defined correctly" << std::endl;
@@ -570,7 +569,7 @@ void Parser::ConvertBufferToWindowsFileType(std::string & buffer)
 unsigned long Parser::GetNumberOfLines() const
 {
  unsigned long lines = 0;
- long int pos = static_cast<long int>(m_Buffer.find("\n",0));
+ auto pos = static_cast<long int>(m_Buffer.find("\n", 0));
  while(pos != -1)
    {
    lines++;
@@ -585,7 +584,7 @@ std::string Parser::GetLine(unsigned long i) const
 {
  unsigned long lines = 0;
  long int prec = 0;
- long int pos = static_cast<long int>(m_Buffer.find("\n",0));
+ auto pos = static_cast<long int>(m_Buffer.find("\n", 0));
  while(pos != -1)
    {
    if(lines == i)
@@ -709,7 +708,7 @@ size_t Parser::GetPositionInLine(size_t pos)
 /** Given the position without comments return the position with the comments */
 size_t Parser::GetPositionWithComments(size_t pos) const
 {
-  std::vector<PairType>::const_iterator it = m_CommentPositions.begin();
+  auto it = m_CommentPositions.begin();
   while(it != m_CommentPositions.end())
     {
     if((pos>=(*it).first))
@@ -729,7 +728,7 @@ size_t Parser::GetPositionWithComments(size_t pos) const
 size_t Parser::GetPositionWithoutComments(size_t pos) const
 {
   size_t pos2 = pos;
-  std::vector<PairType>::const_iterator it = m_CommentPositions.begin();
+  auto it = m_CommentPositions.begin();
   while(it != m_CommentPositions.end())
     {
     if((pos>=(*it).first))
@@ -786,7 +785,7 @@ long int Parser::GetLineNumber(size_t pos,bool withoutComments) const
     }
 
   unsigned int i=0;
-  std::vector<size_t>::const_iterator it = m_Positions.begin();
+  auto it = m_Positions.begin();
   while(it != m_Positions.end())
     {
     if(pos<=(*it))
@@ -1910,7 +1909,7 @@ size_t Parser::FindClosingChar(char openChar, char closeChar,
       {
       bool skip = false;
       // We want to check that we are not in the #if/#else/#endif thing
-      IfElseEndifListType::const_iterator itLS = m_IfElseEndifList.begin();
+      auto itLS = m_IfElseEndifList.begin();
       while(itLS != m_IfElseEndifList.end())
         {
         size_t j = i;
