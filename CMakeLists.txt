@@ -8,8 +8,11 @@ foreach(p
   endif()
 endforeach()
 
-project(KWStyle)
-
+project(KWStyle
+   VERSION 1.1.0
+   DESCRIPTION "Kitware Style Checker"
+   LANGUAGES C CXX
+)
 # Output directories
 if(NOT LIBRARY_OUTPUT_PATH)
   set(LIBRARY_OUTPUT_PATH ${KWStyle_BINARY_DIR}/bin CACHE INTERNAL "Single output directory for building all libraries.")
@@ -20,10 +23,6 @@ endif()
 mark_as_advanced(LIBRARY_OUTPUT_PATH EXECUTABLE_OUTPUT_PATH)
 
 set(CXX_TEST_PATH ${EXECUTABLE_OUTPUT_PATH})
-
-set(KWStyle_MAJOR_VERSION "1")
-set(KWStyle_MINOR_VERSION "0")
-set(KWStyle_PATCH_VERSION "1")
 
 # Disable MSVC 8 warnings
 if(WIN32)
@@ -134,9 +133,10 @@ set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "KWStyle")
 set(CPACK_PACKAGE_VENDOR "Kitware Inc.")
 set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/Copyright.txt")
-set(CPACK_PACKAGE_VERSION_MAJOR "1")
-set(CPACK_PACKAGE_VERSION_MINOR "0")
-set(CPACK_PACKAGE_VERSION_PATCH "0")
+
+set(CPACK_PACKAGE_VERSION_MAJOR "${${PROJECT_NAME}_VERSION_MAJOR}")
+set(CPACK_PACKAGE_VERSION_MINOR "${${PROJECT_NAME}_VERSION_MINOR}")
+set(CPACK_PACKAGE_VERSION_PATCH "${${PROJECT_NAME}_VERSION_PATCH}")
 set(CPACK_PACKAGE_INSTALL_DIRECTORY "KWStyle ${KWStyle_VERSION_MAJOR}.${KWStyle_VERSION_MINOR}")
 if(WIN32 AND NOT UNIX)
   # There is a bug in NSI that does not handle full unix paths properly. Make
