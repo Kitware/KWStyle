@@ -44,7 +44,7 @@ bool Parser::CheckVariables(const char* regEx)
   if(!file.is_open())
     {
     std::cout << "Cannot open file: " << headerfile.c_str() << std::endl;
-    return 1;
+    return true;
     }
 
   file.seekg(0,std::ios::end);

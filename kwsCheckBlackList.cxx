@@ -35,7 +35,7 @@ bool Parser::CheckBlackList(const char* filename)
     if(!file.is_open())
       {
       std::cout << "Cannot open file: " << filename << std::endl;
-      return 0;
+      return false;
       }
     file.seekg(0,std::ios::end);
     unsigned long fileSize = file.tellg();
