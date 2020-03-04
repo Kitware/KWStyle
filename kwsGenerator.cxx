@@ -142,7 +142,7 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
   this->CreateHeader(&file,title.c_str());
 
   // Contruct the table
-  file << "<table width=\"100%\" border=\"0\" height=\"1\">" << std::endl;
+  file << R"(<table width="100%" border="0" height="1">)" << std::endl;
   file << "<tr>" << std::endl;
   file << "  <td width=\"10%\"> " << std::endl;
   file << "    <div align=\"center\">Filename</div>" << std::endl;
@@ -286,7 +286,9 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
       {
       file << "<tr>" << std::endl;
       file << "  <td width=\"10%\"></td>" << std::endl;
-      file << "  <td bgcolor=\"#CCCCCC\" width=\"70%\" colspan=\"" << nTests << "\"><div align=\"\">" << std::endl;;
+      file << R"(  <td bgcolor="#CCCCCC" width="70%" colspan=")" << nTests
+           << R"("><div align="">)" << std::endl;
+      ;
       file << filenamePath.c_str() << std::endl;
       file << "</div></td></tr>" << std::endl;
       currentPath = filenamePath;
@@ -325,7 +327,8 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
     // Fill in the table
     file << "<tr>" << std::endl;
     file << "  <td width=\"10%\"> " << std::endl;
-    file << "    <div align=\"center\"> <a href=\"" << localfilename.c_str()  << "\">" << filenamecorrect.c_str() << "</a></div>" << std::endl;
+    file << R"(    <div align="center"> <a href=")" << localfilename.c_str()
+         << "\">" << filenamecorrect.c_str() << "</a></div>" << std::endl;
     file << "  </td>" << std::endl;
 
     width = 90/nTests;
@@ -547,9 +550,9 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
 
     this->CreateHeader(&file,filename.c_str());
 
-    file << "<table width=\"100%\" border=\"0\" height=\"1\">" << std::endl;
+    file << R"(<table width="100%" border="0" height="1">)" << std::endl;
 
-   // To speedup the process we list the lines that have errors
+    // To speedup the process we list the lines that have errors
     using ErrorLineType = std::pair<int, std::vector<int>>;
     std::vector<ErrorLineType> errorLines;
 
@@ -715,8 +718,10 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
           space = static_cast<long int>(l.find("*/",space+8));
           }
         }
-      file << "<td height=\"1\"><font face=\"Courier New, Courier, mono\" size=\"2\">" << l.c_str() << "</font></td>" << std::endl;
-      file << "</tr>" << std::endl;
+        file
+            << R"(<td height="1"><font face="Courier New, Courier, mono" size="2">)"
+            << l.c_str() << "</font></td>" << std::endl;
+        file << "</tr>" << std::endl;
       }
 
     file << "</table>" << std::endl;
@@ -736,26 +741,29 @@ bool Generator::CreateHeader(std::ostream * file,const char* title)
 {
   *file << "<html>" << std::endl;
   *file << "<head>" << std::endl;
-  *file << " <meta name=\"description\" content=\"kitware.com\" />" << std::endl;
-  *file << " <meta name=\"keywords\" content=\"kwstyle,Kitware,Style,Checker,Dart\" />" << std::endl;
-  *file << " <meta name=\"author\" content=\"Kitware\" />" << std::endl;
-  *file << " <meta name=\"revisit-after\" content=\"2 days\" />" << std::endl;
-  *file << " <meta name=\"robots\" content=\"all\" />" << std::endl;
+  *file << R"( <meta name="description" content="kitware.com" />)" << std::endl;
+  *file
+      << R"( <meta name="keywords" content="kwstyle,Kitware,Style,Checker,Dart" />)"
+      << std::endl;
+  *file << R"( <meta name="author" content="Kitware" />)" << std::endl;
+  *file << R"( <meta name="revisit-after" content="2 days" />)" << std::endl;
+  *file << R"( <meta name="robots" content="all" />)" << std::endl;
   *file << " <title>KWStyle - " << title << "</title>" << std::endl;
   *file << "</head>" << std::endl;
 
   // Now create the top frame
- *file << "<table width=\"100%\" border=\"0\">" << std::endl;
- *file << " <tr>" << std::endl;
- *file << "   <td width=\"15%\" height=\"2\"><img src=\"images/" << kwssys::SystemTools::GetFilenameName(m_ProjectLogo.c_str()) << "\"></td>" << std::endl;
- *file << "   <td width=\"85%\" height=\"2\" bgcolor=\"#0099CC\"> " << std::endl;
+  *file << R"(<table width="100%" border="0">)" << std::endl;
+  *file << " <tr>" << std::endl;
+  *file << R"(   <td width="15%" height="2"><img src="images/)"
+        << kwssys::SystemTools::GetFilenameName(m_ProjectLogo.c_str())
+        << "\"></td>" << std::endl;
+  *file << R"(   <td width="85%" height="2" bgcolor="#0099CC"> )" << std::endl;
 
- // remove the last extension
- std::string tit = title;
- auto pos = static_cast<long int>(tit.find_last_of("."));
- if(pos!=-1)
-   {
-   tit = tit.substr(0,pos);
+  // remove the last extension
+  std::string tit = title;
+  auto pos = static_cast<long int>(tit.find_last_of("."));
+  if (pos != -1) {
+    tit = tit.substr(0, pos);
    }
  pos = static_cast<long int>(tit.find_last_of("/"));
  if(pos!=-1)
@@ -763,44 +771,54 @@ bool Generator::CreateHeader(std::ostream * file,const char* title)
    tit = tit.substr(pos+1,tit.size()-pos-1);
    }
 
- *file << "     <div align=\"left\"><b><font color=\"#FFFFFF\" size=\"5\">KWStyle - " << tit.c_str() << "</font></b></div>" << std::endl;
- *file << "   </td>" << std::endl;
- *file << " </tr>" << std::endl;
- *file << "</table>" << std::endl;
- *file << "<table width=\"100%\" border=\"0\">" << std::endl;
- *file << " <tr> " << std::endl;
- *file << "   <td width=\"15%\" height=\"30\" >&nbsp;</td>" << std::endl;
- *file << "   <td height=\"30\" width=\"12%\" bgcolor=\"#0099CC\"> " << std::endl;
- *file << "     <div align=\"center\"><a href=\"KWSMatrix.html\">Matrix View</a></div>" << std::endl;
- *file << "   </td>" << std::endl;
- *file << "   <td width=\"10%\" height=\"30\" bgcolor=\"#0099CC\" >"<< std::endl;
- *file << " <div align=\"center\"><a href=\"KWSDescription.html\">Description</a></div>" << std::endl;
- *file << "  </td>" << std::endl;
- *file << "   <td width=\"63%\" height=\"30\"> " << std::endl;
- *file << "     <div align=\"left\"><b></b></div>" << std::endl;
- *file << "     <div align=\"right\"></div>" << std::endl;
- *file << "   </td>" << std::endl;
- *file << " </tr>" << std::endl;
- *file << "</table>" << std::endl;
- *file << "<hr size=\"1\">";
-  return true;
+   *file
+       << R"(     <div align="left"><b><font color="#FFFFFF" size="5">KWStyle - )"
+       << tit.c_str() << "</font></b></div>" << std::endl;
+   *file << "   </td>" << std::endl;
+   *file << " </tr>" << std::endl;
+   *file << "</table>" << std::endl;
+   *file << R"(<table width="100%" border="0">)" << std::endl;
+   *file << " <tr> " << std::endl;
+   *file << R"(   <td width="15%" height="30" >&nbsp;</td>)" << std::endl;
+   *file << R"(   <td height="30" width="12%" bgcolor="#0099CC"> )"
+         << std::endl;
+   *file
+       << R"(     <div align="center"><a href="KWSMatrix.html">Matrix View</a></div>)"
+       << std::endl;
+   *file << "   </td>" << std::endl;
+   *file << R"(   <td width="10%" height="30" bgcolor="#0099CC" >)"
+         << std::endl;
+   *file
+       << R"( <div align="center"><a href="KWSDescription.html">Description</a></div>)"
+       << std::endl;
+   *file << "  </td>" << std::endl;
+   *file << R"(   <td width="63%" height="30"> )" << std::endl;
+   *file << "     <div align=\"left\"><b></b></div>" << std::endl;
+   *file << "     <div align=\"right\"></div>" << std::endl;
+   *file << "   </td>" << std::endl;
+   *file << " </tr>" << std::endl;
+   *file << "</table>" << std::endl;
+   *file << "<hr size=\"1\">";
+   return true;
 }
 
 /** Create Footer */
 bool Generator::CreateFooter(std::ostream * file)
 {
   *file << "<hr size=\"1\">";
-  *file << "<table width=\"100%\" border=\"0\">";
+  *file << R"(<table width="100%" border="0">)";
   *file << "<tr>";
   *file << "<td>Generated by <a href=\"https://public.kitware.com/KWStyle\">KWStyle</a> 1.0b on <i>" << kwssys::SystemTools::GetCurrentDateTime("%A %B,%d at %I:%M:%S%p") << "</i></td>";
   *file << "<td>";
   if (!m_KWStyleLogo.empty()) {
-    *file << "<div align=\"center\"><img src=\"images/" << kwssys::SystemTools::GetFilenameName(m_KWStyleLogo.c_str())
-          << "\" height=\"49\" /></div>" << std::endl;
+    *file << R"(<div align="center"><img src="images/)"
+          << kwssys::SystemTools::GetFilenameName(m_KWStyleLogo.c_str())
+          << R"(" height="49" /></div>)" << std::endl;
   }
   *file << "</td>";
   *file << "<td>";
-  *file << "<div align=\"right\"><a href=\"http://www.kitware.com\">&copy; Kitware Inc.</a></div></td>";
+  *file
+      << R"(<div align="right"><a href="http://www.kitware.com">&copy; Kitware Inc.</a></div></td>)";
   *file << "</tr>";
   *file << "</table>";
   *file << "<br />";
@@ -835,7 +853,7 @@ void Generator::ExportHTML(std::ostream & output)
 
     //this->CreateHeader(&output,filename.c_str());
 
-    output << "<table width=\"100%\" border=\"0\" height=\"1\">" << std::endl;
+    output << R"(<table width="100%" border="0" height="1">)" << std::endl;
 
     bool comment = false;
     for(unsigned int i=0;i<(*it).GetNumberOfLines();i++)
@@ -956,8 +974,10 @@ void Generator::ExportHTML(std::ostream & output)
           }
         }
 
-      output << "<td height=\"1\"><font face=\"Courier New, Courier, mono\" size=\"2\">" << l.c_str() << "</font></td>" << std::endl;
-      output << "</tr>" << std::endl;
+        output
+            << R"(<td height="1"><font face="Courier New, Courier, mono" size="2">)"
+            << l.c_str() << "</font></td>" << std::endl;
+        output << "</tr>" << std::endl;
       }
 
     output << "</table>" << std::endl;
@@ -1209,25 +1229,26 @@ bool Generator::GenerateDart(const char* dir,int maxError,
     }
 
   // Write the footer
-  file << " <Log Encoding=\"base64\" Compression=\"/bin/gzip\">" << std::endl;
-  file << "      </Log>" << std::endl;
-  file << "      <EndDateTime>";
-  file << kwssys::SystemTools::GetCurrentDateTime("%b %d %I:%M:%S %z");
-  file << "</EndDateTime>" << std::endl;
+    file << R"( <Log Encoding="base64" Compression="/bin/gzip">)" << std::endl;
+    file << "      </Log>" << std::endl;
+    file << "      <EndDateTime>";
+    file << kwssys::SystemTools::GetCurrentDateTime("%b %d %I:%M:%S %z");
+    file << "</EndDateTime>" << std::endl;
 
-  double time1 = kwssys::SystemTools::GetTime();
+    double time1 = kwssys::SystemTools::GetTime();
 
-  char* timestr = new char[10];
-  sprintf(timestr,"%.1f",(time1-time)/60.0);
+    char *timestr = new char[10];
+    sprintf(timestr, "%.1f", (time1 - time) / 60.0);
 
-  file << "  <ElapsedMinutes>" << timestr << "</ElapsedMinutes></Build>" << std::endl;
-  file << "</Site>" << std::endl;
+    file << "  <ElapsedMinutes>" << timestr << "</ElapsedMinutes></Build>"
+         << std::endl;
+    file << "</Site>" << std::endl;
 
-  delete [] timestr;
-  configfile.close();
-  file.close();
-  std::cout << "Done." << std::endl;
-  return true;
+    delete[] timestr;
+    configfile.close();
+    file.close();
+    std::cout << "Done." << std::endl;
+    return true;
  }
 
 /** Generate a simple XML report of the errors */

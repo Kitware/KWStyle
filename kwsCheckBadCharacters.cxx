@@ -34,7 +34,8 @@ bool Parser::CheckBadCharacters(bool checkComments)
 
   // space characters along with printable characters (space through
   // ~) are fine; others are "bad"
-  sregex lineWithBadCharRegex = sregex::compile("^[^\\r\\n]*?([^\\s[:print:]])[^\\r\\n]*$");
+  sregex lineWithBadCharRegex =
+      sregex::compile(R"(^[^\r\n]*?([^\s[:print:]])[^\r\n]*$)");
   sregex_iterator currentBadCharIterator(buffer.begin(), buffer.end(), lineWithBadCharRegex);
   sregex_iterator end;
 

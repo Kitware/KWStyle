@@ -926,65 +926,73 @@ bool MetaCommand::ExportGAD(bool dynamic)
     return false;
     }
 
-  file << "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" << METAIO_STREAM::endl;
-  file << "<gridApplication" << METAIO_STREAM::endl;
-  file << "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" << METAIO_STREAM::endl;
-  file << "xsi:noNamespaceSchemaLocation=\"grid-application-description.xsd\"" << METAIO_STREAM::endl;
-  file << "name=\"" << m_Name.c_str() << "\"" << METAIO_STREAM::endl;
-  file << "description=\"" << m_Description.c_str() << "\">" << METAIO_STREAM::endl;
-  file << "<applicationComponent name=\"Client\" remoteExecution=\"true\">" << METAIO_STREAM::endl;
-  file << "<componentActionList>" << METAIO_STREAM::endl;
-  file << METAIO_STREAM::endl;
+    file << R"(<?xml version="1.0" encoding="UTF-8" ?>)" << METAIO_STREAM::endl;
+    file << "<gridApplication" << METAIO_STREAM::endl;
+    file << "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+         << METAIO_STREAM::endl;
+    file << "xsi:noNamespaceSchemaLocation=\"grid-application-description.xsd\""
+         << METAIO_STREAM::endl;
+    file << "name=\"" << m_Name.c_str() << "\"" << METAIO_STREAM::endl;
+    file << "description=\"" << m_Description.c_str() << "\">"
+         << METAIO_STREAM::endl;
+    file << R"(<applicationComponent name="Client" remoteExecution="true">)"
+         << METAIO_STREAM::endl;
+    file << "<componentActionList>" << METAIO_STREAM::endl;
+    file << METAIO_STREAM::endl;
 
-  unsigned int order = 1;
-  // Write out the input data to be transfered
-  OptionVector::const_iterator it = options.begin();
-  while(it != options.end())
-    {
-    auto itFields = (*it).fields.begin();
-    while(itFields != (*it).fields.end())
-      {
-      if((*itFields).externaldata == DATA_IN)
-        {
-        file << " <componentAction type=\"DataRelocation\" order=\"" << order << "\">" << METAIO_STREAM::endl;
-        file << "  <parameter name=\"Name\" value=\"" << (*itFields).name <<"\"/>" << METAIO_STREAM::endl;
-        file << "  <parameter name=\"Host\" value=\"hostname\"/>" << METAIO_STREAM::endl;
-        file << "  <parameter name=\"Description\" value=\"" << (*itFields).description << "\"/>" << METAIO_STREAM::endl;
-        file << "  <parameter name=\"Direction\" value=\"In\"/>" << METAIO_STREAM::endl;
-        file << "  <parameter name=\"Protocol\" value=\"gsiftp\"/>" << METAIO_STREAM::endl;
-        file << "  <parameter name=\"SourceDataPath\" value=\"" << (*itFields).value << "\"/>" << METAIO_STREAM::endl;
+    unsigned int order = 1;
+    // Write out the input data to be transfered
+    OptionVector::const_iterator it = options.begin();
+    while (it != options.end()) {
+      auto itFields = (*it).fields.begin();
+      while (itFields != (*it).fields.end()) {
+        if ((*itFields).externaldata == DATA_IN) {
+          file << R"( <componentAction type="DataRelocation" order=")" << order
+               << "\">" << METAIO_STREAM::endl;
+          file << R"(  <parameter name="Name" value=")" << (*itFields).name
+               << "\"/>" << METAIO_STREAM::endl;
+          file << R"(  <parameter name="Host" value="hostname"/>)"
+               << METAIO_STREAM::endl;
+          file << R"(  <parameter name="Description" value=")"
+               << (*itFields).description << "\"/>" << METAIO_STREAM::endl;
+          file << R"(  <parameter name="Direction" value="In"/>)"
+               << METAIO_STREAM::endl;
+          file << R"(  <parameter name="Protocol" value="gsiftp"/>)"
+               << METAIO_STREAM::endl;
+          file << R"(  <parameter name="SourceDataPath" value=")"
+               << (*itFields).value << "\"/>" << METAIO_STREAM::endl;
 
-        METAIO_STL::string datapath = (*itFields).value;
-        size_t slash = datapath.find_last_of("/");
-        if(slash>0)
-          {
-          datapath = datapath.substr(slash+1,datapath.size()-slash-1);
+          METAIO_STL::string datapath = (*itFields).value;
+          size_t slash = datapath.find_last_of("/");
+          if (slash > 0) {
+            datapath = datapath.substr(slash + 1, datapath.size() - slash - 1);
           }
         slash = datapath.find_last_of("\\");
         if(slash>0)
           {
           datapath = datapath.substr(slash+1,datapath.size()-slash-1);
           }
-        file << "  <parameter name=\"DestDataPath\" value=\"" << datapath.c_str() << "\"/>" << METAIO_STREAM::endl;
-        file << " </componentAction>" << METAIO_STREAM::endl;
-        file << METAIO_STREAM::endl;
-        ++order;
+          file << R"(  <parameter name="DestDataPath" value=")"
+               << datapath.c_str() << "\"/>" << METAIO_STREAM::endl;
+          file << " </componentAction>" << METAIO_STREAM::endl;
+          file << METAIO_STREAM::endl;
+          ++order;
         }
       ++itFields;
       }
     ++it;
     }
 
-  file << " <componentAction type=\"JobSubmission\" order=\"" << order << "\">" << METAIO_STREAM::endl;
-  file << "  <parameter name=\"Executable\" value=\"" << m_ExecutableName.c_str() << "\"/>" << METAIO_STREAM::endl;
-  file << "  <parameter name=\"Arguments\"  value=\"";
-  // Write out the command line arguments
-  it = options.begin();
-  while(it != options.end())
-    {
-    if(it != options.begin())
-      {
-      file << " ";
+    file << R"( <componentAction type="JobSubmission" order=")" << order
+         << "\">" << METAIO_STREAM::endl;
+    file << R"(  <parameter name="Executable" value=")"
+         << m_ExecutableName.c_str() << "\"/>" << METAIO_STREAM::endl;
+    file << R"(  <parameter name="Arguments"  value=")";
+    // Write out the command line arguments
+    it = options.begin();
+    while (it != options.end()) {
+      if (it != options.begin()) {
+        file << " ";
       }
     file << "{" << (*it).name.c_str() << "}";
     ++it;
@@ -1083,12 +1091,18 @@ bool MetaCommand::ExportGAD(bool dynamic)
       {
       if((*itFields).externaldata == DATA_OUT)
         {
-        file << " <componentAction type=\"DataRelocation\" order=\"" << order << "\">" << METAIO_STREAM::endl;
-        file << "  <parameter name=\"Name\" Value=\"" << (*itFields).name <<"\"/>" << METAIO_STREAM::endl;
-        file << "  <parameter name=\"Host\" Value=\"hostname\"/>" << METAIO_STREAM::endl;
-        file << "  <parameter name=\"Description\" value=\"" << (*itFields).description << "\"/>" << METAIO_STREAM::endl;
-        file << "  <parameter name=\"Direction\" value=\"Out\"/>" << METAIO_STREAM::endl;
-        file << "  <parameter name=\"Protocol\" value=\"gsiftp\"/>" << METAIO_STREAM::endl;
+        file << R"( <componentAction type="DataRelocation" order=")" << order
+             << "\">" << METAIO_STREAM::endl;
+        file << R"(  <parameter name="Name" Value=")" << (*itFields).name
+             << "\"/>" << METAIO_STREAM::endl;
+        file << R"(  <parameter name="Host" Value="hostname"/>)"
+             << METAIO_STREAM::endl;
+        file << R"(  <parameter name="Description" value=")"
+             << (*itFields).description << "\"/>" << METAIO_STREAM::endl;
+        file << R"(  <parameter name="Direction" value="Out"/>)"
+             << METAIO_STREAM::endl;
+        file << R"(  <parameter name="Protocol" value="gsiftp"/>)"
+             << METAIO_STREAM::endl;
         METAIO_STL::string datapath = (*itFields).value;
         size_t slash = datapath.find_last_of("/");
         if(slash>0)
@@ -1100,11 +1114,13 @@ bool MetaCommand::ExportGAD(bool dynamic)
           {
           datapath = datapath.substr(slash+1,datapath.size()-slash-1);
           }
-        file << "  <parameter name=\"SourceDataPath\" value=\"" << datapath.c_str() << "\"/>" << METAIO_STREAM::endl;
-        file << "  <parameter name=\"DestDataPath\" value=\"" << (*itFields).value << "\"/>" << METAIO_STREAM::endl;
-        file << " </componentAction>" << METAIO_STREAM::endl;
-        file << METAIO_STREAM::endl;
-        ++order;
+          file << R"(  <parameter name="SourceDataPath" value=")"
+               << datapath.c_str() << "\"/>" << METAIO_STREAM::endl;
+          file << R"(  <parameter name="DestDataPath" value=")"
+               << (*itFields).value << "\"/>" << METAIO_STREAM::endl;
+          file << " </componentAction>" << METAIO_STREAM::endl;
+          file << METAIO_STREAM::endl;
+          ++order;
         }
       ++itFields;
       }
