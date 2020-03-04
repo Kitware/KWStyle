@@ -211,8 +211,7 @@ int main(int argc, const char **argv)
   std::string fileToCheck = "";
   std::string fixedFile = "";
 
-  if(xmlFile.size()>0)
-    {
+  if (!xmlFile.empty()) {
     kws::XMLReader reader;
     if(reader.Open(xmlFile.c_str()))
       {
@@ -257,7 +256,7 @@ int main(int argc, const char **argv)
       {
       std::cout << "Cannot open configuration file: " << xmlFile.c_str() << std::endl;
       }
-    }
+  }
 
   if(command.GetOptionWasSet("blacklist"))
     {
@@ -354,10 +353,9 @@ int main(int argc, const char **argv)
 
   std::string inputFilename = command.GetValueAsString("infile");
 
-  if(fileToCheck.size()>0)
-    {
+  if (!fileToCheck.empty()) {
     inputFilename = fileToCheck;
-    }
+  }
 
   if(command.GetOptionWasSet("recursive"))
     {
@@ -382,13 +380,11 @@ int main(int argc, const char **argv)
   std::vector<kws::Parser> m_Parsers;
 
   // if the -d command is used
-  if(directoryToCheck.size()>0)
-    {
+  if (!directoryToCheck.empty()) {
     kwssys::Glob glob;
-    if(recursive.size()>0)
-      {
+    if (!recursive.empty()) {
       glob.RecurseOn();
-      }
+    }
     std::string globoption = directoryToCheck.c_str();
 
     if(kwssys::SystemTools::FileExists(directoryToCheck.c_str()))
@@ -398,9 +394,7 @@ int main(int argc, const char **argv)
 
     glob.FindFiles(globoption.c_str());
     filenames = glob.GetFiles();
-    }
-  else if(filesToCheck.size()>0)
-    {
+  } else if (!filesToCheck.empty()) {
     // Read the file
     std::ifstream file;
     file.open(filesToCheck.c_str(), std::ios::binary | std::ios::in);
@@ -514,11 +508,9 @@ int main(int argc, const char **argv)
       } while(pos < fileSize);
 
     file.close();
-    }
-   else
-    {
+  } else {
     filenames.push_back(inputFilename);
-    }
+  }
 
   // sort the filenames
   std::sort(filenames.begin(), filenames.end());
@@ -720,10 +712,9 @@ int main(int argc, const char **argv)
     if(command.GetOptionWasSet("cvs"))
       {
       std::cout << parser.GetLastErrors().c_str() << std::endl;
-      if(parser.GetErrors().size()>0)
-        {
+      if (!parser.GetErrors().empty()) {
         return 1;
-        }
+      }
       }
 
     nerrors += static_cast<unsigned long>(parser.GetErrors().size());
@@ -752,13 +743,12 @@ int main(int argc, const char **argv)
       }
 
     bool showNoErrors = false;
-    if(lessHTML.size()>0)
-      {
+    if (!lessHTML.empty()) {
       if(lessHTML[0] == '1')
         {
         showNoErrors = true;
         }
-      }
+    }
 
     if(command.GetOptionWasSet("lesshtml"))
       {

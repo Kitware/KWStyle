@@ -33,18 +33,15 @@ int kwsIndentTest(int, char* [] )
   // Test for bad syntax
   std::cout << "Test for bad syntax: ";
   kws::Parser::ErrorVectorType errors = parser.GetErrors();
-  if(errors.size() > 0)
-    {
+  if (!errors.empty()) {
     for(unsigned int i=0;i<errors.size();i++)
       {
       std::cout << errors[i].description << std::endl;
       }
-    }
-  else
-    {
+  } else {
     std::cout << "[FAILED]" << std::endl;
     return EXIT_FAILURE;
-    }
+  }
   std::cout << "[PASSED]" << std::endl;
 
   // Test for good syntax
@@ -55,15 +52,14 @@ int kwsIndentTest(int, char* [] )
 
   std::cout << "Test for good syntax: ";
   errors = parser.GetErrors();
-  if(errors.size() > 0)
-    {
+  if (!errors.empty()) {
     for(unsigned int i=0;i<errors.size();i++)
       {
       std::cout << errors[i].description << std::endl;
       }
     std::cout << "[FAILED]" << std::endl;
     return EXIT_FAILURE;
-    }
+  }
   std::cout << "[PASSED]" << std::endl;
 
   // Test for good syntax
@@ -74,8 +70,7 @@ int kwsIndentTest(int, char* [] )
 
   std::cout << "Test for good syntax: ";
   errors = parser.GetErrors();
-  if(errors.size() > 0)
-    {
+  if (!errors.empty()) {
     for(unsigned int i=0;i<errors.size();i++)
       {
       std::cout << errors[i].description << std::endl;
@@ -83,7 +78,7 @@ int kwsIndentTest(int, char* [] )
       }
     std::cout << "[FAILED]" << std::endl;
     return EXIT_FAILURE;
-    }
+  }
   std::cout << "[PASSED]" << std::endl;
 
   return 0;

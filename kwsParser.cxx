@@ -356,9 +356,8 @@ bool Parser::Check(const char* name, const char* value)
       useCVS = true;
       }
 
-    if(v1.size()>0)
-      {
-      this->CheckHeader(v1.c_str(),spaceEndOfLine,useCVS);
+      if (!v1.empty()) {
+        this->CheckHeader(v1.c_str(), spaceEndOfLine, useCVS);
       }
     }
 
@@ -615,14 +614,13 @@ std::string Parser::GetLine(unsigned long i) const
 std::string Parser::FindPreviousWord(size_t pos,bool withComments,std::string buffer) const
 {
   std::string stream = buffer;
-  if(buffer.size() == 0)
-    {
+  if (buffer.empty()) {
     stream = m_BufferNoComment;
     if(withComments)
       {
       stream = m_Buffer;
       }
-    }
+  }
 
   size_t i=pos;
 
@@ -1355,10 +1353,10 @@ bool Parser::IsInUnion(size_t pos,const char* buffer) const
 /**  return true if the position pos is inside a comment */
 bool Parser::IsInComments(size_t pos) const
 {
-  if((pos == std::string::npos) || (m_CommentBegin.size()==0) || (m_CommentEnd.size() == 0))
-    {
+  if ((pos == std::string::npos) || (m_CommentBegin.empty()) ||
+      (m_CommentEnd.empty())) {
     return false;
-    }
+  }
 
   size_t b0 = m_Buffer.find(m_CommentBegin,0);
 
@@ -1473,12 +1471,10 @@ bool Parser::IsBetweenSingleQuote(size_t pos,bool withComments,std::string buffe
     return false;
     }
 
-  if(buffer.size()==0)
-    {
-    stream = m_BufferNoComment;
-    if(withComments)
-      {
-      stream = m_Buffer;
+    if (buffer.empty()) {
+      stream = m_BufferNoComment;
+      if (withComments) {
+        stream = m_Buffer;
       }
     }
 
@@ -1514,14 +1510,13 @@ bool Parser::IsBetweenQuoteChar(size_t pos,bool withComments,std::string buffer,
 {
   std::string stream = buffer;
 
-  if(buffer.size()==0)
-    {
+  if (buffer.empty()) {
     stream = m_BufferNoComment;
     if(withComments)
       {
       stream = m_Buffer;
       }
-    }
+  }
 
   if(pos == std::string::npos)
     {
@@ -1566,14 +1561,13 @@ bool Parser::IsBetweenQuoteChar(size_t pos,bool withComments,std::string buffer,
 bool Parser::IsBetweenCharsFast(const char begin, const char end ,size_t pos,bool withComments,std::string buffer) const
 {
   std::string stream = buffer;
-  if(buffer.size() == 0)
-    {
+  if (buffer.empty()) {
     stream = m_BufferNoComment;
     if(withComments)
       {
       stream = m_Buffer;
       }
-    }
+  }
 
   if(pos == std::string::npos)
     {
@@ -1600,14 +1594,13 @@ bool Parser::IsBetweenChars(const char begin, const char end ,size_t pos,
                             bool withComments,std::string buffer) const
 {
   std::string stream = buffer;
-  if(buffer.size() == 0)
-    {
+  if (buffer.empty()) {
     stream = m_BufferNoComment;
     if(withComments)
       {
       stream = m_Buffer;
       }
-    }
+  }
 
   if(pos == std::string::npos)
     {
@@ -1904,14 +1897,13 @@ size_t Parser::FindClosingChar(char openChar, char closeChar,
                                size_t pos,bool noComment,std::string buffer) const
 {
   std::string stream = buffer;
-  if(buffer.size() == 0)
-    {
+  if (buffer.empty()) {
     stream = m_Buffer.c_str();
     if(noComment)
       {
       stream = m_BufferNoComment.c_str();
       }
-    }
+  }
 
   size_t open = 1;
   for(size_t i=pos+1;i<stream.length();i++)
@@ -2095,10 +2087,9 @@ void Parser::GenerateFixedFile()
     return;
     }
 
-  if(m_ErrorList.size() == 0)
-    {
-    std::cout << "No error. Not generating corrected file." << std::endl;
-    return;
+    if (m_ErrorList.empty()) {
+      std::cout << "No error. Not generating corrected file." << std::endl;
+      return;
     }
 
   std::string filename = kwssys::SystemTools::GetFilenameWithoutExtension(m_Filename.c_str());

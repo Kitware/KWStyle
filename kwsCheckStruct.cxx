@@ -58,10 +58,9 @@ bool Parser::CheckStruct(const char* regEx,bool alignment)
     while(pos!= std::string::npos)
       {
       std::string var = this->FindInternalVariable(pos+1,end+1,pos);
-      if(var == "")
-        {
+      if (var.empty()) {
         continue;
-        }
+      }
 
       if(var.length() > 0)
         {   

@@ -71,11 +71,9 @@ bool Parser::CheckComments(const char* begin,const char* middle,const char* end,
           i++;
           }
 
-        if(word.size()>0)
-          {
-          if(word != previousWord)
-            {
-            previousWord = word;
+          if (!word.empty()) {
+            if (word != previousWord) {
+              previousWord = word;
             }
           else if(previousWord.size() > 1 && 
                previousWord[0] != '/'

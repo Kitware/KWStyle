@@ -33,18 +33,15 @@ int kwsSemiColonSpaceTest(int, char* [] )
   // Test for bad syntax
   std::cout << "Test for bad syntax: ";
   kws::Parser::ErrorVectorType errors = parser.GetErrors();
-  if(errors.size() > 0)
-    {
+  if (!errors.empty()) {
     for(unsigned int i=0;i<errors.size();i++)
       {
       std::cout << errors[i].description << std::endl;
       }
-    }
-  else
-    {
+  } else {
     std::cout << "[FAILED]" << std::endl;
     return EXIT_FAILURE;
-    }
+  }
   std::cout << "[PASSED]" << std::endl;
 
   // Test for bad syntax
@@ -54,18 +51,15 @@ int kwsSemiColonSpaceTest(int, char* [] )
   parser.Check("SemicolonSpace","0");
   std::cout << "Test for bad syntax: ";
   errors = parser.GetErrors();
-  if(errors.size() > 0)
-    {
+  if (!errors.empty()) {
     for(unsigned int i=0;i<errors.size();i++)
       {
       std::cout << errors[i].description << std::endl;
       }
-    }
-  else
-    {
+  } else {
     std::cout << "[FAILED]" << std::endl;
     return EXIT_FAILURE;
-    }
+  }
   std::cout << "[PASSED]" << std::endl;
 
 
@@ -76,15 +70,14 @@ int kwsSemiColonSpaceTest(int, char* [] )
   parser.Check("SemicolonSpace","0");
   std::cout << "Test for good syntax: ";
   errors = parser.GetErrors();
-  if(errors.size() > 0)
-    {
+  if (!errors.empty()) {
     for(unsigned int i=0;i<errors.size();i++)
       {
       std::cout << errors[i].description << std::endl;
       }
     std::cout << "[FAILED]" << std::endl;
     return EXIT_FAILURE;
-    }
+  }
   std::cout << "[PASSED]" << std::endl;
 
   // Test for good syntax of initializer value return lists
@@ -95,15 +88,14 @@ int kwsSemiColonSpaceTest(int, char* [] )
 
   std::cout << "Test for return value initializer lists: ";
   errors = parser.GetErrors();
-  if(errors.size() > 0)
-    {
+  if (!errors.empty()) {
     for(unsigned int i=0;i<errors.size();i++)
       {
       std::cout << errors[i].description << std::endl;
       }
     std::cout << "[FAILED]" << std::endl;
     return EXIT_FAILURE;
-    }
+  }
   std::cout << "[PASSED]" << std::endl;
 
   // Test for good syntax
@@ -114,15 +106,14 @@ int kwsSemiColonSpaceTest(int, char* [] )
 
   std::cout << "Test for good syntax: ";
   errors = parser.GetErrors();
-  if(errors.size() > 0)
-    {
+  if (!errors.empty()) {
     for(unsigned int i=0;i<errors.size();i++)
       {
       std::cout << errors[i].description << std::endl;
       }
     std::cout << "[FAILED]" << std::endl;
     return EXIT_FAILURE;
-    }
+  }
   std::cout << "[PASSED]" << std::endl;
 
   // Test for good syntax
@@ -133,15 +124,14 @@ int kwsSemiColonSpaceTest(int, char* [] )
 
   std::cout << "Test for good syntax: ";
   errors = parser.GetErrors();
-  if(errors.size() > 0)
-    {
+  if (!errors.empty()) {
     for(unsigned int i=0;i<errors.size();i++)
       {
       std::cout << errors[i].description << std::endl;
       }
     std::cout << "[FAILED]" << std::endl;
     return EXIT_FAILURE;
-    }
+  }
   std::cout << "[PASSED]" << std::endl;
 
   // Test for good syntax
@@ -152,15 +142,14 @@ int kwsSemiColonSpaceTest(int, char* [] )
 
   std::cout << "Test for good syntax: ";
   errors = parser.GetErrors();
-  if(errors.size() > 0)
-    {
+  if (!errors.empty()) {
     for(unsigned int i=0;i<errors.size();i++)
       {
       std::cout << errors[i].description << std::endl;
       }
     std::cout << "[FAILED]" << std::endl;
     return EXIT_FAILURE;
-    }
+  }
   std::cout << "[PASSED]" << std::endl;
 
   // Test for good syntax
@@ -172,15 +161,14 @@ int kwsSemiColonSpaceTest(int, char* [] )
 
   std::cout << "Test for good syntax: ";
   errors = parser.GetErrors();
-  if(errors.size() > 0)
-    {
+  if (!errors.empty()) {
     for(unsigned int i=0;i<errors.size();i++)
       {
       std::cout << errors[i].description << std::endl;
       }
     std::cout << "[FAILED]" << std::endl;
     return EXIT_FAILURE;
-    }
+  }
   std::cout << "[PASSED]" << std::endl;
 
   std::cout << "[DONE]" << std::endl;

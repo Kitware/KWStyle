@@ -70,8 +70,7 @@ bool Parser::CheckVariables(const char* regEx)
   while(pos != std::string::npos)
     {
     std::string var = this->FindVariable(buffer,pos+1,buffer.size(),pos);
-    if(var.size()>0)
-      {
+    if (!var.empty()) {
       std::string correct = "";
       for(size_t i=0;i<var.size();i++)
         {
@@ -84,7 +83,7 @@ bool Parser::CheckVariables(const char* regEx)
       p.first = correct;
       p.second = this->GetLineNumber(pos,true)-1;
       ivars.push_back(p);
-      }
+    }
     }
 
   // Do the checking

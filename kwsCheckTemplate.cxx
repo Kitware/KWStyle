@@ -100,8 +100,8 @@ bool Parser::CheckTemplate(const char* regEx)
         {
         inWord = false;
 
-        if(currentWord.size()>0 && !afterEqual && !regex.find(currentWord) && level==0)
-          {
+        if (!currentWord.empty() && !afterEqual && !regex.find(currentWord) &&
+            level == 0) {
           Error error;
           error.line = this->GetLineNumber(i,true);
           error.line2 = error.line;
@@ -109,7 +109,7 @@ bool Parser::CheckTemplate(const char* regEx)
           error.description = "Template definition (" + currentWord + ") doesn't match regular expression";
           m_ErrorList.push_back(error);
           hasErrors = true;
-          }
+        }
 
         if(m_BufferNoComment[i] == '=')
           {

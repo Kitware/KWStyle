@@ -108,36 +108,37 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
 
     //std::cout << "Function Name = " << functionName.c_str() << std::endl;
 
-    if(functionName.size() == 0)
-      {
-      long int bf = static_cast<long int>(m_BufferNoComment.find('{',pos));
-      long int pos2 = static_cast<long int>(this->FindClosingChar('{','}',bf,true));
-      pos = static_cast<long int>(this->FindFunction(pos2+1));
+      if (functionName.empty()) {
+        long int bf = static_cast<long int>(m_BufferNoComment.find('{', pos));
+        long int pos2 =
+            static_cast<long int>(this->FindClosingChar('{', '}', bf, true));
+        pos = static_cast<long int>(this->FindFunction(pos2 + 1));
 
-      // we cannot go backward
-      /*if(pos2 > pos)
-        {
-        long int bf = m_BufferNoComment.find('{',pos2);
-        pos = this->FindFunction(bf);
-        }*/
-      continue;
-      }
-    else if(functionName.size()>0)
-      {
-      long int bf = static_cast<long int>(m_BufferNoComment.find('{',pos));
-      long int bfcomments = static_cast<long int>(GetPositionWithComments(bf));
-      long int bfl = static_cast<long int>(this->GetLineNumber(bfcomments));
-      long int pos2 = static_cast<long int>(this->FindClosingChar('{','}',bf,true));
-      long int poscomments = static_cast<long int>(GetPositionWithComments(pos2));
-      long int efl = this->GetLineNumber(poscomments);
+        // we cannot go backward
+        /*if(pos2 > pos)
+          {
+          long int bf = m_BufferNoComment.find('{',pos2);
+          pos = this->FindFunction(bf);
+          }*/
+        continue;
+      } else if (!functionName.empty()) {
+        long int bf = static_cast<long int>(m_BufferNoComment.find('{', pos));
+        long int bfcomments =
+            static_cast<long int>(GetPositionWithComments(bf));
+        long int bfl = static_cast<long int>(this->GetLineNumber(bfcomments));
+        long int pos2 =
+            static_cast<long int>(this->FindClosingChar('{', '}', bf, true));
+        long int poscomments =
+            static_cast<long int>(GetPositionWithComments(pos2));
+        long int efl = this->GetLineNumber(poscomments);
 
-      pos = static_cast<long int>(this->FindFunction(pos2+1));
+        pos = static_cast<long int>(this->FindFunction(pos2 + 1));
 
-      // we cannot go backward
-      if(pos2 > pos)
-        {
-        long int localbf = static_cast<long int>(m_BufferNoComment.find('{',pos2));
-        pos = static_cast<long int>(this->FindFunction(localbf));
+        // we cannot go backward
+        if (pos2 > pos) {
+          long int localbf =
+              static_cast<long int>(m_BufferNoComment.find('{', pos2));
+          pos = static_cast<long int>(this->FindFunction(localbf));
         }
 
       if(!regex.find(functionName))

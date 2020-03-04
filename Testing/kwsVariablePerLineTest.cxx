@@ -33,18 +33,15 @@ int kwsVariablePerLineTest(int, char* [] )
   // Test for bad syntax
   std::cout << "Test for bad syntax: ";
   kws::Parser::ErrorVectorType errors = parser.GetErrors();
-  if(errors.size() > 0)
-    {
+  if (!errors.empty()) {
     for(unsigned int i=0;i<errors.size();i++)
       {
       std::cout << errors[i].description << std::endl;
       }
-    }
-  else
-    {
+  } else {
     std::cout << "[FAILED]" << std::endl;
     return EXIT_FAILURE;
-    }
+  }
   std::cout << "[PASSED]" << std::endl;
 
   // Test for good syntax
@@ -55,15 +52,14 @@ int kwsVariablePerLineTest(int, char* [] )
 
   std::cout << "Test for good syntax: ";
   errors = parser.GetErrors();
-  if(errors.size() > 0)
-    {
+  if (!errors.empty()) {
     for(unsigned int i=0;i<errors.size();i++)
       {
       std::cout << errors[i].description << std::endl;
       }
     std::cout << "[FAILED]" << std::endl;
     return EXIT_FAILURE;
-    }
+  }
   std::cout << "[PASSED]" << std::endl;
 
   // Test for good syntax
@@ -74,15 +70,14 @@ int kwsVariablePerLineTest(int, char* [] )
 
   std::cout << "Test for good syntax: ";
   errors = parser.GetErrors();
-  if(errors.size() > 0)
-    {
+  if (!errors.empty()) {
     for(unsigned int i=0;i<errors.size();i++)
       {
       std::cout << errors[i].description << std::endl;
       }
     std::cout << "[FAILED]" << std::endl;
     return EXIT_FAILURE;
-    }
+  }
   std::cout << "[PASSED]" << std::endl;
 
   // Test for good syntax
@@ -93,15 +88,14 @@ int kwsVariablePerLineTest(int, char* [] )
 
   std::cout << "Test for good syntax: ";
   errors = parser.GetErrors();
-  if(errors.size() > 0)
-    {
+  if (!errors.empty()) {
     for(unsigned int i=0;i<errors.size();i++)
       {
       std::cout << errors[i].description << std::endl;
       }
     std::cout << "[FAILED]" << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
   // Test for good syntax
   buffer = "void func( int t,\r\n  int x, int c, \r\n  int d );";
@@ -111,15 +105,14 @@ int kwsVariablePerLineTest(int, char* [] )
 
   std::cout << "Test for good syntax: ";
   errors = parser.GetErrors();
-  if(errors.size() > 0)
-    {
+  if (!errors.empty()) {
     for(unsigned int i=0;i<errors.size();i++)
       {
       std::cout << errors[i].description << std::endl;
       }
     std::cout << "[FAILED]" << std::endl;
     return EXIT_FAILURE;
-    }
+  }
   std::cout << "[PASSED]" << std::endl;
 
   std::cout << "[DONE]" << std::endl;

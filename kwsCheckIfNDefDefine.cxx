@@ -148,11 +148,10 @@ bool Parser::CheckIfNDefDefine(const char* match)
 
     if(doesMatch)
       {
-      if(m_Filename == "")
-        {
+      if (m_Filename.empty()) {
         std::cout << "CheckIfNDefDefine() : m_Filename should be set" << std::endl;
         return false;
-        }
+      }
 
       long int point = static_cast<long int>(m_Filename.find_last_of("."));
       long int slash = static_cast<long int>(m_Filename.find_last_of("/"));

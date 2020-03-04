@@ -56,10 +56,9 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment,bool checkP
     while(pos!= std::string::npos)
       {
       std::string var = this->FindInternalVariable(pos+1,publicLast,pos);
-      if(var == "")
-        {
+      if (var.empty()) {
         continue;
-        }
+      }
 
       if(this->IsInStruct(pos) || this->IsInUnion(pos))
         {
@@ -136,10 +135,9 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment,bool checkP
       {
       std::string var = this->FindInternalVariable(pos+1,protectedLast,pos);
 
-      if(var == "")
-        {
+      if (var.empty()) {
         continue;
-        }
+      }
 
       if(this->IsInStruct(pos) || this->IsInUnion(pos))
         {
@@ -202,10 +200,9 @@ bool Parser::CheckInternalVariables(const char* regEx,bool alignment,bool checkP
     while(pos != std::string::npos)
       {
       std::string var = this->FindInternalVariable(pos+1,privateLast,pos);
-      if(var == "")
-        {
+      if (var.empty()) {
         continue;
-        }
+      }
 
       if(this->IsInStruct(pos) || this->IsInUnion(pos))
         {

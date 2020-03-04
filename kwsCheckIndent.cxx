@@ -120,8 +120,7 @@ bool Parser::CheckIndent(IndentType itype,
     {
     unsigned long fileSize = 0;
     // if the file is specified
-    if(m_HeaderFilename.size() > 0)
-      {
+    if (!m_HeaderFilename.empty()) {
       std::ifstream file;
       file.open(m_HeaderFilename.c_str(), std::ios::binary | std::ios::in);
       if(!file.is_open())
@@ -133,9 +132,7 @@ bool Parser::CheckIndent(IndentType itype,
       file.seekg(0,std::ios::end);
       fileSize = file.tellg();
       file.close();
-      }
-    else
-      {
+    } else {
       // we look at the first '*/' in the file which indicated the end
       // of the current header
       // This assume that there is an header at some point
@@ -144,7 +141,7 @@ bool Parser::CheckIndent(IndentType itype,
         {
         fileSize = endHeader;
         }
-      }
+    }
 
     // We skip the header
     for(unsigned int i=0;i<fileSize;i++)
