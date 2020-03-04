@@ -1,25 +1,22 @@
-#=============================================================================
-# KWSys - Kitware System Library
-# Copyright 2000-2020 Kitware, Inc., NumFOCUS
-#
-# Distributed under the OSI-approved BSD License (the "License");
-# see accompanying file Copyright.txt for details.
-#
-# This software is distributed WITHOUT ANY WARRANTY; without even the
-# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-# See the License for more information.
-#=============================================================================
+# Distributed under the OSI-approved BSD 3-Clause License.  See accompanying
+# file Copyright.txt or https://cmake.org/licensing#kwsys for details.
+
 set(KWSYS_PLATFORM_TEST_FILE_C kwsysPlatformTestsC.c)
 set(KWSYS_PLATFORM_TEST_FILE_CXX kwsysPlatformTestsCXX.cxx)
 
 macro(KWSYS_PLATFORM_TEST lang var description invert)
   if(NOT DEFINED ${var}_COMPILED)
     message(STATUS "${description}")
+    set(maybe_cxx_standard "")
+    if(CMAKE_VERSION VERSION_LESS 3.8 AND CMAKE_CXX_STANDARD)
+      set(maybe_cxx_standard "-DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}")
+    endif()
     try_compile(${var}_COMPILED
       ${CMAKE_CURRENT_BINARY_DIR}
       ${CMAKE_CURRENT_SOURCE_DIR}/${KWSYS_PLATFORM_TEST_FILE_${lang}}
       COMPILE_DEFINITIONS -DTEST_${var} ${KWSYS_PLATFORM_TEST_DEFINES} ${KWSYS_PLATFORM_TEST_EXTRA_FLAGS}
       CMAKE_FLAGS "-DLINK_LIBRARIES:STRING=${KWSYS_PLATFORM_TEST_LINK_LIBRARIES}"
+                  ${maybe_cxx_standard}
       OUTPUT_VARIABLE OUTPUT)
     if(${var}_COMPILED)
       file(APPEND
