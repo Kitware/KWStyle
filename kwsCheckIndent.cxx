@@ -204,7 +204,7 @@ bool Parser::CheckIndent(IndentType itype,
 
     // Check if pos is in the list of positions
     std::vector<IndentPosition>::iterator itIdentPos = m_IdentPositionVector.begin();
-    IndentPosition* sindent = NULL;
+    IndentPosition *sindent = nullptr;
     while(itIdentPos != m_IdentPositionVector.end())
       {
       if((*itIdentPos).position == pos)

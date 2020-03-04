@@ -28,7 +28,7 @@ namespace METAIO_NAMESPACE {
 
 MetaCommand::MetaCommand()
 {
-  m_HelpCallBack = NULL;
+  m_HelpCallBack = nullptr;
   m_OptionVector.clear();
   m_Version = "Not defined";
   m_Date = "Not defined";
@@ -588,9 +588,8 @@ void MetaCommand::ListOptions()
     ++i;
     ++it;
     }
-  if(m_HelpCallBack != NULL)
-    {
-    m_HelpCallBack();
+    if (m_HelpCallBack != nullptr) {
+      m_HelpCallBack();
     }
 }
 
@@ -840,9 +839,8 @@ void MetaCommand::ListOptionsSimplified()
     ++it;
     }
 
-  if(m_HelpCallBack != NULL)
-    {
-    m_HelpCallBack();
+    if (m_HelpCallBack != nullptr) {
+      m_HelpCallBack();
     }
 }
 
@@ -882,7 +880,7 @@ MetaCommand::GetOptionByMinusTag(METAIO_STL::string minusTag)
       }
     ++it;
     }
-  return NULL;
+    return nullptr;
 }
 
 /** Get the option by tag */
@@ -898,7 +896,7 @@ MetaCommand::GetOptionByTag(METAIO_STL::string minusTag)
       }
     ++it;
     }
-  return NULL;
+    return nullptr;
 }
 
 /** Return the option id. i.e the position in the vector */

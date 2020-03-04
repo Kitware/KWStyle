@@ -39,7 +39,7 @@ struct FilenameSorting
 /** Constructor */
 Generator::Generator()
 {
-  m_Parsers = NULL;
+  m_Parsers = nullptr;
   m_ProjectTitle = "";
   m_ProjectLogo = "Logo.gif";
   m_KWStyleLogo = "kwstylelogo.jpg";
