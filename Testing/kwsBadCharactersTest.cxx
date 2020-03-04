@@ -38,10 +38,9 @@ int kwsBadCharactersTest(int, char* [] )
   std::cout << "Test for bad syntax: ";
   kws::Parser::ErrorVectorType errors = parser.GetErrors();
   if (!errors.empty()) {
-    for(unsigned int i=0;i<errors.size();i++)
-      {
-      std::cout << errors[i].description << std::endl;
-      }
+    for (auto &error : errors) {
+      std::cout << error.description << std::endl;
+    }
   } else {
     std::cout << "[FAILED]" << std::endl;
     return EXIT_FAILURE;
@@ -58,11 +57,9 @@ int kwsBadCharactersTest(int, char* [] )
   std::cout << "Test for good syntax: ";
   errors = parser.GetErrors();
   if (!errors.empty()) {
-    for(unsigned int i=0;i<errors.size();i++)
-      {
-      std::cout << errors[i].line << " : "
-                << errors[i].description << std::endl;
-      }
+    for (auto &error : errors) {
+      std::cout << error.line << " : " << error.description << std::endl;
+    }
     std::cout << "[FAILED]" << std::endl;
     return EXIT_FAILURE;
   }

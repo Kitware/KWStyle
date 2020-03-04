@@ -1836,26 +1836,22 @@ size_t Parser::FindConstructor(const std::string & buffer, const std::string & c
       // we look if we have only spaces or \n between pos pos2 and pos3
       std::string val = buffer.substr(pos+className.size()+1,pos2-pos-className.size()-1);
       bool ok = true;
-      for(size_t i=0;i<val.size();i++)
-        {
-        if(val[i] != ' ' || val[i] != '\n')
-          {
+      for (char i : val) {
+        if (i != ' ' || i != '\n') {
           ok =false;
-          }
         }
+      }
 
       bool ok2 = false;
       if(ok)
         {
         ok2 = true;
         val = buffer.substr(pos2+1,pos3-pos2-1);
-        for(size_t i=0;i<val.size();i++)
-          {
-          if(val[i] != ' ' || val[i] != '\n')
-            {
+        for (char i : val) {
+          if (i != ' ' || i != '\n') {
             ok2 =false;
-            }
           }
+        }
         }
 
       // if ok2 then we check if the constructor is implemented

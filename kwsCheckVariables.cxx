@@ -72,13 +72,11 @@ bool Parser::CheckVariables(const char* regEx)
     std::string var = this->FindVariable(buffer,pos+1,buffer.size(),pos);
     if (!var.empty()) {
       std::string correct = "";
-      for(size_t i=0;i<var.size();i++)
-        {
-        if(var[i] != '*')
-          {
-          correct+=var[i];
-          }
+      for (char i : var) {
+        if (i != '*') {
+          correct += i;
         }
+      }
       PairType p;
       p.first = correct;
       p.second = this->GetLineNumber(pos,true)-1;

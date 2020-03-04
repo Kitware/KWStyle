@@ -34,10 +34,9 @@ int kwsStatementPerLineTest(int, char* [] )
   std::cout << "Test for bad syntax: ";
   kws::Parser::ErrorVectorType errors = parser.GetErrors();
   if (!errors.empty()) {
-    for(unsigned int i=0;i<errors.size();i++)
-      {
-      std::cout << errors[i].description << std::endl;
-      }
+    for (auto &error : errors) {
+      std::cout << error.description << std::endl;
+    }
   } else {
     std::cout << "[FAILED] for buffer: " << buffer << std::endl;
     return EXIT_FAILURE;
@@ -53,10 +52,9 @@ int kwsStatementPerLineTest(int, char* [] )
   std::cout << "Test for good syntax: ";
   errors = parser.GetErrors();
   if (!errors.empty()) {
-    for(unsigned int i=0;i<errors.size();i++)
-      {
-      std::cout << errors[i].description << std::endl;
-      }
+    for (auto &error : errors) {
+      std::cout << error.description << std::endl;
+    }
     std::cout << "[FAILED] for buffer: " << buffer << std::endl;
     return EXIT_FAILURE;
   }
@@ -71,10 +69,9 @@ int kwsStatementPerLineTest(int, char* [] )
   std::cout << "Test for good syntax: ";
   errors = parser.GetErrors();
   if (!errors.empty()) {
-    for(unsigned int i=0;i<errors.size();i++)
-      {
-      std::cout << errors[i].description << std::endl;
-      }
+    for (auto &error : errors) {
+      std::cout << error.description << std::endl;
+    }
     std::cout << "[FAILED] for buffer: " << buffer << std::endl;
     return EXIT_FAILURE;
   }

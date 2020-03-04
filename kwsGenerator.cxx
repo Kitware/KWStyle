@@ -389,14 +389,11 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
     file << "  </td>" << std::endl;
 
     width = 90/nTests;
-    for(unsigned int index=0;index<NUMBER_ERRORS;index++)
-      {
+    for (int nerror : tests) {
       // Count the number of errors for this type of error
-      int nerror = tests[index];
-      if(nerror == -1)
-        {
+      if (nerror == -1) {
         continue;
-        }
+      }
 
       file << "  <td width=\"" << width << "%\"";
       if(nerror == 0)
@@ -421,7 +418,7 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
       file << ">" << std::endl;
       file << "    <div align=\"center\"><b>" << nerror << "</b></div>" << std::endl;
       file << "  </td>" << std::endl;
-      }
+    }
     file << "</tr>" << std::endl;
     }
   file << "</table>" << std::endl;
