@@ -46,10 +46,9 @@ bool Parser::CheckTypedefs(const char* regEx, bool alignment,unsigned int maxLen
     size_t typedefpos = 0;
     std::string var = this->FindTypedef(pos+1,m_BufferNoComment.size(),pos,beg,typedefpos);
 
-    if(var == "")
-      {
+    if (var.empty()) {
       continue;
-      }
+    }
     // Check the alignment if specified
     if(alignment)
       {

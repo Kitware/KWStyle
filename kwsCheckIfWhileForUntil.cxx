@@ -75,7 +75,7 @@ bool Parser::FindIfWhileForUntil(const char* op,
       {
       // Check number of space after
       unsigned int aft = 0;
-      long int i = static_cast<long int>( operatorPos+strlen(op) );
+      auto i = static_cast<long int>(operatorPos + strlen(op));
       while( (i<(long int)m_BufferNoComment.size())
              && m_BufferNoComment[i] == ' ' )
         {

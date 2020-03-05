@@ -39,7 +39,7 @@ struct FilenameSorting
 /** Constructor */
 Generator::Generator()
 {
-  m_Parsers = NULL;
+  m_Parsers = nullptr;
   m_ProjectTitle = "";
   m_ProjectLogo = "Logo.gif";
   m_KWStyleLogo = "kwstylelogo.jpg";
@@ -48,9 +48,7 @@ Generator::Generator()
 }
 
 /** Destructor */
-Generator::~Generator()
-{
-}
+Generator::~Generator() = default;
 
 /** Read the configuration file */
 void Generator::ReadConfigurationFile(const char* configFile)
@@ -88,16 +86,14 @@ bool Generator::GenerateDescription(const char* dir)
     }
 
   std::string title = filename;
-  if(m_ProjectTitle.size() > 0)
-    {
+  if (!m_ProjectTitle.empty()) {
     title = "Description for " + m_ProjectTitle;
-    }
+  }
   this->CreateHeader(&file,title.c_str());
 
   file << "<br />" << std::endl;
 
-  if(m_Parsers->size() > 0)
-    {
+  if (!m_Parsers->empty()) {
     ParserVectorType::const_iterator it = m_Parsers->begin();
     for(unsigned int i=0;i<NUMBER_ERRORS;i++)
       {
@@ -110,7 +106,7 @@ bool Generator::GenerateDescription(const char* dir)
         file << "<br />" << std::endl;
         }
       }
-    }
+  }
 
   this->CreateFooter(&file);
   file.close();
@@ -140,14 +136,13 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
     }
 
   std::string title = filename;
-  if(m_ProjectTitle.size() > 0)
-    {
+  if (!m_ProjectTitle.empty()) {
     title = "Matrix for " + m_ProjectTitle;
-    }
+  }
   this->CreateHeader(&file,title.c_str());
 
   // Contruct the table
-  file << "<table width=\"100%\" border=\"0\" height=\"1\">" << std::endl;
+  file << R"(<table width="100%" border="0" height="1">)" << std::endl;
   file << "<tr>" << std::endl;
   file << "  <td width=\"10%\"> " << std::endl;
   file << "    <div align=\"center\">Filename</div>" << std::endl;
@@ -206,14 +201,11 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
   while(it != m_Parsers->end())
     {
     std::string localdir = kwssys::SystemTools::GetFilenamePath((*it).GetFilename());
-    if(localdir.size() > 0)
-      {
+    if (!localdir.empty()) {
       directories.push_back(localdir);
-      }
-    else
-      {
+    } else {
       singleFilenames.push_back((*it).GetFilename());
-      }
+    }
     filenames.push_back((*it).GetFilename());
     it++;
     }
@@ -275,16 +267,14 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
       it++;
       }
 
-    if(parser.GetFilename().size()==0)
-      {
-      std::cout << "CANNOT FIND PARSER!" << std::endl;
-      continue;
+      if (parser.GetFilename().empty()) {
+        std::cout << "CANNOT FIND PARSER!" << std::endl;
+        continue;
       }
 
-    if(!showAllErrors && parser.GetErrors().size() == 0)
-      {
-      itSorted++;
-      continue;
+      if (!showAllErrors && parser.GetErrors().empty()) {
+        itSorted++;
+        continue;
       }
 
     gotErrors = true;
@@ -296,7 +286,9 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
       {
       file << "<tr>" << std::endl;
       file << "  <td width=\"10%\"></td>" << std::endl;
-      file << "  <td bgcolor=\"#CCCCCC\" width=\"70%\" colspan=\"" << nTests << "\"><div align=\"\">" << std::endl;;
+      file << R"(  <td bgcolor="#CCCCCC" width="70%" colspan=")" << nTests
+           << R"("><div align="">)" << std::endl;
+      ;
       file << filenamePath.c_str() << std::endl;
       file << "</div></td></tr>" << std::endl;
       currentPath = filenamePath;
@@ -313,13 +305,12 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
       localfilename = localfilename.substr(pos+2,localfilename.size()-pos-2);
       }
 
-    long int slash = static_cast<long int>(localfilename.find_last_of("/"));
-    unsigned int index=0;
-    while(slash != -1 && index<m_MaxDirectoryDepth)
-      {
-      localfilename.replace(slash,1,"_");
-      slash = static_cast<long int>(localfilename.find_last_of("/"));
-      index++;
+      auto slash = static_cast<long int>(localfilename.find_last_of("/"));
+      unsigned int index = 0;
+      while (slash != -1 && index < m_MaxDirectoryDepth) {
+        localfilename.replace(slash, 1, "_");
+        slash = static_cast<long int>(localfilename.find_last_of("/"));
+        index++;
       }
     slash = static_cast<long int>(localfilename.find_last_of("/"));
     if(slash != -1)
@@ -336,7 +327,8 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
     // Fill in the table
     file << "<tr>" << std::endl;
     file << "  <td width=\"10%\"> " << std::endl;
-    file << "    <div align=\"center\"> <a href=\"" << localfilename.c_str()  << "\">" << filenamecorrect.c_str() << "</a></div>" << std::endl;
+    file << R"(    <div align="center"> <a href=")" << localfilename.c_str()
+         << "\">" << filenamecorrect.c_str() << "</a></div>" << std::endl;
     file << "  </td>" << std::endl;
 
     width = 90/nTests;
@@ -400,14 +392,11 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
     file << "  </td>" << std::endl;
 
     width = 90/nTests;
-    for(unsigned int index=0;index<NUMBER_ERRORS;index++)
-      {
+    for (int nerror : tests) {
       // Count the number of errors for this type of error
-      int nerror = tests[index];
-      if(nerror == -1)
-        {
+      if (nerror == -1) {
         continue;
-        }
+      }
 
       file << "  <td width=\"" << width << "%\"";
       if(nerror == 0)
@@ -432,7 +421,7 @@ bool Generator::GenerateMatrix(const char* dir,bool showAllErrors)
       file << ">" << std::endl;
       file << "    <div align=\"center\"><b>" << nerror << "</b></div>" << std::endl;
       file << "  </td>" << std::endl;
-      }
+    }
     file << "</tr>" << std::endl;
     }
   file << "</table>" << std::endl;
@@ -468,17 +457,15 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
   imagedir += "/images";
 
   // Copy the m_ProjectLogo and m_KWStyleLogo to the images directory
-  if(m_ProjectLogo.size()>0 || m_KWStyleLogo.size()>0)
-    {
+  if (!m_ProjectLogo.empty() || !m_KWStyleLogo.empty()) {
     if(!kwssys::SystemTools::MakeDirectory(imagedir.c_str()))
       {
       std::cout << "Cannot create images directory: "
                 << imagedir.c_str() << std::endl;
       }
-    }
+  }
 
-  if(m_ProjectLogo.size()>0)
-    {
+  if (!m_ProjectLogo.empty()) {
     std::string imageProjectLogo = imagedir;
     imageProjectLogo += "/";
     imageProjectLogo += kwssys::SystemTools::GetFilenameName(m_ProjectLogo.c_str());
@@ -488,10 +475,9 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
                 << m_ProjectLogo.c_str() << " into "
                 << imageProjectLogo.c_str() << std::endl;
       }
-    }
+  }
 
-  if(m_KWStyleLogo.size()>0)
-    {
+  if (!m_KWStyleLogo.empty()) {
     std::string imageKWStyleLogo = imagedir;
     imageKWStyleLogo += "/";
     imageKWStyleLogo += kwssys::SystemTools::GetFilenameName(m_KWStyleLogo.c_str());
@@ -501,7 +487,7 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
                 << m_KWStyleLogo.c_str() << " into "
                 << imageKWStyleLogo.c_str() << std::endl;
       }
-    }
+  }
 
   // Generate the matrix representation
   this->GenerateMatrix(dir,showAllErrors);
@@ -513,19 +499,17 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
   ParserVectorType::const_iterator it = m_Parsers->begin();
   while(it != m_Parsers->end())
     {
-    if(!showAllErrors && (*it).GetErrors().size() == 0)
-      {
+    if (!showAllErrors && (*it).GetErrors().empty()) {
       it++;
       continue;
-      }
+    }
 
     std::ofstream file;
 
-    if((*it).GetFilename().size() == 0)
-      {
+    if ((*it).GetFilename().empty()) {
       it++;
       continue;
-      }
+    }
 
     // Extract the filename
     // Replace '/' by '_'
@@ -541,13 +525,12 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
       filename2 = filename2.substr(pos+2,filename2.size()-pos-2);
       }
 
-    long int slash = static_cast<long int>(filename2.find_last_of("/"));
-    unsigned int i = 0;
-    while(slash != -1 && i<m_MaxDirectoryDepth)
-      {
-      filename2.replace(slash,1,"_");
-      slash = static_cast<long int>(filename2.find_last_of("/"));
-      i++;
+      auto slash = static_cast<long int>(filename2.find_last_of("/"));
+      unsigned int i = 0;
+      while (slash != -1 && i < m_MaxDirectoryDepth) {
+        filename2.replace(slash, 1, "_");
+        slash = static_cast<long int>(filename2.find_last_of("/"));
+        i++;
       }
     slash = static_cast<long int>(filename2.find_last_of("/"));
     if(slash != -1)
@@ -567,43 +550,37 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
 
     this->CreateHeader(&file,filename.c_str());
 
-    file << "<table width=\"100%\" border=\"0\" height=\"1\">" << std::endl;
+    file << R"(<table width="100%" border="0" height="1">)" << std::endl;
 
-   // To speedup the process we list the lines that have errors
-   typedef std::pair<int,std::vector<int> > ErrorLineType;
-   std::vector<ErrorLineType> errorLines;
+    // To speedup the process we list the lines that have errors
+    using ErrorLineType = std::pair<int, std::vector<int>>;
+    std::vector<ErrorLineType> errorLines;
 
-   const Parser::ErrorVectorType errors = (*it).GetErrors();
-   Parser::ErrorVectorType::const_iterator itError = errors.begin();
-   while(itError != errors.end())
-     {
-     for(unsigned int index=(*itError).line;index<=(*itError).line2;index++)
-       {
-       ErrorLineType errLine;
-       errLine.first = index;
+    const Parser::ErrorVectorType errors = (*it).GetErrors();
+    auto itError = errors.begin();
+    while (itError != errors.end()) {
+      for (unsigned int index = (*itError).line; index <= (*itError).line2;
+           index++) {
+        ErrorLineType errLine;
+        errLine.first = index;
 
-       // Check if the line already exists
-       std::vector<ErrorLineType>::iterator errorLineIt = errorLines.begin();
-       while(errorLineIt != errorLines.end())
-         {
-         if((*errorLineIt).first == static_cast<int>(index))
-           {
-           break;
-           }
-         errorLineIt++;
-         }
+        // Check if the line already exists
+        auto errorLineIt = errorLines.begin();
+        while (errorLineIt != errorLines.end()) {
+          if ((*errorLineIt).first == static_cast<int>(index)) {
+            break;
+          }
+          errorLineIt++;
+        }
 
-       if(errorLineIt != errorLines.end())
-         {
-         (*errorLineIt).second.push_back((*itError).number);
-         }
-       else
-         {
-         errLine.second.push_back((*itError).number);
-         errorLines.push_back(errLine);
-         }
-       }
-     itError++;
+        if (errorLineIt != errorLines.end()) {
+          (*errorLineIt).second.push_back((*itError).number);
+        } else {
+          errLine.second.push_back((*itError).number);
+          errorLines.push_back(errLine);
+        }
+      }
+      itError++;
      }
 
     bool comment = false;
@@ -619,19 +596,16 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
         {
         if((*errorLineIt).first == static_cast<int>(i+1))
           {
-          std::vector<int>::const_iterator err = (*errorLineIt).second.begin();
+          auto err = (*errorLineIt).second.begin();
           while(err != (*errorLineIt).second.end())
             {
             error = *err;
-            if(errorTag.size() == 0)
-              {
+            if (errorTag.empty()) {
               errorTag += (*it).GetErrorTag(error);
-              }
-            else
-              {
+            } else {
               errorTag += ",";
               errorTag += (*it).GetErrorTag(error);
-              }
+            }
              err++;
              }
            break;
@@ -682,33 +656,29 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
         }
 
       // Remove the first \n
-      long int p = static_cast<long int>(l.find('\n'));
-      if(p != -1)
-        {
-        l.replace(p,1,"");
+        auto p = static_cast<long int>(l.find('\n'));
+        if (p != -1) {
+          l.replace(p, 1, "");
         }
 
       // Replace < and >
-      long int inf = static_cast<long int>(l.find("<",0));
-      while(inf != -1)
-        {
-        l.replace(inf,1,"&lt;");
-        inf = static_cast<long int>(l.find("<",0));
+        auto inf = static_cast<long int>(l.find("<", 0));
+        while (inf != -1) {
+          l.replace(inf, 1, "&lt;");
+          inf = static_cast<long int>(l.find("<", 0));
         }
 
-      long int sup = static_cast<long int>(l.find(">",0));
-      while(sup != -1)
-        {
-        l.replace(sup,1,"&gt;");
-        sup = static_cast<long int>(l.find(">",0));
+        auto sup = static_cast<long int>(l.find(">", 0));
+        while (sup != -1) {
+          l.replace(sup, 1, "&gt;");
+          sup = static_cast<long int>(l.find(">", 0));
         }
 
       // Replace the space by &nbsp;
-      long int space = static_cast<long int>(l.find(' ',0));
-      while(space != -1)
-        {
-        l.replace(space,1,"&nbsp;");
-        space = static_cast<long int>(l.find(' ',space+1));
+        auto space = static_cast<long int>(l.find(' ', 0));
+        while (space != -1) {
+          l.replace(space, 1, "&nbsp;");
+          space = static_cast<long int>(l.find(' ', space + 1));
         }
 
       // Show the comments in green
@@ -748,8 +718,10 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
           space = static_cast<long int>(l.find("*/",space+8));
           }
         }
-      file << "<td height=\"1\"><font face=\"Courier New, Courier, mono\" size=\"2\">" << l.c_str() << "</font></td>" << std::endl;
-      file << "</tr>" << std::endl;
+        file
+            << R"(<td height="1"><font face="Courier New, Courier, mono" size="2">)"
+            << l.c_str() << "</font></td>" << std::endl;
+        file << "</tr>" << std::endl;
       }
 
     file << "</table>" << std::endl;
@@ -769,26 +741,29 @@ bool Generator::CreateHeader(std::ostream * file,const char* title)
 {
   *file << "<html>" << std::endl;
   *file << "<head>" << std::endl;
-  *file << " <meta name=\"description\" content=\"kitware.com\" />" << std::endl;
-  *file << " <meta name=\"keywords\" content=\"kwstyle,Kitware,Style,Checker,Dart\" />" << std::endl;
-  *file << " <meta name=\"author\" content=\"Kitware\" />" << std::endl;
-  *file << " <meta name=\"revisit-after\" content=\"2 days\" />" << std::endl;
-  *file << " <meta name=\"robots\" content=\"all\" />" << std::endl;
+  *file << R"( <meta name="description" content="kitware.com" />)" << std::endl;
+  *file
+      << R"( <meta name="keywords" content="kwstyle,Kitware,Style,Checker,Dart" />)"
+      << std::endl;
+  *file << R"( <meta name="author" content="Kitware" />)" << std::endl;
+  *file << R"( <meta name="revisit-after" content="2 days" />)" << std::endl;
+  *file << R"( <meta name="robots" content="all" />)" << std::endl;
   *file << " <title>KWStyle - " << title << "</title>" << std::endl;
   *file << "</head>" << std::endl;
 
   // Now create the top frame
- *file << "<table width=\"100%\" border=\"0\">" << std::endl;
- *file << " <tr>" << std::endl;
- *file << "   <td width=\"15%\" height=\"2\"><img src=\"images/" << kwssys::SystemTools::GetFilenameName(m_ProjectLogo.c_str()) << "\"></td>" << std::endl;
- *file << "   <td width=\"85%\" height=\"2\" bgcolor=\"#0099CC\"> " << std::endl;
+  *file << R"(<table width="100%" border="0">)" << std::endl;
+  *file << " <tr>" << std::endl;
+  *file << R"(   <td width="15%" height="2"><img src="images/)"
+        << kwssys::SystemTools::GetFilenameName(m_ProjectLogo.c_str())
+        << "\"></td>" << std::endl;
+  *file << R"(   <td width="85%" height="2" bgcolor="#0099CC"> )" << std::endl;
 
- // remove the last extension
- std::string tit = title;
- long int pos = static_cast<long int>(tit.find_last_of("."));
- if(pos!=-1)
-   {
-   tit = tit.substr(0,pos);
+  // remove the last extension
+  std::string tit = title;
+  auto pos = static_cast<long int>(tit.find_last_of("."));
+  if (pos != -1) {
+    tit = tit.substr(0, pos);
    }
  pos = static_cast<long int>(tit.find_last_of("/"));
  if(pos!=-1)
@@ -796,45 +771,54 @@ bool Generator::CreateHeader(std::ostream * file,const char* title)
    tit = tit.substr(pos+1,tit.size()-pos-1);
    }
 
- *file << "     <div align=\"left\"><b><font color=\"#FFFFFF\" size=\"5\">KWStyle - " << tit.c_str() << "</font></b></div>" << std::endl;
- *file << "   </td>" << std::endl;
- *file << " </tr>" << std::endl;
- *file << "</table>" << std::endl;
- *file << "<table width=\"100%\" border=\"0\">" << std::endl;
- *file << " <tr> " << std::endl;
- *file << "   <td width=\"15%\" height=\"30\" >&nbsp;</td>" << std::endl;
- *file << "   <td height=\"30\" width=\"12%\" bgcolor=\"#0099CC\"> " << std::endl;
- *file << "     <div align=\"center\"><a href=\"KWSMatrix.html\">Matrix View</a></div>" << std::endl;
- *file << "   </td>" << std::endl;
- *file << "   <td width=\"10%\" height=\"30\" bgcolor=\"#0099CC\" >"<< std::endl;
- *file << " <div align=\"center\"><a href=\"KWSDescription.html\">Description</a></div>" << std::endl;
- *file << "  </td>" << std::endl;
- *file << "   <td width=\"63%\" height=\"30\"> " << std::endl;
- *file << "     <div align=\"left\"><b></b></div>" << std::endl;
- *file << "     <div align=\"right\"></div>" << std::endl;
- *file << "   </td>" << std::endl;
- *file << " </tr>" << std::endl;
- *file << "</table>" << std::endl;
- *file << "<hr size=\"1\">";
-  return true;
+   *file
+       << R"(     <div align="left"><b><font color="#FFFFFF" size="5">KWStyle - )"
+       << tit.c_str() << "</font></b></div>" << std::endl;
+   *file << "   </td>" << std::endl;
+   *file << " </tr>" << std::endl;
+   *file << "</table>" << std::endl;
+   *file << R"(<table width="100%" border="0">)" << std::endl;
+   *file << " <tr> " << std::endl;
+   *file << R"(   <td width="15%" height="30" >&nbsp;</td>)" << std::endl;
+   *file << R"(   <td height="30" width="12%" bgcolor="#0099CC"> )"
+         << std::endl;
+   *file
+       << R"(     <div align="center"><a href="KWSMatrix.html">Matrix View</a></div>)"
+       << std::endl;
+   *file << "   </td>" << std::endl;
+   *file << R"(   <td width="10%" height="30" bgcolor="#0099CC" >)"
+         << std::endl;
+   *file
+       << R"( <div align="center"><a href="KWSDescription.html">Description</a></div>)"
+       << std::endl;
+   *file << "  </td>" << std::endl;
+   *file << R"(   <td width="63%" height="30"> )" << std::endl;
+   *file << "     <div align=\"left\"><b></b></div>" << std::endl;
+   *file << "     <div align=\"right\"></div>" << std::endl;
+   *file << "   </td>" << std::endl;
+   *file << " </tr>" << std::endl;
+   *file << "</table>" << std::endl;
+   *file << "<hr size=\"1\">";
+   return true;
 }
 
 /** Create Footer */
 bool Generator::CreateFooter(std::ostream * file)
 {
   *file << "<hr size=\"1\">";
-  *file << "<table width=\"100%\" border=\"0\">";
+  *file << R"(<table width="100%" border="0">)";
   *file << "<tr>";
   *file << "<td>Generated by <a href=\"https://public.kitware.com/KWStyle\">KWStyle</a> 1.0b on <i>" << kwssys::SystemTools::GetCurrentDateTime("%A %B,%d at %I:%M:%S%p") << "</i></td>";
   *file << "<td>";
-  if(m_KWStyleLogo.size()>0)
-    {
-    *file << "<div align=\"center\"><img src=\"images/" << kwssys::SystemTools::GetFilenameName(m_KWStyleLogo.c_str())
-          << "\" height=\"49\" /></div>" << std::endl;
-    }
+  if (!m_KWStyleLogo.empty()) {
+    *file << R"(<div align="center"><img src="images/)"
+          << kwssys::SystemTools::GetFilenameName(m_KWStyleLogo.c_str())
+          << R"(" height="49" /></div>)" << std::endl;
+  }
   *file << "</td>";
   *file << "<td>";
-  *file << "<div align=\"right\"><a href=\"http://www.kitware.com\">&copy; Kitware Inc.</a></div></td>";
+  *file
+      << R"(<div align="right"><a href="http://www.kitware.com">&copy; Kitware Inc.</a></div></td>)";
   *file << "</tr>";
   *file << "</table>";
   *file << "<br />";
@@ -851,11 +835,10 @@ void Generator::ExportHTML(std::ostream & output)
   ParserVectorType::const_iterator it = m_Parsers->begin();
   while(it != m_Parsers->end())
     {
-    if((*it).GetFilename().size() == 0)
-      {
+    if ((*it).GetFilename().empty()) {
       it++;
       continue;
-      }
+    }
 
     // Extract the filename
     std::string filename = "";
@@ -870,7 +853,7 @@ void Generator::ExportHTML(std::ostream & output)
 
     //this->CreateHeader(&output,filename.c_str());
 
-    output << "<table width=\"100%\" border=\"0\" height=\"1\">" << std::endl;
+    output << R"(<table width="100%" border="0" height="1">)" << std::endl;
 
     bool comment = false;
     for(unsigned int i=0;i<(*it).GetNumberOfLines();i++)
@@ -880,21 +863,18 @@ void Generator::ExportHTML(std::ostream & output)
       std::string errorTag = "";
 
       const Parser::ErrorVectorType errors = (*it).GetErrors();
-      Parser::ErrorVectorType::const_iterator itError = errors.begin();
+      auto itError = errors.begin();
       while(itError != errors.end())
         {
         if( ((i+1>=(*itError).line) && (i+1<=(*itError).line2))
           )
           {
-          if(errorTag.size() == 0)
-            {
+          if (errorTag.empty()) {
             errorTag += (*it).GetErrorTag((*itError).number);
-            }
-          else
-            {
+          } else {
             errorTag += ",";
             errorTag += (*it).GetErrorTag((*itError).number);
-            }
+          }
           error = (*itError).number;
           }
         itError++;
@@ -932,33 +912,29 @@ void Generator::ExportHTML(std::ostream & output)
         }
 
       // Remove the first \n
-      long int p = static_cast<long int>(l.find('\n'));
-      if(p != -1)
-        {
-        l.replace(p,1,"");
+        auto p = static_cast<long int>(l.find('\n'));
+        if (p != -1) {
+          l.replace(p, 1, "");
         }
 
       // Replace < and >
-      long int inf = static_cast<long int>(l.find("<",0));
-      while(inf != -1)
-        {
-        l.replace(inf,1,"&lt;");
-        inf = static_cast<long int>(l.find("<",0));
+        auto inf = static_cast<long int>(l.find("<", 0));
+        while (inf != -1) {
+          l.replace(inf, 1, "&lt;");
+          inf = static_cast<long int>(l.find("<", 0));
         }
 
-      long int sup = static_cast<long int>(l.find(">",0));
-      while(sup != -1)
-        {
-        l.replace(sup,1,"&gt;");
-        sup = static_cast<long int>(l.find(">",0));
+        auto sup = static_cast<long int>(l.find(">", 0));
+        while (sup != -1) {
+          l.replace(sup, 1, "&gt;");
+          sup = static_cast<long int>(l.find(">", 0));
         }
 
       // Replace the space by &nbsp;
-      long int space = static_cast<long int>(l.find(' ',0));
-      while(space != -1)
-        {
-        l.replace(space,1,"&nbsp;");
-        space = static_cast<long int>(l.find(' ',space+1));
+        auto space = static_cast<long int>(l.find(' ', 0));
+        while (space != -1) {
+          l.replace(space, 1, "&nbsp;");
+          space = static_cast<long int>(l.find(' ', space + 1));
         }
 
       // Show the comments in green
@@ -998,8 +974,10 @@ void Generator::ExportHTML(std::ostream & output)
           }
         }
 
-      output << "<td height=\"1\"><font face=\"Courier New, Courier, mono\" size=\"2\">" << l.c_str() << "</font></td>" << std::endl;
-      output << "</tr>" << std::endl;
+        output
+            << R"(<td height="1"><font face="Courier New, Courier, mono" size="2">)"
+            << l.c_str() << "</font></td>" << std::endl;
+        output << "</tr>" << std::endl;
       }
 
     output << "</table>" << std::endl;
@@ -1103,14 +1081,13 @@ bool Generator::GenerateDart(const char* dir,int maxError,
   while(it != m_Parsers->end())
     {
     std::string sourcefile = (*it).GetFilename();
-    if(basedirectory.size()>0)
-      {
+    if (!basedirectory.empty()) {
       sourcefile = sourcefile.substr(basedirectory.size());
-      }
+    }
 
     bool first = true;
     const Parser::ErrorVectorType errors = (*it).GetErrors();
-    Parser::ErrorVectorType::const_iterator itError = errors.begin();
+    auto itError = errors.begin();
     while(itError != errors.end())
       {
       if((!group) || (first && group))
@@ -1124,8 +1101,7 @@ bool Generator::GenerateDart(const char* dir,int maxError,
         file << (*itError).line;
         file << "</SourceLineNumber>" << std::endl;
 
-        if(url != "")
-          {
+        if (!url.empty()) {
           // We had a link to the dashboard
           /*long int posslash = (*it).GetFilename().find_last_of("/");
           long int posbackslash = (*it).GetFilename().find_last_of("\\");
@@ -1158,13 +1134,12 @@ bool Generator::GenerateDart(const char* dir,int maxError,
             htmlfile = htmlfile.substr(pos+2,htmlfile.size()-pos-2);
             }
 
-          long int slash = static_cast<long int>(htmlfile.find_last_of("/"));
-          unsigned int i = 0;
-          while(slash != -1 && i<m_MaxDirectoryDepth)
-            {
-            htmlfile.replace(slash,1,"_");
-            slash = static_cast<long int>(htmlfile.find_last_of("/"));
-            i++;
+            auto slash = static_cast<long int>(htmlfile.find_last_of("/"));
+            unsigned int i = 0;
+            while (slash != -1 && i < m_MaxDirectoryDepth) {
+              htmlfile.replace(slash, 1, "_");
+              slash = static_cast<long int>(htmlfile.find_last_of("/"));
+              i++;
             }
           slash = static_cast<long int>(htmlfile.find_last_of("/"));
           if(slash != -1)
@@ -1175,7 +1150,7 @@ bool Generator::GenerateDart(const char* dir,int maxError,
           htmlfile += ".html";
           file << "<Url>"<< url.c_str() << "/" << htmlfile.c_str() << "</Url>" << std::endl;
           file << "<UrlName>View KWStyle File</UrlName>" << std::endl;
-          }
+        }
         first = false;
         file << "          <Text>";
         }
@@ -1185,7 +1160,7 @@ bool Generator::GenerateDart(const char* dir,int maxError,
       file << (*it).GetErrorTag((*itError).number);
       file << " : ";
       std::string desc = (*itError).description;
-      long int pos = static_cast<long int>(desc.find("&",0));
+      auto pos = static_cast<long int>(desc.find("&", 0));
       while(pos != -1)
         {
         desc.replace(pos,1,"&amp;");
@@ -1254,25 +1229,26 @@ bool Generator::GenerateDart(const char* dir,int maxError,
     }
 
   // Write the footer
-  file << " <Log Encoding=\"base64\" Compression=\"/bin/gzip\">" << std::endl;
-  file << "      </Log>" << std::endl;
-  file << "      <EndDateTime>";
-  file << kwssys::SystemTools::GetCurrentDateTime("%b %d %I:%M:%S %z");
-  file << "</EndDateTime>" << std::endl;
+    file << R"( <Log Encoding="base64" Compression="/bin/gzip">)" << std::endl;
+    file << "      </Log>" << std::endl;
+    file << "      <EndDateTime>";
+    file << kwssys::SystemTools::GetCurrentDateTime("%b %d %I:%M:%S %z");
+    file << "</EndDateTime>" << std::endl;
 
-  double time1 = kwssys::SystemTools::GetTime();
+    double time1 = kwssys::SystemTools::GetTime();
 
-  char* timestr = new char[10];
-  sprintf(timestr,"%.1f",(time1-time)/60.0);
+    char *timestr = new char[10];
+    sprintf(timestr, "%.1f", (time1 - time) / 60.0);
 
-  file << "  <ElapsedMinutes>" << timestr << "</ElapsedMinutes></Build>" << std::endl;
-  file << "</Site>" << std::endl;
+    file << "  <ElapsedMinutes>" << timestr << "</ElapsedMinutes></Build>"
+         << std::endl;
+    file << "</Site>" << std::endl;
 
-  delete [] timestr;
-  configfile.close();
-  file.close();
-  std::cout << "Done." << std::endl;
-  return true;
+    delete[] timestr;
+    configfile.close();
+    file.close();
+    std::cout << "Done." << std::endl;
+    return true;
  }
 
 /** Generate a simple XML report of the errors */
@@ -1292,7 +1268,7 @@ bool Generator::ExportXML(const char* filename)
   while(it != m_Parsers->end())
     {
     const Parser::ErrorVectorType errors = (*it).GetErrors();
-    Parser::ErrorVectorType::const_iterator itError = errors.begin();
+    auto itError = errors.begin();
     while(itError != errors.end())
       {
       file << "<Error>" << std::endl;

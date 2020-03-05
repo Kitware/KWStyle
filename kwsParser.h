@@ -224,9 +224,9 @@ public:
                    );
 
   /** Check Operator spaces foo=bar or foo = bar, etc... */
-  bool CheckOperator(unsigned int foo, unsigned int bar,
-                     unsigned long maxSize=81,
-                     bool doNotCheckInsideParenthesis=true);
+  bool CheckOperator(unsigned int before, unsigned int after,
+                     unsigned long maxSize = 81,
+                     bool doNotCheckInsideParenthesis = true);
 
   /** Check comma spaces a,b versus a, b, etc... */
   bool CheckComma(unsigned int before, unsigned int after );
@@ -235,14 +235,15 @@ public:
   bool CheckParenthesis(unsigned int space );
 
   /** Check spaces after if, while, for, and until keywords */
-  bool CheckIfWhileForUntil( unsigned int spaces );
+  bool CheckIfWhileForUntil(unsigned int after);
 
   /** Check the number of character per line */
   bool CheckLineLength(unsigned long max,bool checkHeader=false, bool doErrorCheck=true);
 
   /** Check if the internal parameters of the class are correct */
-  bool CheckInternalVariables(const char* regEx,bool alignement = true,bool checkProtected=false);
-  
+  bool CheckInternalVariables(const char *regEx, bool alignment = true,
+                              bool checkProtected = false);
+
   /** Check variables implementation */
   bool CheckVariables(const char* regEx);
   
@@ -253,7 +254,7 @@ public:
   bool CheckFunctions(const char* regEx,unsigned long maxLength=0);
 
   /** Check if the strcut parameters of the class are correct */
-  bool CheckStruct(const char* regEx,bool alignement = true);
+  bool CheckStruct(const char *regEx, bool alignment = true);
 
   /** Check if the typedefs of the class are correct */
   bool CheckTypedefs(const char* regEx, bool alignment = true,
@@ -277,7 +278,7 @@ public:
   bool CheckVariablePerLine(unsigned long max=1);
 
   /** Check bad characters */
-  bool CheckBadCharacters(bool withComments=true);
+  bool CheckBadCharacters(bool checkComments = true);
 
   /** Check if the end of the file has a new line */
   bool CheckEndOfFileNewLine();
@@ -293,7 +294,7 @@ public:
   bool CheckNamespace(const char* name,bool doNotCheckMain=true);
 
   /** Check the templates */
-  bool CheckTemplate(const char* regex);
+  bool CheckTemplate(const char *regEx);
 
   /** Check if the name of the class is correct */
   bool CheckNameOfClass(const char* name, const char* prefix);
@@ -374,7 +375,8 @@ protected:
   std::string FindMemberFunction(std::string & buffer,size_t start, size_t end,size_t& pos);
  
   /** Find a typedef in the source code */
-  std::string FindTypedef(size_t start, size_t end,size_t& pos,size_t & beg,size_t & typedefpos);
+  std::string FindTypedef(size_t start, size_t end, size_t &pos, size_t &beg,
+                          size_t &typdefpos);
 
   /** Reduces multiple spaces in buffer to one. */
   void ReduceMultipleSpaces(std::string & buffer);
@@ -427,7 +429,7 @@ protected:
   void FindPrivateArea(size_t &before, size_t &after, size_t startPos=0) const;
 
   /** Return the position of the template if the class has a template otherwise npos. */
-  size_t IsTemplated(const std::string & buffer, size_t pos) const;
+  size_t IsTemplated(const std::string &buffer, size_t classnamepos) const;
 
   /**  Return true if the position pos is inside a comment */
   bool IsInComments(size_t pos) const;
@@ -468,7 +470,7 @@ protected:
 
   /** Return the position of the last character 
    *  of the function name/definition/ */
-  size_t FindFunction(size_t position,const char* buffer=NULL) const;
+  size_t FindFunction(size_t pos, const char *buffer = NULL) const;
 
   /** Compute the list of #if/#else/#endif */
   void ComputeIfElseEndifList();

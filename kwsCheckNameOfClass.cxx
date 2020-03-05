@@ -37,15 +37,14 @@ bool Parser::CheckNameOfClass(const char* name,const char* prefix)
   while(classpos!=-1)
     {
     nameOfClass = this->FindPreviousWord(classpos);
-        
-    if(m_Filename == "")
-      {
+
+    if (m_Filename.empty()) {
       std::cout << "CheckNameOfClass() : m_Filename should be set" << std::endl;
       return false;
-      }
+    }
 
-    long int point = static_cast<long int>(m_Filename.find_last_of("."));
-    long int slash = static_cast<long int>(m_Filename.find_last_of("/"));
+    auto point = static_cast<long int>(m_Filename.find_last_of("."));
+    auto slash = static_cast<long int>(m_Filename.find_last_of("/"));
 
     if(slash == -1)
       {
@@ -57,7 +56,7 @@ bool Parser::CheckNameOfClass(const char* name,const char* prefix)
 
     // construct the string
     std::string toMatch = name;
-    long int p = static_cast<long int>(toMatch.find("[NameOfClass]"));
+    auto p = static_cast<long int>(toMatch.find("[NameOfClass]"));
     if(p != -1)
       {
       toMatch.replace(p,13,nameofclass);
@@ -107,12 +106,11 @@ size_t Parser::GetClassPosition(size_t position,std::string buffer) const
   if(position == std::string::npos)
    {
    position = 0;
-   } 
- 
-  if(buffer.size() == 0)
-    {
-    buffer = m_BufferNoComment;
-    }
+   }
+
+   if (buffer.empty()) {
+     buffer = m_BufferNoComment;
+   }
 
   size_t pos = buffer.find("class",position);
 

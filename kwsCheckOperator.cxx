@@ -167,7 +167,8 @@ bool Parser::FindOperator(const char* op,unsigned int before,
         // check if the sum of the two lines is higher than the maximum length
         std::string currentLine = this->GetLine(this->GetLineNumber(i,true)-1);
         std::string previousLine = this->GetLine(this->GetLineNumber(i,true));
-        unsigned long sum = static_cast<unsigned long>(currentLine.size()+previousLine.size());
+        auto sum = static_cast<unsigned long>(currentLine.size() +
+                                              previousLine.size());
         if(sum>maxSize)
           {
           showError = false;
@@ -193,7 +194,8 @@ bool Parser::FindOperator(const char* op,unsigned int before,
         // check if the sum of the two lines is higher than the maximum length
         std::string currentLine = this->GetLine(this->GetLineNumber(i,true)-1);
         std::string nextLine = this->GetLine(this->GetLineNumber(i,true));
-        unsigned long sum = static_cast<unsigned long>(currentLine.size()+nextLine.size());
+        auto sum =
+            static_cast<unsigned long>(currentLine.size() + nextLine.size());
         if(sum>maxSize)
           {
           showError = false;

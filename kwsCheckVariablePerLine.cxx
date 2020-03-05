@@ -35,16 +35,15 @@ bool Parser::CheckVariablePerLine(unsigned long max)
    "float","double","void","long int"};
 
   bool hasError = false;
-  for(unsigned int i = 0;i<ntypes;i++)
-    {
-    std::string typeToFind = types[i];
+  for (auto &type : types) {
+    std::string typeToFind = type;
     typeToFind += " ";
     size_t posType = m_BufferNoComment.find(typeToFind,0);
     while(posType != std::string::npos)
       {
       // Check that this is the first word
       bool firstWord = false;
-      long int pos=static_cast<long int>(posType);
+      auto pos = static_cast<long int>(posType);
       pos--;
       while((pos>0) && (m_BufferNoComment[pos]==' '))
         {
@@ -160,7 +159,7 @@ bool Parser::CheckVariablePerLine(unsigned long max)
         }// end firstWord
       posType = m_BufferNoComment.find(typeToFind,posType+1);
       }
-    }
+  }
 
   return !hasError;
 }

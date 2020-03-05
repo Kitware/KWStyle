@@ -38,11 +38,9 @@ Parser::Parser()
 }
 
 /** Destructor */
-Parser::~Parser()
-{
-}
+Parser::~Parser() = default;
 
- /** To be able to use std::sort we provide the < operator */
+/** To be able to use std::sort we provide the < operator */
 bool Parser::operator<(const Parser& a) const
 {
   return !m_Filename.compare(a.m_Filename);
@@ -248,7 +246,7 @@ bool Parser::Check(const char* name, const char* value)
       return false;
       }
     std::string v1 = val.substr(0,pos);
-    long int pos1 = static_cast<long int>(val.find(",",pos+1));
+    auto pos1 = static_cast<long int>(val.find(",", pos + 1));
     if(pos1 == -1)
       {
       std::cout << "Comments not defined correctly" << std::endl;
@@ -334,11 +332,10 @@ bool Parser::Check(const char* name, const char* value)
       v1 = val.substr(0,pos);
       }
 
-    long int pos1 = static_cast<long int>(val.find(",",pos+1));
-    if(pos1 == -1)
-      {
-      std::cout << "Header not defined correctly" << std::endl;
-      return false;
+      auto pos1 = static_cast<long int>(val.find(",", pos + 1));
+      if (pos1 == -1) {
+        std::cout << "Header not defined correctly" << std::endl;
+        return false;
       }
 
     std::string v2 = val.substr(pos+1,pos1-pos-1);
@@ -356,9 +353,8 @@ bool Parser::Check(const char* name, const char* value)
       useCVS = true;
       }
 
-    if(v1.size()>0)
-      {
-      this->CheckHeader(v1.c_str(),spaceEndOfLine,useCVS);
+      if (!v1.empty()) {
+        this->CheckHeader(v1.c_str(), spaceEndOfLine, useCVS);
       }
     }
 
@@ -372,7 +368,7 @@ bool Parser::Check(const char* name, const char* value)
       return false;
       }
     std::string v1 = val.substr(0,pos);
-    long int pos1 = static_cast<long int>(val.find(",",pos+1));
+    auto pos1 = static_cast<long int>(val.find(",", pos + 1));
     if(pos1 == -1)
       {
       std::cout << "Indent not defined correctly" << std::endl;
@@ -573,7 +569,7 @@ void Parser::ConvertBufferToWindowsFileType(std::string & buffer)
 unsigned long Parser::GetNumberOfLines() const
 {
  unsigned long lines = 0;
- long int pos = static_cast<long int>(m_Buffer.find("\n",0));
+ auto pos = static_cast<long int>(m_Buffer.find("\n", 0));
  while(pos != -1)
    {
    lines++;
@@ -588,7 +584,7 @@ std::string Parser::GetLine(unsigned long i) const
 {
  unsigned long lines = 0;
  long int prec = 0;
- long int pos = static_cast<long int>(m_Buffer.find("\n",0));
+ auto pos = static_cast<long int>(m_Buffer.find("\n", 0));
  while(pos != -1)
    {
    if(lines == i)
@@ -615,14 +611,13 @@ std::string Parser::GetLine(unsigned long i) const
 std::string Parser::FindPreviousWord(size_t pos,bool withComments,std::string buffer) const
 {
   std::string stream = buffer;
-  if(buffer.size() == 0)
-    {
+  if (buffer.empty()) {
     stream = m_BufferNoComment;
     if(withComments)
       {
       stream = m_Buffer;
       }
-    }
+  }
 
   size_t i=pos;
 
@@ -713,7 +708,7 @@ size_t Parser::GetPositionInLine(size_t pos)
 /** Given the position without comments return the position with the comments */
 size_t Parser::GetPositionWithComments(size_t pos) const
 {
-  std::vector<PairType>::const_iterator it = m_CommentPositions.begin();
+  auto it = m_CommentPositions.begin();
   while(it != m_CommentPositions.end())
     {
     if((pos>=(*it).first))
@@ -733,7 +728,7 @@ size_t Parser::GetPositionWithComments(size_t pos) const
 size_t Parser::GetPositionWithoutComments(size_t pos) const
 {
   size_t pos2 = pos;
-  std::vector<PairType>::const_iterator it = m_CommentPositions.begin();
+  auto it = m_CommentPositions.begin();
   while(it != m_CommentPositions.end())
     {
     if((pos>=(*it).first))
@@ -790,7 +785,7 @@ long int Parser::GetLineNumber(size_t pos,bool withoutComments) const
     }
 
   unsigned int i=0;
-  std::vector<size_t>::const_iterator it = m_Positions.begin();
+  auto it = m_Positions.begin();
   while(it != m_Positions.end())
     {
     if(pos<=(*it))
@@ -1355,10 +1350,10 @@ bool Parser::IsInUnion(size_t pos,const char* buffer) const
 /**  return true if the position pos is inside a comment */
 bool Parser::IsInComments(size_t pos) const
 {
-  if((pos == std::string::npos) || (m_CommentBegin.size()==0) || (m_CommentEnd.size() == 0))
-    {
+  if ((pos == std::string::npos) || (m_CommentBegin.empty()) ||
+      (m_CommentEnd.empty())) {
     return false;
-    }
+  }
 
   size_t b0 = m_Buffer.find(m_CommentBegin,0);
 
@@ -1473,12 +1468,10 @@ bool Parser::IsBetweenSingleQuote(size_t pos,bool withComments,std::string buffe
     return false;
     }
 
-  if(buffer.size()==0)
-    {
-    stream = m_BufferNoComment;
-    if(withComments)
-      {
-      stream = m_Buffer;
+    if (buffer.empty()) {
+      stream = m_BufferNoComment;
+      if (withComments) {
+        stream = m_Buffer;
       }
     }
 
@@ -1514,14 +1507,13 @@ bool Parser::IsBetweenQuoteChar(size_t pos,bool withComments,std::string buffer,
 {
   std::string stream = buffer;
 
-  if(buffer.size()==0)
-    {
+  if (buffer.empty()) {
     stream = m_BufferNoComment;
     if(withComments)
       {
       stream = m_Buffer;
       }
-    }
+  }
 
   if(pos == std::string::npos)
     {
@@ -1566,14 +1558,13 @@ bool Parser::IsBetweenQuoteChar(size_t pos,bool withComments,std::string buffer,
 bool Parser::IsBetweenCharsFast(const char begin, const char end ,size_t pos,bool withComments,std::string buffer) const
 {
   std::string stream = buffer;
-  if(buffer.size() == 0)
-    {
+  if (buffer.empty()) {
     stream = m_BufferNoComment;
     if(withComments)
       {
       stream = m_Buffer;
       }
-    }
+  }
 
   if(pos == std::string::npos)
     {
@@ -1600,14 +1591,13 @@ bool Parser::IsBetweenChars(const char begin, const char end ,size_t pos,
                             bool withComments,std::string buffer) const
 {
   std::string stream = buffer;
-  if(buffer.size() == 0)
-    {
+  if (buffer.empty()) {
     stream = m_BufferNoComment;
     if(withComments)
       {
       stream = m_Buffer;
       }
-    }
+  }
 
   if(pos == std::string::npos)
     {
@@ -1846,26 +1836,22 @@ size_t Parser::FindConstructor(const std::string & buffer, const std::string & c
       // we look if we have only spaces or \n between pos pos2 and pos3
       std::string val = buffer.substr(pos+className.size()+1,pos2-pos-className.size()-1);
       bool ok = true;
-      for(size_t i=0;i<val.size();i++)
-        {
-        if(val[i] != ' ' || val[i] != '\n')
-          {
+      for (char i : val) {
+        if (i != ' ' || i != '\n') {
           ok =false;
-          }
         }
+      }
 
       bool ok2 = false;
       if(ok)
         {
         ok2 = true;
         val = buffer.substr(pos2+1,pos3-pos2-1);
-        for(size_t i=0;i<val.size();i++)
-          {
-          if(val[i] != ' ' || val[i] != '\n')
-            {
+        for (char i : val) {
+          if (i != ' ' || i != '\n') {
             ok2 =false;
-            }
           }
+        }
         }
 
       // if ok2 then we check if the constructor is implemented
@@ -1904,14 +1890,13 @@ size_t Parser::FindClosingChar(char openChar, char closeChar,
                                size_t pos,bool noComment,std::string buffer) const
 {
   std::string stream = buffer;
-  if(buffer.size() == 0)
-    {
+  if (buffer.empty()) {
     stream = m_Buffer.c_str();
     if(noComment)
       {
       stream = m_BufferNoComment.c_str();
       }
-    }
+  }
 
   size_t open = 1;
   for(size_t i=pos+1;i<stream.length();i++)
@@ -1920,7 +1905,7 @@ size_t Parser::FindClosingChar(char openChar, char closeChar,
       {
       bool skip = false;
       // We want to check that we are not in the #if/#else/#endif thing
-      IfElseEndifListType::const_iterator itLS = m_IfElseEndifList.begin();
+      auto itLS = m_IfElseEndifList.begin();
       while(itLS != m_IfElseEndifList.end())
         {
         size_t j = i;
@@ -2095,10 +2080,9 @@ void Parser::GenerateFixedFile()
     return;
     }
 
-  if(m_ErrorList.size() == 0)
-    {
-    std::cout << "No error. Not generating corrected file." << std::endl;
-    return;
+    if (m_ErrorList.empty()) {
+      std::cout << "No error. Not generating corrected file." << std::endl;
+      return;
     }
 
   std::string filename = kwssys::SystemTools::GetFilenameWithoutExtension(m_Filename.c_str());

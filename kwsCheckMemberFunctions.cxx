@@ -54,7 +54,7 @@ bool Parser::CheckMemberFunctions(const char* regEx,unsigned long maxLength)
       if(!file.is_open())
         {
         std::cout << "Cannot open file: " << headerfile.c_str() << std::endl;
-        return 1;
+        return true;
         }
 
       file.seekg(0,std::ios::end);

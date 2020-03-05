@@ -37,7 +37,7 @@ bool Parser::CheckComma( unsigned int before, unsigned int after )
     {
     // Check number of space before
     unsigned int bfr = 0;
-    long int i = static_cast<long int>( operatorPos );
+    auto i = static_cast<long int>(operatorPos);
     while( i>0 && m_BufferNoComment[i-1] == ' ' )
       {
       ++bfr;

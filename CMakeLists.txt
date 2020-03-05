@@ -1,31 +1,56 @@
-cmake_minimum_required(VERSION 2.8.4)
+cmake_minimum_required(VERSION 3.10.2)
 
 foreach(p
-    CMP0003
-    CMP0026
-    CMP0054
+    # Place newer policies here if needed for cmake greater than 3.10.2
     )
   if(POLICY ${p})
     cmake_policy(SET ${p} NEW)
   endif()
 endforeach()
 
-project(KWStyle)
-
-# Output directories
-if(NOT LIBRARY_OUTPUT_PATH)
-  set(LIBRARY_OUTPUT_PATH ${KWStyle_BINARY_DIR}/bin CACHE INTERNAL "Single output directory for building all libraries.")
+# ==== Define language standard configurations requiring at least c++11 standard
+if(CMAKE_CXX_STANDARD EQUAL "98" )
+   message(FATAL_ERROR "CMAKE_CXX_STANDARD:STRING=98 is not supported in ITK version 5 and greater.")
 endif()
-if(NOT EXECUTABLE_OUTPUT_PATH)
-  set(EXECUTABLE_OUTPUT_PATH ${KWStyle_BINARY_DIR}/bin CACHE INTERNAL "Single output directory for building all executables.")
+
+#####
+##  Set the default target properties for ITK
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 11) # Supported values are ``11``, ``14``, and ``17``.
 endif()
-mark_as_advanced(LIBRARY_OUTPUT_PATH EXECUTABLE_OUTPUT_PATH)
+if(NOT CMAKE_CXX_STANDARD_REQUIRED)
+  set(CMAKE_CXX_STANDARD_REQUIRED ON)
+endif()
+if(NOT CMAKE_CXX_EXTENSIONS)
+  set(CMAKE_CXX_EXTENSIONS OFF)
+endif()
 
-set(CXX_TEST_PATH ${EXECUTABLE_OUTPUT_PATH})
+project(KWStyle
+   VERSION 1.1.0
+   DESCRIPTION "Kitware Style Checker"
+   LANGUAGES C CXX
+)
 
-set(KWStyle_MAJOR_VERSION "1")
-set(KWStyle_MINOR_VERSION "0")
-set(KWStyle_PATCH_VERSION "1")
+
+#-----------------------------------------------------------------------------
+if(NOT COMMAND SETIFEMPTY)
+  macro(SETIFEMPTY)
+    set(KEY ${ARGV0})
+    set(VALUE ${ARGV1})
+    if(NOT ${KEY})
+      set(${ARGV})
+    endif()
+  endmacro()
+endif()
+
+#-----------------------------------------------------------------------------
+SETIFEMPTY(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${KWStyle_BINARY_DIR}/bin)
+SETIFEMPTY(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${KWStyle_BINARY_DIR}/bin)
+SETIFEMPTY(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${KWStyle_BINARY_DIR}/bin)
+SETIFEMPTY(CMAKE_BUNDLE_OUTPUT_DIRECTORY  ${KWStyle_BINARY_DIR}/bin)
+file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+
+set(CXX_TEST_PATH ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
 # Disable MSVC 8 warnings
 if(WIN32)
@@ -42,8 +67,8 @@ ${KWStyle_BINARY_DIR}/Utilities
 ${KWStyle_SOURCE_DIR}/Utilities
 )
 
-set(KWStyle_EXECUTABLE_DIRS ${EXECUTABLE_OUTPUT_PATH})
-set(KWStyle_LIBRARY_DIRS ${LIBRARY_OUTPUT_PATH})
+set(KWStyle_EXECUTABLE_DIRS ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+set(KWStyle_LIBRARY_DIRS ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 
 # Configure the export configuration
 add_subdirectory(CMake/ExportConfiguration)
@@ -136,9 +161,10 @@ set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "KWStyle")
 set(CPACK_PACKAGE_VENDOR "Kitware Inc.")
 set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/Copyright.txt")
-set(CPACK_PACKAGE_VERSION_MAJOR "1")
-set(CPACK_PACKAGE_VERSION_MINOR "0")
-set(CPACK_PACKAGE_VERSION_PATCH "0")
+
+set(CPACK_PACKAGE_VERSION_MAJOR "${${PROJECT_NAME}_VERSION_MAJOR}")
+set(CPACK_PACKAGE_VERSION_MINOR "${${PROJECT_NAME}_VERSION_MINOR}")
+set(CPACK_PACKAGE_VERSION_PATCH "${${PROJECT_NAME}_VERSION_PATCH}")
 set(CPACK_PACKAGE_INSTALL_DIRECTORY "KWStyle ${KWStyle_VERSION_MAJOR}.${KWStyle_VERSION_MINOR}")
 if(WIN32 AND NOT UNIX)
   # There is a bug in NSI that does not handle full unix paths properly. Make

@@ -44,7 +44,7 @@ bool Parser::CheckVariables(const char* regEx)
   if(!file.is_open())
     {
     std::cout << "Cannot open file: " << headerfile.c_str() << std::endl;
-    return 1;
+    return true;
     }
 
   file.seekg(0,std::ios::end);
@@ -64,27 +64,24 @@ bool Parser::CheckVariables(const char* regEx)
   buffer = this->RemoveComments(buffer.c_str());
   
   // Construct the list of variables to check
-  typedef std::pair<std::string,long int> PairType;
+  using PairType = std::pair<std::string, long>;
   std::vector<PairType> ivars;
   size_t pos = 0;
   while(pos != std::string::npos)
     {
     std::string var = this->FindVariable(buffer,pos+1,buffer.size(),pos);
-    if(var.size()>0)
-      {
+    if (!var.empty()) {
       std::string correct = "";
-      for(size_t i=0;i<var.size();i++)
-        {
-        if(var[i] != '*')
-          {
-          correct+=var[i];
-          }
+      for (char i : var) {
+        if (i != '*') {
+          correct += i;
         }
+      }
       PairType p;
       p.first = correct;
       p.second = this->GetLineNumber(pos,true)-1;
       ivars.push_back(p);
-      }
+    }
     }
 
   // Do the checking

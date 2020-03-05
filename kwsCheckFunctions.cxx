@@ -42,7 +42,7 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
   kwssys::RegularExpression regex(regEx);
 
   // List all the function in the file
-  long int pos = static_cast<long int>(this->FindFunction(0));
+  auto pos = static_cast<long int>(this->FindFunction(0));
   while(pos != -1)
     {
     // We extract the name of the function
@@ -90,8 +90,8 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
        && functionName.find("~") == std::string::npos // skip destructor for now...
        )
       {
-      long int posf = static_cast<long int>(functionName.find("::",0));
-      long int posp = static_cast<long int>(functionName.find("(",posf));
+      auto posf = static_cast<long int>(functionName.find("::", 0));
+      auto posp = static_cast<long int>(functionName.find("(", posf));
       if(posp != -1 && posf != -1 && posp>posf)
         {
         functionName = functionName.substr(posf+2,posp-posf-2);
@@ -108,36 +108,35 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
 
     //std::cout << "Function Name = " << functionName.c_str() << std::endl;
 
-    if(functionName.size() == 0)
-      {
-      long int bf = static_cast<long int>(m_BufferNoComment.find('{',pos));
-      long int pos2 = static_cast<long int>(this->FindClosingChar('{','}',bf,true));
-      pos = static_cast<long int>(this->FindFunction(pos2+1));
+      if (functionName.empty()) {
+        auto bf = static_cast<long int>(m_BufferNoComment.find('{', pos));
+        long int pos2 =
+            static_cast<long int>(this->FindClosingChar('{', '}', bf, true));
+        pos = static_cast<long int>(this->FindFunction(pos2 + 1));
 
-      // we cannot go backward
-      /*if(pos2 > pos)
-        {
-        long int bf = m_BufferNoComment.find('{',pos2);
-        pos = this->FindFunction(bf);
-        }*/
-      continue;
-      }
-    else if(functionName.size()>0)
-      {
-      long int bf = static_cast<long int>(m_BufferNoComment.find('{',pos));
-      long int bfcomments = static_cast<long int>(GetPositionWithComments(bf));
-      long int bfl = static_cast<long int>(this->GetLineNumber(bfcomments));
-      long int pos2 = static_cast<long int>(this->FindClosingChar('{','}',bf,true));
-      long int poscomments = static_cast<long int>(GetPositionWithComments(pos2));
-      long int efl = this->GetLineNumber(poscomments);
+        // we cannot go backward
+        /*if(pos2 > pos)
+          {
+          long int bf = m_BufferNoComment.find('{',pos2);
+          pos = this->FindFunction(bf);
+          }*/
+        continue;
+      } else if (!functionName.empty()) {
+        auto bf = static_cast<long int>(m_BufferNoComment.find('{', pos));
+        auto bfcomments = static_cast<long int>(GetPositionWithComments(bf));
+        auto bfl = static_cast<long int>(this->GetLineNumber(bfcomments));
+        long int pos2 =
+            static_cast<long int>(this->FindClosingChar('{', '}', bf, true));
+        auto poscomments = static_cast<long int>(GetPositionWithComments(pos2));
+        long int efl = this->GetLineNumber(poscomments);
 
-      pos = static_cast<long int>(this->FindFunction(pos2+1));
+        pos = static_cast<long int>(this->FindFunction(pos2 + 1));
 
-      // we cannot go backward
-      if(pos2 > pos)
-        {
-        long int localbf = static_cast<long int>(m_BufferNoComment.find('{',pos2));
-        pos = static_cast<long int>(this->FindFunction(localbf));
+        // we cannot go backward
+        if (pos2 > pos) {
+          auto localbf =
+              static_cast<long int>(m_BufferNoComment.find('{', pos2));
+          pos = static_cast<long int>(this->FindFunction(localbf));
         }
 
       if(!regex.find(functionName))

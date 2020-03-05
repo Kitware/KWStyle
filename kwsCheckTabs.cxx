@@ -26,7 +26,7 @@ bool Parser::CheckTabs()
 
   bool hasError = false;
 
-  sregex lineWithTabRegex = sregex::compile("^[^\\r\\n]*?(\\t)[^\\r\\n]*$");
+  sregex lineWithTabRegex = sregex::compile(R"(^[^\r\n]*?(\t)[^\r\n]*$)");
   sregex_iterator currentTabIterator(m_Buffer.begin(), m_Buffer.end(), lineWithTabRegex);
   sregex_iterator end;
 

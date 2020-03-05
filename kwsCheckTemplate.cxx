@@ -31,7 +31,8 @@ bool Parser::CheckTemplate(const char* regEx)
   // Maybe we should separate the main class from the templated function
   // at some point.
 
-  long int templatePos = static_cast<long int>(m_BufferNoComment.find("template",0));
+  auto templatePos =
+      static_cast<long int>(m_BufferNoComment.find("template", 0));
   while(templatePos != -1 ) 
     {
     bool valid = true;
@@ -48,13 +49,14 @@ bool Parser::CheckTemplate(const char* regEx)
       }
 
     // Definition is template <whatever name,whatever name2 = test, ...>
-    long int inf = static_cast<long int>(m_BufferNoComment.find("<",templatePos));
-    long int sup = static_cast<long int>(m_BufferNoComment.find(">",inf));
+      auto inf =
+          static_cast<long int>(m_BufferNoComment.find("<", templatePos));
+      auto sup = static_cast<long int>(m_BufferNoComment.find(">", inf));
 
-    if(inf == -1 || sup == -1)
-      {
-      //std::cout << "CheckTemplate(): There is a problem parsing the file" << std::endl;
-      valid = false;
+      if (inf == -1 || sup == -1) {
+        // std::cout << "CheckTemplate(): There is a problem parsing the file"
+        // << std::endl;
+        valid = false;
       }
     else
       {
@@ -100,8 +102,8 @@ bool Parser::CheckTemplate(const char* regEx)
         {
         inWord = false;
 
-        if(currentWord.size()>0 && !afterEqual && !regex.find(currentWord) && level==0)
-          {
+        if (!currentWord.empty() && !afterEqual && !regex.find(currentWord) &&
+            level == 0) {
           Error error;
           error.line = this->GetLineNumber(i,true);
           error.line2 = error.line;
@@ -109,7 +111,7 @@ bool Parser::CheckTemplate(const char* regEx)
           error.description = "Template definition (" + currentWord + ") doesn't match regular expression";
           m_ErrorList.push_back(error);
           hasErrors = true;
-          }
+        }
 
         if(m_BufferNoComment[i] == '=')
           {

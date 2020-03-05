@@ -21,10 +21,7 @@ XMLReader::XMLReader()
   m_CurrentPos = 0;
 }
 
-
-XMLReader::~XMLReader()
-{
-}
+XMLReader::~XMLReader() = default;
 
 bool XMLReader::Open(const char* filename)
 {
@@ -56,7 +53,8 @@ std::string XMLReader::GetValue()
 
 std::string XMLReader::GetTag()
 {
-  long int begin_tag_start = static_cast<long int>(m_Buffer.find("<",m_CurrentPos));
+  auto begin_tag_start =
+      static_cast<long int>(m_Buffer.find("<", m_CurrentPos));
   if(begin_tag_start == -1)
     {
     m_CurrentPos++;
@@ -64,11 +62,11 @@ std::string XMLReader::GetTag()
     return "";
     }
 
-  long int comment_start = static_cast<long int>(m_Buffer.find("<?",m_CurrentPos));
-  if(begin_tag_start == comment_start)
-    {
-    m_CurrentPos+=2;
-    return "NA";
+    auto comment_start =
+        static_cast<long int>(m_Buffer.find("<?", m_CurrentPos));
+    if (begin_tag_start == comment_start) {
+      m_CurrentPos += 2;
+      return "NA";
     }
   comment_start = static_cast<long int>(m_Buffer.find("</",m_CurrentPos));
   if(begin_tag_start == comment_start)
@@ -80,7 +78,8 @@ std::string XMLReader::GetTag()
   comment_start = static_cast<long int>(m_Buffer.find("<!--",m_CurrentPos));
   if(begin_tag_start == comment_start)
     {
-    long int comment_end = static_cast<long int>(m_Buffer.find("-->",comment_start));
+    auto comment_end =
+        static_cast<long int>(m_Buffer.find("-->", comment_start));
     if(comment_end!=-1)
       {
       m_CurrentPos=comment_end+3;
@@ -93,19 +92,20 @@ std::string XMLReader::GetTag()
     return "NA";
     }
 
+    auto begin_tag_end =
+        static_cast<long int>(m_Buffer.find(">", begin_tag_start + 1));
+    m_Tag = m_Buffer.substr(begin_tag_start + 1,
+                            begin_tag_end - begin_tag_start - 1);
 
-  long int begin_tag_end =  static_cast<long int>(m_Buffer.find(">",begin_tag_start+1));
-  m_Tag = m_Buffer.substr(begin_tag_start+1,begin_tag_end-begin_tag_start-1);
-
-  if(!strcmp(m_Tag.c_str(),"Description"))
-    {
-    m_CurrentPos++;
-    return "Description";
+    if (!strcmp(m_Tag.c_str(), "Description")) {
+      m_CurrentPos++;
+      return "Description";
     }
 
   std::string m_EndTag = "</";
   m_EndTag += m_Tag;
-  long int end_tag_begin = static_cast<long int>(m_Buffer.find(m_EndTag,begin_tag_end+1));
+  auto end_tag_begin =
+      static_cast<long int>(m_Buffer.find(m_EndTag, begin_tag_end + 1));
   if(end_tag_begin == -1)
     {
     std::cout << "XML parsing error, cannot find close tag for "
@@ -122,19 +122,18 @@ std::string XMLReader::GetTag()
   // by comas. This assume that the order of the tags is correct and present and
   // that we only have 1 level in the XML tree.
   unsigned int i=0;
-  long int pos1 = static_cast<long int>(value.find("<",0));
+  auto pos1 = static_cast<long int>(value.find("<", 0));
   while(pos1 != -1)
     {
     if(i>0)
       {
       m_Value += ",";
       }
-    long int pos2 = static_cast<long int>(value.find(">",pos1));
-    long int pos3 = static_cast<long int>(value.find("<",pos2));
+      auto pos2 = static_cast<long int>(value.find(">", pos1));
+      auto pos3 = static_cast<long int>(value.find("<", pos2));
 
-    if(i == 0)
-      {
-      m_Value = value.substr(pos2+1,pos3-pos2-1);
+      if (i == 0) {
+        m_Value = value.substr(pos2 + 1, pos3 - pos2 - 1);
 
       }
     else

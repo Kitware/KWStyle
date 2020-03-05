@@ -71,11 +71,9 @@ bool Parser::CheckComments(const char* begin,const char* middle,const char* end,
           i++;
           }
 
-        if(word.size()>0)
-          {
-          if(word != previousWord)
-            {
-            previousWord = word;
+          if (!word.empty()) {
+            if (word != previousWord) {
+              previousWord = word;
             }
           else if(previousWord.size() > 1 && 
                previousWord[0] != '/'
@@ -119,13 +117,11 @@ bool Parser::CheckComments(const char* begin,const char* middle,const char* end,
 
      // Find the last comment (remove spaces if any)
      std::string commentEnd = "";
-     for(size_t j=0;j<m_CommentEnd.size();j++)
-       {
-       if(m_CommentEnd[j] != ' ')
-         {
-         commentEnd += m_CommentEnd[j];
-         }
+     for (char j : m_CommentEnd) {
+       if (j != ' ') {
+         commentEnd += j;
        }
+     }
 
      size_t poscom = m_Buffer.find(commentEnd,0);
      size_t poscomtemp = poscom;

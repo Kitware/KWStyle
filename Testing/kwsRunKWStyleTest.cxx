@@ -30,7 +30,7 @@ int kwsRunKWStyleTest(int , char* argv[] )
   kwssysProcess_SetCommand(gp,argv);
   kwssysProcess_Execute(gp);
 
-  kwssysProcess_WaitForExit(gp,0);
+  kwssysProcess_WaitForExit(gp, nullptr);
 
   int result = 1;
   switch(kwssysProcess_GetState(gp))
