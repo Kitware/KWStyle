@@ -118,24 +118,25 @@ const char ErrorTag[NUMBER_ERRORS][4] = {
    {'P','R','N','\0'}
   };
 
-
-typedef struct
+struct ErrorStruct
   {
   unsigned long line; // main line of the error
   unsigned long line2; // second line of error if the error is covering several lines
   unsigned long number;
   std::string description; 
-  } Error;
+  };
+using Error = struct ErrorStruct;
 
-typedef struct
+struct WarningStruct
   {
   unsigned long line; // main line of the warning
   unsigned long line2; // second line of warning if the warning is covering several lines
   unsigned long number;
   std::string description; 
-  } Warning;
+  };
+using Warning = struct WarningStruct;
 
-typedef struct
+struct IndentPositionStruct
   {
   // Position in the file
   size_t position;
@@ -147,7 +148,8 @@ typedef struct
   int after;
   // Name of the current ident
   std::string name;
-  } IndentPosition;
+  };
+using IndentPosition = struct IndentPositionStruct;
 
 class Parser
 {
