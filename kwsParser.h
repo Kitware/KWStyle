@@ -176,6 +176,20 @@ public:
     this->ConvertBufferToWindowsFileType(m_Buffer);
     m_FixedBuffer = m_Buffer;
     this->RemoveComments();
+
+    //Fill up the m_positions vector
+    m_Positions.clear();
+    m_Positions.push_back(0);
+    const char* currentCharacter = m_Buffer.c_str();
+    size_t currentPosition = 0;
+    while( *currentCharacter )
+      {
+      if( (*currentCharacter) == '\n' )
+        m_Positions.push_back(currentPosition);
+      currentPosition++;
+      currentCharacter++;
+      }
+    m_Positions.push_back(currentPosition);
     }
  
   /** Return the error tag as string given the error number */
