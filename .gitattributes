@@ -1,16 +1,25 @@
 .git*            export-ignore
+# import off
 .gitattributes  -export-ignore
+.hooks*          export-ignore
+
+# Custom attribute to mark sources as using the kwsys C code style.
+[attr]kwsys-c-style  whitespace=tab-in-indent  format.clang-format
 
 /GitSetup        export-ignore
-/SetupForDevelopment.sh  export-ignore  eol=lf
+/*.sh            export-ignore eol=lf
+/*.bash          export-ignore eol=lf
+/.clang-format   export-ignore
+# import on
 
-/CONTRIBUTING.rst conflict-marker-size=78
+*.c              kwsys-c-style
+*.c.in           kwsys-c-style
+*.cxx            kwsys-c-style
+*.h              kwsys-c-style
+*.h.in           kwsys-c-style
+*.hxx            kwsys-c-style
+*.hxx.in         kwsys-c-style
 
-*.c              whitespace=tab-in-indent,no-lf-at-eof
-*.h              whitespace=tab-in-indent,no-lf-at-eof
-*.h.in           whitespace=tab-in-indent,no-lf-at-eof
-*.cxx            whitespace=tab-in-indent,no-lf-at-eof
-*.hxx            whitespace=tab-in-indent,no-lf-at-eof
-*.hxx.in         whitespace=tab-in-indent,no-lf-at-eof
-*.txt            whitespace=tab-in-indent,no-lf-at-eof
-*.cmake          whitespace=tab-in-indent,no-lf-at-eof
+*.cmake          whitespace=tab-in-indent
+*.rst            whitespace=tab-in-indent conflict-marker-size=79
+*.txt            whitespace=tab-in-indent
