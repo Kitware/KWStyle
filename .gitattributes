@@ -1,16 +1,4 @@
 .git*            export-ignore
-# import off
-.gitattributes  -export-ignore
-.hooks*          export-ignore
-
-# Custom attribute to mark sources as using the kwsys C code style.
-[attr]kwsys-c-style  whitespace=tab-in-indent  format.clang-format
-
-/GitSetup        export-ignore
-/*.sh            export-ignore eol=lf
-/*.bash          export-ignore eol=lf
-/.clang-format   export-ignore
-# import on
 
 *.c              kwsys-c-style
 *.c.in           kwsys-c-style
