@@ -96,6 +96,8 @@ trap "rm -rf '$workdir'" EXIT
 git clone "$repo" "$upstreamdir"
 
 if [ -n "$basehash" ]; then
+    # Remove old worktrees
+    git worktree prune
     # Use the existing package's history
     git worktree add "$extractdir" "$basehash"
     # Clear out the working tree
