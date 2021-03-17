@@ -15,6 +15,7 @@ readonly paths="
 
 extract_source () {
     git_archive
+    sed -i -e '/import off/,/import on/d' "$extractdir/$name-reduced/.gitattributes"
 }
 
 export HOOKS_ALLOW_KWSYS=1
