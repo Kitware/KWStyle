@@ -425,7 +425,7 @@ bool Parser::Check(const char* name, const char* value)
     std::string val = value;
     std::string v1 = value;
     bool uppercaseTheDefinition = false;
-    long pos = val.find(",", 0);
+    const long pos = static_cast<long>(val.find(",", 0));
     if(pos != -1)
       {
       v1 = val.substr(0, pos);
@@ -445,7 +445,7 @@ bool Parser::Check(const char* name, const char* value)
   else if(!strcmp(name,"Operator"))
     {
     std::string val = value;
-    long pos = static_cast<long>(val.find(",",0));
+    const long pos = static_cast<long>(val.find(",",0));
     if(pos == -1)
       {
       std::cout << "Operator not defined correctly" << std::endl;
@@ -458,7 +458,7 @@ bool Parser::Check(const char* name, const char* value)
   else if(!strcmp(name,"Comma"))
     {
     std::string val = value;
-    long pos = static_cast<long>(val.find(",",0));
+    const long pos = static_cast<long>(val.find(",",0));
     if(pos == -1)
       {
       std::cout << "Comma not defined correctly" << std::endl;
