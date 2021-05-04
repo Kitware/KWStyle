@@ -79,16 +79,13 @@ bool Parser::CheckLineLength(unsigned long max,bool checkHeader, bool doErrorChe
         error.line2 = error.line;
         error.number = LINE_LENGTH;
         error.description = "Line length exceed ";
-        char* localval = new char[10];
+        char localval[21];
         sprintf(localval,"%ld",line_length);
         error.description += localval;
         error.description += " (max=";
-        delete [] localval;
-        localval = new char[10];
         sprintf(localval,"%ld",max);
         error.description += localval;
         error.description += ")";
-        delete [] localval;
         m_ErrorList.push_back(error);
         hasError = true;
         }
