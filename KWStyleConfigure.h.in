@@ -11,7 +11,4 @@
      PURPOSE.  See the above copyright notices for more information.
 
 =========================================================================*/
-#define KWSTYLE_MAJOR_VERSION "@KWStyle_MAJOR_VERSION@"
-#define KWSTYLE_MINOR_VERSION "@KWStyle_MINOR_VERSION@"
-#define KWSTYLE_PATCH_VERSION "@KWStyle_PATCH_VERSION@"
-#define KWSTYLE_VERSION_STRING "@KWStyle_MAJOR_VERSION@.@KWStyle_MINOR_VERSION@.@KWStyle_PATCH_VERSION@"
+#define KWSTYLE_VERSION_STRING "@KWStyle_VERSION@"
