@@ -22,7 +22,7 @@
 #if defined(_CPPLIB_VER) && (_CPPLIB_VER >= 306)
    // full dinkumware 3.06 and above
    // fully conforming provided the compiler supports it:
-#  if !(defined(_GLOBAL_USING) && (_GLOBAL_USING+0 > 0)) && !defined(__BORLANDC__) && !defined(_STD) && !(defined(__ICC) && (__ICC >= 700))   // can be defined in yvals.h
+#  if !(defined(_GLOBAL_USING) && (_GLOBAL_USING+0 > 0)) && !defined(BOOST_BORLANDC) && !defined(_STD) && !(defined(__ICC) && (__ICC >= 700))   // can be defined in yvals.h
 #     define BOOST_NO_STDC_NAMESPACE
 #  endif
 #  if !(defined(_HAS_MEMBER_TEMPLATES_REBIND) && (_HAS_MEMBER_TEMPLATES_REBIND+0 > 0)) && !(defined(_MSC_VER) && (_MSC_VER > 1300)) && defined(BOOST_MSVC)
@@ -68,12 +68,12 @@
 // the same applies to other compilers that sit on top
 // of vc7.1 (Intel and Comeau):
 //
-#if defined(_MSC_VER) && (_MSC_VER >= 1310) && !defined(__BORLANDC__)
+#if defined(_MSC_VER) && (_MSC_VER >= 1310) && !defined(BOOST_BORLANDC)
 #  define BOOST_STD_EXTENSION_NAMESPACE stdext
 #endif
 
 
-#if (defined(_MSC_VER) && (_MSC_VER <= 1300) && !defined(__BORLANDC__)) || !defined(_CPPLIB_VER) || (_CPPLIB_VER < 306)
+#if (defined(_MSC_VER) && (_MSC_VER <= 1300) && !defined(BOOST_BORLANDC)) || !defined(_CPPLIB_VER) || (_CPPLIB_VER < 306)
    // if we're using a dinkum lib that's
    // been configured for VC6/7 then there is
    // no iterator traits (true even for icl)
@@ -86,20 +86,24 @@
 #  define BOOST_NO_STD_LOCALE
 #endif
 
+#if ((defined(BOOST_MSVC) && BOOST_MSVC >= 1400) || (defined(__clang__) && defined(_MSC_VER))) && (_MSC_VER < 1800)
 // Fix for VC++ 8.0 on up ( I do not have a previous version to test )
 // or clang-cl. If exceptions are off you must manually include the 
 // <exception> header before including the <typeinfo> header. Admittedly 
 // trying to use Boost libraries or the standard C++ libraries without 
 // exception support is not suggested but currently clang-cl ( v 3.4 ) 
 // does not support exceptions and must be compiled with exceptions off.
-#if !_HAS_EXCEPTIONS && ((defined(BOOST_MSVC) && BOOST_MSVC >= 1400) || (defined(__clang__) && defined(_MSC_VER)))
+#if !_HAS_EXCEPTIONS
 #include <exception>
 #endif
 #include <typeinfo>
-#if ( (!_HAS_EXCEPTIONS && !defined(__ghs__)) || (defined(__ghs__) && !_HAS_NAMESPACE) ) && !defined(__TI_COMPILER_VERSION__) && !defined(__VISUALDSPVERSION__) \
-   && !defined(__VXWORKS__)
+#if !_HAS_EXCEPTIONS
 #  define BOOST_NO_STD_TYPEINFO
 #endif  
+#endif
+#if defined(__ghs__) && !_HAS_NAMESPACE
+#  define BOOST_NO_STD_TYPEINFO
+#endif
 
 //  C++0x headers implemented in 520 (as shipped by Microsoft)
 //
@@ -178,10 +182,35 @@
 #  define BOOST_NO_CXX17_HDR_STRING_VIEW
 #  define BOOST_NO_CXX17_HDR_OPTIONAL
 #  define BOOST_NO_CXX17_HDR_VARIANT
+#  define BOOST_NO_CXX17_HDR_ANY
+#  define BOOST_NO_CXX17_HDR_MEMORY_RESOURCE
+#  define BOOST_NO_CXX17_HDR_CHARCONV
+#  define BOOST_NO_CXX17_HDR_EXECUTION
+#  define BOOST_NO_CXX17_HDR_FILESYSTEM
 #endif
 #if !defined(_CPPLIB_VER) || (_CPPLIB_VER < 650) || !defined(_HAS_CXX17) || (_HAS_CXX17 == 0) || !defined(_MSVC_STL_UPDATE) || (_MSVC_STL_UPDATE < 201709)
 #  define BOOST_NO_CXX17_STD_INVOKE
 #endif
+
+// C++20 features
+#if !defined(_MSVC_STL_UPDATE) || (_MSVC_STL_UPDATE < 202008L) || !defined(_HAS_CXX20) || (_HAS_CXX20 == 0)
+#  define BOOST_NO_CXX20_HDR_BARRIER
+#  define BOOST_NO_CXX20_HDR_BIT
+#  define BOOST_NO_CXX20_HDR_LATCH
+#  define BOOST_NO_CXX20_HDR_SPAN
+#  define BOOST_NO_CXX20_HDR_COMPARE
+#  define BOOST_NO_CXX20_HDR_NUMBERS
+#  define BOOST_NO_CXX20_HDR_CONCEPTS
+#  define BOOST_NO_CXX20_HDR_COROUTINE
+#  define BOOST_NO_CXX20_HDR_SEMAPHORE
+#endif
+// C++20 features not yet implemented:
+#  define BOOST_NO_CXX20_HDR_FORMAT
+#  define BOOST_NO_CXX20_HDR_SOURCE_LOCATION
+#  define BOOST_NO_CXX20_HDR_STOP_TOKEN
+#  define BOOST_NO_CXX20_HDR_SYNCSTREAM
+// Incomplete:
+#  define BOOST_NO_CXX20_HDR_RANGES
 
 #if !(!defined(_CPPLIB_VER) || (_CPPLIB_VER < 650) || !defined(BOOST_MSVC) || (BOOST_MSVC < 1912) || !defined(_HAS_CXX17) || (_HAS_CXX17 == 0))
 // Deprecated std::iterator:
@@ -217,6 +246,12 @@
 #    define BOOST_NO_CXX98_FUNCTION_BASE
 #    define BOOST_NO_CXX98_BINDERS
 #  endif
+#endif
+//
+// Things deprecated in C++20:
+//
+#if defined(_HAS_CXX20)
+#  define BOOST_NO_CXX11_ATOMIC_SMART_PTR
 #endif
 
 
