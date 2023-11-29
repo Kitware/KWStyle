@@ -11,20 +11,20 @@
 // Needed for __GLIBC__ test macro.
 #ifdef __linux__
 #  include <features.h>
-#endif
 
 // Will define LIBDL_SO macro on systems with glibc.
-#ifdef __GLIBC__
-#  include <gnu/lib-names.h>
+#  ifdef __GLIBC__
+#    include <gnu/lib-names.h>
 // Define to LIBC_SO, if not defined by above header.
-#  ifndef LIBDL_SO
-#    define LIBDL_SO LIBC_SO
+#    ifndef LIBDL_SO
+#      define LIBDL_SO LIBC_SO
+#    endif
 #  endif
-#endif
 
 // Define the LIBDL_SO macro, if not defined above.
-#ifndef LIBDL_SO
-#  define LIBDL_SO "libdl.so"
+#  ifndef LIBDL_SO
+#    define LIBDL_SO "libdl.so"
+#  endif
 #endif
 
 // Work-around CMake dependency scanning limitation.  This must
@@ -40,6 +40,10 @@
 // left on disk.
 #include <testSystemTools.h>
 
+// For TestDynamicLoaderData, which, though not referenced literally,
+// is referenced semantically.
+#include "testDynload.h"
+
 static std::string GetLibName(const char* lname, const char* subdir = nullptr)
 {
   // Construct proper name of lib
@@ -49,9 +53,9 @@ static std::string GetLibName(const char* lname, const char* subdir = nullptr)
     slname += "/";
     slname += subdir;
   }
-#ifdef CMAKE_INTDIR
+#ifdef BUILD_CONFIG
   slname += "/";
-  slname += CMAKE_INTDIR;
+  slname += BUILD_CONFIG;
 #endif
   slname += "/";
   slname += kwsys::DynamicLoader::LibPrefix();

@@ -29,7 +29,7 @@ a UNIX-style select system call.
 #  define KWSYS_WINDOWS_DEPRECATED_GetVersionEx
 #endif
 #include <io.h>     /* _unlink */
-#include <stdio.h>  /* sprintf */
+#include <stdio.h>  /* snprintf */
 #include <string.h> /* strlen, strdup */
 
 #ifndef _MAX_FNAME
@@ -1867,18 +1867,18 @@ void kwsysProcessCleanup(kwsysProcess* cp, DWORD error)
         KWSYSPE_PIPE_BUFFER_SIZE, 0);
       if (length < 1) {
         /* FormatMessage failed.  Use a default message.  */
-        _snprintf(cp->ErrorMessage, KWSYSPE_PIPE_BUFFER_SIZE,
-                  "Process execution failed with error 0x%X.  "
-                  "FormatMessage failed with error 0x%X",
-                  error, GetLastError());
+        snprintf(cp->ErrorMessage, KWSYSPE_PIPE_BUFFER_SIZE,
+                 "Process execution failed with error 0x%lX.  "
+                 "FormatMessage failed with error 0x%lX",
+                 error, GetLastError());
       }
       if (!WideCharToMultiByte(CP_UTF8, 0, err_msg, -1, cp->ErrorMessage,
                                KWSYSPE_PIPE_BUFFER_SIZE, NULL, NULL)) {
         /* WideCharToMultiByte failed.  Use a default message.  */
-        _snprintf(cp->ErrorMessage, KWSYSPE_PIPE_BUFFER_SIZE,
-                  "Process execution failed with error 0x%X.  "
-                  "WideCharToMultiByte failed with error 0x%X",
-                  error, GetLastError());
+        snprintf(cp->ErrorMessage, KWSYSPE_PIPE_BUFFER_SIZE,
+                 "Process execution failed with error 0x%lX.  "
+                 "WideCharToMultiByte failed with error 0x%lX",
+                 error, GetLastError());
       }
     }
 
@@ -2119,7 +2119,7 @@ static void kwsysProcessSetExitExceptionByIndex(kwsysProcess* cp, int code,
       KWSYSPE_CASE(Fault, "In-page error");
       break;
     case STATUS_INVALID_HANDLE:
-      KWSYSPE_CASE(Fault, "Invalid hanlde");
+      KWSYSPE_CASE(Fault, "Invalid handle");
       break;
     case STATUS_NONCONTINUABLE_EXCEPTION:
       KWSYSPE_CASE(Fault, "Noncontinuable exception");
@@ -2144,8 +2144,8 @@ static void kwsysProcessSetExitExceptionByIndex(kwsysProcess* cp, int code,
     case STATUS_NO_MEMORY:
     default:
       cp->ProcessResults[idx].ExitException = kwsysProcess_Exception_Other;
-      _snprintf(cp->ProcessResults[idx].ExitExceptionString,
-                KWSYSPE_PIPE_BUFFER_SIZE, "Exit code 0x%x\n", code);
+      snprintf(cp->ProcessResults[idx].ExitExceptionString,
+               KWSYSPE_PIPE_BUFFER_SIZE, "Exit code 0x%x\n", code);
       break;
   }
 }
@@ -2406,8 +2406,9 @@ static int kwsysProcess_List__Next_NT4(kwsysProcess_List* self)
 {
   if (self->CurrentInfo) {
     if (self->CurrentInfo->NextEntryDelta > 0) {
-      self->CurrentInfo = ((PSYSTEM_PROCESS_INFORMATION)(
-        (char*)self->CurrentInfo + self->CurrentInfo->NextEntryDelta));
+      self->CurrentInfo =
+        ((PSYSTEM_PROCESS_INFORMATION)((char*)self->CurrentInfo +
+                                       self->CurrentInfo->NextEntryDelta));
       return 1;
     }
     self->CurrentInfo = 0;

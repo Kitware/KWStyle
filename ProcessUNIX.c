@@ -1,5 +1,9 @@
 /* Distributed under the OSI-approved BSD 3-Clause License.  See accompanying
    file Copyright.txt or https://cmake.org/licensing#kwsys for details.  */
+#if !defined(_WIN32) && !defined(__APPLE__) && !defined(__OpenBSD__)
+/* NOLINTNEXTLINE(bugprone-reserved-identifier) */
+#  define _XOPEN_SOURCE 600
+#endif
 #include "kwsysPrivate.h"
 #include KWSYS_HEADER(Process.h)
 #include KWSYS_HEADER(System.h)
@@ -41,6 +45,12 @@ do.
 /* Increase the file descriptor limit for select() before including
    related system headers. (Default: 64) */
 #  define FD_SETSIZE 16384
+#elif defined(__APPLE__)
+/* Increase the file descriptor limit for select() before including
+   related system headers. (Default: 1024) */
+#  define _DARWIN_UNLIMITED_SELECT
+#  include <limits.h> /* OPEN_MAX */
+#  define FD_SETSIZE OPEN_MAX
 #endif
 
 #include <assert.h>    /* assert */
@@ -1900,7 +1910,7 @@ static void kwsysProcessDestroy(kwsysProcess* cp)
              (errno == EINTR)) {
       }
       if (result > 0) {
-        /* This child has termianted.  */
+        /* This child has terminated.  */
         cp->ForkPIDs[i] = 0;
         if (--cp->CommandsLeft == 0) {
           /* All children have terminated.  Close the signal pipe
@@ -2001,6 +2011,14 @@ static int kwsysProcessGetTimeoutTime(kwsysProcess* cp,
   return 0;
 }
 
+#if defined(__clang__) && defined(__has_warning)
+#  if __has_warning("-Wshorten-64-to-32")
+#    pragma clang diagnostic push
+#    pragma clang diagnostic ignored "-Wshorten-64-to-32"
+#    define KWSYSPE_CLANG_DIAG_WSHORTEN
+#  endif
+#endif
+
 /* Get the length of time before the given timeout time arrives.
    Returns 1 if the time has already arrived, and 0 otherwise.  */
 static int kwsysProcessGetTimeoutLeft(kwsysProcessTime* timeoutTime,
@@ -2050,6 +2068,11 @@ static kwsysProcessTime kwsysProcessTimeGetCurrent(void)
   current.tv_usec = (long)current_native.tv_usec;
   return current;
 }
+
+#if defined(KWSYSPE_CLANG_DIAG_WSHORTEN)
+#  undef KWSYSPE_CLANG_DIAG_WSHORTEN
+#  pragma clang diagnostic pop
+#endif
 
 static double kwsysProcessTimeToDouble(kwsysProcessTime t)
 {
@@ -2287,7 +2310,8 @@ static void kwsysProcessSetExitExceptionByIndex(kwsysProcess* cp, int sig,
 #endif
     default:
       cp->ProcessResults[idx].ExitException = kwsysProcess_Exception_Other;
-      sprintf(cp->ProcessResults[idx].ExitExceptionString, "Signal %d", sig);
+      snprintf(cp->ProcessResults[idx].ExitExceptionString,
+               KWSYSPE_PIPE_BUFFER_SIZE + 1, "Signal %d", sig);
       break;
   }
 }
@@ -2540,7 +2564,7 @@ static void kwsysProcessKill(pid_t process_id)
       int pid;
       if (sscanf(d->d_name, "%d", &pid) == 1 && pid != 0) {
         struct stat finfo;
-        sprintf(fname, "/proc/%d/stat", pid);
+        snprintf(fname, sizeof(fname), "/proc/%d/stat", pid);
         if (stat(fname, &finfo) == 0) {
           FILE* f = fopen(fname, "r");
           if (f) {

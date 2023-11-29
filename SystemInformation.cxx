@@ -482,7 +482,7 @@ protected:
                                        unsigned int); // For windows
 
   // For Linux and Cygwin, /proc/cpuinfo formats are slightly different
-  bool RetreiveInformationFromCpuInfoFile();
+  bool RetrieveInformationFromCpuInfoFile();
   std::string ExtractValueFromCpuInfoFile(std::string buffer, const char* word,
                                           size_t init = 0);
 
@@ -1265,9 +1265,10 @@ public:
   }
 
 private:
-  void* GetRealAddress() const
+  size_t GetRealAddress() const
   {
-    return (void*)((char*)this->Address - (char*)this->BinaryBaseAddress);
+    return static_cast<size_t>(static_cast<char*>(this->Address) -
+                               static_cast<char*>(this->BinaryBaseAddress));
   }
 
   std::string GetFileName(const std::string& path) const;
@@ -1356,14 +1357,12 @@ std::string SymbolProperties::Demangle(const char* symbol) const
   std::string result = safes(symbol);
 #  if defined(KWSYS_SYSTEMINFORMATION_HAS_CPP_DEMANGLE)
   int status = 0;
-  size_t bufferLen = 1024;
-  char* buffer = (char*)malloc(1024);
   char* demangledSymbol =
-    abi::__cxa_demangle(symbol, buffer, &bufferLen, &status);
+    abi::__cxa_demangle(symbol, nullptr, nullptr, &status);
   if (!status) {
     result = demangledSymbol;
   }
-  free(buffer);
+  free(demangledSymbol);
 #  else
   (void)symbol;
 #  endif
@@ -1521,7 +1520,7 @@ void SystemInformationImplementation::RunCPUCheck()
 #elif defined(__hpux)
   this->QueryHPUXProcessor();
 #elif defined(__linux) || defined(__CYGWIN__)
-  this->RetreiveInformationFromCpuInfoFile();
+  this->RetrieveInformationFromCpuInfoFile();
 #else
   this->QueryProcessor();
 #endif
@@ -2791,19 +2790,20 @@ bool SystemInformationImplementation::RetrieveProcessorSerialNumber()
   //    ;        ecx: middle 32 bits are the processor signature bits
   //    ;        edx: bottom 32 bits are the processor signature bits
   char sn[128];
-  sprintf(sn, "%.2x%.2x-%.2x%.2x-%.2x%.2x-%.2x%.2x-%.2x%.2x-%.2x%.2x",
-          ((SerialNumber[1] & 0xff000000) >> 24),
-          ((SerialNumber[1] & 0x00ff0000) >> 16),
-          ((SerialNumber[1] & 0x0000ff00) >> 8),
-          ((SerialNumber[1] & 0x000000ff) >> 0),
-          ((SerialNumber[2] & 0xff000000) >> 24),
-          ((SerialNumber[2] & 0x00ff0000) >> 16),
-          ((SerialNumber[2] & 0x0000ff00) >> 8),
-          ((SerialNumber[2] & 0x000000ff) >> 0),
-          ((SerialNumber[3] & 0xff000000) >> 24),
-          ((SerialNumber[3] & 0x00ff0000) >> 16),
-          ((SerialNumber[3] & 0x0000ff00) >> 8),
-          ((SerialNumber[3] & 0x000000ff) >> 0));
+  snprintf(sn, sizeof(sn),
+           "%.2x%.2x-%.2x%.2x-%.2x%.2x-%.2x%.2x-%.2x%.2x-%.2x%.2x",
+           ((SerialNumber[1] & 0xff000000) >> 24),
+           ((SerialNumber[1] & 0x00ff0000) >> 16),
+           ((SerialNumber[1] & 0x0000ff00) >> 8),
+           ((SerialNumber[1] & 0x000000ff) >> 0),
+           ((SerialNumber[2] & 0xff000000) >> 24),
+           ((SerialNumber[2] & 0x00ff0000) >> 16),
+           ((SerialNumber[2] & 0x0000ff00) >> 8),
+           ((SerialNumber[2] & 0x000000ff) >> 0),
+           ((SerialNumber[3] & 0xff000000) >> 24),
+           ((SerialNumber[3] & 0x00ff0000) >> 16),
+           ((SerialNumber[3] & 0x0000ff00) >> 8),
+           ((SerialNumber[3] & 0x000000ff) >> 0));
   this->ChipID.SerialNumber = sn;
   return true;
 
@@ -3262,6 +3262,9 @@ bool SystemInformationImplementation::RetrieveClassicalCPUIdentity()
             case 0x3b:
               this->ChipID.ProcessorName = "Zhaoxin kx6000";
               break;
+            case 0x5b:
+              this->ChipID.ProcessorName = "Zhaoxin kh40000";
+              break;
             default:
               this->ChipID.ProcessorName =
                 "Unknown IDT\\Centaur\\VIA\\Zhaoxin family";
@@ -3294,6 +3297,9 @@ bool SystemInformationImplementation::RetrieveClassicalCPUIdentity()
               break;
             case 0x3b:
               this->ChipID.ProcessorName = "Zhaoxin kx6000";
+              break;
+            case 0x5b:
+              this->ChipID.ProcessorName = "Zhaoxin kh40000";
               break;
             default:
               this->ChipID.ProcessorName = "Unknown Zhaoxin family";
@@ -3429,7 +3435,7 @@ std::string SystemInformationImplementation::ExtractValueFromCpuInfoFile(
 }
 
 /** Query for the cpu status */
-bool SystemInformationImplementation::RetreiveInformationFromCpuInfoFile()
+bool SystemInformationImplementation::RetrieveInformationFromCpuInfoFile()
 {
   this->NumberOfLogicalCPU = 0;
   this->NumberOfPhysicalCPU = 0;
@@ -3437,7 +3443,7 @@ bool SystemInformationImplementation::RetreiveInformationFromCpuInfoFile()
 
   FILE* fd = fopen("/proc/cpuinfo", "r");
   if (!fd) {
-    std::cout << "Problem opening /proc/cpuinfo" << std::endl;
+    std::cerr << "Problem opening /proc/cpuinfo\n";
     return false;
   }
 
@@ -3447,6 +3453,10 @@ bool SystemInformationImplementation::RetreiveInformationFromCpuInfoFile()
     fileSize++;
   }
   fclose(fd);
+  if (fileSize < 2) {
+    std::cerr << "No data in /proc/cpuinfo\n";
+    return false;
+  }
   buffer.resize(fileSize - 2);
   // Number of logical CPUs (combination of multiple processors, multi-core
   // and SMT)
@@ -3751,24 +3761,24 @@ long long SystemInformationImplementation::GetProcMemoryAvailable(
   ResourceLimitType rlim;
   ierr = GetResourceLimit(RLIMIT_DATA, &rlim);
   if ((ierr == 0) && (rlim.rlim_cur != RLIM_INFINITY)) {
-    memAvail = min((long long)rlim.rlim_cur / 1024, memAvail);
+    memAvail = min(static_cast<long long>(rlim.rlim_cur) / 1024, memAvail);
   }
 
   ierr = GetResourceLimit(RLIMIT_AS, &rlim);
   if ((ierr == 0) && (rlim.rlim_cur != RLIM_INFINITY)) {
-    memAvail = min((long long)rlim.rlim_cur / 1024, memAvail);
+    memAvail = min(static_cast<long long>(rlim.rlim_cur) / 1024, memAvail);
   }
 #elif defined(__APPLE__)
   struct rlimit rlim;
   int ierr;
   ierr = getrlimit(RLIMIT_DATA, &rlim);
   if ((ierr == 0) && (rlim.rlim_cur != RLIM_INFINITY)) {
-    memAvail = min((long long)rlim.rlim_cur / 1024, memAvail);
+    memAvail = min(static_cast<long long>(rlim.rlim_cur) / 1024, memAvail);
   }
 
   ierr = getrlimit(RLIMIT_RSS, &rlim);
   if ((ierr == 0) && (rlim.rlim_cur != RLIM_INFINITY)) {
-    memAvail = min((long long)rlim.rlim_cur / 1024, memAvail);
+    memAvail = min(static_cast<long long>(rlim.rlim_cur) / 1024, memAvail);
   }
 #endif
 
@@ -4070,7 +4080,7 @@ void SystemInformationImplementation::SetStackTraceOnError(int enable)
 
     // install ours
     struct sigaction sa;
-    sa.sa_sigaction = (SigAction)StacktraceSignalHandler;
+    sa.sa_sigaction = static_cast<SigAction>(StacktraceSignalHandler);
     sa.sa_flags = SA_SIGINFO | SA_RESETHAND;
 #  ifdef SA_RESTART
     sa.sa_flags |= SA_RESTART;
@@ -4152,7 +4162,7 @@ bool SystemInformationImplementation::QueryLinuxMemory()
   struct utsname unameInfo;
   int errorFlag = uname(&unameInfo);
   if (errorFlag != 0) {
-    std::cout << "Problem calling uname(): " << strerror(errno) << std::endl;
+    std::cerr << "Problem calling uname(): " << strerror(errno) << "\n";
     return false;
   }
 
@@ -4172,7 +4182,7 @@ bool SystemInformationImplementation::QueryLinuxMemory()
 
   FILE* fd = fopen("/proc/meminfo", "r");
   if (!fd) {
-    std::cout << "Problem opening /proc/meminfo" << std::endl;
+    std::cerr << "Problem opening /proc/meminfo\n";
     return false;
   }
 
@@ -4211,7 +4221,7 @@ bool SystemInformationImplementation::QueryLinuxMemory()
       this->TotalVirtualMemory = value[mSwapTotal] / 1024;
       this->AvailableVirtualMemory = value[mSwapFree] / 1024;
     } else {
-      std::cout << "Problem parsing /proc/meminfo" << std::endl;
+      std::cerr << "Problem parsing /proc/meminfo\n";
       fclose(fd);
       return false;
     }
@@ -4238,7 +4248,7 @@ bool SystemInformationImplementation::QueryLinuxMemory()
       this->AvailablePhysicalMemory =
         (ap + buffersMem + cachedMem) >> 10 >> 10;
     } else {
-      std::cout << "Problem parsing /proc/meminfo" << std::endl;
+      std::cerr << "Problem parsing /proc/meminfo\n";
       fclose(fd);
       return false;
     }
@@ -4462,8 +4472,8 @@ void SystemInformationImplementation::CPUCountWindows()
   typedef BOOL(WINAPI * GetLogicalProcessorInformationType)(
     PSYSTEM_LOGICAL_PROCESSOR_INFORMATION, PDWORD);
   static GetLogicalProcessorInformationType pGetLogicalProcessorInformation =
-    (GetLogicalProcessorInformationType)GetProcAddress(
-      GetModuleHandleW(L"kernel32"), "GetLogicalProcessorInformation");
+    reinterpret_cast<GetLogicalProcessorInformationType>(GetProcAddress(
+      GetModuleHandleW(L"kernel32"), "GetLogicalProcessorInformation"));
 
   if (!pGetLogicalProcessorInformation) {
     // Fallback to approximate implementation on ancient Windows versions.
@@ -4566,7 +4576,8 @@ bool SystemInformationImplementation::ParseSysCtl()
   this->AvailablePhysicalMemory = 0;
   vm_statistics_data_t vmstat;
   mach_msg_type_number_t count = HOST_VM_INFO_COUNT;
-  if (host_statistics(mach_host_self(), HOST_VM_INFO, (host_info_t)&vmstat,
+  if (host_statistics(mach_host_self(), HOST_VM_INFO,
+                      reinterpret_cast<host_info_t>(&vmstat),
                       &count) == KERN_SUCCESS) {
     err = kw_sysctlbyname_int64("hw.pagesize", &tempInt64);
     if (err == 0) {
@@ -5397,8 +5408,8 @@ bool SystemInformationImplementation::QueryOSInformation()
           }
         }
 
-        sprintf(operatingSystem, "%ls (Build %ld)", osvi.szCSDVersion,
-                osvi.dwBuildNumber & 0xFFFF);
+        snprintf(operatingSystem, sizeof(operatingSystem), "%ls (Build %ld)",
+                 osvi.szCSDVersion, osvi.dwBuildNumber & 0xFFFF);
         this->OSVersion = operatingSystem;
       } else
 #  endif // VER_NT_WORKSTATION
@@ -5441,9 +5452,10 @@ bool SystemInformationImplementation::QueryOSInformation()
       // Display version, service pack (if any), and build number.
       if (osvi.dwMajorVersion <= 4) {
         // NB: NT 4.0 and earlier.
-        sprintf(operatingSystem, "version %ld.%ld %ls (Build %ld)",
-                osvi.dwMajorVersion, osvi.dwMinorVersion, osvi.szCSDVersion,
-                osvi.dwBuildNumber & 0xFFFF);
+        snprintf(operatingSystem, sizeof(operatingSystem),
+                 "version %ld.%ld %ls (Build %ld)", osvi.dwMajorVersion,
+                 osvi.dwMinorVersion, osvi.szCSDVersion,
+                 osvi.dwBuildNumber & 0xFFFF);
         this->OSVersion = operatingSystem;
       } else if (osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 1) {
         // Windows XP and .NET server.
@@ -5469,8 +5481,8 @@ bool SystemInformationImplementation::QueryOSInformation()
         }
       } else {
         // Windows 2000 and everything else.
-        sprintf(operatingSystem, "%ls (Build %ld)", osvi.szCSDVersion,
-                osvi.dwBuildNumber & 0xFFFF);
+        snprintf(operatingSystem, sizeof(operatingSystem), "%ls (Build %ld)",
+                 osvi.szCSDVersion, osvi.dwBuildNumber & 0xFFFF);
         this->OSVersion = operatingSystem;
       }
       break;
