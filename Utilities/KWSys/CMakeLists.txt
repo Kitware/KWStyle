@@ -46,6 +46,8 @@
 #                               Set to empty string to use no default value.
 #  KWSYS_CXX_COMPILE_FEATURES = target_compile_features arguments for KWSys.
 #
+#  KWSYS_NO_EXECINFO          = Do not use execinfo.
+#
 # Optional settings to setup install rules are as follows:
 #
 #  KWSYS_INSTALL_BIN_DIR     = The installation target directories into
@@ -86,17 +88,7 @@
 # any outside mailing list and no documentation of the change will be
 # written.
 
-cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
-foreach(p
-    CMP0056 # CMake 3.2, Honor link flags in try_compile() source-file signature.
-    CMP0063 # CMake 3.3, Honor visibility properties for all target types.
-    CMP0067 # CMake 3.8, Honor language standard in try_compile source-file signature.
-    CMP0069 # CMake 3.9, INTERPROCEDURAL_OPTIMIZATION is enforced when enabled.
-    )
-  if(POLICY ${p})
-    cmake_policy(SET ${p} NEW)
-  endif()
-endforeach()
+cmake_minimum_required(VERSION 3.9...3.22 FATAL_ERROR)
 
 # Some configure checks depend upon the deployment target. Clear checks when
 # the deployment target changes.
@@ -190,6 +182,7 @@ endif()
 if(KWSYS_USE_Directory)
   set(KWSYS_USE_Encoding 1)
   set(KWSYS_USE_Status 1)
+  set(KWSYS_USE_SystemTools 1)
 endif()
 if(KWSYS_USE_DynamicLoader)
   set(KWSYS_USE_Encoding 1)
@@ -208,11 +201,7 @@ endif()
 
 # Enable testing if building standalone.
 if(KWSYS_STANDALONE)
-  include(Dart)
-  mark_as_advanced(BUILD_TESTING DART_ROOT TCL_TCLSH)
-  if(BUILD_TESTING)
-    enable_testing()
-  endif()
+  include(CTest)
 endif()
 
 # Choose default shared/static build if not specified.
@@ -308,14 +297,6 @@ endif()
 # Do not support old KWSYS_*a_INSTALL_DIR variable names.
 set(KWSYS_HEADER_INSTALL_DIR)
 set(KWSYS_LIBRARY_INSTALL_DIR)
-
-# Generated source files will need this header.
-string(COMPARE EQUAL "${PROJECT_SOURCE_DIR}" "${PROJECT_BINARY_DIR}"
-  KWSYS_IN_SOURCE_BUILD)
-if(NOT KWSYS_IN_SOURCE_BUILD)
-  configure_file(${PROJECT_SOURCE_DIR}/kwsysPrivate.h
-    ${PROJECT_BINARY_DIR}/kwsysPrivate.h COPYONLY IMMEDIATE)
-endif()
 
 # Select plugin module file name convention.
 if(NOT KWSYS_DynamicLoader_PREFIX)
@@ -526,7 +507,7 @@ if(KWSYS_USE_SystemInformation)
     set_property(SOURCE SystemInformation.cxx APPEND PROPERTY
       COMPILE_DEFINITIONS KWSYS_CXX_HAS_RLIMIT64=1)
   endif()
-  if(UNIX)
+  if(UNIX AND NOT KWSYS_NO_EXECINFO)
     include(CheckIncludeFileCXX)
     # check for simple stack trace
     # usually it's in libc but on FreeBSD
@@ -637,15 +618,15 @@ endif()
 # Build a list of classes and headers we need to implement the
 # selected components.  Initialize with required components.
 set(KWSYS_CLASSES)
-set(KWSYS_H_FILES Configure SharedForward)
-set(KWSYS_HXX_FILES Configure String)
+set(KWSYS_H_FILES Configure)
+set(KWSYS_HXX_FILES Configure)
 
 # Add selected C++ classes.
 set(cppclasses
   Directory DynamicLoader Encoding Glob RegularExpression SystemTools
   CommandLineArguments FStream SystemInformation ConsoleBuf Status
   )
-foreach(cpp ${cppclasses})
+foreach(cpp IN LISTS cppclasses)
   if(KWSYS_USE_${cpp})
     # Use the corresponding class.
     set(KWSYS_CLASSES ${KWSYS_CLASSES} ${cpp})
@@ -658,7 +639,7 @@ foreach(cpp ${cppclasses})
 endforeach()
 
 # Add selected C components.
-foreach(c
+foreach(c IN ITEMS
     Process Base64 Encoding MD5 Terminal System String
     )
   if(KWSYS_USE_${c})
@@ -690,7 +671,7 @@ if(KWSYS_USE_Process)
 endif()
 
 # Add selected C sources.
-foreach(c Base64 Encoding MD5 Terminal System String)
+foreach(c IN ITEMS Base64 Encoding MD5 Terminal System String)
   if(KWSYS_USE_${c})
     if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${c}C.c)
       list(APPEND KWSYS_C_SRCS ${c}C.c)
@@ -701,7 +682,7 @@ foreach(c Base64 Encoding MD5 Terminal System String)
 endforeach()
 
 # Configure headers of C++ classes and construct the list of sources.
-foreach(c ${KWSYS_CLASSES})
+foreach(c IN LISTS KWSYS_CLASSES)
   # Add this source to the list of source files for the library.
   if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${c}CXX.cxx)
     list(APPEND KWSYS_CXX_SRCS ${c}CXX.cxx)
@@ -723,7 +704,7 @@ foreach(c ${KWSYS_CLASSES})
 endforeach()
 
 # Configure C headers.
-foreach(h ${KWSYS_H_FILES})
+foreach(h IN LISTS KWSYS_H_FILES)
   # Configure the header into the given directory.
   configure_file(${PROJECT_SOURCE_DIR}/${h}.h.in ${KWSYS_HEADER_DIR}/${h}.h
                  @ONLY IMMEDIATE)
@@ -738,7 +719,7 @@ foreach(h ${KWSYS_H_FILES})
 endforeach()
 
 # Configure other C++ headers.
-foreach(h ${KWSYS_HXX_FILES})
+foreach(h IN LISTS KWSYS_HXX_FILES)
   # Configure the header into the given directory.
   configure_file(${PROJECT_SOURCE_DIR}/${h}.hxx.in ${KWSYS_HEADER_DIR}/${h}.hxx
                  @ONLY IMMEDIATE)
@@ -967,9 +948,11 @@ if(KWSYS_STANDALONE OR CMake_SOURCE_DIR)
     add_executable(${KWSYS_NAMESPACE}TestsC ${KWSYS_C_TEST_SRCS})
     set_property(TARGET ${KWSYS_NAMESPACE}TestsC PROPERTY LABELS ${KWSYS_LABELS_EXE})
     target_link_libraries(${KWSYS_NAMESPACE}TestsC ${KWSYS_TARGET_C_LINK})
-    foreach(testfile ${KWSYS_C_TESTS})
+    foreach(testfile IN LISTS KWSYS_C_TESTS)
       get_filename_component(test "${testfile}" NAME_WE)
-      add_test(kwsys.${test} ${EXEC_DIR}/${KWSYS_NAMESPACE}TestsC ${test} ${KWSYS_TEST_ARGS_${test}})
+      add_test(NAME kwsys.${test}
+        COMMAND ${EXEC_DIR}/${KWSYS_NAMESPACE}TestsC ${test} ${KWSYS_TEST_ARGS_${test}}
+        )
       set_property(TEST kwsys.${test} PROPERTY LABELS ${KWSYS_LABELS_TEST})
     endforeach()
 
@@ -1045,6 +1028,10 @@ if(KWSYS_STANDALONE OR CMake_SOURCE_DIR)
     set_property(TARGET ${KWSYS_NAMESPACE}TestsCxx PROPERTY CXX_INCLUDE_WHAT_YOU_USE "")
     set_property(TARGET ${KWSYS_NAMESPACE}TestsCxx PROPERTY LABELS ${KWSYS_LABELS_EXE})
     target_link_libraries(${KWSYS_NAMESPACE}TestsCxx ${KWSYS_TARGET_LINK})
+    get_property(_isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+    if(_isMultiConfig)
+      set_property(TARGET ${KWSYS_NAMESPACE}TestsCxx APPEND PROPERTY COMPILE_DEFINITIONS BUILD_CONFIG="$<CONFIG>")
+    endif()
 
     set(TEST_SYSTEMTOOLS_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
     set(TEST_SYSTEMTOOLS_BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}")
@@ -1087,9 +1074,11 @@ if(KWSYS_STANDALONE OR CMake_SOURCE_DIR)
       -p
       some junk at the end
       )
-    foreach(testfile ${KWSYS_CXX_TESTS})
+    foreach(testfile IN LISTS KWSYS_CXX_TESTS)
       get_filename_component(test "${testfile}" NAME_WE)
-      add_test(kwsys.${test} ${EXEC_DIR}/${KWSYS_NAMESPACE}TestsCxx ${test} ${KWSYS_TEST_ARGS_${test}})
+      add_test(NAME kwsys.${test}
+        COMMAND ${EXEC_DIR}/${KWSYS_NAMESPACE}TestsCxx ${test} ${KWSYS_TEST_ARGS_${test}}
+        )
       set_property(TEST kwsys.${test} PROPERTY LABELS ${KWSYS_LABELS_TEST})
     endforeach()
 
@@ -1098,17 +1087,19 @@ if(KWSYS_STANDALONE OR CMake_SOURCE_DIR)
     set_property(TARGET ${KWSYS_NAMESPACE}TestProcess PROPERTY LABELS ${KWSYS_LABELS_EXE})
     target_link_libraries(${KWSYS_NAMESPACE}TestProcess ${KWSYS_TARGET_C_LINK})
     #set(KWSYS_TEST_PROCESS_7 7) # uncomment to run timing-sensitive test locally
-    foreach(n 1 2 3 4 5 6 ${KWSYS_TEST_PROCESS_7} 9 10)
-      add_test(kwsys.testProcess-${n} ${EXEC_DIR}/${KWSYS_NAMESPACE}TestProcess ${n})
+    foreach(n IN ITEMS 1 2 3 4 5 6 ${KWSYS_TEST_PROCESS_7} 9 10)
+      add_test(NAME kwsys.testProcess-${n}
+        COMMAND ${EXEC_DIR}/${KWSYS_NAMESPACE}TestProcess ${n}
+        )
       set_property(TEST kwsys.testProcess-${n} PROPERTY LABELS ${KWSYS_LABELS_TEST})
-      set_tests_properties(kwsys.testProcess-${n} PROPERTIES TIMEOUT 120)
+      set_property(TEST kwsys.testProcess-${n} PROPERTY TIMEOUT 120)
     endforeach()
 
     set(testProcess_COMPILE_FLAGS "")
     # Some Apple compilers produce bad optimizations in this source.
     if(APPLE AND CMAKE_C_COMPILER_ID MATCHES "^(GNU|LLVM)$")
       set(testProcess_COMPILE_FLAGS "${testProcess_COMPILE_FLAGS} -O0")
-    elseif(CMAKE_C_COMPILER_ID STREQUAL "XL")
+    elseif(CMAKE_C_COMPILER_ID MATCHES "^(XL|XLClang)$")
       # Tell IBM XL not to warn about our test infinite loop
       if(CMAKE_SYSTEM MATCHES "Linux.*ppc64le"
          AND CMAKE_C_COMPILER_VERSION VERSION_LESS "16.1.0"
@@ -1125,22 +1116,12 @@ if(KWSYS_STANDALONE OR CMake_SOURCE_DIR)
     endif()
     set_property(SOURCE testProcess.c PROPERTY COMPILE_FLAGS "${testProcess_COMPILE_FLAGS}")
 
-    # Test SharedForward
-    configure_file(${PROJECT_SOURCE_DIR}/testSharedForward.c.in
-                   ${PROJECT_BINARY_DIR}/testSharedForward.c @ONLY IMMEDIATE)
-    add_executable(${KWSYS_NAMESPACE}TestSharedForward
-                   ${PROJECT_BINARY_DIR}/testSharedForward.c)
-    set_property(TARGET ${KWSYS_NAMESPACE}TestSharedForward PROPERTY LABELS ${KWSYS_LABELS_EXE})
-    add_dependencies(${KWSYS_NAMESPACE}TestSharedForward ${KWSYS_TARGET_C_LINK})
-    add_test(kwsys.testSharedForward ${EXEC_DIR}/${KWSYS_NAMESPACE}TestSharedForward 1)
-    set_property(TEST kwsys.testSharedForward PROPERTY LABELS ${KWSYS_LABELS_TEST})
-
     # Configure some test properties.
     if(KWSYS_STANDALONE)
       # We expect test to fail
-      set_tests_properties(kwsys.testFail PROPERTIES WILL_FAIL ON)
+      set_property(TEST kwsys.testFail PROPERTY WILL_FAIL ON)
       get_test_property(kwsys.testFail WILL_FAIL wfv)
-      set_tests_properties(kwsys.testFail PROPERTIES MEASUREMENT "Some Key=Some Value")
+      set_property(TEST kwsys.testFail PROPERTY MEASUREMENT "Some Key=Some Value")
       message(STATUS "GET_TEST_PROPERTY returned: ${wfv}")
     endif()
 
@@ -1150,7 +1131,7 @@ if(KWSYS_STANDALONE OR CMake_SOURCE_DIR)
 
     # Suppress known consistent failures on buggy systems.
     if(KWSYS_TEST_BOGUS_FAILURES)
-      set_tests_properties(${KWSYS_TEST_BOGUS_FAILURES} PROPERTIES WILL_FAIL ON)
+      set_property(TEST ${KWSYS_TEST_BOGUS_FAILURES} PROPERTY WILL_FAIL ON)
     endif()
 
   endif()
