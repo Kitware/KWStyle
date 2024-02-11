@@ -19,8 +19,9 @@ namespace kws {
 bool Parser::CheckEndOfFileNewLine()
 {
   m_TestsDone[EOF_NEW_LINE] = true;
-  char* val = new char[255];
-  sprintf(val,"The file should have only one new line");
+  constexpr size_t length = 255;
+  char* val = new char[length];
+  snprintf(val,length,"The file should have only one new line");
   m_TestsDescription[EOF_NEW_LINE] = val;
   delete [] val;
   bool hasError = false;
@@ -59,8 +60,9 @@ bool Parser::CheckEndOfFileNewLine()
       info.line = info.line2-numberOfEmptyLines+2;
       info.number = EOF_NEW_LINE;
       info.description = "Number of empty lines at the end of files: ";
-      char* localval = new char[10];
-      sprintf(localval,"%ld",numberOfEmptyLines);
+      constexpr size_t length = 10;
+      char* localval = new char[length];
+      snprintf(localval,length,"%ld",numberOfEmptyLines);
       info.description += localval;
       delete [] localval;
       m_ErrorList.push_back(info);

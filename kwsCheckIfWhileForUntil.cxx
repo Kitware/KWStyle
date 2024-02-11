@@ -22,8 +22,9 @@ bool Parser::CheckIfWhileForUntil(unsigned int after)
   m_TestsDone[IFWHILEFORUNTIL] = true;
   m_TestsDescription[IFWHILEFORUNTIL] =
     "Number of spaces after If/While/For should be";
-  char* val = new char[200];
-  sprintf(val," = %d",after);
+  constexpr size_t length = 200;
+  char* val = new char[length];
+  snprintf(val,length," = %d",after);
   m_TestsDescription[IFWHILEFORUNTIL] += val;
   delete [] val;
 
@@ -99,11 +100,12 @@ bool Parser::FindIfWhileForUntil(const char* op,
           error.description = "Spaces after ";
           error.description += op;
           error.description += " = ";
-          char* errorVal = new char[200];
-          sprintf(errorVal,"%d",aft);
+          constexpr size_t length = 200;
+          char* errorVal = new char[length];
+          snprintf(errorVal,length,"%d",aft);
           error.description += errorVal;
           error.description += " v.s ";
-          sprintf(errorVal,"%d",after);
+          snprintf(errorVal,length,"%d",after);
           error.description += errorVal;
           m_ErrorList.push_back(error);
           delete [] errorVal;

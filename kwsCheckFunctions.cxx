@@ -29,8 +29,9 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
     {
     m_TestsDone[FUNCTION_LENGTH] = true;
     m_TestsDescription[FUNCTION_LENGTH] = "Functions must not exceed: ";
-    char* temp = new char[22];
-    sprintf(temp,"%ld",maxLength);
+    constexpr size_t length = 22;
+    char* temp = new char[length];
+    snprintf(temp,length,"%ld",maxLength);
     m_TestsDescription[FUNCTION_LENGTH] += temp;
     m_TestsDescription[FUNCTION_LENGTH] += " lines";
     delete [] temp;
@@ -159,11 +160,12 @@ bool Parser::CheckFunctions(const char* regEx,unsigned long maxLength)
           error.line2 = efl;
           error.number = FUNCTION_LENGTH;
           error.description = "function (" + functionName + ") has too many lines: ";
-          char* temp = new char[22];
-          sprintf(temp,"%ld",efl-bfl);
+          constexpr size_t length = 22;
+          char* temp = new char[length];
+          snprintf(temp,length,"%ld",efl-bfl);
           error.description += temp;
           error.description += " (";
-          sprintf(temp,"%ld",maxLength);
+          snprintf(temp,length,"%ld",maxLength);
           error.description += temp;
           error.description += ")";
           m_ErrorList.push_back(error);

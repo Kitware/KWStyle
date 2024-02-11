@@ -22,10 +22,11 @@ bool Parser::CheckComma( unsigned int before, unsigned int after )
   m_TestsDone[COMMA] = true;
   m_TestsDescription[COMMA] =
     "Number of spaces for , should be:";
-  char* val = new char[200];
-  sprintf(val," before = %d",before);
+  constexpr size_t length = 200;
+  char* val = new char[length];
+  snprintf(val,length," before = %d",before);
   m_TestsDescription[COMMA] += val;
-  sprintf(val," : after = %d",after);
+  snprintf(val,length," : after = %d",after);
   m_TestsDescription[COMMA] += val;
   delete [] val;
 
@@ -70,17 +71,18 @@ bool Parser::CheckComma( unsigned int before, unsigned int after )
         error.line2 = error.line;
         error.number = COMMA;
         error.description = "Spaces before , = ";
-        char* errorVal = new char[200];
-        sprintf(errorVal,"%d",bfr);
+        constexpr size_t length = 200;
+        char* errorVal = new char[length];
+        snprintf(errorVal,length,"%d",bfr);
         error.description += errorVal;
         error.description += " v.s ";
-        sprintf(errorVal,"%d",before);
+        snprintf(errorVal,length,"%d",before);
         error.description += errorVal;
         error.description += " : Spaces after , = ";
-        sprintf(errorVal,"%d",aft);
+        snprintf(errorVal,length,"%d",aft);
         error.description += errorVal;
         error.description += " v.s ";
-        sprintf(errorVal,"%d",after);
+        snprintf(errorVal,length,"%d",after);
         error.description += errorVal;
         m_ErrorList.push_back(error);
         delete [] errorVal;

@@ -22,8 +22,9 @@ bool Parser::CheckParenthesis( unsigned int space )
   m_TestsDone[PARENTHESIS] = true;
   m_TestsDescription[PARENTHESIS] =
     "Number of spaces after ( and before ) should be = ";
-  char* val = new char[200];
-  sprintf(val,"%d", space);
+  constexpr size_t length = 200;
+  char* val = new char[length];
+  snprintf(val,length,"%d", space);
   m_TestsDescription[PARENTHESIS] += val;
   delete [] val;
 
@@ -62,11 +63,12 @@ bool Parser::CheckParenthesis( unsigned int space )
       error.line2 = error.line;
       error.number = PARENTHESIS;
       error.description = "Spaces after ( = ";
-      char* errorVal = new char[200];
-      sprintf(errorVal,"%d",aft);
+      constexpr size_t length = 200;
+      char* errorVal = new char[length];
+      snprintf(errorVal,length,"%d",aft);
       error.description += errorVal;
       error.description += " v.s ";
-      sprintf(errorVal,"%d",space);
+      snprintf(errorVal,length,"%d",space);
       error.description += errorVal;
       m_ErrorList.push_back(error);
       delete [] errorVal;
@@ -109,11 +111,12 @@ bool Parser::CheckParenthesis( unsigned int space )
       error.line2 = error.line;
       error.number = PARENTHESIS;
       error.description = "Spaces before ) = ";
-      char* errorVal = new char[200];
-      sprintf(errorVal,"%d",bfr);
+      constexpr size_t length = 200;
+      char* errorVal = new char[length];
+      snprintf(errorVal,length,"%d",bfr);
       error.description += errorVal;
       error.description += " v.s ";
-      sprintf(errorVal,"%d",space);
+      snprintf(errorVal,length,"%d",space);
       error.description += errorVal;
       m_ErrorList.push_back(error);
       delete [] errorVal;

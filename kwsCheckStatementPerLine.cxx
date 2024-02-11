@@ -23,8 +23,9 @@ bool Parser::CheckStatementPerLine(unsigned long max,bool checkInlineFunctions)
 {
   this->CheckLineLength(std::numeric_limits<unsigned long>::max(),false,false); // run CheckLineLength without errors to fill m_Positions
   m_TestsDone[STATEMENTPERLINE] = true;
-  char* val = new char[255];
-  sprintf(val,"Statements per line = %ld max",max);
+  constexpr size_t length = 255;
+  char* val = new char[length];
+  snprintf(val,length,"Statements per line = %ld max",max);
   m_TestsDescription[STATEMENTPERLINE] = val;
   delete [] val;
 
@@ -109,13 +110,14 @@ bool Parser::CheckStatementPerLine(unsigned long max,bool checkInlineFunctions)
       error.line2 = error.line;
       error.number = STATEMENTPERLINE;
       error.description = "Number of statements per line exceed: ";
-      char* localval = new char[10];
-      sprintf(localval,"%ld",statements);
+      constexpr size_t length = 10;
+      char* localval = new char[length];
+      snprintf(localval,length,"%ld",statements);
       error.description += localval;
       error.description += " (max=";
       delete [] localval;
-      localval = new char[10];
-      sprintf(localval,"%ld",max);
+      localval = new char[length];
+      snprintf(localval,length,"%ld",max);
       error.description += localval;
       error.description += ")";
       delete [] localval;

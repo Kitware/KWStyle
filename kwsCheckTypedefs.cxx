@@ -21,8 +21,9 @@ bool Parser::CheckTypedefs(const char* regEx, bool alignment,unsigned int maxLen
   if(alignment)
     {
     m_TestsDone[TYPEDEF_ALIGN] = true;
-    char* val = new char[255];
-    sprintf(val,"Typedefs should be aligned");
+    constexpr size_t length = 255;
+    char* val = new char[length];
+    snprintf(val,length,"Typedefs should be aligned");
     m_TestsDescription[TYPEDEF_ALIGN] = val;
     delete [] val;
     }
@@ -108,11 +109,12 @@ bool Parser::CheckTypedefs(const char* regEx, bool alignment,unsigned int maxLen
             error.line2 = error.line;
             error.number = TYPEDEF_ALIGN;
             error.description = "Type definition (" + var + ") is not aligned with the previous one: ";
-            char* localvar = new char[10];
-            sprintf(localvar,"%zd",l);
+            constexpr size_t length = 10;
+            char* localvar = new char[length];
+            snprintf(localvar,length,"%zd",l);
             error.description += localvar;
             error.description += " v.s. ";
-            sprintf(localvar,"%zd",previouspos);
+            snprintf(localvar,length,"%zd",previouspos);
             error.description += localvar;
             delete [] localvar;
             m_ErrorList.push_back(error);

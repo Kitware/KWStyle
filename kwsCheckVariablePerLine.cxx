@@ -20,8 +20,9 @@ namespace kws {
 bool Parser::CheckVariablePerLine(unsigned long max)
 {
   m_TestsDone[VARIABLEPERLINE] = true;
-  char* val = new char[255];
-  sprintf(val,"Variables per line = %ld max",max);
+  constexpr size_t length = 255;
+  char* val = new char[length];
+  snprintf(val,length,"Variables per line = %ld max",max);
   m_TestsDescription[VARIABLEPERLINE] = val;
   delete [] val;
 
@@ -145,11 +146,11 @@ bool Parser::CheckVariablePerLine(unsigned long max)
             error.line2 = error.line;
             error.number = VARIABLEPERLINE;
             error.description = "Number of variable per line exceed: ";
-            sprintf(localval,"%d",vars);
+            snprintf(localval,sizeof(localval),"%d",vars);
             error.description += localval;
             error.description += " (max=";
             localval[0]='\0';
-            sprintf(localval,"%ld",max);
+            snprintf(localval,sizeof(localval),"%ld",max);
             error.description += localval;
             error.description += ")";
             m_ErrorList.push_back(error);

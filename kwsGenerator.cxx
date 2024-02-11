@@ -1180,8 +1180,9 @@ bool Generator::GenerateDart(const char* dir,int maxError,
         }
 
       desc += " ["+(*it).GetTestDescription((*itError).number)+"] (";
-      char* val = new char[255];
-      sprintf(val,"%ld",(*itError).line);
+      constexpr size_t length = 255;
+      char* val = new char[length];
+      snprintf(val,length,"%ld",(*itError).line);
       desc += val;
       desc += ")\n";
       delete [] val;
@@ -1237,8 +1238,9 @@ bool Generator::GenerateDart(const char* dir,int maxError,
 
     double time1 = kwssys::SystemTools::GetTime();
 
-    char *timestr = new char[10];
-    sprintf(timestr, "%.1f", (time1 - time) / 60.0);
+    constexpr size_t length = 10;
+    char *timestr = new char[length];
+    snprintf(timestr, length, "%.1f", (time1 - time) / 60.0);
 
     file << "  <ElapsedMinutes>" << timestr << "</ElapsedMinutes></Build>"
          << std::endl;

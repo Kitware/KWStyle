@@ -21,8 +21,9 @@ namespace kws {
 bool Parser::CheckExtraSpaces(unsigned long max,bool checkEmptyLines)
 {
   m_TestsDone[SPACES] = true;
-  char* val = new char[255];
-  sprintf(val,"Spaces at the end of line = %ld max spaces",max);
+  constexpr size_t length = 255;
+  char* val = new char[length];
+  snprintf(val,length,"Spaces at the end of line = %ld max spaces",max);
   m_TestsDescription[SPACES] = val;
   delete [] val;
 
@@ -69,11 +70,12 @@ bool Parser::CheckExtraSpaces(unsigned long max,bool checkEmptyLines)
             error.line2 = error.line;
             error.number = SPACES;
             error.description = "Number of spaces before end of line exceed: ";
-            char localval[21];
-            sprintf(localval,"%ld",space);
+            constexpr size_t length = 21;
+            char localval[length];
+            snprintf(localval,length,"%ld",space);
             error.description += localval;
             error.description += " (max=";
-            sprintf(localval,"%ld",max);
+            snprintf(localval,length,"%ld",max);
             error.description += localval;
             error.description += ")";
             m_ErrorList.push_back(error);

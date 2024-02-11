@@ -53,8 +53,9 @@ bool Parser::CheckIndent(IndentType itype,
 {
   m_TestsDone[INDENT] = true;
   m_TestsDescription[INDENT] = "The Indent should respect: ";
-  char* val = new char[10];
-  sprintf(val,"%ld ",size);
+  constexpr size_t length = 10;
+  char* val = new char[length];
+  snprintf(val,length,"%ld ",size);
   m_TestsDescription[INDENT] += val;
   if(itype == TAB)
     {
@@ -303,13 +304,14 @@ bool Parser::CheckIndent(IndentType itype,
           error.line2 = error.line;
           error.number = INDENT;
           error.description = "Special Indent is wrong ";
-          char* localval = new char[10];
-          sprintf(localval,"%d",currentIndent);
+          constexpr size_t length = 10;
+          char* localval = new char[length];
+          snprintf(localval,length,"%d",currentIndent);
           error.description += localval;
           error.description += " (should be ";
           delete [] localval;
-          localval = new char[10];
-          sprintf(localval,"%ld",wanted);
+          localval = new char[length];
+          snprintf(localval,length,"%ld",wanted);
           error.description += localval;
           error.description += ")";
           delete [] localval;
@@ -608,13 +610,14 @@ bool Parser::CheckIndent(IndentType itype,
           error.line2 = error.line;
           error.number = INDENT;
           error.description = "Indent is wrong ";
-          char* localval = new char[10];
-          sprintf(localval,"%d",currentIndent);
+          constexpr size_t length = 10;
+          char* localval = new char[length];
+          snprintf(localval,length,"%d",currentIndent);
           error.description += localval;
           error.description += " (should be ";
           delete [] localval;
-          localval = new char[10];
-          sprintf(localval,"%d",wantedIndent);
+          localval = new char[length];
+          snprintf(localval,length,"%d",wantedIndent);
           error.description += localval;
           error.description += ")";
           delete [] localval;

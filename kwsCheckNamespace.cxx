@@ -34,8 +34,9 @@ bool Parser::CheckNamespace(const char* name,bool doNotCheckMain)
     }
 
   m_TestsDone[NAMESPACE] = true;
-  char* val = new char[255];
-  sprintf(val,"The first namespace of the file should match %s",name);
+  constexpr size_t length = 255;
+  char* val = new char[length];
+  snprintf(val,length,"The first namespace of the file should match %s",name);
   m_TestsDescription[NAMESPACE] = val;
   delete [] val;
 
