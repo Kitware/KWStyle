@@ -23,8 +23,9 @@ namespace kws {
 bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL,bool useCVS)
 {
   m_TestsDone[HEADER] = true;
-  char* val = new char[255];
-  sprintf(val,"The header should respect the template");
+  constexpr size_t length = 255;
+  char* val = new char[length];
+  snprintf(val,length,"The header should respect the template");
   m_TestsDescription[HEADER] = val;
   delete [] val;
 

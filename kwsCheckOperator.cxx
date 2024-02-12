@@ -23,10 +23,11 @@ bool Parser::CheckOperator(unsigned int before, unsigned int after,
 {
   m_TestsDone[OPERATOR] = true;
   m_TestsDescription[OPERATOR] = "Number of spaces for the operators should be: before=";
-  char* val = new char[10];
-  sprintf(val,"%d",before);
+  constexpr size_t length = 10;
+  char* val = new char[length];
+  snprintf(val,length,"%d",before);
   m_TestsDescription[OPERATOR] += val;  
-  sprintf(val,", after=%d",after);
+  snprintf(val,length,", after=%d",after);
   m_TestsDescription[OPERATOR] += val;
   delete [] val;
 
@@ -224,17 +225,18 @@ bool Parser::FindOperator(const char* op,unsigned int before,
         error.number = OPERATOR;
         error.description = "Spaces around operator are wrong: ";
         error.description += "before = ";
-        char* val = new char[10];
-        sprintf(val,"%d",bef);
+        constexpr size_t length = 10;
+        char* val = new char[length];
+        snprintf(val,length,"%d",bef);
         error.description += val;
         error.description += " v.s ";
-        sprintf(val,"%d",before);
+        snprintf(val,length,"%d",before);
         error.description += val;
         error.description += " ,after = ";
-        sprintf(val,"%d",aft);
+        snprintf(val,length,"%d",aft);
         error.description += val;
         error.description += " v.s ";
-        sprintf(val,"%d",after);
+        snprintf(val,length,"%d",after);
         error.description += val;
         m_ErrorList.push_back(error);
         delete [] val;

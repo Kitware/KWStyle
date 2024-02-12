@@ -20,8 +20,9 @@ namespace kws {
 bool Parser::CheckLineLength(unsigned long max,bool checkHeader, bool doErrorCheck)
 {
   m_TestsDone[LINE_LENGTH] = true;
-  char* val = new char[255];
-  sprintf(val,"Line Length = %ld max chars",max);
+  constexpr size_t length = 255;
+  char* val = new char[length];
+  snprintf(val,length,"Line Length = %ld max chars",max);
   m_TestsDescription[LINE_LENGTH] = val;
   delete [] val;
 
@@ -79,11 +80,12 @@ bool Parser::CheckLineLength(unsigned long max,bool checkHeader, bool doErrorChe
         error.line2 = error.line;
         error.number = LINE_LENGTH;
         error.description = "Line length exceed ";
-        char localval[21];
-        sprintf(localval,"%ld",line_length);
+        constexpr size_t length = 21;
+        char localval[length];
+        snprintf(localval,length,"%ld",line_length);
         error.description += localval;
         error.description += " (max=";
-        sprintf(localval,"%ld",max);
+        snprintf(localval,length,"%ld",max);
         error.description += localval;
         error.description += ")";
         m_ErrorList.push_back(error);

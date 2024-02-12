@@ -20,8 +20,9 @@ namespace kws {
 bool Parser::CheckDeclarationOrder(size_t posPublic, size_t posProtected, size_t posPrivate)
 {
   m_TestsDone[DECL_ORDER] = true;
-  char* val = new char[255];
-  sprintf(val,"Declaration order should match ");
+  constexpr size_t length = 255;
+  char* val = new char[length];
+  snprintf(val,length,"Declaration order should match ");
   m_TestsDescription[DECL_ORDER] = val;
 
   if(posPublic>posProtected && posProtected>posPrivate)

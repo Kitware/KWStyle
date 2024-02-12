@@ -21,8 +21,9 @@ namespace kws {
 bool Parser::CheckSemicolonSpace(unsigned long max)
 {
   m_TestsDone[SEMICOLON_SPACE] = true;
-  char* val = new char[255];
-  sprintf(val,"Semicolons = %ld max spaces",max);
+  constexpr size_t length = 255;
+  char* val = new char[length];
+  snprintf(val,length,"Semicolons = %ld max spaces",max);
   m_TestsDescription[SEMICOLON_SPACE] = val;
   delete [] val;
 
@@ -51,13 +52,14 @@ bool Parser::CheckSemicolonSpace(unsigned long max)
           error.line2 = error.line;
           error.number = SEMICOLON_SPACE;
           error.description = "Number of spaces before semicolon exceed: ";
-          char* localval = new char[10];
-          sprintf(localval,"%ld",space);
+          constexpr size_t length = 10;
+          char* localval = new char[length];
+          snprintf(localval,length,"%ld",space);
           error.description += localval;
           error.description += " (max=";
           delete [] localval;
-          localval = new char[10];
-          sprintf(localval,"%ld",max);
+          localval = new char[length];
+          snprintf(localval,length,"%ld",max);
           error.description += localval;
           error.description += ")";
           delete [] localval;

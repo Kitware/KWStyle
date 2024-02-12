@@ -20,8 +20,9 @@ namespace kws {
 bool Parser::CheckEmptyLines(unsigned long max, bool checkEndOfFile)
 {
   m_TestsDone[EMPTYLINES] = true;
-  char* val = new char[255];
-  sprintf(val,"Empty lines = %ld max lines",max);
+  constexpr size_t length = 255;
+  char* val = new char[length];
+  snprintf(val,length,"Empty lines = %ld max lines",max);
   m_TestsDescription[EMPTYLINES] = val;
   delete [] val;
 
@@ -64,13 +65,14 @@ bool Parser::CheckEmptyLines(unsigned long max, bool checkEndOfFile)
         error.line2 = error.line;
         error.number = EMPTYLINES;
         error.description = "Empty lines exceed ";
-        char* localval = new char[10];
-        sprintf(localval,"%ld",empty);
+        constexpr size_t length = 10;
+        char* localval = new char[length];
+        snprintf(localval,length,"%ld",empty);
         error.description += localval;
         error.description += " (max=";
         delete [] localval;
-        localval = new char[10];
-        sprintf(localval,"%ld",max);
+        localval = new char[length];
+        snprintf(localval,length,"%ld",max);
         error.description += localval;
         error.description += ")";
         delete [] localval;

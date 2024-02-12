@@ -28,8 +28,9 @@ bool Parser::CheckIfNDefDefine(const char* match, bool uppercaseTheDefinition)
     }
 
   m_TestsDone[NDEFINE] = true;
-  char* val = new char[512];
-  sprintf(val,"#ifndef/#define should match ");
+  constexpr size_t length = 512;
+  char* val = new char[length];
+  snprintf(val,length,"#ifndef/#define should match ");
   m_TestsDescription[NDEFINE] = val;
   // Replace < and >
   std::string l = match;

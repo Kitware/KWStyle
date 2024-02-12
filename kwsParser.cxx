@@ -519,13 +519,14 @@ std::string Parser::GetLastErrors()
   while(it != m_ErrorList.end())
     {
     output += "Error #";
-    char* val = new char[10];
-    sprintf(val,"%ld",(*it).number);
+    constexpr size_t length = 10;
+    char* val = new char[length];
+    snprintf(val,length,"%ld",(*it).number);
     output += val;
     delete [] val;
     output += " (";
-    val = new char[10];
-    sprintf(val,"%ld",(*it).line);
+    val = new char[length];
+    snprintf(val,length,"%ld",(*it).line);
     output += val;
     delete [] val;
     output += ") ";
@@ -550,13 +551,14 @@ std::string Parser::GetLastWarnings()
   while(it != m_WarningList.end())
     {
     output += "Warning #";
-    char* val = new char[10];
-    sprintf(val,"%ld",(*it).number);
+    constexpr size_t length = 10;
+    char* val = new char[length];
+    snprintf(val,length,"%ld",(*it).number);
     output += val;
     delete [] val;
     output += " (";
-    val = new char[10];
-    sprintf(val,"%ld",(*it).line);
+    val = new char[length];
+    snprintf(val,length,"%ld",(*it).line);
     output += val;
     delete [] val;
     output += ") ";
