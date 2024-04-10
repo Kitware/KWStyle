@@ -7,6 +7,15 @@
 # pragma once
 #endif
 
+#if defined(__clang__)
+# if defined(__has_warning)
+#  if __has_warning("-Wpredefined-identifier-outside-function")
+#   pragma clang diagnostic push
+#   pragma clang diagnostic ignored "-Wpredefined-identifier-outside-function"
+#  endif
+# endif
+#endif
+
 //  boost/throw_exception.hpp
 //
 //  Copyright (c) 2002, 2018-2022 Peter Dimov
