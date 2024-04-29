@@ -53,7 +53,7 @@ bool Parser::CheckIndent(IndentType itype,
 {
   m_TestsDone[INDENT] = true;
   m_TestsDescription[INDENT] = "The Indent should respect: ";
-  constexpr size_t length = 10;
+  constexpr size_t length = 11;
   char* val = new char[length];
   snprintf(val,length,"%ld ",size);
   m_TestsDescription[INDENT] += val;
@@ -304,7 +304,7 @@ bool Parser::CheckIndent(IndentType itype,
           error.line2 = error.line;
           error.number = INDENT;
           error.description = "Special Indent is wrong ";
-          constexpr size_t length = 10;
+          constexpr size_t length = 11;
           char* localval = new char[length];
           snprintf(localval,length,"%d",currentIndent);
           error.description += localval;
@@ -610,7 +610,7 @@ bool Parser::CheckIndent(IndentType itype,
           error.line2 = error.line;
           error.number = INDENT;
           error.description = "Indent is wrong ";
-          constexpr size_t length = 10;
+          constexpr size_t length = 11;
           char* localval = new char[length];
           snprintf(localval,length,"%d",currentIndent);
           error.description += localval;
