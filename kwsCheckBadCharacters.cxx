@@ -18,7 +18,7 @@ using namespace boost::xpressive;
 
 namespace kws {
 
-/** Check if the current file as bad characters like δόφί*/
+/** Check if the current file as bad characters like */
 bool Parser::CheckBadCharacters(bool checkComments)
 {
   m_TestsDone[BADCHARACTERS] = true;
