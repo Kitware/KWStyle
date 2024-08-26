@@ -24,9 +24,8 @@ die()
 ## Validate ##
 required_commands=( git grep dirname basename cat )
 for required_command in ${required_commands[@]}; do
-  $required_command --version >/dev/null 2>&1
-  if [[ $? -ne 0 ]]; then
-    die "Command \"$required_command\" not found"
+  if ! command -v $required_command &> /dev/null; then
+      die "Command \"$required_command\" not found"
   fi
 done
 
