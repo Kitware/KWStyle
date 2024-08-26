@@ -344,7 +344,7 @@ int main(int argc, const char **argv)
         {
         pos = buffer.find("\n",start);
         }
-      } while(pos < fileSize);
+      } while(static_cast<std::streamsize>(pos) < fileSize);
 
     file.close();
     }
@@ -504,7 +504,7 @@ int main(int argc, const char **argv)
           posr = pos;
           }
         }
-      } while(pos < fileSize);
+      } while(static_cast<std::streamsize>(pos) < fileSize);
 
     file.close();
   } else {
