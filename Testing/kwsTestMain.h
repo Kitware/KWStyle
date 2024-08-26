@@ -164,8 +164,8 @@ static int Compare(const char* baseline, const char* testfile)
 
 int main(int ac, char* av[] )
 {
-  char *baselineFilename = NULL;
-  char *testFilename = NULL;
+  char *baselineFilename = nullptr;
+  char *testFilename = nullptr;
 
   RegisterTests();
   std::string testToRun;
