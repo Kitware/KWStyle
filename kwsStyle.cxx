@@ -284,30 +284,30 @@ int main(int argc, const char **argv)
       return 0;
       }
     file.seekg(0,std::ios::end);
-    unsigned long fileSize = static_cast<unsigned long> (file.tellg());
+    std::streamsize fileSize = file.tellg();
     file.seekg(0,std::ios::beg);
 
     char* buf = new char[fileSize+1];
-    file.read(buf, static_cast<std::streamsize>(fileSize));
+    file.read(buf, fileSize);
     buf[fileSize] = 0;
     std::string buffer(buf);
-    buffer.resize(fileSize);
+    buffer.resize(static_cast<size_t>(fileSize));
     delete [] buf;
 
-    long int start = 0;
-    auto pos = static_cast<long int>(buffer.find("\n", static_cast<size_t>(start)));
+    size_t start = 0;
+    auto pos = buffer.find("\n", start);
     do
       {
       std::string line = "";
 
       if(pos == -1)
         {
-        line = buffer.substr(static_cast<size_t>(start),buffer.length()- static_cast<size_t>(start));
-        pos = static_cast<long>(fileSize); // we stop
+        line = buffer.substr(start,buffer.length()- start);
+        pos = static_cast<size_t>(fileSize); // we stop
         }
       else
         {
-        line = buffer.substr(static_cast<size_t>(start),static_cast<size_t>(pos-start));
+        line = buffer.substr(start,pos-start);
         start = pos+1;
         }
       if(line.size() < 2)
@@ -315,36 +315,36 @@ int main(int argc, const char **argv)
         break;
         }
 
-        auto p = static_cast<long int>(line.find(" "));
+        auto p = line.find(" ");
         if (p != -1) {
           kwsFeature f;
-          f.filename = line.substr(0, static_cast<size_t>(p));
-          long int p1 = p;
-          p = static_cast<long int>(line.find(" ",static_cast<size_t>(p + 1)));
+          f.filename = line.substr(0, p);
+          size_t p1 = p;
+          p = line.find(" ",p + 1);
           if (p != -1) {
-            f.name = line.substr(static_cast<size_t>(p1 + 1),static_cast<size_t>(p - p1 - 1));
+            f.name = line.substr(p1 + 1,p - p1 - 1);
           }
         p1 = p;
-        p = static_cast<long int>(line.find(" ",static_cast<size_t>(p+1)));
-        std::string enablestring = line.substr(static_cast<size_t>(p1+1),static_cast<size_t>(p-p1-1));
+        p = line.find(" ",p+1);
+        std::string enablestring = line.substr(p1+1,p-p1-1);
         f.enable = enablestring.find("Enable") != std::string::npos;
 
         p1 = p;
-        p = static_cast<long int>(line.find("\n",static_cast<size_t>(p+1)));
+        p = line.find("\n",p+1);
 
         if(p != -1)
           {
-          f.value = line.substr( static_cast<size_t>(p1+1),static_cast<size_t>(p-p1-1));
+          f.value = line.substr( p1+1,p-p1-1);
           }
 
         overwriteFeatures.push_back(f);
         }
 
-      if(static_cast<unsigned long>(pos) != fileSize)
+      if(pos != fileSize)
         {
-        pos = static_cast<long int>(buffer.find("\n",static_cast<size_t>(start)));
+        pos = buffer.find("\n",start);
         }
-      } while(pos < (long int)fileSize);
+      } while(pos < fileSize);
 
     file.close();
     }
@@ -402,19 +402,19 @@ int main(int argc, const char **argv)
       return 0;
       }
     file.seekg(0,std::ios::end);
-    unsigned long fileSize = static_cast<unsigned long>(file.tellg());
+    std::streamsize fileSize = file.tellg();
     file.seekg(0,std::ios::beg);
 
     char* buf = new char[fileSize+1];
-    file.read(buf,static_cast<std::streamsize>(fileSize));
+    file.read(buf,fileSize);
     buf[fileSize] = 0;
     std::string buffer(buf);
-    buffer.resize(fileSize);
+    buffer.resize(static_cast<size_t>(fileSize));
     delete [] buf;
 
-    long int start = 0;
-    size_t pos = buffer.find("\n",static_cast<size_t>(start));
-    size_t posr = buffer.find("\r",static_cast<size_t>(start));
+    size_t start = 0;
+    size_t pos = buffer.find("\n",start);
+    size_t posr = buffer.find("\r",start);
     if(posr == std::string::npos)
       {
       posr = pos;
@@ -429,23 +429,23 @@ int main(int argc, const char **argv)
 
       if(pos == std::string::npos)
         {
-        dirname = buffer.substr(static_cast<size_t>(start),buffer.length()- static_cast<size_t>(start));
-        pos = fileSize; // we stop
+        dirname = buffer.substr(start,buffer.length()- start);
+        pos = static_cast<size_t>(fileSize); // we stop
         }
       else
         {
-        dirname = buffer.substr( static_cast<size_t>(start),posr- static_cast<size_t>(start));
-        start = static_cast<long int>(pos)+1;
+        dirname = buffer.substr( start ,posr - start);
+        start = pos+1;
         }
       if(dirname.size() < 2)
         {
         break;
         }
 
-        auto space = static_cast<long int>(dirname.find(" "));
+        auto space = dirname.find(" ");
         while (space != -1 &&
-               helperParser.IsBetweenQuote(static_cast<size_t>(space), false, dirname)) {
-          space = static_cast<long int>(dirname.find(" ",static_cast<size_t>(space + 1)));
+               helperParser.IsBetweenQuote(space, false, dirname)) {
+          space = dirname.find(" ",space + 1);
         }
 
       // if we should remove the file
@@ -466,16 +466,16 @@ int main(int argc, const char **argv)
           glob.RecurseOn();
           }
 
-          auto localspace = static_cast<long int>(dirname.find(" "));
+          auto localspace = dirname.find(" ");
           while (localspace != -1 &&
-                 helperParser.IsBetweenQuote(static_cast<size_t>(localspace), false, dirname)) {
+                 helperParser.IsBetweenQuote(localspace, false, dirname)) {
             localspace =
-                static_cast<long int>(dirname.find(" ", static_cast<size_t>(localspace + 1)));
+                dirname.find(" ", localspace + 1);
           }
 
         if(localspace != -1)
           {
-          dirname = dirname.substr(0,static_cast<size_t>(localspace));
+          dirname = dirname.substr(0,localspace);
           }
 
         // Remove quotes if any
@@ -497,8 +497,8 @@ int main(int argc, const char **argv)
 
       if(pos != fileSize)
         {
-        pos =  (buffer.find("\n", static_cast<size_t>(start)));
-        posr = (buffer.find("\r", static_cast<size_t>(start)));
+        pos =  buffer.find("\n", start);
+        posr = buffer.find("\r", start);
         if(posr == std::string::npos)
           {
           posr = pos;
@@ -579,14 +579,14 @@ int main(int argc, const char **argv)
       }
 
     file.seekg(0,std::ios::end);
-    unsigned long fileSize = static_cast<unsigned long> (file.tellg());
+    std::streamsize fileSize = file.tellg();
     file.seekg(0,std::ios::beg);
 
     char* buf = new char[fileSize+1];
-    file.read(buf,static_cast<std::streamsize>(fileSize));
+    file.read(buf, fileSize);
     buf[fileSize] = 0;
     std::string buffer(buf);
-    buffer.resize(fileSize);
+    buffer.resize( static_cast<size_t>(fileSize));
     delete [] buf;
 
     file.close();
@@ -712,7 +712,7 @@ int main(int argc, const char **argv)
       }
       }
 
-    nerrors += static_cast<unsigned long>(parser.GetErrors().size());
+    nerrors += parser.GetErrors().size();
 
     parser.GenerateFixedFile();
 
