@@ -551,7 +551,7 @@ int main(int argc, const char **argv)
 
   std::vector<std::string>::const_iterator it = filenames.begin();
 
-  unsigned long nerrors = 0;
+  size_t nerrors = 0;
 
   while(it != filenames.end())
     {
