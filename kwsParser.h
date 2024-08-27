@@ -319,7 +319,7 @@ public:
   bool CheckBlackList(const char* filename);
 
   /** Remove the comments. */
-  std::string RemoveComments(const char* buffer=NULL);
+  std::string RemoveComments(const char* buffer=nullptr);
 
   /** Clear the error list */
   void ClearErrors() {m_ErrorList.clear();}
@@ -451,13 +451,13 @@ protected:
   bool IsInComments(size_t pos) const;
   
   /**  Return true if the position pos is inside a function */
-  bool IsInFunction(size_t pos,const char* buffer=NULL) const;
+  bool IsInFunction(size_t pos,const char* buffer=nullptr) const;
 
   /**  Return true if the position pos is inside a struct */
-  bool IsInStruct(size_t pos,const char* buffer=NULL) const;
+  bool IsInStruct(size_t pos,const char* buffer=nullptr) const;
   
   /**  Return true if the position pos is inside a union */
-  bool IsInUnion(size_t pos,const char* buffer=NULL) const;
+  bool IsInUnion(size_t pos,const char* buffer=nullptr) const;
 
   /**  Return true if the position pos is inside a comment defined by the compiler */
   bool IsInAnyComments(size_t pos) const;
@@ -486,7 +486,7 @@ protected:
 
   /** Return the position of the last character 
    *  of the function name/definition/ */
-  size_t FindFunction(size_t pos, const char *buffer = NULL) const;
+  size_t FindFunction(size_t pos, const char *buffer = nullptr) const;
 
   /** Compute the list of #if/#else/#endif */
   void ComputeIfElseEndifList();
