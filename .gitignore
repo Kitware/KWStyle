@@ -43,3 +43,6 @@ Release*/
 dbg*/
 debug*/
 Debug*/
+
+# macOS Finder metadata
+.DS_Store
