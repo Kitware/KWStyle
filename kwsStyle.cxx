@@ -300,7 +300,7 @@ int main(int argc, const char **argv)
       {
       std::string line = "";
 
-      if(pos == -1)
+      if(pos == std::string::npos)
         {
         line = buffer.substr(start,buffer.length()- start);
         pos = static_cast<size_t>(fileSize); // we stop
@@ -316,12 +316,12 @@ int main(int argc, const char **argv)
         }
 
         auto p = line.find(" ");
-        if (p != -1) {
+        if (p != std::string::npos) {
           kwsFeature f;
           f.filename = line.substr(0, p);
           size_t p1 = p;
           p = line.find(" ",p + 1);
-          if (p != -1) {
+          if (p != std::string::npos) {
             f.name = line.substr(p1 + 1,p - p1 - 1);
           }
         p1 = p;
@@ -332,7 +332,7 @@ int main(int argc, const char **argv)
         p1 = p;
         p = line.find("\n",p+1);
 
-        if(p != -1)
+        if(p != std::string::npos)
           {
           f.value = line.substr( p1+1,p-p1-1);
           }
@@ -340,7 +340,7 @@ int main(int argc, const char **argv)
         overwriteFeatures.push_back(f);
         }
 
-      if(pos != fileSize)
+      if(static_cast<std::streamsize>(pos) != fileSize)
         {
         pos = buffer.find("\n",start);
         }
@@ -443,7 +443,7 @@ int main(int argc, const char **argv)
         }
 
         auto space = dirname.find(" ");
-        while (space != -1 &&
+        while (space != std::string::npos &&
                helperParser.IsBetweenQuote(space, false, dirname)) {
           space = dirname.find(" ",space + 1);
         }
@@ -467,13 +467,13 @@ int main(int argc, const char **argv)
           }
 
           auto localspace = dirname.find(" ");
-          while (localspace != -1 &&
+          while (localspace != std::string::npos &&
                  helperParser.IsBetweenQuote(localspace, false, dirname)) {
             localspace =
                 dirname.find(" ", localspace + 1);
           }
 
-        if(localspace != -1)
+        if(localspace != std::string::npos)
           {
           dirname = dirname.substr(0,localspace);
           }
@@ -495,7 +495,7 @@ int main(int argc, const char **argv)
           }
         }
 
-      if(pos != fileSize)
+      if(static_cast<std::streamsize>(pos) != fileSize)
         {
         pos =  buffer.find("\n", start);
         posr = buffer.find("\r", start);
