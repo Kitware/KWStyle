@@ -15,55 +15,77 @@
  *  limitations under the License.
  *
  *=========================================================================*/
-#if defined(_MSC_VER)
-#pragma warning ( disable : 4786 )
-#endif
-
-#if defined(__clang__)
-#pragma clang diagnostic ignored "-Winvalid-source-encoding"
-#endif
 
 #include "kwsParser.h"
 
 int kwsBadCharactersTest(int, char* [] )
 {
-  std::string buffer;
-  buffer = "void()\n{\ntestäüöß;\n};";
+  constexpr char nonUTF8[] = {static_cast<char>(0xE4),
+                              static_cast<char>(0xFC),
+                              static_cast<char>(0xF6),
+                              static_cast<char>(0xDF),
+                              0};
 
+  // 1) String with bad characters only in the code.
+  std::string buffer = "void()\n{\ntest";
+  buffer += nonUTF8;
+  buffer += ";\n}\n";
+
+  // Test for bad characters (including within comments).
   kws::Parser parser;
   parser.SetBuffer(buffer);
   parser.Check("BadCharacters","true");
 
-  // Test for bad syntax
-  std::cout << "Test for bad syntax: ";
+  std::cout << "Test with bad characters only in code: ";
   kws::Parser::ErrorVectorType errors = parser.GetErrors();
   if (!errors.empty()) {
     for (auto &error : errors) {
       std::cout << error.description << std::endl;
     }
+    std::cout << "[PASSED]" << std::endl;
   } else {
     std::cout << "[FAILED]" << std::endl;
     return EXIT_FAILURE;
   }
-  std::cout << "[PASSED]" << std::endl;
 
-  // Test for good syntax
-  buffer = "void()\n{\n  //testäüöß;\n};";
-  parser.ClearErrors();
+  // 2) String with bad characters only in the comments.
+  buffer = "void()\n{\n  //test";
+  buffer += nonUTF8;
+  buffer += "\n}\n";
+
   parser.SetBuffer(buffer);
-  // the point is that now we don't check in comments
-  parser.Check("BadCharacters","false");
 
-  std::cout << "Test for good syntax: ";
+  // 2a) Test for bad characters (including within comments).
+  parser.ClearErrors();
+  parser.Check("BadCharacters","true");
+
+  std::cout << "Test with bad characters in comments, include comments: ";
   errors = parser.GetErrors();
   if (!errors.empty()) {
     for (auto &error : errors) {
-      std::cout << error.line << " : " << error.description << std::endl;
+      std::cout << error.description << std::endl;
+    }
+    std::cout << "[PASSED]" << std::endl;
+  } else {
+    std::cout << "[FAILED]" << std::endl;
+    return EXIT_FAILURE;
+  }
+
+  // 2b) Test for bad characters (excluding within comments).
+  parser.ClearErrors();
+  parser.Check("BadCharacters","false");
+
+  std::cout << "Test with bad characters in comments, exclude comments: ";
+  errors = parser.GetErrors();
+  if (errors.empty()) {
+    std::cout << "[PASSED]" << std::endl;
+  } else {
+    for (auto &error : errors) {
+      std::cout << error.description << std::endl;
     }
     std::cout << "[FAILED]" << std::endl;
     return EXIT_FAILURE;
   }
-  std::cout << "[PASSED]" << std::endl;
 
   std::cout << "[DONE]" << std::endl;
 
