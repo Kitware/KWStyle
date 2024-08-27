@@ -51,7 +51,7 @@ bool Parser::Check(const char* name, const char* value)
 {
   if(!strcmp(name,"LineLength"))
     {
-    this->CheckLineLength(atoi(value));
+    this->CheckLineLength(std::stoul(value));
     return true;
     }
   else if(m_Positions.empty())
@@ -60,23 +60,23 @@ bool Parser::Check(const char* name, const char* value)
     }
   if(!strcmp(name,"DeclarationOrder"))
     {
-    this->CheckDeclarationOrder(atoi(&value[0]),atoi(&value[2]),atoi(&value[4]));
+    this->CheckDeclarationOrder(std::stoul(&value[0]),std::stoul(&value[2]),std::stoul(&value[4]));
     return true;
     }
   if(!strcmp(name,"Typedefs"))
     {
     bool alignment = true; // check alignment by default
     std::string val = value;
-    long pos = static_cast<long>(val.find(",",0));
-    if(pos != -1)
+    size_t pos = val.find(",",0);
+    if(pos != std::string::npos)
       {
       std::string v1 = val.substr(0,pos);
 
       // Check the alignment
-      long pos1 = static_cast<long>(val.find(",",pos+1));
+      size_t pos1 = val.find(",",pos+1);
 
       std::string v2 = "";
-      if(pos1 == -1)
+      if(pos1 == std::string::npos)
         {
         v2 = val.substr(pos+1,val.size()-pos-1);
         }
@@ -100,16 +100,16 @@ bool Parser::Check(const char* name, const char* value)
     bool alignment = true; // check alignment by default
     bool checkProtected = false; // check protected by default
     std::string val = value;
-    long pos = static_cast<long>(val.find(",",0));
-    if(pos != -1)
+    size_t pos = val.find(",",0);
+    if(pos != std::string::npos)
       {
       std::string v1 = val.substr(0,pos);
 
       // Check the alignment
-      long pos1 = static_cast<long>(val.find(",",pos+1));
+      size_t pos1 = val.find(",",pos+1);
 
       std::string v2 = "";
-      if(pos1 == -1)
+      if(pos1 == std::string::npos)
         {
         v2 = val.substr(pos+1,val.size()-pos-1);
         }
@@ -123,12 +123,12 @@ bool Parser::Check(const char* name, const char* value)
         alignment = false;
         }
 
-      if(pos1 != -1)
+      if(pos1 != std::string::npos)
         {
         // Check the protected
-        pos = static_cast<long>(val.find(",",pos1+1));
+        pos = val.find(",",pos1+1);
         std::string v3 = "";
-        if(pos == -1)
+        if(pos == std::string::npos)
           {
           v3 = val.substr(pos1+1,val.size()-pos1-1);
           }
@@ -164,13 +164,13 @@ bool Parser::Check(const char* name, const char* value)
     std::string val = value;
     std::string v1 = value;
     std::string v2 = "0";
-    long pos = static_cast<long>(val.find(",",0));
+    size_t pos = val.find(",",0);
     if(pos != -1)
       {
       v1 = val.substr(0,pos);
       v2 = val.substr(pos+1,val.size()-pos-1);
       }
-    this->CheckMemberFunctions(v1.c_str(),atoi(v2.c_str()));
+    this->CheckMemberFunctions(v1.c_str(),std::stoul(v2.c_str()));
     return true;
     }
   if(!strcmp(name,"Functions"))
@@ -178,18 +178,18 @@ bool Parser::Check(const char* name, const char* value)
     std::string val = value;
     std::string v1 = value;
     std::string v2 = "0";
-    long pos = static_cast<long>(val.find(",",0));
-    if(pos != -1)
+    size_t pos = val.find(",",0);
+    if(pos != std::string::npos)
       {
       v1 = val.substr(0,pos);
       v2 = val.substr(pos+1,val.size()-pos-1);
       }
-    this->CheckFunctions(v1.c_str(),atoi(v2.c_str()));
+    this->CheckFunctions(v1.c_str(),std::stoul(v2.c_str()));
     return true;
     }
   if(!strcmp(name,"SemicolonSpace"))
     {
-    this->CheckSemicolonSpace(atoi(value));
+    this->CheckSemicolonSpace(std::stoul(value));
     return true;
     }
   if(!strcmp(name,"EndOfFileNewLine"))
@@ -204,16 +204,16 @@ bool Parser::Check(const char* name, const char* value)
     }
   if(!strcmp(name,"Spaces"))
     {
-    this->CheckExtraSpaces(atoi(value));
+    this->CheckExtraSpaces(std::stoul(value));
     return true;
     }
   if(!strcmp(name,"StatementPerLine"))
     {
     std::string val = value;
     std::string v1 = value;
-    long pos = static_cast<long>(val.find(",",0));
+    size_t pos = val.find(",",0);
     bool checkInlineFunctions = true;
-    if(pos != -1)
+    if(pos != std::string::npos)
       {
       v1 = val.substr(0,pos);
       std::string v2 = val.substr(pos+1,val.size()-pos-1);
@@ -223,7 +223,7 @@ bool Parser::Check(const char* name, const char* value)
         }
       }
 
-    this->CheckStatementPerLine(atoi(v1.c_str()),checkInlineFunctions);
+    this->CheckStatementPerLine(std::stoul(v1.c_str()),checkInlineFunctions);
     return true;
     }
  if(!strcmp(name,"BadCharacters"))
@@ -233,28 +233,28 @@ bool Parser::Check(const char* name, const char* value)
     }
   if(!strcmp(name,"VariablePerLine"))
     {
-    this->CheckVariablePerLine(atoi(value));
+    this->CheckVariablePerLine(std::stoul(value));
     return true;
     }
   if(!strcmp(name,"Comments"))
     {
     std::string val = value;
-    long pos = static_cast<long>(val.find(",",0));
-    if(pos == -1)
+    size_t pos = val.find(",",0);
+    if(pos == std::string::npos)
       {
       std::cout << "Comments not defined correctly" << std::endl;
       return false;
       }
     std::string v1 = val.substr(0,pos);
-    auto pos1 = static_cast<long int>(val.find(",", pos + 1));
-    if(pos1 == -1)
+    auto pos1 = val.find(",", pos + 1);
+    if(pos1 == std::string::npos)
       {
       std::cout << "Comments not defined correctly" << std::endl;
       return false;
       }
     std::string v2 = val.substr(pos+1,pos1-pos-1);
-    pos = static_cast<long>(val.find(",",pos1+1));
-    if(pos == -1)
+    pos = val.find(",",pos1+1);
+    if(pos == std::string::npos)
       {
       std::cout << "Comments not defined correctly" << std::endl;
       return false;
@@ -262,9 +262,9 @@ bool Parser::Check(const char* name, const char* value)
     std::string v3 = val.substr(pos1+1,pos-pos1-1);
 
     // Check if we allow empty lines before /class
-    pos1 = static_cast<long int>(val.find(",",pos+1));
+    pos1 = val.find(",",pos+1);
     std::string v4 = "";
-    if(pos1 == -1)
+    if(pos1 == std::string::npos)
       {
       v4 = val.substr(pos+1,val.length()-pos-1);
       }
@@ -276,9 +276,9 @@ bool Parser::Check(const char* name, const char* value)
     bool allowEmptyLine = !strcmp(v4.c_str(),"true");
 
     // Check if we should check the comments misspeling
-    pos = static_cast<long>(val.find(",",pos1+1));
+    pos = val.find(",",pos1+1);
     std::string v5 = "";
-    if(pos == -1)
+    if(pos == std::string::npos)
       {
       v5 = val.substr(pos1+1,val.length()-pos1-1);
       }
@@ -294,9 +294,9 @@ bool Parser::Check(const char* name, const char* value)
       }
 
     // Check if we should check the missing comments
-    pos1 = static_cast<long int>(val.find(",",pos+1));
+    pos1 = val.find(",",pos+1);
     std::string v6 = "";
-    if(pos == -1)
+    if(pos == std::string::npos)
       {
       v6 = val.substr(pos+1,val.length()-pos-1);
       }
@@ -319,8 +319,8 @@ bool Parser::Check(const char* name, const char* value)
   else if(!strcmp(name,"Header"))
     {
     std::string val = value;
-    long pos = static_cast<long>(val.find(",",0));
-    if(pos == -1)
+    size_t pos = val.find(",",0);
+    if(pos == std::string::npos)
       {
       std::cout << "Header not defined correctly" << std::endl;
       return false;
@@ -332,8 +332,8 @@ bool Parser::Check(const char* name, const char* value)
       v1 = val.substr(0,pos);
       }
 
-      auto pos1 = static_cast<long int>(val.find(",", pos + 1));
-      if (pos1 == -1) {
+      auto pos1 = val.find(",", pos + 1);
+      if (pos1 == std::string::npos) {
         std::cout << "Header not defined correctly" << std::endl;
         return false;
       }
@@ -361,22 +361,22 @@ bool Parser::Check(const char* name, const char* value)
    else if(!strcmp(name,"Indent"))
     {
     std::string val = value;
-    long pos = static_cast<long>(val.find(",",0));
-    if(pos == -1)
+    size_t pos = val.find(",",0);
+    if(pos == std::string::npos)
       {
       std::cout << "Indent not defined correctly" << std::endl;
       return false;
       }
     std::string v1 = val.substr(0,pos);
-    auto pos1 = static_cast<long int>(val.find(",", pos + 1));
-    if(pos1 == -1)
+    auto pos1 = val.find(",", pos + 1);
+    if(pos1 == std::string::npos)
       {
       std::cout << "Indent not defined correctly" << std::endl;
       return false;
       }
     std::string v2 = val.substr(pos+1,pos1-pos-1);
-    pos = static_cast<long>(val.find(",",pos1+1));
-    if(pos == -1)
+    pos = val.find(",",pos1+1);
+    if(pos == std::string::npos)
       {
       std::cout << "Indent not defined correctly" << std::endl;
       return false;
@@ -400,7 +400,7 @@ bool Parser::Check(const char* name, const char* value)
       {
       itype = kws::TAB;
       }
-    this->CheckIndent(itype,atoi(v2.c_str()),header,blockline);
+    this->CheckIndent(itype,std::stoul(v2.c_str()),header,blockline);
     }
 
   else if(!strcmp(name,"Namespace"))
@@ -410,8 +410,8 @@ bool Parser::Check(const char* name, const char* value)
   else if(!strcmp(name,"NameOfClass"))
     {
     std::string val = value;
-    long pos = static_cast<long>(val.find(",",0));
-    if(pos == -1)
+    size_t pos = val.find(",",0);
+    if(pos == std::string::npos)
       {
       std::cout << "NameOfClass not defined correctly" << std::endl;
       return false;
@@ -425,7 +425,7 @@ bool Parser::Check(const char* name, const char* value)
     std::string val = value;
     std::string v1 = value;
     bool uppercaseTheDefinition = false;
-    const long pos = static_cast<long>(val.find(",", 0));
+    const size_t pos = val.find(",", 0);
     if(pos != -1)
       {
       v1 = val.substr(0, pos);
@@ -436,7 +436,7 @@ bool Parser::Check(const char* name, const char* value)
     }
   else if(!strcmp(name,"EmptyLines"))
     {
-    this->CheckEmptyLines(atoi(value));
+    this->CheckEmptyLines(std::stoul(value));
     }
   else if(!strcmp(name,"Template"))
     {
@@ -445,36 +445,36 @@ bool Parser::Check(const char* name, const char* value)
   else if(!strcmp(name,"Operator"))
     {
     std::string val = value;
-    const long pos = static_cast<long>(val.find(",",0));
-    if(pos == -1)
+    const size_t pos = val.find(",",0);
+    if(pos == std::string::npos)
       {
       std::cout << "Operator not defined correctly" << std::endl;
       return false;
       }
     std::string v1 = val.substr(0,pos);
     std::string v2 = val.substr(pos+1,val.length()-pos-1);
-    this->CheckOperator(atoi(v1.c_str()),atoi(v2.c_str()));
+    this->CheckOperator(std::stoul(v1.c_str()),std::stoul(v2.c_str()));
     }
   else if(!strcmp(name,"Comma"))
     {
     std::string val = value;
-    const long pos = static_cast<long>(val.find(",",0));
-    if(pos == -1)
+    const size_t pos = val.find(",",0);
+    if(pos == std::string::npos)
       {
       std::cout << "Comma not defined correctly" << std::endl;
       return false;
       }
     std::string v1 = val.substr(0,pos);
     std::string v2 = val.substr(pos+1,val.length()-pos-1);
-    this->CheckComma(atoi(v1.c_str()),atoi(v2.c_str()));
+    this->CheckComma(std::stoul(v1.c_str()),std::stoul(v2.c_str()));
     }
   else if(!strcmp(name,"Parenthesis"))
     {
-    this->CheckParenthesis(atoi(value));
+    this->CheckParenthesis(std::stoul(value));
     }
   else if(!strcmp(name,"IfWhileForUntil"))
     {
-    this->CheckIfWhileForUntil(atoi(value));
+    this->CheckIfWhileForUntil(std::stoul(value));
     }
   else if(!strcmp(name,"BlackList"))
     {
@@ -581,11 +581,11 @@ void Parser::ConvertBufferToWindowsFileType(std::string & buffer)
 unsigned long Parser::GetNumberOfLines() const
 {
  unsigned long lines = 0;
- auto pos = static_cast<long int>(m_Buffer.find("\n", 0));
- while(pos != -1)
+ auto pos = m_Buffer.find("\n", 0);
+ while(pos != std::string::npos)
    {
    lines++;
-   pos = static_cast<long int>(m_Buffer.find("\n",pos+1));
+   pos = m_Buffer.find("\n",pos+1);
    }
  lines++; // the last line doesn't have any \n
  return lines;
@@ -595,8 +595,8 @@ unsigned long Parser::GetNumberOfLines() const
 std::string Parser::GetLine(unsigned long i) const
 {
  unsigned long lines = 0;
- long int prec = 0;
- auto pos = static_cast<long int>(m_Buffer.find("\n", 0));
+ size_t prec = 0;
+ auto pos = m_Buffer.find("\n", 0);
  while(pos != -1)
    {
    if(lines == i)
@@ -608,7 +608,7 @@ std::string Parser::GetLine(unsigned long i) const
      }
    lines++;
    prec = pos;
-   pos = static_cast<long int>(m_Buffer.find("\n",pos+1));
+   pos = m_Buffer.find("\n",pos+1);
    }
 
   if(lines == i)
