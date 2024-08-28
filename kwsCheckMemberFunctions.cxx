@@ -26,7 +26,7 @@ bool Parser::CheckMemberFunctions(const char* regEx,unsigned long maxLength)
     {
     m_TestsDone[MEMBERFUNCTION_LENGTH] = true;
     m_TestsDescription[MEMBERFUNCTION_LENGTH] = "Member functions must not exceed: ";
-    m_TestsDescription[MEMBERFUNCTION_LENGTH] += maxLength;
+    m_TestsDescription[MEMBERFUNCTION_LENGTH] += std::string(maxLength);
     m_TestsDescription[MEMBERFUNCTION_LENGTH] += " lines";
     }
 
