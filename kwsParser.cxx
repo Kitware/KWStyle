@@ -38,7 +38,6 @@ Parser::Parser()
 }
 
 /** Destructor */
-Parser::~Parser() = default;
 
 /** To be able to use std::sort we provide the < operator */
 bool Parser::operator<(const Parser& a) const
