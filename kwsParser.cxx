@@ -15,7 +15,10 @@
 
 #include <stdlib.h> // atoi
 #include <string.h>
+
+#include "kwsPushBoostWarnings.h"
 #include <boost/xpressive/xpressive.hpp>
+#include "kwsPopBoostWarnings.h"
 
 using namespace boost::xpressive;
 

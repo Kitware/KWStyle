@@ -13,7 +13,10 @@
 =========================================================================*/
 #include "kwsParser.h"
 
+#include "kwsPushBoostWarnings.h"
 #include <boost/xpressive/xpressive.hpp>
+#include "kwsPopBoostWarnings.h"
+
 using namespace boost::xpressive;
 
 namespace kws {
