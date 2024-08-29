@@ -176,7 +176,7 @@ bool Parser::CheckIfNDefDefine(const char* match, bool uppercaseTheDefinition)
       if(uppercaseTheDefinition)
         {
         for(std::string::iterator it = toMatch.begin(); it != toMatch.end(); it++)
-          *it = std::toupper(*it);
+          *it = static_cast<char>(std::toupper(*it));
         }
 
       if(ifndef != toMatch)
