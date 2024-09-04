@@ -29,6 +29,10 @@
 #include <list>
 #include <map>
 
+#ifndef METAIO_USE_NAMESPACE
+#define METAIO_USE_NAMESPACE 0
+#endif
+
 #if (METAIO_USE_NAMESPACE)
 namespace METAIO_NAMESPACE {
 #endif
