@@ -166,7 +166,7 @@ bool Parser::Check(const char* name, const char* value)
     std::string v1 = value;
     std::string v2 = "0";
     size_t pos = val.find(",",0);
-    if(pos != -1)
+    if(pos != std::string::npos)
       {
       v1 = val.substr(0,pos);
       v2 = val.substr(pos+1,val.size()-pos-1);
@@ -427,7 +427,7 @@ bool Parser::Check(const char* name, const char* value)
     std::string v1 = value;
     bool uppercaseTheDefinition = false;
     const size_t pos = val.find(",", 0);
-    if(pos != -1)
+    if(pos != std::string::npos)
       {
       v1 = val.substr(0, pos);
       std::string v2 = val.substr(pos+1);
@@ -598,7 +598,7 @@ std::string Parser::GetLine(unsigned long i) const
  unsigned long lines = 0;
  size_t prec = 0;
  auto pos = m_Buffer.find("\n", 0);
- while(pos != -1)
+ while(pos != std::string::npos)
    {
    if(lines == i)
      {
