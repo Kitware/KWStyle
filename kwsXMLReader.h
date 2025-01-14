@@ -44,7 +44,7 @@ private:
   std::string   m_Value;
   std::string   m_Tag;
   std::string   m_Buffer;
-  unsigned int  m_CurrentPos;
+  size_t        m_CurrentPos;
 
 };
 

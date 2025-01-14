@@ -126,7 +126,7 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL,bool useCVS
 
     unsigned int pos = 0;
     unsigned int posh = 0;
-    int line = -1;
+    long line = -1;
 
 
     while((ith != buffer.end()) && (it != m_Buffer.end()))
@@ -245,7 +245,7 @@ bool Parser::CheckHeader(const char* filename, bool considerSpaceEOL,bool useCVS
         //hasError = true;
 
         // We report the wrong word and the line
-        int l = this->GetLineNumber(pos);
+        long l = this->GetLineNumber(pos);
         if(l != line)
           {
           line = l;

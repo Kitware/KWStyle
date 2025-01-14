@@ -454,7 +454,7 @@ bool Parser::Check(const char* name, const char* value)
       }
     std::string v1 = val.substr(0,pos);
     std::string v2 = val.substr(pos+1,val.length()-pos-1);
-    this->CheckOperator(std::stoul(v1.c_str()),std::stoul(v2.c_str()));
+    this->CheckOperator(std::stoul(v1),std::stoul(v2));
     }
   else if(!strcmp(name,"Comma"))
     {
@@ -467,7 +467,7 @@ bool Parser::Check(const char* name, const char* value)
       }
     std::string v1 = val.substr(0,pos);
     std::string v2 = val.substr(pos+1,val.length()-pos-1);
-    this->CheckComma(std::stoul(v1.c_str()),std::stoul(v2.c_str()));
+    this->CheckComma(std::stoul(v1),std::stoul(v2));
     }
   else if(!strcmp(name,"Parenthesis"))
     {
@@ -506,7 +506,7 @@ bool Parser::HasBeenPerformed(unsigned int test) const
 }
 
 /** Return the test description given the erro number) */
-std::string Parser::GetTestDescription(unsigned int test) const
+std::string Parser::GetTestDescription(size_t test) const
 {
   return m_TestsDescription[test];
 }

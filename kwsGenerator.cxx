@@ -553,13 +553,13 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
     file << R"(<table width="100%" border="0" height="1">)" << std::endl;
 
     // To speedup the process we list the lines that have errors
-    using ErrorLineType = std::pair<int, std::vector<int>>;
+    using ErrorLineType = std::pair<long, std::vector<long>>;
     std::vector<ErrorLineType> errorLines;
 
     const Parser::ErrorVectorType errors = (*it).GetErrors();
     auto itError = errors.begin();
     while (itError != errors.end()) {
-      for (unsigned int index = (*itError).line; index <= (*itError).line2;
+      for (unsigned long index = (*itError).line; index <= (*itError).line2;
            index++) {
         ErrorLineType errLine;
         errLine.first = index;
@@ -588,7 +588,7 @@ bool Generator::GenerateHTML(const char* dir,bool showAllErrors)
     for(i=0;i<nLines;i++)
       {
       // Look in the errors if there is a match for this line
-      int error = -1;
+      long error = -1;
       std::string errorTag = "";
 
       std::vector<ErrorLineType>::const_iterator errorLineIt = errorLines.begin();
@@ -859,7 +859,7 @@ void Generator::ExportHTML(std::ostream & output)
     for(unsigned int i=0;i<(*it).GetNumberOfLines();i++)
       {
       // Look in the errors if there is a match for this line
-      int error = -1;
+      long error = -1;
       std::string errorTag = "";
 
       const Parser::ErrorVectorType errors = (*it).GetErrors();

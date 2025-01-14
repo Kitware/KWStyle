@@ -339,7 +339,7 @@ public:
   bool HasBeenPerformed(unsigned int test) const;
  
   /** Return the test description given the error number) */
-  std::string GetTestDescription(unsigned int test) const;
+  std::string GetTestDescription(size_t test) const;
 
   /** Given the name of the check to perform and the default value perform the check */
   bool Check(const char* name, const char* value);

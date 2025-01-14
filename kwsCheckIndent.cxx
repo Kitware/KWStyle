@@ -413,7 +413,7 @@ bool Parser::CheckIndent(IndentType itype,
         isCheckingComment = false;
         }
 
-      unsigned int poswithoutcomment = static_cast<long int>(this->GetPositionWithoutComments(pos));
+      size_t poswithoutcomment = this->GetPositionWithoutComments(pos);
 
       if((currentIndent != wantedIndent)
         && ((inComment
@@ -435,7 +435,7 @@ bool Parser::CheckIndent(IndentType itype,
         auto bracket = static_cast<long int>(m_Buffer.find_last_of('{', pos));
         if(bracket != -1)
           {
-          unsigned int l = static_cast<long int>(this->FindPreviousWord(bracket-1,true).size());
+          size_t l = this->FindPreviousWord(bracket-1,true).size();
           if(this->FindPreviousWord(bracket-l-2,true) == "enum")
             {
             isInsideEnum = true;

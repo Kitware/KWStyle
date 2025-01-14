@@ -1195,9 +1195,9 @@ bool MetaCommand::Parse(int argc, const char* argv[])
   bool inArgument = false;
   METAIO_STL::string tag = "";
 
-  unsigned int currentField = 0; // current field position
-  int currentOption = 0; // id of the option to fill
-  unsigned int valuesRemaining=0;
+  long currentField = 0; // current field position
+  long currentOption = 0; // id of the option to fill
+  size_t valuesRemaining=0;
   bool isComplete = false; // check if the option should be parse until the next tag is found
   METAIO_STL::string completeString = "";
 
@@ -1239,7 +1239,7 @@ bool MetaCommand::Parse(int argc, const char* argv[])
       if(this->OptionExistsByMinusTag(tag))
         {
         inArgument = true;
-        valuesRemaining = static_cast<unsigned int>(this->GetOptionByMinusTag(tag)->fields.size());
+        valuesRemaining = this->GetOptionByMinusTag(tag)->fields.size();
         currentOption = this->GetOptionId(this->GetOptionByMinusTag(tag));
 
         if(currentOption < 0)
@@ -1290,7 +1290,7 @@ bool MetaCommand::Parse(int argc, const char* argv[])
       {
       // Look for the field to add
       auto it = m_OptionVector.begin();
-      unsigned long pos = 0;
+      long pos = 0;
       bool found = false;
       while(it != m_OptionVector.end())
         {
